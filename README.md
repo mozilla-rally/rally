@@ -6,11 +6,10 @@ NOTE - Only unbranded Firefox builds such as [Nightly](https://nightly.mozilla.o
 
 ```console
 PIONEER_ID="abc123"
-FIREFOX_BINARY="/Applications/Firefox Nightly.app/Contents/MacOS/firefox"
 web-ext run --pref=extensions.experiments.enabled=true \
             --pref=toolkit.telemetry.pioneerId="${PIONEER_ID}" \
             --browser-console \
-            --firefox-binary "${FIREFOX_BINARY}"
+            -t nightly
  ```
 
 To see extra details on what Firefox Telemetry is doing, enable Trace log level with `--pref=toolkit.telemetry.log.level=Trace`.
