@@ -1,6 +1,6 @@
 A basic Mozilla Ion Study.
 
-This is a normal, unprivileged WebExtension.
+This is an unprivileged WebExtension.
 
 To test, either load as a temporary add-on in Firefox (`about:debugging`) or Chrome ("developer mode" in `chrome://extensions`) or use `web-ext`:
 
