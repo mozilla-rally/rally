@@ -11,7 +11,8 @@ async function sendPing() {
     schemaVersion: 1,
   };
 
-  await browser.telemetry.submitEncryptedPing(payload, options);
+  // FIXME pass messages to core add-on
+  throw new Error("not implemented");
 }
 
 sendPing()

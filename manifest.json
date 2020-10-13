@@ -13,23 +13,7 @@
     }
   },
 
-  "permissions": ["telemetry"],
-
-  "telemetry": {
-    "pioneer_id": true,
-    "study_name": "ion-demo-study",
-    "ping_type": "pioneer-study",
-    "schemaNamespace": "pioneer-debug",
-    "public_key": {
-      "id": "debug",
-      "key": {
-        "crv": "P-256",
-        "kty": "EC",
-        "x": "XLkI3NaY3-AF2nRMspC63BT1u0Y3moXYSfss7VuQ0mk",
-        "y": "SB0KnIW-pqk85OIEYZenoNkEyOOp5GeWQhS1KeRtEUE"
-      }
-    }
-  },
+  "permissions": ["management"],
 
   "background": {
     "scripts": ["background.js"]
