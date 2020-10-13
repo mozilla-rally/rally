@@ -1,4 +1,4 @@
-A demo add-on for Ion Studies.
+A basic Mozilla Ion Study.
 
 This is a normal, unprivileged WebExtension.
 
