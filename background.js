@@ -2,18 +2,6 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/. */
 
-const ION_SIGNUP_URL = "https://mozilla-ion.github.io/ion-core-addon/";
-const CORE_ADDON_ID = "ion-core-addon@mozilla.org";
-
-async function checkIonCore() {
-  try {
-    const addon = await browser.management.get(CORE_ADDON_ID);
-  } catch (ex) {
-    console.debug("Core add-on not found, opening sign-up URL", ex);
-    await browser.tabs.create({ url: ION_SIGNUP_URL });
-  }
-}
-
 async function sendPing() {
   const currentDate = new Date();
 
@@ -30,13 +18,8 @@ async function sendPing() {
   throw new Error("not implemented");
 }
 
-checkIonCore()
-  .then((result) => {
-    console.debug("Done checking for core add-on");
-  })
-  .catch((ex) => {
-    console.error("Checking for core add-on failed, will re-try on startup");
-  });
+let ion = new Ion();
+ion.initialize();
 
 sendPing()
   .then((result) =>

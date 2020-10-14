@@ -16,6 +16,9 @@
   "permissions": ["management"],
 
   "background": {
-    "scripts": ["background.js"]
+    "scripts": [
+      "ion.js",
+      "background.js"
+    ]
   }
 }
