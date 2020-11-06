@@ -17,7 +17,6 @@
 
   "background": {
     "scripts": [
-      "ion.js",
       "dist/background.js"
     ]
   }

@@ -5,7 +5,7 @@
 const CORE_ADDON_ID = "ion-core-addon@mozilla.org";
 const ION_SIGNUP_URL = "https://mozilla-ion.github.io/ion-core-addon/";
 
-class Ion {
+module.exports = class Ion {
   /**
    * Initialize the Ion library.
    *

@@ -3,6 +3,7 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/. */
 
 window.browser = require("webextension-polyfill");
+const Ion = require("../ion.js");
 
 // ... Add more implementation here!
 
