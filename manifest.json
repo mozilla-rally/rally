@@ -1,8 +1,8 @@
 {
-  "description": "A basic Mozilla Ion Study.",
+  "description": "A basic template for a Mozilla Ion Study.",
   "author": "Mozilla",
   "manifest_version": 2,
-  "name": "Ion Basic Study",
+  "name": "Ion Basic Study Template",
   "version": "2.0",
   "homepage_url": "https://github.com/mozilla-ion/ion-basic-study",
 
