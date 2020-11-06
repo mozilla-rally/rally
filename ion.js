@@ -86,9 +86,8 @@ class Ion {
     }
 
     switch (message.type) {
-      case "uninstall": {
+      case "uninstall":
         return browser.management.uninstallSelf({showConfirmDialog: false});
-      } break;
       default:
         return Promise.reject(
           new Error(`Ion._handleExternalMessage - unexpected message type ${message.type}`));
@@ -169,4 +168,4 @@ class Ion {
       console.error(`Ion.sendPing - error while sending ${payloadType}`, ex);
     }
   }
-};
+}
