@@ -11,7 +11,7 @@ module.exports = {
   },
   extends: [
     "eslint:recommended",
-    //"plugin:import/warnings",
+    "plugin:import/warnings",
     "plugin:node/recommended",
   ],
   globals: {
@@ -39,7 +39,7 @@ module.exports = {
     sourceType: "module",
   },
   plugins: [
-    //"import",
+    "import",
     //"mocha",
     "node",
   ],
