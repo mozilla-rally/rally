@@ -8,7 +8,7 @@
     "test": "npm run test-addon"
   },
   "devDependencies": {
-    "@rollup/plugin-commonjs": "^16.0.0",
+    "@rollup/plugin-commonjs": "^14.0.0",
     "@rollup/plugin-node-resolve": "^10.0.0",
     "eslint": "^7.12.1",
     "eslint-plugin-import": "^2.22.1",
