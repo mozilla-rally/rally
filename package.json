@@ -1,0 +1,31 @@
+{
+  "name": "ion-study-template",
+  "version": "0.0.1",
+  "scripts": {
+    "build": "rollup -c",
+    "dev": "rollup -c -w",
+    "lint": "npm-run-all lint-*",
+    "test": "npm run test-addon"
+  },
+  "devDependencies": {
+    "web-ext": "^5.3.0",
+    "webextension-polyfill": "^0.6.0"
+  },
+  "dependencies": {},
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "description": "This is the Ion Core Add-on: a cross-browser WebExtension that allows users to participate to Ion studies.",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mozilla-ion/ion-basic-study.git"
+  },
+  "keywords": [],
+  "author": "Mozilla",
+  "license": "MPL-2.0",
+  "private": true,
+  "bugs": {
+    "url": "https://github.com/mozilla-ion/ion-basic-study/issues"
+  },
+  "homepage": "https://github.com/mozilla-ion/ion-basic-study#readme"
+}
