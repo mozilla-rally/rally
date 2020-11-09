@@ -4,8 +4,7 @@
   "scripts": {
     "build": "rollup -c",
     "dev": "rollup -c -w",
-    "lint": "eslint . && web-ext lint",
-    "test": "npm run test-addon"
+    "lint": "eslint . && web-ext lint"
   },
   "devDependencies": {
     "@rollup/plugin-commonjs": "^14.0.0",
