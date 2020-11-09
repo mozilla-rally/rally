@@ -7,7 +7,7 @@ const Ion = require("../ion.js");
 
 // ... Add more implementation here!
 
-let ion = new Ion();
+const ion = new Ion();
 ion.initialize(
   // A sample key id used for encrypting data.
   "sample-invalid-key-id",

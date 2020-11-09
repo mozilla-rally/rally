@@ -147,7 +147,7 @@ module.exports = class Ion {
       // The unique identifier of the study can be used as the
       // namespace, in order to make sure data is routed to the
       // proper analysis sandbox.
-      let studyName = browser.runtime.id;
+      const studyName = browser.runtime.id;
 
       // This function may be mistakenly called while init has not
       // finished. Let's be safe and check for key validity again.
