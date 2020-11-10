@@ -18,24 +18,12 @@ module.exports = {
     ChromeUtils: false,
     ExtensionAPI: false,
   },
-  /*overrides: [
-    {
-      files: "tests/**",
-      env: {
-        mocha: true,
-      },
-      extends: [
-        "plugin:mocha/recommended",
-      ],
-    },
-  ],*/
   parserOptions: {
     ecmaVersion: 2021,
     sourceType: "module",
   },
   plugins: [
     "import",
-    //"mocha",
     "node",
   ],
   root: true,
