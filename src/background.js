@@ -2,7 +2,12 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/. */
 
-let ion = new Ion();
+window.browser = require("webextension-polyfill");
+const Ion = require("../ion.js");
+
+// ... Add more implementation here!
+
+const ion = new Ion();
 ion.initialize(
   // A sample key id used for encrypting data.
   "sample-invalid-key-id",

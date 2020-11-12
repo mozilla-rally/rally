@@ -5,7 +5,7 @@
 const CORE_ADDON_ID = "ion-core-addon@mozilla.org";
 const ION_SIGNUP_URL = "https://mozilla-ion.github.io/ion-core-addon/";
 
-class Ion {
+module.exports = class Ion {
   /**
    * Initialize the Ion library.
    *
@@ -86,9 +86,8 @@ class Ion {
     }
 
     switch (message.type) {
-      case "uninstall": {
+      case "uninstall":
         return browser.management.uninstallSelf({showConfirmDialog: false});
-      } break;
       default:
         return Promise.reject(
           new Error(`Ion._handleExternalMessage - unexpected message type ${message.type}`));
@@ -148,7 +147,7 @@ class Ion {
       // The unique identifier of the study can be used as the
       // namespace, in order to make sure data is routed to the
       // proper analysis sandbox.
-      let studyName = browser.runtime.id;
+      const studyName = browser.runtime.id;
 
       // This function may be mistakenly called while init has not
       // finished. Let's be safe and check for key validity again.
@@ -169,4 +168,4 @@ class Ion {
       console.error(`Ion.sendPing - error while sending ${payloadType}`, ex);
     }
   }
-};
+}
