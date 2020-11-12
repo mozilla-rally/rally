@@ -3,8 +3,9 @@
   "version": "0.0.1",
   "scripts": {
     "build": "rollup -c",
-    "start": "npm run build && web-ext run",
-    "lint": "eslint . && web-ext lint"
+    "lint": "eslint . && web-ext lint",
+    "package": "npm run build && web-ext build --ignore-files \"./tests/**/*\" --ignore-files \"./src/**/*\" --ignore-files \"./rollup.config.js\"",
+    "start": "npm run build && web-ext run"
   },
   "devDependencies": {
     "@rollup/plugin-commonjs": "^14.0.0",

@@ -67,9 +67,10 @@ And then be imported in another file with `const {myTest, otherFunc} = require("
 ## Supported NPM commands
 The template comes with a set of pre-defined NPM commands (to run as `npm run <command>`) to help study authors:
 
-* `build`: assembles the final addon and writes the generated code in the `dist/` directory.
-* `start`: build the addon and run a Firefox instance and side-load the add-on for manual testing or debugging purposes.
+* `build`: assembles the final addon. The budler generated code is saved in the `dist/` directory.
 * `lint`: run linting on the add-on code.
+* `package`: packages the final archive containing the bundled addon, is saved in the `web-ext-artifacts` directory.
+* `start`: build the addon and run a Firefox instance and side-load the add-on for manual testing or debugging purposes.
 
 ## Manual testing in the browser
 To test, either load as a temporary add-on in Firefox (`about:debugging`) or Chrome ("developer mode" in `chrome://extensions`) or use `npm run start`.
