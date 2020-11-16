@@ -3,12 +3,12 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/. */
 
 window.browser = require("webextension-polyfill");
-const Ion = require("../ion.js");
+const Rally = require("@mozilla/rally");
 
 // ... Add more implementation here!
 
-const ion = new Ion();
-ion.initialize(
+const rally = new Rally();
+rally.initialize(
   // A sample key id used for encrypting data.
   "sample-invalid-key-id",
   // A sample *valid* JWK object for the encryption.

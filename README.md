@@ -10,7 +10,7 @@ The purpose of this repository is to provide a starting point to build an Ion st
 3. Provide the encryption data to the `Ion` class constructor in the [src/background.js](./src/background.js) file:
 
 ```js
-ion.initialize(
+rally.initialize(
   // A sample key id used for encrypting data.
   "sample-invalid-key-id",
   // A sample *valid* JWK object for the encryption.
