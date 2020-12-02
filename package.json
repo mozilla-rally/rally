@@ -8,7 +8,7 @@
     "start": "npm run build && web-ext run"
   },
   "devDependencies": {
-    "@mozilla/rally": "^0.0.2",
+    "@mozilla/rally": "0.0.3",
     "@rollup/plugin-commonjs": "^14.0.0",
     "@rollup/plugin-node-resolve": "^10.0.0",
     "eslint": "^7.12.1",
