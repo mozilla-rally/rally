@@ -1,13 +1,13 @@
-# Mozilla Ion study template.
-The purpose of this repository is to provide a starting point to build an Ion study.
+# Mozilla Rally study template.
+The purpose of this repository is to provide a starting point to build a Rally study.
 
 ## Getting started
 
 1. Fork this repository.
 2. Customize the [manifest.json](./manifest.json) file:
   * change the `name`, `author` and `description` properties;
-  * swap the value of `application.gecko.id` (e.g. `ion-basic-study@mozilla.org`) with the one provided you by the Ion team;
-3. Provide the encryption data to the `Ion` class constructor in the [src/background.js](./src/background.js) file:
+  * swap the value of `application.gecko.id` (e.g. `ion-basic-study@mozilla.org`) with the one provided you by the Rally team;
+3. Provide the encryption data to the `Rally` class constructor in the [src/background.js](./src/background.js) file:
 
 ```js
 rally.initialize(
