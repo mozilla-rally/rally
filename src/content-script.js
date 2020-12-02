@@ -6,4 +6,4 @@ window.browser = require("webextension-polyfill");
 
 // ... Add more implementation here!
 
-console.debug("Ion - Running content script");
+console.debug("Running content script");
