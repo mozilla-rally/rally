@@ -1,6 +1,6 @@
 {
-  "name": "rally-study-template",
-  "version": "0.0.1",
+  "name": "ion-basic-study",
+  "version": "0.3.0",
   "scripts": {
     "build": "rollup -c",
     "lint": "eslint . && web-ext lint",

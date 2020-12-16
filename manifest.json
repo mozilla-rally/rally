@@ -3,12 +3,12 @@
   "author": "Mozilla",
   "manifest_version": 2,
   "name": "Rally Basic Study Template",
-  "version": "2.0",
+  "version": "0.3.0",
   "homepage_url": "https://github.com/mozilla-ion/ion-basic-study",
 
   "applications": {
     "gecko": {
-      "id": "rally-basic-study@mozilla.org",
+      "id": "ion-basic-study@mozilla.org",
       "strict_min_version": "77.0a1"
     }
   },
