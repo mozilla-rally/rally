@@ -5,9 +5,10 @@ The purpose of this repository is to provide a starting point to build a Rally s
 
 1. Fork this repository.
 2. Customize the [manifest.json](./manifest.json) file:
-  * change the `name`, `author` and `description` properties;
+  * change the `name`, `author`, and `description` properties;
   * swap the value of `application.gecko.id` (e.g. `ion-basic-study@mozilla.org`) with the one provided you by the Rally team;
-3. Provide the encryption data to the `Rally` class constructor in the [src/background.js](./src/background.js) file:
+3. Customize the [package.json](./package.json) file. At a bare minimum, change the `name`,`description`, `version`, `author`, `repository`, `bugs`, and `homepage` properties;
+4. Provide the encryption data to the `Rally` class constructor in the [src/background.js](./src/background.js) file:
 
 ```js
 rally.initialize(
@@ -67,10 +68,11 @@ And then be imported in another file with `const {myTest, otherFunc} = require("
 ## Supported NPM commands
 The template comes with a set of pre-defined NPM commands (to run as `npm run <command>`) to help study authors:
 
-* `build`: assembles the final addon. The budler generated code is saved in the `dist/` directory.
+* `build`: assembles the final addon. The bundler generated code is saved in the `dist/` directory.
 * `lint`: run linting on the add-on code.
 * `package`: packages the final archive containing the bundled addon, is saved in the `web-ext-artifacts` directory.
 * `start`: build the addon and run a Firefox instance and side-load the add-on for manual testing or debugging purposes.
+* `test-integration`: perform the provided integration test for the final addon.
 
 ## Manual testing in the browser
 To test, either load as a temporary add-on in Firefox (`about:debugging`) or Chrome ("developer mode" in `chrome://extensions`) or use `npm run start`.

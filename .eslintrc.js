@@ -14,6 +14,17 @@ module.exports = {
     "plugin:import/warnings",
     "plugin:node/recommended",
   ],
+  overrides: [
+    {
+      files: "tests/**",
+      env: {
+        mocha: true,
+      },
+      extends: [
+        "plugin:mocha/recommended",
+      ],
+    },
+  ],
   globals: {
     ChromeUtils: false,
     ExtensionAPI: false,
@@ -25,6 +36,7 @@ module.exports = {
   plugins: [
     "import",
     "node",
+    "mocha"
   ],
   root: true,
   rules: {

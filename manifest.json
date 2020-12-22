@@ -15,9 +15,12 @@
 
   "permissions": [],
 
+  "options_ui": {
+    "page": "public/index.html",
+    "open_in_tab": true
+  },
+
   "background": {
-    "scripts": [
-      "dist/background.js"
-    ]
+    "scripts": ["dist/background.js"]
   }
 }
