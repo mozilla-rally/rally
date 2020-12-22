@@ -24,10 +24,6 @@ module.exports = {
         "plugin:mocha/recommended",
       ],
     },
-    {
-      files: ["*.svelte"],
-      processor: "svelte3/svelte3",
-    },
   ],
   globals: {
     ChromeUtils: false,
