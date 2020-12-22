@@ -3,11 +3,15 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/. */
 
 window.browser = require("webextension-polyfill");
+
 const Rally = require("@mozilla/rally");
+const rally = new Rally();
 
 // ... Add more implementation here!
 
-const rally = new Rally();
+const ExampleModule = require('./ExampleModule');
+ExampleModule.initialize();
+
 rally.initialize(
   // A sample key id used for encrypting data.
   "sample-invalid-key-id",

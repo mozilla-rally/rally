@@ -14,6 +14,21 @@ module.exports = {
     "plugin:import/warnings",
     "plugin:node/recommended",
   ],
+  overrides: [
+    {
+      files: "tests/**",
+      env: {
+        mocha: true,
+      },
+      extends: [
+        "plugin:mocha/recommended",
+      ],
+    },
+    {
+      files: ["*.svelte"],
+      processor: "svelte3/svelte3",
+    },
+  ],
   globals: {
     ChromeUtils: false,
     ExtensionAPI: false,
@@ -25,6 +40,7 @@ module.exports = {
   plugins: [
     "import",
     "node",
+    "mocha"
   ],
   root: true,
   rules: {
