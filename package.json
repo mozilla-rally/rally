@@ -1,6 +1,6 @@
 {
-  "name": "ion-basic-study",
-  "version": "0.3.0",
+  "name": "rally-study-template",
+  "version": "0.3.1",
   "scripts": {
     "build": "rollup -c",
     "lint": "eslint . && web-ext lint",
@@ -30,14 +30,14 @@
   "description": "This a basic template for a Rally study.",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/mozilla-ion/ion-basic-study.git"
+    "url": "git+https://github.com/mozilla-rally/study-template.git"
   },
   "keywords": [],
   "author": "Mozilla",
   "license": "MPL-2.0",
   "private": true,
   "bugs": {
-    "url": "https://github.com/mozilla-ion/ion-basic-study/issues"
+    "url": "https://github.com/mozilla-rally/study-template/issues"
   },
-  "homepage": "https://github.com/mozilla-ion/ion-basic-study#readme"
+  "homepage": "https://github.com/mozilla-rally/study-template#readme"
 }
