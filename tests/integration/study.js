@@ -61,10 +61,10 @@ describe("Study Template integration test example", function () {
     const tabs = (await this.driver.getAllWindowHandles());
     // this should be the options page.
     const newTab = tabs[1];
-    
+
     await this.driver.switchTo().window(newTab);
-   
-   // Let's wait until the page is fully loaded and the title matches. 
+
+   // Let's wait until the page is fully loaded and the title matches.
     await this.driver.wait(
       until.titleIs("Rally Study Template"),
       WAIT_FOR_PROPERTY
