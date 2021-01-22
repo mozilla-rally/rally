@@ -1,6 +1,11 @@
 # Mozilla Rally study template.
-The purpose of this repository is to provide a starting point to build a Rally study.
+The purpose of this repository is to provide a starting point to build a Rally study. It contains:
 
+1. an example [`manifest.json'](https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/manifest.json) file.
+2. an example background and content script in `src`.
+3. a rollup config file that builds the files needed for the web extension using the source files in `src/` (the background & content scripts).
+4. an example integration test that launches a browser & installs the add-on.
+5. a `web-ext-config.js` file & an eslint configuration.
 ## Getting started
 
 1. Fork this repository.
