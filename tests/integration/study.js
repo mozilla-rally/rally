@@ -30,7 +30,7 @@ async function findAndAct(driver, element, action) {
 describe("Study Template integration test example", function () {
   // eslint-disable-next-line mocha/no-hooks-for-single-case
   beforeEach(async function () {
-    this.driver = await utils.getFirefoxDriver(false);
+    this.driver = await utils.getFirefoxDriver(true);
   });
 
   // eslint-disable-next-line mocha/no-hooks-for-single-case
