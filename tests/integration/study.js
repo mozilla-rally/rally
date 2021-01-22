@@ -38,7 +38,7 @@ describe("Study Template integration test example", function () {
     await this.driver.quit();
   });
 
-  it("successfully opens the study template options page on installation", async function () {
+  it("successfully installs the study", async function () {
     await this.driver.get(`file:///${__dirname}/index.html`);
     await this.driver.wait(until.titleIs("Installation Test"), WAIT_FOR_PROPERTY);
     await findAndAct(this.driver, By.id("install"), e => e.click());
