@@ -9,7 +9,7 @@
     "start": "npm run build && web-ext run",
     "test-integration": "npm run package && mv web-ext-artifacts/*.zip web-ext-artifacts/study.xpi && mocha --timeout 30000 \"./tests/integration/*.js\"",
     "watch": "npm-run-all --parallel watch-raw watch-bundled",
-    "watch-raw": "npm run dev -w",
+    "watch-raw": "npm run dev -- -w",
     "watch-bundled": "web-ext run --watch-file dist/background.js"
   },
   "devDependencies": {
