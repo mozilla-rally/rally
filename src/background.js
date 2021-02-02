@@ -2,16 +2,18 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/. */
 
-window.browser = require("webextension-polyfill");
+import "webextension-polyfill";
 
-const Rally = require("@mozilla/rally");
-const rally = new Rally();
+import Rally from "@mozilla/rally";
 
 // ... Add more implementation here!
 
-const ExampleModule = require('./ExampleModule');
-ExampleModule.initialize();
+import {
+  initialize as exampleInitialize
+} from './ExampleModule';
+exampleInitialize();
 
+const rally = new Rally();
 rally.initialize(
   // A sample key id used for encrypting data.
   "sample-invalid-key-id",

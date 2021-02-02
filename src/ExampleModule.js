@@ -2,8 +2,6 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/. */
 
-module.exports = {
-    initialize() {
-        console.log('example module initialized.');
-    },
-  };
+export function initialize() {
+    console.log("example module initialized.");
+}
