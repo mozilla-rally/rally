@@ -6,18 +6,29 @@ import commonjs from "@rollup/plugin-commonjs";
 import replace from "@rollup/plugin-replace";
 import resolve from "@rollup/plugin-node-resolve";
 
+/**
+ * Helper to detect developer mode.
+ *
+ * @param cliArgs the command line arguments.
+ * @return {Boolean} whether or not developer mode is enabled.
+ */
+function isDevMode(cliArgs) {
+  return Boolean(cliArgs["config-enable-developer-mode"]);
+}
+
 export default (cliArgs) => [
   {
     input: "src/background.js",
     output: {
-      file: "dist/background.js"
+      file: "dist/background.js",
+      sourcemap: isDevMode(cliArgs) ? "inline" : false,
     },
     plugins: [
       replace({
         // In Developer Mode, the study does not submit data and
         // gracefully handles communication errors with the Core
         // Add-on.
-        __ENABLE_DEVELOPER_MODE__: !!cliArgs["config-enable-developer-mode"],
+        __ENABLE_DEVELOPER_MODE__: isDevMode(cliArgs),
       }),
       resolve({
         browser: true,
@@ -28,7 +39,8 @@ export default (cliArgs) => [
   {
     input: "src/content-script.js",
     output: {
-      file: "dist/content-script.js"
+      file: "dist/content-script.js",
+      sourcemap: isDevMode(cliArgs) ? "inline" : false,
     },
     plugins: [
       resolve({
