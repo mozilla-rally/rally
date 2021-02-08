@@ -6,12 +6,10 @@ import "webextension-polyfill";
 
 import Rally from "@mozilla/rally";
 
-// ... Add more implementation here!
-
+// Example: import a module.
 import {
   initialize as exampleInitialize
 } from './ExampleModule';
-exampleInitialize();
 
 const rally = new Rally();
 rally.initialize(
@@ -28,4 +26,11 @@ rally.initialize(
   // The following constant is automatically provided by
   // the build system.
   __ENABLE_DEVELOPER_MODE__,
-);
+).then(resolve => {
+  // Initialize the study and start it.
+  // Example: initialize the example module.
+  exampleInitialize();
+}, reject =>{
+  // Do not start the study in this case. Something
+  // went wrong.
+});
