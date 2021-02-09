@@ -15,6 +15,9 @@ jobs:
           name: Install the dependencies
           command: npm install
       - run:
+          name: Build
+          command: npm run build
+      - run:
           name: Run linting
           command: npm run lint
 
