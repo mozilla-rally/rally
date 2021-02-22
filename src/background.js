@@ -26,6 +26,13 @@ rally.initialize(
   // The following constant is automatically provided by
   // the build system.
   __ENABLE_DEVELOPER_MODE__,
+  (newState) => {
+    if (newState === "running") {
+      console.log("The study can run.");
+    } else {
+      console.log("The study must stop.");
+    }
+  }
 ).then(resolve => {
   // Initialize the study and start it.
   // Example: initialize the example module.
