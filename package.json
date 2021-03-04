@@ -13,7 +13,7 @@
     "watch-bundled": "web-ext run --watch-file dist/background.js"
   },
   "devDependencies": {
-    "@mozilla/rally": "^0.4.0",
+    "@mozilla/rally": "^0.5.0",
     "@rollup/plugin-commonjs": "^17.1.0",
     "@rollup/plugin-node-resolve": "^11.2.0",
     "@rollup/plugin-replace": "^2.4.1",
