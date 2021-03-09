@@ -4,7 +4,7 @@
 
 import "webextension-polyfill";
 
-import Rally from "@mozilla/rally";
+import { Rally, runStates } from "@mozilla/rally";
 
 // Example: import a module.
 import {
@@ -27,7 +27,7 @@ rally.initialize(
   // the build system.
   __ENABLE_DEVELOPER_MODE__,
   (newState) => {
-    if (newState === "running") {
+    if (newState === runStates.RUNNING) {
       console.log("The study can run.");
     } else {
       console.log("The study must stop.");
