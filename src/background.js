@@ -6,6 +6,8 @@ import "webextension-polyfill";
 
 import { Rally, runStates } from "@mozilla/rally";
 
+import * as webScience from "@mozilla/web-science";
+
 // Example: import a module.
 import {
   initialize as exampleInitialize
