@@ -11,8 +11,9 @@ import * as webScience from "@mozilla/web-science";
 // Example: import a module.
 import {
   initialize as exampleInitialize
-} from './ExampleModule';
+} from './exampleModule';
 
+// Initialize the Rally API.
 const rally = new Rally();
 rally.initialize(
   // A sample key id used for encrypting data.
@@ -28,6 +29,7 @@ rally.initialize(
   // The following constant is automatically provided by
   // the build system.
   __ENABLE_DEVELOPER_MODE__,
+  // A sample callback with the study state.
   (newState) => {
     if (newState === runStates.RUNNING) {
       console.log("The study can run.");
@@ -36,9 +38,14 @@ rally.initialize(
     }
   }
 ).then(resolve => {
+  // The Rally API has been initialized.
   // Initialize the study and start it.
   // Example: initialize the example module.
   exampleInitialize();
+  // Example: set a listener for WebScience page navigation events.
+  webScience.pageNavigation.onPageData.addListener(pageData => {
+    console.log("WebScience page navigation event fired.");
+  });
 }, reject =>{
   // Do not start the study in this case. Something
   // went wrong.
