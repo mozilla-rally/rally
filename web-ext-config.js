@@ -5,6 +5,17 @@
 // This is the web-ext configuration for the study template. It is
 // part of the build system, and you should not have to modify it.
 
+// Try to read the extension ID from the WebExtensions manifest.
+let extensionID = null;
+try {
+  const fs = require("fs");
+  const manifestJSON = fs.readFileSync("./manifest.json");
+  const manifestObj = JSON.parse(manifestJSON);
+  extensionID = manifestObj.applications.gecko.id;
+}
+catch(error) {
+}
+
 module.exports = {
   // Global options:
   verbose: true,
@@ -15,7 +26,7 @@ module.exports = {
   run: {
     browserConsole: true,
     startUrl: [
-      "about:debugging#/runtime/this-firefox"
+      extensionID !== null ? `about:devtools-toolbox?id=${extensionID}&type=extension`: "about:debugging#/runtime/this-firefox"
     ]
   },
   ignoreFiles: [
