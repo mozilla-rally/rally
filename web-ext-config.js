@@ -12,6 +12,12 @@ module.exports = {
   build: {
     overwriteDest: true,
   },
+  run: {
+    browserConsole: true,
+    startUrl: [
+      "about:debugging#/runtime/this-firefox"
+    ]
+  },
   ignoreFiles: [
     "bin",
     "docs",
