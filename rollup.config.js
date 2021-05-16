@@ -8,6 +8,7 @@
 import commonjs from "@rollup/plugin-commonjs";
 import replace from "@rollup/plugin-replace";
 import resolve from "@rollup/plugin-node-resolve";
+import copy from "rollup-plugin-copy";
 import globby from "globby";
 
 /**
@@ -42,6 +43,20 @@ export default (cliArgs) => {
           browser: true,
         }),
         commonjs(),
+        // Configuration for non-JavaScript assets (src/**/*) that
+        // are not JavaScript files (i.e., do not end in .js). These
+        // files will be copied to dist/ with the same relative path
+        // they have in src/.
+        copy({
+          targets: [{
+            src: [
+              "src/**/*",
+              "!src/**/*.js",
+            ],
+            dest: "dist/",
+          }],
+          flatten: false,
+        }),
       ],
     }
   ];
@@ -66,11 +81,11 @@ export default (cliArgs) => {
         sourcemap: isDevMode(cliArgs) ? "inline" : false,
       },
       plugins: [
-        commonjs(),
         resolve({
-          browser: true
-        })
-      ]
+          browser: true,
+        }),
+        commonjs(),
+      ],
     });
   }
 
