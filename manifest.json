@@ -6,7 +6,7 @@
   "version": "0.4.0",
   "homepage_url": "https://github.com/mozilla-rally/study-template",
 
-  "applications": {
+  "browser_specific_settings": {
     "gecko": {
       "id": "rally-study-template@mozilla.org",
       "strict_min_version": "87.0"

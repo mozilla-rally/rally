@@ -11,7 +11,7 @@ try {
   const fs = require("fs");
   const manifestJSON = fs.readFileSync("./manifest.json");
   const manifestObj = JSON.parse(manifestJSON);
-  extensionID = manifestObj.applications.gecko.id;
+  extensionID = manifestObj.browser_specific_settings.gecko.id;
 }
 catch(error) {
   // If this block is empty, there is a linter error.
