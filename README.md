@@ -48,8 +48,8 @@ This template includes the following files.
 3. Fork this repository.
 4. Update the WebExtensions manifest ([manifest.json](./manifest.json)) for your study. You should update the [`description`](https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/manifest.json/description), [`author`](https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/manifest.json/author), [`name`](https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/manifest.json/name), [`version`](https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/manifest.json/version), and [`homepage_url`](https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/manifest.json/homepage_url) fields. The Rally team will provide a value for the `application.gecko.id` field.
 5. Update the Node.js package configuration [package.json](./package.json) for your study. You should update the `name`, `version`, `description`, `repository`, `keywords`, `author`, `license`, `bugs`, and `homepage` fields.
-6. In the forked repository, run `npm install` to install Node.js package dependencies. A new `node_modules/` folder will be automatically populated with these dependencies.
-7. Run `npm run start`. The build system will build your study extension and launch Firefox with the study extension installed.
+6. In the forked repository, run `npm install` to install Node.js package dependencies. A new `node_modules/` directory will be automatically populated with these dependencies.
+7. Run `npm run start-dev`. The build system will build your study extension and launch Firefox with the study extension installed.
 8. Commit your study extension to a repository! You now have a clean and functional starting point for implementing your study. If this template is updated in future, you can also easily merge those updates into your study.
 
 ## Build System Commands
@@ -64,5 +64,6 @@ This template comes with a set of predefined Node.js commands, which function si
 * `test-integration`: Packages the study extension (`package`), then runs the provided integration test.
 * `watch`: Build the study extension in _developer mode_ (`dev`), launch Firefox with the study extension installed, automatically rebuild the study if a file changes, and automatically reload the study in Firefox if the study is rebuilt. You should typically use `watch` for study extension testing and debugging.
 
-## Debugging the Study Extension
-In Firefox, navigate to the debugging page (`about:debugging`), click This Firefox, then click Inspect on the study extension. You can now debug the study extension's background script with the full set of Firefox debugging tools. If you'd like to debug a study content script, open Web Developer Tools on a page where the content script is running.
+## Debugging the Study Extension in Firefox
+* Debugging the Background Script - Navigate to the debugging page (`about:debugging`), click This Firefox, then click Inspect on the study extension. You can now debug the study extension's background script with the full set of Firefox debugging tools, including a console and debugger.
+* Debugging a Content Script - On a page where the content script is running, open Web Developer tools. The console will include output from the content script and you can also select the content script in the debugger.
