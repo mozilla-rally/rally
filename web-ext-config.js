@@ -14,6 +14,8 @@ try {
   extensionID = manifestObj.applications.gecko.id;
 }
 catch(error) {
+  // If this block is empty, there is a linter error.
+  extensionID = null;
 }
 
 module.exports = {
