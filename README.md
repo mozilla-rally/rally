@@ -55,7 +55,7 @@ This template includes the following files.
 This template comes with a set of predefined Node.js commands, which function similar to makefile targets. These commands should help you with study implementation, debugging, testing, and deployment. You run each command with `npm run <command>`.
 
 * `build` - Builds the study extension, by bundling JavaScript implementation in `src/` and copying non-JavaScript files. Output is in the `dist/` directory.
-* `dev` - Bundles the study extension (like `build`), but in _developer mode_. In developer mode, Rally.js ignores whether the Rally core extension is installed and outputs telemetry pings to the [Browser Console](https://developer.mozilla.org/en-US/docs/Tools/Browser_Console). You should typically use developer mode when implementing and testing your study.
+* `dev` - Bundles the study extension (like `build`), but in _developer mode_. In developer mode, Rally.js ignores whether the Rally core extension is installed and outputs telemetry pings to the [Browser Console](https://developer.mozilla.org/en-US/docs/Tools/Browser_Console). Developer mode also provides a [source map](https://developer.mozilla.org/en-US/docs/Tools/Debugger/How_to/Use_a_source_map) for bundled JavaScript, so you can use the [Debugger](https://developer.mozilla.org/en-US/docs/Tools/Debugger) as if the JavaScript were not bundled. You should typically use developer mode when implementing and testing your study.
 * `lint`: Run linting on the study extension.
 * `package`: Build the study extension (`build`), then package the built study into an archive for distribution. Output is in the `web-ext-artifacts/` directory.
 * `start`: Build the study extension (`build`), then launch Firefox with the study extension installed.
