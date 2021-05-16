@@ -62,7 +62,8 @@ export default (cliArgs) => {
       input: scriptPath,
       output: {
         file: `dist/${scriptPath.slice("src/".length)}`,
-        format: "iife"
+        format: "iife",
+        sourcemap: isDevMode(cliArgs) ? "inline" : false,
       },
       plugins: [
         commonjs(),
