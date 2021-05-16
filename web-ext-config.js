@@ -12,10 +12,6 @@ module.exports = {
   build: {
     overwriteDest: true,
   },
-  run: {
-    firefox: "nightly",
-    pref: ["extensions.experiments.enabled=true"],
-  },
   ignoreFiles: [
     "bin",
     "docs",
