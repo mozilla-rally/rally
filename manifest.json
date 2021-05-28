@@ -1,21 +1,27 @@
 {
-  "description": "A basic template for a Mozilla Rally Study.",
+  "description": "A basic template for a Mozilla Rally study.",
   "author": "Mozilla",
   "manifest_version": 2,
-  "name": "Rally Basic Study Template",
-  "version": "0.3.1",
-  "homepage_url": "https://github.com/mozilla-ion/ion-basic-study",
+  "name": "Rally Study Template",
+  "version": "0.4.0",
+  "homepage_url": "https://github.com/mozilla-rally/study-template",
 
-  "applications": {
+  "browser_specific_settings": {
     "gecko": {
-      "id": "ion-basic-study@mozilla.org",
-      "strict_min_version": "77.0a1"
+      "id": "rally-study-template@mozilla.org",
+      "strict_min_version": "87.0"
     }
   },
 
-  "permissions": [],
+  "permissions": [
+    "idle",
+    "webNavigation",
+    "*://*.mozilla.org/*"
+  ],
 
   "background": {
     "scripts": ["dist/background.js"]
-  }
+  },
+
+  "incognito": "not_allowed"
 }
