@@ -5,12 +5,21 @@
 const CORE_ADDON_ID = "rally-core@mozilla.org";
 const SIGNUP_URL = "https://rally.mozilla.org/rally-required";
 
+import { browser, Runtime } from "webextension-polyfill-ts";
+
 export const runStates = {
-	RUNNING: "running",
-	PAUSED: "paused",
+  RUNNING: "running",
+  PAUSED: "paused",
 }
 
 export class Rally {
+  private _namespace!: string;
+  private _keyId!: string;
+  private _key!: { kid: string };
+  private _enableDevMode!: boolean;
+  private _rallyId!: string | null;
+  private _state!: string;
+  private _initialized!: boolean;
   /**
    * Initialize the Rally library.
    *
@@ -38,7 +47,7 @@ export class Rally {
    *        Takes a single parameter, `message`, which is the {String}
    *        received regarding the current study state ("paused" or "running".)
    */
-  async initialize(schemaNamespace, key, enableDevMode, stateChangeCallback) {
+  async initialize(schemaNamespace: string, key: { kid: string }, enableDevMode: boolean, stateChangeCallback: (arg0: string) => void) {
     console.debug("Rally.initialize");
 
     this._validateEncryptionKey(key);
@@ -109,19 +118,19 @@ export class Rally {
         await browser.runtime.sendMessage(CORE_ADDON_ID, msg, {});
 
       if (response
-          && response.type == "core-check-response") {
-            if (response.data
-                && "enrolled" in response.data
-                && response.data.enrolled === true
-                && "rallyId" in response.data
-                && response.data.rallyId !== null) {
-                 this._rallyId = response.data.rallyId;
-            } else {
-              throw new Error(`Rally._checkRallyCore - core addon present, but not enrolled in Rally`);
-            }
-          } else{
-            throw new Error(`Rally._checkRallyCore - unexpected response returned ${response}`);
-          }
+        && response.type == "core-check-response") {
+        if (response.data
+          && "enrolled" in response.data
+          && response.data.enrolled === true
+          && "rallyId" in response.data
+          && response.data.rallyId !== null) {
+          this._rallyId = response.data.rallyId;
+        } else {
+          throw new Error(`Rally._checkRallyCore - core addon present, but not enrolled in Rally`);
+        }
+      } else {
+        throw new Error(`Rally._checkRallyCore - unexpected response returned ${response}`);
+      }
 
     } catch (ex) {
       throw new Error(`Rally._checkRallyCore - core addon check failed with: ${ex}`);
@@ -147,6 +156,9 @@ export class Rally {
       this._state = runStates.RUNNING;
     }
   }
+  private _stateChangeCallback(arg0: string) {
+    throw new Error("Method not implemented.");
+  }
 
   /**
    * Handles messages coming in from external addons.
@@ -160,7 +172,7 @@ export class Rally {
    *          It can be resolved with a value that is sent to the
    *          `sender`.
    */
-  _handleExternalMessage(message, sender) {
+  _handleExternalMessage(message: { type: string; }, sender: Runtime.MessageSender) {
     // We only expect messages coming from the core addon.
     if (sender.id != CORE_ADDON_ID) {
       return Promise.reject(
@@ -175,7 +187,7 @@ export class Rally {
         this._resume();
         break;
       case "uninstall":
-        return browser.management.uninstallSelf({showConfirmDialog: false});
+        return browser.management.uninstallSelf({ showConfirmDialog: false });
       default:
         return Promise.reject(
           new Error(`Rally._handleExternalMessage - unexpected message type ${message.type}`));
@@ -201,13 +213,13 @@ export class Rally {
    * @throws {Error} if either the key id or the JWK key object are
    *         invalid.
    */
-  _validateEncryptionKey(key) {
+  _validateEncryptionKey(key: { kid: string }) {
     if (typeof key !== "object") {
-      throw new Error("Rally._validateEncryptionKey - Invalid encryption key", key);
+      throw new Error("Rally._validateEncryptionKey - Invalid encryption key" + key);
     }
 
     if (!("kid" in key && typeof key.kid === "string")) {
-      throw new Error("Rally._validateEncryptionKey - Missing or invalid encryption key ID in key", key);
+      throw new Error("Rally._validateEncryptionKey - Missing or invalid encryption key ID in key" + key);
     }
   }
 
@@ -220,7 +232,7 @@ export class Rally {
    * @param {Object} payload
    *        A JSON-serializable payload to be sent with the ping.
    */
-  async sendPing(payloadType, payload) {
+  async sendPing(payloadType: string, payload: object) {
     if (!this._initialized) {
       console.error("Rally.sendPing - Not initialzed, call `initialize()`");
       return;

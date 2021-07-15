@@ -5,9 +5,12 @@
   "main": "rally.js",
   "type": "module",
   "scripts": {
-    "build": "echo FIXME, taskcluster requires a build target."
+    "build": "tsc -p ./src"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "typescript": "^4.3.5",
+    "webextension-polyfill-ts": "^0.26.0"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/mozilla-rally/rally-core-addon.git",
