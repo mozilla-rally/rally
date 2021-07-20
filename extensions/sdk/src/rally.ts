@@ -281,4 +281,14 @@ export class Rally {
       console.error(`Rally.sendPing - error while sending ${payloadType}`, ex);
     }
   }
+
+  /**
+   * Public getter to return the Rally ID.
+   *
+   * @returns {String} rallyId
+   *        A JSON-serializable payload to be sent with the ping.
+   */
+  get rallyId(): string | null {
+    return this._rallyId;
+  }
 }
