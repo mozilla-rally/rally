@@ -7,19 +7,28 @@ const SIGNUP_URL = "https://rally.mozilla.org/rally-required";
 
 import { browser, Runtime } from "webextension-polyfill-ts";
 
+interface CoreCheckResponse {
+  type: string;
+  data: {
+    enrolled: boolean;
+    rallyId: string | null;
+  }
+}
+
 export const runStates = {
   RUNNING: "running",
   PAUSED: "paused",
 }
 
 export class Rally {
-  private _namespace!: string;
-  private _keyId!: string;
+  private _namespace: string;
+  private _keyId: string;
   private _key!: { kid: string };
   private _enableDevMode!: boolean;
   private _rallyId!: string | null;
   private _state!: string;
   private _initialized!: boolean;
+
   /**
    * Initialize the Rally library.
    *
@@ -47,7 +56,7 @@ export class Rally {
    *        Takes a single parameter, `message`, which is the {String}
    *        received regarding the current study state ("paused" or "running".)
    */
-  async initialize(schemaNamespace: string, key: { kid: string }, enableDevMode: boolean, stateChangeCallback: (arg0: string) => void) {
+  constructor(schemaNamespace: string, key: { kid: string }, enableDevMode: boolean, stateChangeCallback: (arg0: string) => void) {
     console.debug("Rally.initialize");
 
     this._validateEncryptionKey(key);
@@ -66,7 +75,7 @@ export class Rally {
     this._enableDevMode = Boolean(enableDevMode);
     this._rallyId = null;
 
-    let hasRally = await this._checkRallyCore().then(() => {
+    let hasRally = this._checkRallyCore().then(() => {
       console.debug("Rally.initialize - Found the Core Add-on.");
       return true;
     }).catch(async () => {
@@ -108,22 +117,18 @@ export class Rally {
    * @returns {Promise} resolved if the core addon was found and
    *          communication was successful, rejected otherwise.
    */
-  async _checkRallyCore() {
+  async _checkRallyCore(): Promise<void> {
     try {
       const msg = {
         type: "core-check",
         data: {}
       }
-      let response =
+
+      let response: CoreCheckResponse =
         await browser.runtime.sendMessage(CORE_ADDON_ID, msg, {});
 
-      if (response
-        && response.type == "core-check-response") {
-        if (response.data
-          && "enrolled" in response.data
-          && response.data.enrolled === true
-          && "rallyId" in response.data
-          && response.data.rallyId !== null) {
+      if (response.type == "core-check-response") {
+        if (response.data.rallyId !== null) {
           this._rallyId = response.data.rallyId;
         } else {
           throw new Error(`Rally._checkRallyCore - core addon present, but not enrolled in Rally`);
