@@ -23,11 +23,11 @@ export const runStates = {
 export class Rally {
   private _namespace: string;
   private _keyId: string;
-  private _key!: { kid: string };
-  private _enableDevMode!: boolean;
-  private _rallyId!: string | null;
-  private _state!: string;
-  private _initialized!: boolean;
+  private _key: { kid: string };
+  private _enableDevMode: boolean;
+  private _rallyId: string | null;
+  private _state: string;
+  private _initialized: boolean;
 
   /**
    * Initialize the Rally library.
