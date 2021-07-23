@@ -142,6 +142,7 @@ export class Rally {
 
   /**
    * Submit an encrypted ping through the Rally Core addon.
+   * NOTE - this is deprecated and will simply throw an error now.
    *
    * @param {String} payloadType
    *        The type of the encrypted payload. This will define the
@@ -150,29 +151,7 @@ export class Rally {
    *        A JSON-serializable payload to be sent with the ping.
    */
   async sendPing(payloadType: string, payload: object) {
-    if (!this._initialized) {
-      console.error("Rally.sendPing - Not initialzed");
-      return;
-    }
-
-    // When in developer mode, dump the payload to the console.
-    if (this._enableDevMode) {
-      console.log(
-        `Rally.sendPing - Developer mode. ${payloadType} will not be submitted with,
-        payload:`, payload, `
-        key:`, this._key, `
-        namespace:`, this._namespace
-      );
-      return;
-    }
-
-    // When paused, not send data.
-    if (this._state === runStates.PAUSED) {
-      console.debug("Rally.sendPing - Study is currently paused, not sending data");
-      return;
-    }
-
-    // TODO call glean.js
+    throw new Error(`Rally.sendPing - No longer supported, use Glean.js instead.`)
   }
 
   /**
