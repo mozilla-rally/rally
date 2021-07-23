@@ -2,17 +2,17 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/. */
 
-const CORE_ADDON_ID = "rally-core@mozilla.org";
-const SIGNUP_URL = "https://rally.mozilla.org/rally-required";
-
-import { browser, Runtime } from "webextension-polyfill-ts";
-
 interface CoreCheckResponse {
   type: string;
   data: {
     enrolled: boolean;
     rallyId: string | null;
   }
+}
+
+// NOTE - `kid` is in the IETF but not the WebCrypto spec, @see https://github.com/microsoft/TypeScript/issues/26854
+interface RallyJsonWebKey extends JsonWebKey {
+  kid: string;
 }
 
 export const runStates = {
@@ -23,7 +23,7 @@ export const runStates = {
 export class Rally {
   private _namespace: string;
   private _keyId: string;
-  private _key: { kid: string };
+  private _key: RallyJsonWebKey;
   private _enableDevMode: boolean;
   private _rallyId: string | null;
   private _state: string;
@@ -56,10 +56,12 @@ export class Rally {
    *        Takes a single parameter, `message`, which is the {String}
    *        received regarding the current study state ("paused" or "running".)
    */
-  constructor(schemaNamespace: string, key: { kid: string }, enableDevMode: boolean, stateChangeCallback: (arg0: string) => void) {
+  constructor(schemaNamespace: string, key: RallyJsonWebKey, enableDevMode: boolean, stateChangeCallback: (arg0: string) => void) {
     console.debug("Rally.initialize");
 
-    this._validateEncryptionKey(key);
+    if (this._validateEncryptionKey(key) !== true) {
+      throw new Error("Rally._validateEncryptionKey - Invalid encryption key" + key);
+    }
 
     if (!stateChangeCallback) {
       throw new Error("Rally.initialize - Initialization failed, stateChangeCallback is required.")
@@ -75,33 +77,6 @@ export class Rally {
     this._enableDevMode = Boolean(enableDevMode);
     this._rallyId = null;
 
-    let hasRally = this._checkRallyCore().then(() => {
-      console.debug("Rally.initialize - Found the Core Add-on.");
-      return true;
-    }).catch(async () => {
-      // We did not find the Rally Core Add-on. But maybe we
-      // are in developer mode. Do not trigger the sign-up flow
-      // if that's the case.
-      if (this._enableDevMode) {
-        console.warn("Rally.initialize - Executing in developer mode.");
-        return true;
-      }
-
-      // The Core Add-on was not found and we're not in developer
-      // mode.
-      await browser.tabs.create({ url: SIGNUP_URL });
-      return false;
-    });
-
-    if (!hasRally) {
-      throw new Error("Rally.initialize - Initialization failed.");
-    }
-
-    // Listen for incoming messages from the Core addon.
-    browser.runtime.onMessageExternal.addListener(
-      (m, s) => this._handleExternalMessage(m, s));
-
-
     // Set the initial state to running, and register callback for future changes.
     this._state = runStates.RUNNING;
     this._stateChangeCallback = stateChangeCallback;
@@ -109,37 +84,6 @@ export class Rally {
     // We went through the whole init process, it's now safe
     // to use the Rally public APIs.
     this._initialized = true;
-  }
-
-  /**
-   * Check if the Core addon is installed.
-   *
-   * @returns {Promise} resolved if the core addon was found and
-   *          communication was successful, rejected otherwise.
-   */
-  async _checkRallyCore(): Promise<void> {
-    try {
-      const msg = {
-        type: "core-check",
-        data: {}
-      }
-
-      let response: CoreCheckResponse =
-        await browser.runtime.sendMessage(CORE_ADDON_ID, msg, {});
-
-      if (response.type == "core-check-response") {
-        if (response.data.rallyId !== null) {
-          this._rallyId = response.data.rallyId;
-        } else {
-          throw new Error(`Rally._checkRallyCore - core addon present, but not enrolled in Rally`);
-        }
-      } else {
-        throw new Error(`Rally._checkRallyCore - unexpected response returned ${response}`);
-      }
-
-    } catch (ex) {
-      throw new Error(`Rally._checkRallyCore - core addon check failed with: ${ex}`);
-    }
   }
 
   /**
@@ -166,40 +110,6 @@ export class Rally {
   }
 
   /**
-   * Handles messages coming in from external addons.
-   *
-   * @param {Object} message
-   *        The payload of the message.
-   * @param {runtime.MessageSender} sender
-   *        An object containing informations about who sent
-   *        the message.
-   * @returns {Promise} The response to the received message.
-   *          It can be resolved with a value that is sent to the
-   *          `sender`.
-   */
-  _handleExternalMessage(message: { type: string; }, sender: Runtime.MessageSender) {
-    // We only expect messages coming from the core addon.
-    if (sender.id != CORE_ADDON_ID) {
-      return Promise.reject(
-        new Error(`Rally._handleExternalMessage - unexpected sender ${sender.id}`));
-    }
-
-    switch (message.type) {
-      case "pause":
-        this._pause();
-        break;
-      case "resume":
-        this._resume();
-        break;
-      case "uninstall":
-        return browser.management.uninstallSelf({ showConfirmDialog: false });
-      default:
-        return Promise.reject(
-          new Error(`Rally._handleExternalMessage - unexpected message type ${message.type}`));
-    }
-  }
-
-  /**
    * Validate the provided encryption keys.
    *
    * @param {Object} key
@@ -215,17 +125,19 @@ export class Rally {
    *          "kid":"Public key used in JWS spec Appendix A.3 example"
    *        }
    *
-   * @throws {Error} if either the key id or the JWK key object are
    *         invalid.
    */
-  _validateEncryptionKey(key: { kid: string }) {
-    if (typeof key !== "object") {
-      throw new Error("Rally._validateEncryptionKey - Invalid encryption key" + key);
+  _validateEncryptionKey(key: any): key is RallyJsonWebKey {
+    const requiredProperties = ["kty", "crv", "x", "y", "kid"];
+
+    for (const prop of requiredProperties) {
+      if (!(prop in key)) {
+        console.error(`Rally._validateEncryptionKey missing property: ${prop}`);
+        return false;
+      }
     }
 
-    if (!("kid" in key && typeof key.kid === "string")) {
-      throw new Error("Rally._validateEncryptionKey - Missing or invalid encryption key ID in key" + key);
-    }
+    return true;
   }
 
   /**
@@ -239,15 +151,17 @@ export class Rally {
    */
   async sendPing(payloadType: string, payload: object) {
     if (!this._initialized) {
-      console.error("Rally.sendPing - Not initialzed, call `initialize()`");
+      console.error("Rally.sendPing - Not initialzed");
       return;
     }
 
     // When in developer mode, dump the payload to the console.
     if (this._enableDevMode) {
       console.log(
-        `Rally.sendPing - Developer mode. ${payloadType} will not be submitted`,
-        payload
+        `Rally.sendPing - Developer mode. ${payloadType} will not be submitted with,
+        payload:`, payload, `
+        key:`, this._key, `
+        namespace:`, this._namespace
       );
       return;
     }
@@ -258,28 +172,7 @@ export class Rally {
       return;
     }
 
-    // Wrap everything in a try block, as we don't really want
-    // data collection to be the culprit of a bug hindering user
-    // experience.
-    try {
-      // This function may be mistakenly called while init has not
-      // finished. Let's be safe and check for key validity again.
-      this._validateEncryptionKey(this._key);
-
-      const msg = {
-        type: "telemetry-ping",
-        data: {
-          payloadType: payloadType,
-          payload: payload,
-          namespace: this._namespace,
-          keyId: this._keyId,
-          key: this._key
-        }
-      }
-      await browser.runtime.sendMessage(CORE_ADDON_ID, msg, {});
-    } catch (ex) {
-      console.error(`Rally.sendPing - error while sending ${payloadType}`, ex);
-    }
+    // TODO call glean.js
   }
 
   /**
