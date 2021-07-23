@@ -1,33 +1,35 @@
 /* This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
- * file, You can obtain one at https://mozilla.org/MPL/2.0/. */
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-interface CoreCheckResponse {
-  type: string;
-  data: {
-    enrolled: boolean;
-    rallyId: string | null;
-  }
-}
+import Glean from "@mozilla/glean/webext";
+import PingEncryptionPlugin from "@mozilla/glean/webext/plugins/encryption";
+
+import * as userMetrics from "../public/generated/user.js";
+import * as rallyPings from "../public/generated/pings.js";
+
+const GLEAN_ENCRYPTION_JWK = {
+  "crv": "P-256",
+  "kid": "rally-core",
+  "kty": "EC",
+  "x": "m7Gi2YD8DgPg3zxora5iwf0DFL0JFIhjoD2BRLpg7kI",
+  "y": "zo35XIQME7Ct01uHK_LrMi5pZCuYDMhv8MUsSu7Eq08",
+};
 
 // NOTE - `kid` is in the IETF but not the WebCrypto spec, @see https://github.com/microsoft/TypeScript/issues/26854
 interface RallyJsonWebKey extends JsonWebKey {
   kid: string;
 }
 
-export const runStates = {
-  RUNNING: "running",
-  PAUSED: "paused",
+export enum runStates {
+  RUNNING,
+  PAUSED,
 }
 
 export class Rally {
-  private _namespace: string;
-  private _keyId: string;
-  private _key: RallyJsonWebKey;
   private _enableDevMode: boolean;
   private _rallyId: string | null;
-  private _state: string;
-  private _initialized: boolean;
+  private _state: runStates;
 
   /**
    * Initialize the Rally library.
@@ -56,11 +58,11 @@ export class Rally {
    *        Takes a single parameter, `message`, which is the {String}
    *        received regarding the current study state ("paused" or "running".)
    */
-  constructor(schemaNamespace: string, key: RallyJsonWebKey, enableDevMode: boolean, stateChangeCallback: (arg0: string) => void) {
+  constructor(schemaNamespace: string, enableDevMode: boolean, stateChangeCallback: (arg0: string) => void) {
     console.debug("Rally.initialize");
 
-    if (this._validateEncryptionKey(key) !== true) {
-      throw new Error("Rally._validateEncryptionKey - Invalid encryption key" + key);
+    if (this._validateEncryptionKey(GLEAN_ENCRYPTION_JWK) !== true) {
+      throw new Error("Rally._validateEncryptionKey - Invalid encryption key" + GLEAN_ENCRYPTION_JWK);
     }
 
     if (!stateChangeCallback) {
@@ -71,19 +73,12 @@ export class Rally {
       throw new Error("Rally.initialize - Initialization failed, stateChangeCallback is not a function.")
     }
 
-    this._namespace = schemaNamespace;
-    this._keyId = key.kid;
-    this._key = key;
     this._enableDevMode = Boolean(enableDevMode);
     this._rallyId = null;
 
     // Set the initial state to running, and register callback for future changes.
     this._state = runStates.RUNNING;
     this._stateChangeCallback = stateChangeCallback;
-
-    // We went through the whole init process, it's now safe
-    // to use the Rally public APIs.
-    this._initialized = true;
   }
 
   /**
@@ -141,8 +136,9 @@ export class Rally {
   }
 
   /**
-   * Submit an encrypted ping through the Rally Core addon.
    * NOTE - this is deprecated and will simply throw an error now.
+   *
+   * Submit an encrypted ping through the Rally Core addon.
    *
    * @param {String} payloadType
    *        The type of the encrypted payload. This will define the
@@ -158,7 +154,7 @@ export class Rally {
    * Public getter to return the Rally ID.
    *
    * @returns {String} rallyId
-   *        A JSON-serializable payload to be sent with the ping.
+   *        The Rally ID (if set).
    */
   get rallyId(): string | null {
     return this._rallyId;

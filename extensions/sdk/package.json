@@ -5,9 +5,14 @@
   "main": "rally.js",
   "type": "module",
   "scripts": {
-    "build": "tsc -p ./src"
+    "build": "npm run glean && tsc -p ./src",
+    "glean": "npm run glean-metrics && npm run glean-docs",
+    "glean-metrics": "glean translate ./metrics.yaml ./pings.yaml -f javascript -o public/generated",
+    "glean-docs": "glean translate ./metrics.yaml ./pings.yaml -f markdown -o docs",
+    "lint-glean": "glean glinter ./metrics.yaml ./pings.yaml"
   },
   "devDependencies": {
+    "@mozilla/glean": "^0.18.1",
     "typescript": "^4.3.5",
     "webextension-polyfill-ts": "^0.26.0"
   },
