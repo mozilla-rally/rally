@@ -2,11 +2,13 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
+/*
 import Glean from "@mozilla/glean/webext";
 import PingEncryptionPlugin from "@mozilla/glean/webext/plugins/encryption";
 
 import * as userMetrics from "../public/generated/user.js";
 import * as rallyPings from "../public/generated/pings.js";
+*/
 
 const GLEAN_ENCRYPTION_JWK = {
   "crv": "P-256",
@@ -58,7 +60,7 @@ export class Rally {
    *        Takes a single parameter, `message`, which is the {String}
    *        received regarding the current study state ("paused" or "running".)
    */
-  constructor(schemaNamespace: string, enableDevMode: boolean, stateChangeCallback: (arg0: string) => void) {
+  constructor(enableDevMode: boolean, stateChangeCallback: (arg0: string) => void) {
     console.debug("Rally.initialize");
 
     if (this._validateEncryptionKey(GLEAN_ENCRYPTION_JWK) !== true) {
@@ -133,21 +135,6 @@ export class Rally {
     }
 
     return true;
-  }
-
-  /**
-   * NOTE - this is deprecated and will simply throw an error now.
-   *
-   * Submit an encrypted ping through the Rally Core addon.
-   *
-   * @param {String} payloadType
-   *        The type of the encrypted payload. This will define the
-   *        `schemaName` of the ping.
-   * @param {Object} payload
-   *        A JSON-serializable payload to be sent with the ping.
-   */
-  async sendPing(payloadType: string, payload: object) {
-    throw new Error(`Rally.sendPing - No longer supported, use Glean.js instead.`)
   }
 
   /**
