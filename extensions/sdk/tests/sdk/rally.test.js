@@ -3,39 +3,36 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 import { strict as assert } from 'assert';
+import { stat } from 'fs';
 
-import {Rally, runStates} from '../../support/rally.js';
+import { Rally, runStates } from '../../dist/rally.js';
 
-describe('Rally', function () {
-  beforeEach(function () {
-    this.rally = new Rally();
-  });
-
+describe('Rally_initialize', function () {
   describe('initialize()', function () {
-    it('must fail with invalid keys', function () {
-      assert.rejects(
-        this.rally.initialize("schema-namespace", "not-an-object, will fail", true, () => {})
-      );
-    });
-
     it('must fail with an invalid callback function', function () {
       assert.rejects(
-        this.rally.initialize("schema-namespace", {}, true, "not-a-function, will fail")
+        this.rally = new Rally("schema-namespace", {}, true, "not-a-function, will fail")
       );
     });
 
     it('must fail with a missing key ID', function () {
       assert.rejects(
-        this.rally.initialize("schema-namespace", {}, true, "no-key-id, will fail")
+        this.rally = new Rally("schema-namespace", {}, true, "no-key-id, will fail")
       );
     });
 
     it('must fail with an invalid key ID', function () {
       assert.rejects(
-        this.rally.initialize("schema-namespace", { kid: false }, true, "bad-key-id, will fail")
+        this.rally = new Rally("schema-namespace", { kid: false }, true, "bad-key-id, will fail")
       );
     });
-
+  });
+  describe('Rally', function () {
+    beforeEach(function () {
+      const devMode = true;
+      const stateChangeCallback = () => { };
+      this.rally = new Rally(devMode, stateChangeCallbacks);
+    });
     it('no core addon skips the info page in dev mode', async function () {
       // Mock the check to make it fail.
       this.rally._checkRallyCore = async () => {
@@ -46,7 +43,7 @@ describe('Rally', function () {
         "schema-namespace",
         { kid: "key-id" },
         true, // Developer mode.
-        () => {},
+        () => { },
       );
 
       assert.ok(browser.tabs.create.notCalled);
@@ -65,7 +62,7 @@ describe('Rally', function () {
           "schema-namespace",
           { kid: "key-id" },
           false,
-          () => {},
+          () => { },
         )
       );
 
@@ -75,7 +72,7 @@ describe('Rally', function () {
     it('must export the list of valid run states', function () {
       assert.ok(runStates instanceof Object);
       // Expect this to be an enum where the value is a lower-case string matching the key.
-      for (const [key,val] of Object.entries(runStates)) {
+      for (const [key, val] of Object.entries(runStates)) {
         assert.equal(key, val.toUpperCase());
       }
     });
@@ -93,30 +90,30 @@ describe('Rally', function () {
 
       assert.rejects(
         this.rally._checkRallyCore(),
-        {message: "Rally._checkRallyCore - core addon check failed with: Error: No addon makes this API reject"}
+        { message: "Rally._checkRallyCore - core addon check failed with: Error: No addon makes this API reject" }
       );
     });
 
     it('must fail if the core addon is installed, but user is not enrolled in Rally', async function () {
       chrome.runtime.sendMessage.yields(
-        {type: "core-check-response", data: {rallyId: null, enrolled: false}});
+        { type: "core-check-response", data: { rallyId: null, enrolled: false } });
 
       assert.rejects(
         this.rally._checkRallyCore(),
-        {message: "Rally._checkRallyCore - core addon check failed with: Error: Rally._checkRallyCore - core addon present, but not enrolled in Rally"}
+        { message: "Rally._checkRallyCore - core addon check failed with: Error: Rally._checkRallyCore - core addon present, but not enrolled in Rally" }
       );
     });
 
     it('must succeed if the core addon is installed', async function () {
       chrome.runtime.sendMessage.yields(
-        {type: "core-check-response", data: {rallyId: "fakeRallyId", enrolled: true}});
+        { type: "core-check-response", data: { rallyId: "fakeRallyId", enrolled: true } });
 
       await this.rally._checkRallyCore();
     });
   });
 
   describe('_pause()', function () {
-    it('pauses when receiving message', async function() {
+    it('pauses when receiving message', async function () {
       chrome.runtime.sendMessage.flush();
       chrome.runtime.sendMessage.yields();
 
@@ -160,88 +157,6 @@ describe('Rally', function () {
 
       assert.equal(this.rally._state, "running");
       assert.ok(callbackCalled);
-    });
-  });
-
-  describe('sendPing()', function () {
-    it('must not send data if not initialized', async function () {
-      chrome.runtime.sendMessage.flush();
-
-      // This API should never throw. We catch errors and
-      // log them, but we have no way to assert that something
-      // was logged. We can only assert that no message was
-      // sent.
-      await this.rally.sendPing("test", {});
-
-      assert.ok(chrome.runtime.sendMessage.notCalled);
-    });
-
-    it('must not send data in developer mode', async function () {
-      chrome.runtime.sendMessage.flush();
-      // Make sure the core add-on is detected. This test
-      // would work even if it wasn't detected, as long as
-      // `_checkRallyCore` returns something.
-      this.rally._checkRallyCore = async () => {
-        return {
-          "type": "core-check-response",
-          "data": {
-            "enrolled": true
-          }
-        };
-      };
-
-      await this.rally.initialize(
-        "schema-namespace",
-        { kid: "key-id" },
-        true, // Developer mode.
-        () => {},
-      );
-
-      // This API should never throw. We catch errors and
-      // log them, but we have no way to assert that something
-      // was logged. We can only assert that no message was
-      // sent.
-      await this.rally.sendPing("test", {});
-
-      assert.ok(chrome.runtime.sendMessage.notCalled);
-    });
-
-    it('must not send data when paused', async function () {
-      chrome.runtime.sendMessage.flush();
-      // Make sure the core add-on is detected. This test
-      // would work even if it wasn't detected, as long as
-      // `_checkRallyCore` returns something.
-      this.rally._checkRallyCore = async () => {
-        return {
-          "type": "core-check-response",
-          "data": {
-            "enrolled": true
-          }
-        };
-      };
-
-      await this.rally.initialize(
-        "schema-namespace",
-        { kid: "key-id" },
-        true, // Non-developer mode.
-        () => {},
-      );
-
-      this.rally._state = "running";
-      await this.rally.sendPing("test running", {});
-      assert.ok(chrome.runtime.sendMessage.notCalled);
-
-      this.rally._state = "paused";
-      await this.rally.sendPing("test running", {});
-      assert.ok(chrome.runtime.sendMessage.notCalled);
-
-      // This API should never throw. We catch errors and
-      // log them, but we have no way to assert that something
-      // was logged. We can only assert that no message was
-      // sent.
-      await this.rally.sendPing("test", {});
-
-      assert.ok(chrome.runtime.sendMessage.notCalled);
     });
   });
   afterEach(function () {
