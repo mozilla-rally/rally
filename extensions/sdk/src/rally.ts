@@ -2,6 +2,9 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
+import { v4 as uuidv4 } from "uuid";
+import { browser } from "webextension-polyfill-ts";
+
 export enum runStates {
   RUNNING,
   PAUSED,
@@ -37,6 +40,7 @@ export class Rally {
     }
 
     this._enableDevMode = Boolean(enableDevMode);
+
     this._rallyId = null;
 
     // Set the initial state to paused, and register callback for future changes.
@@ -69,12 +73,24 @@ export class Rally {
   }
 
   /**
-   * Public getter to return the Rally ID.
+   * Generate and cache the Rally ID.
    *
    * @returns {String} rallyId
    *        The Rally ID (if set).
    */
-  get rallyId(): string | null {
+  async rallyId(): Promise<string | null> {
+    if (this._rallyId) {
+      return this._rallyId;
+    } else {
+      const result = await browser.storage.local.get("rallyId");
+      if ("rallyId" in result) {
+        this._rallyId = result.rallyId;
+      } else {
+        const uuid = uuidv4();
+        await browser.storage.local.set({ "rallyId": uuid });
+        this._rallyId = uuid;
+      }
+    }
     return this._rallyId;
   }
 
