@@ -25,7 +25,7 @@ npm run build
 ## Manual testing using `npm link`
 Manual testing can be done as follows:
 
-1. Run `npm link` in the `support/` directory.
+1. Run `npm link` in this directory (`rally-sdk`)
 2. In the directory of the testing grounds (e.g. the [study-template](https://github.com/mozilla-rally/study-template)), run `npm link "@mozilla/rally"`. This will make the test project use the local version of `@mozilla/rally`, automatically tracking any change to it.
 
 And to undo the linking:
