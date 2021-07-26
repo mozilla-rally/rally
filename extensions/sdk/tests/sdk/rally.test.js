@@ -38,6 +38,10 @@ describe('Rally_initialize', function () {
       assert.ok(runStates instanceof Object);
     });
 
+    it(`initially starts in paused mode`, function () {
+      assert.ok(this.rally._state === runStates.PAUSED);
+    });
+
     describe('_pause()', function () {
       it('pauses when receiving message', async function () {
         chrome.runtime.sendMessage.flush();
@@ -48,7 +52,7 @@ describe('Rally_initialize', function () {
           true, // Developer mode.
           (message) => {
             callbackCalled = true;
-            assert.equal(message, "pause");
+            assert.equal(message, runStates.PAUSED);
           },
         )
 
@@ -70,7 +74,7 @@ describe('Rally_initialize', function () {
           true, // Developer mode.
           (message) => {
             callbackCalled = true;
-            assert.equal(message, "resume");
+            assert.equal(message, runStates.RUNNING);
           },
         )
 

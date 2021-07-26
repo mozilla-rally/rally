@@ -15,20 +15,6 @@ export class Rally {
   /**
    * Initialize the Rally library.
    *
-   * @param {String} schemaNamespace
-   *        The namespace for this study. Must match the server-side schema.
-   * @param {Object} key
-   *        The JSON Web Key (JWK) used to encrypt the outgoing data.
-   *        See the RFC 7517 https://tools.ietf.org/html/rfc7517
-   *        for additional information. For example:
-   *
-   *        {
-   *          "kty":"EC",
-   *          "crv":"P-256",
-   *          "x":"f83OJ3D2xF1Bg8vub9tLe1gHMzV76e8Tus9uPHvRVEU",
-   *          "y":"x_FEzRu9m36HLN_tue659LNpXW6pCyStikYjKIWI5a0",
-   *          "kid":"Public key used in JWS spec Appendix A.3 example"
-   *        }
    * @param {Boolean} enableDevMode
    *        Whether or not to initialize Rally.js in developer mode.
    *        In this mode we ignore problems when communicating with
@@ -39,7 +25,7 @@ export class Rally {
    *        Takes a single parameter, `message`, which is the {String}
    *        received regarding the current study state ("paused" or "running".)
    */
-  constructor(enableDevMode: boolean, stateChangeCallback: (arg0: string) => void) {
+  constructor(enableDevMode: boolean, stateChangeCallback: (runState: runStates) => void) {
     console.debug("Rally.initialize");
 
     if (!stateChangeCallback) {
@@ -53,8 +39,8 @@ export class Rally {
     this._enableDevMode = Boolean(enableDevMode);
     this._rallyId = null;
 
-    // Set the initial state to running, and register callback for future changes.
-    this._state = runStates.RUNNING;
+    // Set the initial state to paused, and register callback for future changes.
+    this._state = runStates.PAUSED;
     this._stateChangeCallback = stateChangeCallback;
   }
 
@@ -63,8 +49,8 @@ export class Rally {
    */
   _pause() {
     if (this._state !== runStates.PAUSED) {
-      this._stateChangeCallback("pause");
       this._state = runStates.PAUSED;
+      this._stateChangeCallback(runStates.PAUSED);
     }
   }
 
@@ -73,12 +59,13 @@ export class Rally {
    */
   _resume() {
     if (this._state !== runStates.RUNNING) {
-      this._stateChangeCallback("resume");
       this._state = runStates.RUNNING;
+      this._stateChangeCallback(runStates.RUNNING);
     }
   }
-  private _stateChangeCallback(arg0: string) {
-    throw new Error("Method not implemented.");
+
+  private _stateChangeCallback(runState: runStates) {
+    throw new Error("Method not implemented, must be provided by study.");
   }
 
   /**
