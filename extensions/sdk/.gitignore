@@ -1,19 +1,6 @@
 /node_modules/
-/public/addon-build/
-/public/build/
-/public/fonts/
-
-# Hide stylesheets moved from node_modules to
-# this directory to be served directly
-public/protocol-extra.css
-public/protocol.css
 
 .DS_Store
 
 /web-ext-artifacts/
 /dist
-
-# Ignore Glean's virtual environment and
-# generated files.
-.venv
-generated/
