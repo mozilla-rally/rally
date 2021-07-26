@@ -2,27 +2,6 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-/*
-import Glean from "@mozilla/glean/webext";
-import PingEncryptionPlugin from "@mozilla/glean/webext/plugins/encryption";
-
-import * as userMetrics from "../public/generated/user.js";
-import * as rallyPings from "../public/generated/pings.js";
-*/
-
-const GLEAN_ENCRYPTION_JWK = {
-  "crv": "P-256",
-  "kid": "rally-core",
-  "kty": "EC",
-  "x": "m7Gi2YD8DgPg3zxora5iwf0DFL0JFIhjoD2BRLpg7kI",
-  "y": "zo35XIQME7Ct01uHK_LrMi5pZCuYDMhv8MUsSu7Eq08",
-};
-
-// NOTE - `kid` is in the IETF but not the WebCrypto spec, @see https://github.com/microsoft/TypeScript/issues/26854
-interface RallyJsonWebKey extends JsonWebKey {
-  kid: string;
-}
-
 export enum runStates {
   RUNNING,
   PAUSED,
@@ -63,10 +42,6 @@ export class Rally {
   constructor(enableDevMode: boolean, stateChangeCallback: (arg0: string) => void) {
     console.debug("Rally.initialize");
 
-    if (this._validateEncryptionKey(GLEAN_ENCRYPTION_JWK) !== true) {
-      throw new Error("Rally._validateEncryptionKey - Invalid encryption key" + GLEAN_ENCRYPTION_JWK);
-    }
-
     if (!stateChangeCallback) {
       throw new Error("Rally.initialize - Initialization failed, stateChangeCallback is required.")
     }
@@ -104,37 +79,6 @@ export class Rally {
   }
   private _stateChangeCallback(arg0: string) {
     throw new Error("Method not implemented.");
-  }
-
-  /**
-   * Validate the provided encryption keys.
-   *
-   * @param {Object} key
-   *        The JSON Web Key (JWK) used to encrypt the outgoing data.
-   *        See the RFC 7517 https://tools.ietf.org/html/rfc7517
-   *        for additional information. For example:
-   *
-   *        {
-   *          "kty":"EC",
-   *          "crv":"P-256",
-   *          "x":"f83OJ3D2xF1Bg8vub9tLe1gHMzV76e8Tus9uPHvRVEU",
-   *          "y":"x_FEzRu9m36HLN_tue659LNpXW6pCyStikYjKIWI5a0",
-   *          "kid":"Public key used in JWS spec Appendix A.3 example"
-   *        }
-   *
-   *         invalid.
-   */
-  _validateEncryptionKey(key: any): key is RallyJsonWebKey {
-    const requiredProperties = ["kty", "crv", "x", "y", "kid"];
-
-    for (const prop of requiredProperties) {
-      if (!(prop in key)) {
-        console.error(`Rally._validateEncryptionKey missing property: ${prop}`);
-        return false;
-      }
-    }
-
-    return true;
   }
 
   /**
