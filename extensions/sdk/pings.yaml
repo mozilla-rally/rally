@@ -47,21 +47,6 @@ study-unenrollment:
   notification_emails:
     - than@mozilla.com
 
-demographics:
-  description: |
-    After a user joins the platform they are asked to fill a
-    demographic survey, in order to help researchers parse the
-    data. The survey is optional and can be partially filled: this
-    ping is submitted right after the survey is filled.
-  include_client_id: false
-  send_if_empty: true
-  bugs:
-    - https://github.com/mozilla-rally/rally-core-addon/issues/545
-  data_reviews:
-    - https://github.com/mozilla-rally/rally-core-addon/pull/139#issuecomment-736024232
-  notification_emails:
-    - than@mozilla.com
-
 uninstall-deletion:
   description: |
     This ping is not directly sent by this add-on. However its
