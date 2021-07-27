@@ -1408,6 +1408,29 @@ class Rally {
         // Set the initial state to paused, and register callback for future changes.
         this._state = exports.runStates.PAUSED;
         this._stateChangeCallback = stateChangeCallback;
+        this._promptSignUp().catch(err => console.error(err));
+    }
+    _promptSignUp() {
+        return __awaiter(this, void 0, void 0, function* () {
+            // await browser.storage.local.set({ "signUpComplete": true });
+            const alreadySignedUp = yield browser$1.storage.local.get("signUpComplete");
+            console.debug(alreadySignedUp);
+            if ("signUpComplete" in alreadySignedUp) {
+                console.debug("Already signed-up.");
+                return;
+            }
+            const tabs = yield browser$1.tabs.query({ url: "*://rally-web-spike.web.app/*" });
+            // If there are any tabs with the Rally site loaded, focus the latest one.
+            if (tabs.length > 0) {
+                const tab = tabs.pop();
+                browser$1.windows.update(tab.windowId, { focused: true });
+                browser$1.tabs.update(tab.id, { highlighted: true, active: true });
+            }
+            else {
+                // Otherwise, open the website.
+                browser$1.tabs.create({ url: "https://rally-web-spike.web.app/" });
+            }
+        });
     }
     /**
      * Pause the current study.
