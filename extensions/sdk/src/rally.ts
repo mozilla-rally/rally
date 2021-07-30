@@ -189,9 +189,14 @@ export class Rally {
           data: {}
         });
       case "complete-signup":
-        // The `open-rally` message should be safe: it exclusively opens
-        // the addon options page. It's a one-direction communication from the
-        // page, as no data gets exfiltrated or no message is reported back.
+        // The `complete-signup` message should be safe: It's a one-direction
+        // communication from the page, containing the credentials from the currently-authenticated user.
+        //
+        // Note that credentials should *NEVER* be passed to web content, but accepting them from web content
+        // should be relatively safe. An attacker-controlled site (whether through MITM, rogue extension, XSS, etc.)
+        // could potentially pass us a working credential that is attacker-controlled, but this should not cause the
+        // extension to send data anywhere attacker-controlled as the data collection endpoint is hardcoded and signed
+        // in the extension.
         const signUpComplete = Boolean(this._completeSignUp(message.data));
         return Promise.resolve({ type: "complete-signup", data: { signUpComplete } });
       default:
@@ -203,46 +208,36 @@ export class Rally {
   async _completeSignUp(credential: any) {
     const signUpStorage = await browser.storage.local.get("signUpComplete");
 
-//    if (signUpStorage && !("signUpComplete" in signUpStorage)) {
-      // Record sign-up complete.
-      await browser.storage.local.set({ "signUpComplete": true });
+    await browser.storage.local.set({ "signUpComplete": true });
 
-      // Attempt to authenticate with the auth token passed from the website.
-      // const { username, password } = idToken;
-      // const credential = firebase.auth.EmailAuthProvider.credential(username, password);
-      // await firebase.auth().signInWithCredential(credential);
-      await firebase.auth().signInWithEmailAndPassword(credential.email, credential.password);
-      console.debug("logged in as:", firebase.auth().currentUser?.email);
+    await firebase.auth().signInWithEmailAndPassword(credential.email, credential.password);
+    console.debug("logged in as:", firebase.auth().currentUser?.email);
 
-      const usersDb = await this._db.collection("users").get();
-      const users = usersDb.docs.map(doc => doc.data());
+    const usersDb = await this._db.collection("users").get();
+    const users = usersDb.docs.map(doc => doc.data());
 
-      const uid = firebase.auth().currentUser?.uid;
-      const user = users.find(user => user.uid === uid);
+    const uid = firebase.auth().currentUser?.uid;
+    const user = users.find(user => user.uid === uid);
 
-      if (user?.enrolled) {
-        console.debug("Enrolled in Rally");
-        // FIXME this should be a proper UUIDv4 from firestore
-        this._rallyId = uid;
-      } else {
-        console.debug("Not enrolled in Rally, trigger onboarding");
-        return;
-      }
+    if (user?.enrolled) {
+      console.debug("Enrolled in Rally");
+      // FIXME this should be a proper UUIDv4 from firestore
+      this._rallyId = uid;
+    } else {
+      console.debug("Not enrolled in Rally, trigger onboarding");
+      return;
+    }
 
-      const extensionId = browser.runtime.id;
-      let enrolled = false;
-      if (extensionId in user.enrolledStudies && user.enrolledStudies[extensionId].enrolled) {
-        console.debug("Study is enrolled");
-      } else {
-        console.debug("Study installed but not enrolled, trigger study onboarding");
-      }
+    const extensionId = browser.runtime.id;
+    let enrolled = false;
+    if (extensionId in user.enrolledStudies && user.enrolledStudies[extensionId].enrolled) {
+      console.debug("Study is enrolled");
+    } else {
+      console.debug("Study installed but not enrolled, trigger study onboarding");
+    }
 
-      // If we made it this far, start running the study.
-      this._resume();
-
-//    } else {
-//      console.warn("Sign-up is already complete.")
-//    }
+    // If we made it this far, start running the study.
+    this._resume();
 
     return true;
   }
