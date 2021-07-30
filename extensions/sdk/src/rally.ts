@@ -8,6 +8,13 @@ import { browser } from "webextension-polyfill-ts";
 // Fall back to Chrome API for missing WebExtension polyfills.
 declare var chrome: any;
 
+// Firebase App (the core Firebase SDK) is always required and must be listed first
+import firebase from "firebase/app";
+import "firebase/auth";
+import "firebase/firestore";
+
+import firebaseConfig from "../firebase.config.js";
+
 export enum runStates {
   RUNNING,
   PAUSED,
@@ -15,8 +22,9 @@ export enum runStates {
 
 export class Rally {
   private _enableDevMode: boolean;
-  private _rallyId: string | null;
+  private _rallyId: string | undefined;
   private _state: runStates;
+  private _db: firebase.firestore.Firestore;
 
   /**
    * Initialize the Rally library.
@@ -44,7 +52,7 @@ export class Rally {
 
     this._enableDevMode = Boolean(enableDevMode);
 
-    this._rallyId = null;
+    this._rallyId = undefined;
 
     // Set the initial state to paused, and register callback for future changes.
     this._state = runStates.PAUSED;
@@ -53,6 +61,8 @@ export class Rally {
     chrome.runtime.onMessageExternal.addListener(
       (m: any, s: any) => this._handleWebMessage(m, s));
 
+    const firebaseApp = firebase.initializeApp(firebaseConfig);
+    this._db = firebase.firestore(firebaseApp);
 
     this._promptSignUp().catch(err => console.error(err));
   }
@@ -104,24 +114,12 @@ export class Rally {
   }
 
   /**
-   * Generate and cache the Rally ID.
+   * Get the Rally ID, if set.
    *
    * @returns {String} rallyId
    *        The Rally ID (if set).
    */
-  async rallyId(): Promise<string | null> {
-    if (this._rallyId) {
-      return this._rallyId;
-    } else {
-      const result = await browser.storage.local.get("rallyId");
-      if ("rallyId" in result) {
-        this._rallyId = result.rallyId;
-      } else {
-        const uuid = uuidv4();
-        await browser.storage.local.set({ "rallyId": uuid });
-        this._rallyId = uuid;
-      }
-    }
+  get rallyId() {
     return this._rallyId;
   }
 
@@ -153,7 +151,7 @@ export class Rally {
  *          It can be resolved with a value that is sent to the
  *          `sender` or rejected in case of errors.
  */
-  _handleWebMessage(message: any, sender: any) {
+  _handleWebMessage(message: any, sender: any): Promise<any> {
     console.log("Core - received web message", message, "from", sender);
 
     try {
@@ -202,18 +200,49 @@ export class Rally {
     }
   }
 
-  async _completeSignUp(authToken: any) {
+  async _completeSignUp(credential: any) {
     const signUpStorage = await browser.storage.local.get("signUpComplete");
-    if (signUpStorage && !("signUpComplete" in signUpStorage)) {
+
+//    if (signUpStorage && !("signUpComplete" in signUpStorage)) {
       // Record sign-up complete.
       await browser.storage.local.set({ "signUpComplete": true });
 
-      // Store the auth token.
-      // TODO we should let Firebase handle it for us.
-      await browser.storage.local.set({ authToken });
-    } else {
-      console.warn("Sign-up is already complete.")
-    }
+      // Attempt to authenticate with the auth token passed from the website.
+      // const { username, password } = idToken;
+      // const credential = firebase.auth.EmailAuthProvider.credential(username, password);
+      // await firebase.auth().signInWithCredential(credential);
+      await firebase.auth().signInWithEmailAndPassword(credential.email, credential.password);
+      console.debug("logged in as:", firebase.auth().currentUser?.email);
+
+      const usersDb = await this._db.collection("users").get();
+      const users = usersDb.docs.map(doc => doc.data());
+
+      const uid = firebase.auth().currentUser?.uid;
+      const user = users.find(user => user.uid === uid);
+
+      if (user?.enrolled) {
+        console.debug("Enrolled in Rally");
+        // FIXME this should be a proper UUIDv4 from firestore
+        this._rallyId = uid;
+      } else {
+        console.debug("Not enrolled in Rally, trigger onboarding");
+        return;
+      }
+
+      const extensionId = browser.runtime.id;
+      let enrolled = false;
+      if (extensionId in user.enrolledStudies && user.enrolledStudies[extensionId].enrolled) {
+        console.debug("Study is enrolled");
+      } else {
+        console.debug("Study installed but not enrolled, trigger study onboarding");
+      }
+
+      // If we made it this far, start running the study.
+      this._resume();
+
+//    } else {
+//      console.warn("Sign-up is already complete.")
+//    }
 
     return true;
   }
