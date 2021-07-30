@@ -2,7 +2,7 @@
 
 The development & release process roughly follows the [GitFlow model](https://nvie.com/posts/a-successful-git-branching-model/).
 
-> **Note:** The rest of this section assumes that `upstream` points to the `https://github.com/mozilla-rally/rally-sdks` repository,
+> **Note:** The rest of this section assumes that `upstream` points to the `https://github.com/mozilla-rally/rally-sdk` repository,
 > `origin` points to the developer fork.
 > For some developer workflows, `upstream` can be the same as `origin`.
 
