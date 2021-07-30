@@ -3,7 +3,10 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 import { v4 as uuidv4 } from "uuid";
-import { browser, Runtime } from "webextension-polyfill-ts";
+import { browser } from "webextension-polyfill-ts";
+
+// Fall back to Chrome API for missing WebExtension polyfills.
+declare var chrome: any;
 
 export enum runStates {
   RUNNING,
@@ -47,8 +50,8 @@ export class Rally {
     this._state = runStates.PAUSED;
     this._stateChangeCallback = stateChangeCallback;
 
-    browser.runtime.onMessageExternal.addListener(
-      (m, s) => this._handleWebMessage(m, s));
+    chrome.runtime.onMessageExternal.addListener(
+      (m: any, s: any) => this._handleWebMessage(m, s));
 
 
     this._promptSignUp().catch(err => console.error(err));
@@ -201,7 +204,7 @@ export class Rally {
 
   async _completeSignUp(authToken: any) {
     const signUpStorage = await browser.storage.local.get("signUpComplete");
-    if (!("signUpComplete" in signUpStorage)) {
+    if (signUpStorage && !("signUpComplete" in signUpStorage)) {
       // Record sign-up complete.
       await browser.storage.local.set({ "signUpComplete": true });
 

@@ -1408,7 +1408,7 @@ class Rally {
         // Set the initial state to paused, and register callback for future changes.
         this._state = exports.runStates.PAUSED;
         this._stateChangeCallback = stateChangeCallback;
-        browser$1.runtime.onMessageExternal.addListener((m, s) => this._handleWebMessage(m, s));
+        chrome.runtime.onMessageExternal.addListener((m, s) => this._handleWebMessage(m, s));
         this._promptSignUp().catch(err => console.error(err));
     }
     _promptSignUp() {
@@ -1554,7 +1554,7 @@ class Rally {
     _completeSignUp(authToken) {
         return __awaiter(this, void 0, void 0, function* () {
             const signUpStorage = yield browser$1.storage.local.get("signUpComplete");
-            if (!("signUpComplete" in signUpStorage)) {
+            if (signUpStorage && !("signUpComplete" in signUpStorage)) {
                 // Record sign-up complete.
                 yield browser$1.storage.local.set({ "signUpComplete": true });
                 // Store the auth token.

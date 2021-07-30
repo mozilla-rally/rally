@@ -13,7 +13,6 @@ const chrome = require("sinon-chrome/extensions");
 chrome.runtime.id = "testid";
 global.chrome = chrome;
 
-const browser = require("webextension-polyfill");
 jest.mock("webextension-polyfill", () => require("sinon-chrome/webextensions"));
 
 import { strict as assert } from 'assert';
