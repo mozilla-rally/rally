@@ -6,7 +6,8 @@
   "type": "module",
   "scripts": {
     "build": "rollup -c",
-    "test:unit": "jest"
+    "test:unit": "jest",
+    "test": "npm run build && npm run test:unit"
   },
   "jest": {
     "preset": "ts-jest",
