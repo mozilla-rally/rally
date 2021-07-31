@@ -23528,27 +23528,25 @@ class Rally {
                     data: {}
                 });
             case "complete-signup":
-                // The `open-rally` message should be safe: it exclusively opens
-                // the addon options page. It's a one-direction communication from the
-                // page, as no data gets exfiltrated or no message is reported back.
+                // The `complete-signup` message should be safe: It's a one-direction
+                // communication from the page, containing the credentials from the currently-authenticated user.
+                //
+                // Note that credentials should *NEVER* be passed to web content, but accepting them from web content
+                // should be relatively safe. An attacker-controlled site (whether through MITM, rogue extension, XSS, etc.)
+                // could potentially pass us a working credential that is attacker-controlled, but this should not cause the
+                // extension to send data anywhere attacker-controlled, since the data collection endpoint is hardcoded and signed
+                // along with the extension.
                 const signUpComplete = Boolean(this._completeSignUp(message.data));
                 return Promise.resolve({ type: "complete-signup", data: { signUpComplete } });
             default:
-                return Promise.reject(new Error(`Core._handleWebMessage - unexpected message type "${message.type}"`));
+                return Promise.reject(new Error(`Rally._handleWebMessage - unexpected message type "${message.type}"`));
         }
     }
     _completeSignUp(credential) {
         var _a, _b;
         return __awaiter(this, void 0, void 0, function* () {
             yield browser$1.storage.local.get("signUpComplete");
-            console.debug("logging in with credential:", credential);
-            //    if (signUpStorage && !("signUpComplete" in signUpStorage)) {
-            // Record sign-up complete.2
             yield browser$1.storage.local.set({ "signUpComplete": true });
-            // Attempt to authenticate with the auth token passed from the website.
-            // const { username, password } = idToken;
-            // const credential = firebase.auth.EmailAuthProvider.credential(username, password);
-            // await firebase.auth().signInWithCredential(credential);
             yield firebase.auth().signInWithEmailAndPassword(credential.email, credential.password);
             console.debug("logged in as:", (_a = firebase.auth().currentUser) === null || _a === void 0 ? void 0 : _a.email);
             const usersDb = yield this._db.collection("users").get();
@@ -23564,7 +23562,6 @@ class Rally {
                 console.debug("Not enrolled in Rally, trigger onboarding");
                 return;
             }
-            this._resume();
             const extensionId = browser$1.runtime.id;
             if (extensionId in user.enrolledStudies && user.enrolledStudies[extensionId].enrolled) {
                 console.debug("Study is enrolled");
@@ -23572,9 +23569,8 @@ class Rally {
             else {
                 console.debug("Study installed but not enrolled, trigger study onboarding");
             }
-            //    } else {
-            //      console.warn("Sign-up is already complete.")
-            //    }
+            // If we made it this far, start running the study.
+            this._resume();
             return true;
         });
     }
