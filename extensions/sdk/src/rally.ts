@@ -195,13 +195,13 @@ export class Rally {
         // Note that credentials should *NEVER* be passed to web content, but accepting them from web content
         // should be relatively safe. An attacker-controlled site (whether through MITM, rogue extension, XSS, etc.)
         // could potentially pass us a working credential that is attacker-controlled, but this should not cause the
-        // extension to send data anywhere attacker-controlled as the data collection endpoint is hardcoded and signed
-        // in the extension.
+        // extension to send data anywhere attacker-controlled, since the data collection endpoint is hardcoded and signed
+        // along with the extension.
         const signUpComplete = Boolean(this._completeSignUp(message.data));
         return Promise.resolve({ type: "complete-signup", data: { signUpComplete } });
       default:
         return Promise.reject(
-          new Error(`Core._handleWebMessage - unexpected message type "${message.type}"`));
+          new Error(`Rally._handleWebMessage - unexpected message type "${message.type}"`));
     }
   }
 
