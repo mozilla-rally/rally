@@ -2,6 +2,8 @@
 
 Object.defineProperty(exports, '__esModule', { value: true });
 
+var firebase_config_json = require('@config/firebase.config.json');
+
 /*! *****************************************************************************
 Copyright (c) Microsoft Corporation.
 
@@ -23364,15 +23366,6 @@ function I(e) {
 
 I(firebase);
 
-var firebaseConfig = {
-    apiKey: "AIzaSyAJv0aTJMCbG_e6FJZzc6hSzri9qDCmvoo",
-    authDomain: "rally-web-spike.firebaseapp.com",
-    projectId: "rally-web-spike",
-    storageBucket: "rally-web-spike.appspot.com",
-    messagingSenderId: "85993993890",
-    appId: "1:85993993890:web:b975ff99733d2d8b50c9fb"
-  };
-
 /* This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
@@ -23409,7 +23402,7 @@ class Rally {
         this._state = exports.runStates.PAUSED;
         this._stateChangeCallback = stateChangeCallback;
         chrome.runtime.onMessageExternal.addListener((m, s) => this._handleWebMessage(m, s));
-        const firebaseApp = firebase.initializeApp(firebaseConfig);
+        const firebaseApp = firebase.initializeApp(firebase_config_json.firebaseConfig);
         this._db = firebase.firestore(firebaseApp);
         this._promptSignUp().catch(err => console.error(err));
     }
@@ -23422,7 +23415,7 @@ class Rally {
                 console.debug("Already signed-up.");
                 return;
             }
-            const tabs = yield browser$1.tabs.query({ url: "*://rally-web-spike.web.app/*" });
+            const tabs = yield browser$1.tabs.query({ url: Rally.SITE });
             // If there are any tabs with the Rally site loaded, focus the latest one.
             if (tabs.length > 0) {
                 const tab = tabs.pop();
@@ -23431,7 +23424,7 @@ class Rally {
             }
             else {
                 // Otherwise, open the website.
-                browser$1.tabs.create({ url: "https://rally-web-spike.web.app/" });
+                browser$1.tabs.create({ url: Rally.SITE });
             }
         });
     }
@@ -23498,7 +23491,7 @@ class Rally {
         console.log("Core - received web message", message, "from", sender);
         try {
             // Security check - only allow messages from our own site!
-            let platformURL = new URL("https://rally-web-spike.web.app/");
+            let platformURL = new URL(Rally.SITE);
             let senderURL = new URL(sender.url);
             if (platformURL.origin != senderURL.origin) {
                 return Promise.reject(new Error(`Core - received message from unexpected URL ${sender.url}`));
@@ -23575,5 +23568,6 @@ class Rally {
         });
     }
 }
+Rally.SITE = "https://rally-web-spike.web.app";
 
 exports.Rally = Rally;

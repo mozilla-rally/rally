@@ -13,7 +13,8 @@ import firebase from "firebase/app";
 import "firebase/auth";
 import "firebase/firestore";
 
-import firebaseConfig from "../firebase.config.js";
+// @ts-ignore
+import { firebaseConfig } from "@config/firebase.config.json";
 
 export enum runStates {
   RUNNING,
@@ -21,6 +22,8 @@ export enum runStates {
 }
 
 export class Rally {
+  static readonly SITE: string = "__RALLY_BASE_SITE__";
+
   private _enableDevMode: boolean;
   private _rallyId: string | undefined;
   private _state: runStates;
@@ -77,7 +80,7 @@ export class Rally {
       return;
     }
 
-    const tabs = await browser.tabs.query({ url: "*://rally-web-spike.web.app/*" });
+    const tabs = await browser.tabs.query({ url: Rally.SITE });
     // If there are any tabs with the Rally site loaded, focus the latest one.
     if (tabs.length > 0) {
       const tab: any = tabs.pop();
@@ -85,7 +88,7 @@ export class Rally {
       browser.tabs.update(tab.id, { highlighted: true, active: true });
     } else {
       // Otherwise, open the website.
-      browser.tabs.create({ url: "https://rally-web-spike.web.app/" });
+      browser.tabs.create({ url: Rally.SITE });
     }
   }
 
@@ -156,7 +159,7 @@ export class Rally {
 
     try {
       // Security check - only allow messages from our own site!
-      let platformURL = new URL("https://rally-web-spike.web.app/");
+      let platformURL = new URL(Rally.SITE);
       let senderURL = new URL(sender.url);
       if (platformURL.origin != senderURL.origin) {
         return Promise.reject(
