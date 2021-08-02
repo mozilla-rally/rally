@@ -14,6 +14,12 @@ chrome.runtime.id = "testid";
 global.chrome = chrome;
 
 jest.mock("webextension-polyfill", () => require("sinon-chrome/webextensions"));
+jest.mock('firebase/app', () => {
+  return {
+    auth: jest.fn(),
+    firestore: jest.fn(),
+  };
+});
 
 import { strict as assert } from 'assert';
 import { Rally, runStates } from '../../dist/rally.js';

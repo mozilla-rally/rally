@@ -13,8 +13,8 @@ import firebase from "firebase/app";
 import "firebase/auth";
 import "firebase/firestore";
 
-// @ts-ignore
-import { firebaseConfig } from "@config/firebase.config.json";
+// @ts-ignore - FIXME provide type
+import firebaseConfig from "../config/firebase.config.js";
 
 export enum runStates {
   RUNNING,
@@ -22,7 +22,8 @@ export enum runStates {
 }
 
 export class Rally {
-  static readonly SITE: string = "__RALLY_BASE_SITE__";
+  static readonly SITE: string = "__RALLY_BASE_URL__";
+  static readonly HOST: string = "__RALLY_HOST__";
 
   private _enableDevMode: boolean;
   private _rallyId: string | undefined;
@@ -67,20 +68,45 @@ export class Rally {
     const firebaseApp = firebase.initializeApp(firebaseConfig);
     this._db = firebase.firestore(firebaseApp);
 
+    firebase.auth().onAuthStateChanged(async user => {
+      if (user) {
+        const usersCollection = await this._db.collection("users").get();
+        const users = usersCollection.docs.map(doc => doc.data());
+
+        const uid = firebase.auth().currentUser?.uid;
+        const user = users.find(user => user.uid === uid);
+
+        if (user?.enrolled) {
+          console.debug("Enrolled in Rally");
+          // FIXME this shouald be  proper UUIDv4 from firestore
+          this._rallyId = uid;
+        } else {
+          console.debug("Not enrolled in Rally, trigger onboarding");
+          this._promptSignUp().catch(err => console.error(err));
+          return;
+        }
+
+        const extensionId = browser.runtime.id;
+        let enrolled = false;
+        if (extensionId in user.enrolledStudies && user.enrolledStudies[extensionId].enrolled) {
+          console.debug("Study is enrolled");
+        } else {
+          console.debug("Study installed but not enrolled, trigger study onboarding");
+          this._promptSignUp().catch(err => console.error(err));
+          return;
+        }
+
+        // If we made it this far, then the user is signed in, enrolled in Rally, and enrolled in this study.
+        // Start running the study.
+        this._resume();
+      }
+    });
+
     this._promptSignUp().catch(err => console.error(err));
   }
 
-  async _promptSignUp() {
-    // await browser.storage.local.set({ "signUpComplete": true });
-
-    const alreadySignedUp = await browser.storage.local.get("signUpComplete");
-    console.debug(alreadySignedUp);
-    if ("signUpComplete" in alreadySignedUp) {
-      console.debug("Already signed-up.");
-      return;
-    }
-
-    const tabs = await browser.tabs.query({ url: Rally.SITE });
+  async _promptSignUp(study?: string) {
+    const tabs = await browser.tabs.query({ url: `*://${Rally.HOST}/*` });
     // If there are any tabs with the Rally site loaded, focus the latest one.
     if (tabs.length > 0) {
       const tab: any = tabs.pop();
@@ -155,7 +181,7 @@ export class Rally {
  *          `sender` or rejected in case of errors.
  */
   _handleWebMessage(message: any, sender: any): Promise<any> {
-    console.log("Core - received web message", message, "from", sender);
+    console.log("Rally - received web message", message, "from", sender);
 
     try {
       // Security check - only allow messages from our own site!
@@ -163,11 +189,11 @@ export class Rally {
       let senderURL = new URL(sender.url);
       if (platformURL.origin != senderURL.origin) {
         return Promise.reject(
-          new Error(`Core - received message from unexpected URL ${sender.url}`));
+          new Error(`Rally - received message from unexpected URL ${sender.url}`));
       }
     } catch (ex) {
       return Promise.reject(
-        new Error(`Core - cannot validate sender URL ${sender.url}`));
+        new Error(`Rally - cannot validate sender URL ${sender.url}`));
     }
 
     // ** IMPORTANT **
@@ -209,38 +235,8 @@ export class Rally {
   }
 
   async _completeSignUp(credential: any) {
-    const signUpStorage = await browser.storage.local.get("signUpComplete");
-
-    await browser.storage.local.set({ "signUpComplete": true });
-
     await firebase.auth().signInWithEmailAndPassword(credential.email, credential.password);
     console.debug("logged in as:", firebase.auth().currentUser?.email);
-
-    const usersDb = await this._db.collection("users").get();
-    const users = usersDb.docs.map(doc => doc.data());
-
-    const uid = firebase.auth().currentUser?.uid;
-    const user = users.find(user => user.uid === uid);
-
-    if (user?.enrolled) {
-      console.debug("Enrolled in Rally");
-      // FIXME this should be a proper UUIDv4 from firestore
-      this._rallyId = uid;
-    } else {
-      console.debug("Not enrolled in Rally, trigger onboarding");
-      return;
-    }
-
-    const extensionId = browser.runtime.id;
-    let enrolled = false;
-    if (extensionId in user.enrolledStudies && user.enrolledStudies[extensionId].enrolled) {
-      console.debug("Study is enrolled");
-    } else {
-      console.debug("Study installed but not enrolled, trigger study onboarding");
-    }
-
-    // If we made it this far, start running the study.
-    this._resume();
 
     return true;
   }
