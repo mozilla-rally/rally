@@ -63,7 +63,7 @@ export class Rally {
     this._stateChangeCallback = stateChangeCallback;
 
     chrome.runtime.onMessageExternal.addListener(
-      (m: any, s: any) => this._handleWebMessage(m, s));
+      async (m: any, s: any) => this._handleWebMessage(m, s));
 
     const firebaseApp = firebase.initializeApp(firebaseConfig);
     this._db = firebase.firestore(firebaseApp);
@@ -180,7 +180,7 @@ export class Rally {
  *          It can be resolved with a value that is sent to the
  *          `sender` or rejected in case of errors.
  */
-  _handleWebMessage(message: any, sender: any): Promise<any> {
+  async _handleWebMessage(message: any, sender: any): Promise<any> {
     console.log("Rally - received web message", message, "from", sender);
 
     try {
@@ -188,12 +188,10 @@ export class Rally {
       let platformURL = new URL(Rally.SITE);
       let senderURL = new URL(sender.url);
       if (platformURL.origin != senderURL.origin) {
-        return Promise.reject(
-          new Error(`Rally - received message from unexpected URL ${sender.url}`));
+        throw new Error(`Rally - received message from unexpected URL ${sender.url}`);
       }
     } catch (ex) {
-      return Promise.reject(
-        new Error(`Rally - cannot validate sender URL ${sender.url}`));
+      throw new Error(`Rally - cannot validate sender URL ${sender.url}`);
     }
 
     // ** IMPORTANT **
@@ -213,10 +211,10 @@ export class Rally {
         // core addon and expose that to the web. By exposing this ourselves
         // through content scripts enabled on our domain, we don't make things
         // worse.
-        return Promise.resolve({
+        return {
           type: "web-check-response",
           data: {}
-        });
+        }
       case "complete-signup":
         // The `complete-signup` message should be safe: It's a one-direction
         // communication from the page, containing the credentials from the currently-authenticated user.
@@ -226,18 +224,21 @@ export class Rally {
         // could potentially pass us a working credential that is attacker-controlled, but this should not cause the
         // extension to send data anywhere attacker-controlled, since the data collection endpoint is hardcoded and signed
         // along with the extension.
-        const signUpComplete = Boolean(this._completeSignUp(message.data));
-        return Promise.resolve({ type: "complete-signup", data: { signUpComplete } });
+        const credential = Boolean(this._completeSignUp(message.data));
+        return { type: "complete-signup", data: { credential } };
       default:
-        return Promise.reject(
-          new Error(`Rally._handleWebMessage - unexpected message type "${message.type}"`));
+        throw new Error(`Rally._handleWebMessage - unexpected message type "${message.type}"`);
     }
   }
 
   async _completeSignUp(credential: any) {
-    await firebase.auth().signInWithEmailAndPassword(credential.email, credential.password);
-    console.debug("logged in as:", firebase.auth().currentUser?.email);
-
-    return true;
+    try {
+      await firebase.auth().signInWithEmailAndPassword(credential.email, credential.password);
+      console.debug("logged in as:", firebase.auth().currentUser?.email);
+      return true;
+    } catch (ex) {
+      console.error("login failed:", ex.code, ex.message);
+      return false;
+    }
   }
 }
