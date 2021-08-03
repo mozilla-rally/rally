@@ -23396,7 +23396,6 @@ class Rally {
      *        received regarding the current study state ("paused" or "running".)
      */
     constructor(enableDevMode, stateChangeCallback) {
-        console.debug("Rally.initialize");
         if (!stateChangeCallback) {
             throw new Error("Rally.initialize - Initialization failed, stateChangeCallback is required.");
         }
@@ -23420,7 +23419,7 @@ class Rally {
                 const user = users.find(user => user.uid === uid);
                 if (user === null || user === void 0 ? void 0 : user.enrolled) {
                     console.debug("Enrolled in Rally");
-                    // FIXME this shouald be  proper UUIDv4 from firestore
+                    // FIXME this should be  proper UUIDv4 from firestore
                     this._rallyId = uid;
                 }
                 else {
@@ -23448,7 +23447,7 @@ class Rally {
         return __awaiter(this, void 0, void 0, function* () {
             const tabs = yield browser$1.tabs.query({ url: `*://${Rally.HOST}/*` });
             // If there are any tabs with the Rally site loaded, focus the latest one.
-            if (tabs.length > 0) {
+            if (tabs && tabs.length > 0) {
                 const tab = tabs.pop();
                 browser$1.windows.update(tab.windowId, { focused: true });
                 browser$1.tabs.update(tab.id, { highlighted: true, active: true });
@@ -23490,23 +23489,6 @@ class Rally {
         return this._rallyId;
     }
     /**
-     * Handler for external messages coming from Rally services.
-     */
-    _handleExternalMessage(message, sender) {
-        return __awaiter(this, void 0, void 0, function* () {
-            switch (message.type) {
-                case "pause":
-                    this._pause();
-                    break;
-                case "resume":
-                    this._resume();
-                    break;
-                default:
-                    throw new Error(`Rally._handleExternalMessage - unexpected message type ${message.type}`);
-            }
-        });
-    }
-    /**
    * Handles messages coming in from the external website.
    *
    * @param {Object} message
@@ -23523,14 +23505,14 @@ class Rally {
             console.log("Rally - received web message", message, "from", sender);
             try {
                 // Security check - only allow messages from our own site!
-                let platformURL = new URL(Rally.SITE);
+                let platformURL = new URL(`https://${Rally.HOST}`);
                 let senderURL = new URL(sender.url);
                 if (platformURL.origin != senderURL.origin) {
                     throw new Error(`Rally - received message from unexpected URL ${sender.url}`);
                 }
             }
             catch (ex) {
-                throw new Error(`Rally - cannot validate sender URL ${sender.url}`);
+                throw new Error(`Rally - cannot validate sender URL ${sender.url}: ${ex.message}`);
             }
             // ** IMPORTANT **
             //
@@ -23561,8 +23543,8 @@ class Rally {
                     // could potentially pass us a working credential that is attacker-controlled, but this should not cause the
                     // extension to send data anywhere attacker-controlled, since the data collection endpoint is hardcoded and signed
                     // along with the extension.
-                    const credential = Boolean(this._completeSignUp(message.data));
-                    return { type: "complete-signup", data: { credential } };
+                    const signedUp = yield this._completeSignUp(message.data);
+                    return { type: "complete-signup-result", data: { signedUp } };
                 default:
                     throw new Error(`Rally._handleWebMessage - unexpected message type "${message.type}"`);
             }

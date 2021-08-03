@@ -77,7 +77,7 @@ export class Rally {
 
         if (user?.enrolled) {
           console.debug("Enrolled in Rally");
-          // FIXME this shouald be  proper UUIDv4 from firestore
+          // FIXME this should be  proper UUIDv4 from firestore
           this._rallyId = uid;
         } else {
           console.debug("Not enrolled in Rally, trigger onboarding");
