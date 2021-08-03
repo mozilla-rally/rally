@@ -163,18 +163,18 @@ export class Rally {
  *          It can be resolved with a value that is sent to the
  *          `sender` or rejected in case of errors.
  */
-  async _handleWebMessage(message: any, sender: any): Promise<any> {
+  async _handleWebMessage(message: any, sender: any) {
     console.log("Rally - received web message", message, "from", sender);
 
     try {
       // Security check - only allow messages from our own site!
-      let platformURL = new URL(Rally.SITE);
+      let platformURL = new URL(`https://${Rally.HOST}`);
       let senderURL = new URL(sender.url);
       if (platformURL.origin != senderURL.origin) {
         throw new Error(`Rally - received message from unexpected URL ${sender.url}`);
       }
     } catch (ex) {
-      throw new Error(`Rally - cannot validate sender URL ${sender.url}`);
+      throw new Error(`Rally - cannot validate sender URL ${sender.url}: ${ex.message}`);
     }
 
     // ** IMPORTANT **
@@ -207,8 +207,8 @@ export class Rally {
         // could potentially pass us a working credential that is attacker-controlled, but this should not cause the
         // extension to send data anywhere attacker-controlled, since the data collection endpoint is hardcoded and signed
         // along with the extension.
-        const credential = Boolean(this._completeSignUp(message.data));
-        return { type: "complete-signup", data: { credential } };
+        const signedUp = await this._completeSignUp(message.data);
+        return { type: "complete-signup-result", data: { signedUp } };
       default:
         throw new Error(`Rally._handleWebMessage - unexpected message type "${message.type}"`);
     }
