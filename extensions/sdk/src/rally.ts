@@ -70,14 +70,14 @@ export class Rally {
 
     this._authStateChangedCallback = async (user: any) => {
       if (user) {
-        /*
         const usersCollection = await this._db.collection("users").get();
         const users = usersCollection.docs.map((doc: { data: () => any; }) => doc.data());
 
         const uid = firebase.auth().currentUser?.uid;
-        const user = users.find((user: { uid: string | undefined; }) => user.uid === uid);
-        */
-        if (user?.enrolled) {
+        const userDoc = users.find((user: { uid: string | undefined; }) => user.uid === uid);
+
+        console.debug("users:", userDoc, users, user.uid);
+        if (userDoc?.user.enrolled) {
           console.debug("Enrolled in Rally");
           // FIXME this should be  proper UUIDv4 from firestore, @see https://github.com/mozilla-rally/rally-web-platform/issues/34
           this._rallyId = user.uid;
@@ -89,7 +89,7 @@ export class Rally {
 
         const extensionId = chrome.runtime.id;
         let enrolled = false;
-        if (extensionId in user.enrolledStudies && user.enrolledStudies[extensionId].enrolled) {
+        if (extensionId in userDoc.enrolledStudies && userDoc.enrolledStudies[extensionId].enrolled) {
           console.debug("Study is enrolled");
         } else {
           console.debug("Study installed but not enrolled, trigger study onboarding");

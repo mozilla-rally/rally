@@ -23411,14 +23411,12 @@ class Rally {
         const firebaseApp = firebase.initializeApp(firebaseConfig);
         this._db = firebase.firestore(firebaseApp);
         this._authStateChangedCallback = (user) => __awaiter(this, void 0, void 0, function* () {
+            var _a;
             if (user) {
-                /*
-                const usersCollection = await this._db.collection("users").get();
-                const users = usersCollection.docs.map((doc: { data: () => any; }) => doc.data());
-        
-                const uid = firebase.auth().currentUser?.uid;
-                const user = users.find((user: { uid: string | undefined; }) => user.uid === uid);
-                */
+                const usersCollection = yield this._db.collection("users").get();
+                const users = usersCollection.docs.map((doc) => doc.data());
+                const uid = (_a = firebase.auth().currentUser) === null || _a === void 0 ? void 0 : _a.uid;
+                const user = users.find((user) => user.uid === uid);
                 if (user === null || user === void 0 ? void 0 : user.enrolled) {
                     console.debug("Enrolled in Rally");
                     // FIXME this should be  proper UUIDv4 from firestore, @see https://github.com/mozilla-rally/rally-web-platform/issues/34

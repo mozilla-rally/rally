@@ -20,8 +20,18 @@ jest.mock('firebase/app', () => ({
         }
       }
     }),
-    firestore: jest.fn(),
-  },
+    firestore: jest.fn(() => {
+      return {
+        collection: jest.fn(() => {
+          return {
+            get: jest.fn(() => {
+              return { docs: [{ data: () => { return { user: { enrolled: true, uid: "test123" }, enrolledStudies: { "test-study": { enrolled: true } } } } }] };
+            }),
+          }
+        }),
+      }
+    }),
+  }
 }));
 
 import firebase from 'firebase/app'
@@ -117,21 +127,22 @@ describe('Rally SDK', function () {
     expect(firebase.firestore.mock.calls.length).toBe(2);
 
     // If the user is authenticated but enrolled in Rally, onboarding should be triggered.
-    await rally._authStateChangedCallback({ enrolled: false, uid: "test123", enrolledStudies: {} });
+    await rally._authStateChangedCallback({ uid: "test123" });
     assert.ok(!resumeCallbackCalled);
     // FIXME check that chrome.tabs.create is called with the correct route.
 
     // If the user is authenticated, enrolled in Rally, and enrolled in a study, the study should start data collection.
     chrome.runtime.id = "test-study";
-    await rally._authStateChangedCallback({ enrolled: true, uid: "test123", enrolledStudies: { "test-study": { enrolled: true } } });
+    await rally._authStateChangedCallback({ uid: "test123" });
 
     assert.equal(rally._state, runStates.RUNNING);
     assert.ok(resumeCallbackCalled);
     assert.ok(!pausedCallbackCalled);
 
     // If the user is authenticated, enrolled in Rally, and not enrolled in a study, the study should pause, and trigger study onboarding.
+    chrome.runtime.id = "invalid-study-id";
     resumeCallbackCalled = false;
-    await rally._authStateChangedCallback({ enrolled: true, uid: "test123", enrolledStudies: { "invalid-study-id": { enrolled: true } } });
+    await rally._authStateChangedCallback({ uid: "test123" });
     // FIXME check that chrome.tabs.create is called with the correct route.
 
     assert.equal(rally._state, runStates.PAUSED);
