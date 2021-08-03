@@ -23441,9 +23441,12 @@ class Rally {
                 // Start running the study.
                 this._resume();
             }
+            else {
+                // Not logged in, trigger onboarding.
+                this._promptSignUp().catch(err => console.error(err));
+            }
         });
         firebase.auth().onAuthStateChanged(this._authStateChangedCallback);
-        this._promptSignUp().catch(err => console.error(err));
     }
     _promptSignUp(study) {
         return __awaiter(this, void 0, void 0, function* () {

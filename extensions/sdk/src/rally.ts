@@ -100,12 +100,13 @@ export class Rally {
         // If we made it this far, then the user is signed in, enrolled in Rally, and enrolled in this study.
         // Start running the study.
         this._resume();
+      } else {
+        // Not logged in, trigger onboarding.
+        this._promptSignUp().catch(err => console.error(err));
       }
     }
 
     firebase.auth().onAuthStateChanged(this._authStateChangedCallback);
-
-    this._promptSignUp().catch(err => console.error(err));
   }
 
   async _promptSignUp(study?: string) {
