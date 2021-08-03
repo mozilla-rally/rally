@@ -52,7 +52,7 @@ describe('Rally SDK', function () {
 
   it('must fail with an invalid callback function', function () {
     assert.throws(
-      // @ts-ignore
+      // @ts-ignore this isn't something that pure Typescript will allow, but there's nothing stopping JS from hitting it at runtime.
       () => new Rally(true, "not-a-function, will fail")
     );
   });
@@ -84,9 +84,18 @@ describe('Rally SDK', function () {
   });
 
   it('handles sign-up message from web and receives credentials', async function () {
+    let pausedCallbackCalled = false;
+    let resumeCallbackCalled = false;
+
     const rally = new Rally(
       true, // Developer mode.
-      () => { }
+      (message) => {
+        if (message === runStates.PAUSED) {
+          pausedCallbackCalled = true;
+        } else if (message === runStates.RUNNING) {
+          resumeCallbackCalled = true;
+        }
+      },
     );
 
     const email = "test1@example.com";
@@ -101,10 +110,33 @@ describe('Rally SDK', function () {
     assert.equal(result.type, "complete-signup-result");
     assert.equal(result.data.signedUp, true);
 
-    // @ts-ignore
+    // @ts-ignore FIXME typescript doesn't understand this is a jest mock
     expect(firebase.auth.mock.calls.length).toBe(4);
 
-    // @ts-ignore
+    // @ts-ignore FIXME typescript doesn't understand this is a jest mock
     expect(firebase.firestore.mock.calls.length).toBe(2);
+
+    // If the user is authenticated but enrolled in Rally, onboarding should be triggered.
+    await rally._authStateChangedCallback({ enrolled: false, uid: "test123", enrolledStudies: {} });
+    assert.ok(!resumeCallbackCalled);
+    // FIXME check that chrome.tabs.create is called with the correct route.
+
+    // If the user is authenticated, enrolled in Rally, and enrolled in a study, the study should start data collection.
+    chrome.runtime.id = "test-study";
+    await rally._authStateChangedCallback({ enrolled: true, uid: "test123", enrolledStudies: { "test-study": { enrolled: true } } });
+
+    assert.equal(rally._state, runStates.RUNNING);
+    assert.ok(resumeCallbackCalled);
+    assert.ok(!pausedCallbackCalled);
+
+    // If the user is authenticated, enrolled in Rally, and not enrolled in a study, the study should pause, and trigger study onboarding.
+    resumeCallbackCalled = false;
+    await rally._authStateChangedCallback({ enrolled: true, uid: "test123", enrolledStudies: { "invalid-study-id": { enrolled: true } } });
+    // FIXME check that chrome.tabs.create is called with the correct route.
+
+    assert.equal(rally._state, runStates.PAUSED);
+    assert.ok(pausedCallbackCalled);
+    assert.ok(!resumeCallbackCalled);
+
   });
 });

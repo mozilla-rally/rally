@@ -23410,29 +23410,32 @@ class Rally {
         chrome.runtime.onMessageExternal.addListener((m, s) => __awaiter(this, void 0, void 0, function* () { return this._handleWebMessage(m, s); }));
         const firebaseApp = firebase.initializeApp(firebaseConfig);
         this._db = firebase.firestore(firebaseApp);
-        firebase.auth().onAuthStateChanged((user) => __awaiter(this, void 0, void 0, function* () {
-            var _a;
+        this._authStateChangedCallback = (user) => __awaiter(this, void 0, void 0, function* () {
             if (user) {
-                const usersCollection = yield this._db.collection("users").get();
-                const users = usersCollection.docs.map(doc => doc.data());
-                const uid = (_a = firebase.auth().currentUser) === null || _a === void 0 ? void 0 : _a.uid;
-                const user = users.find(user => user.uid === uid);
+                /*
+                const usersCollection = await this._db.collection("users").get();
+                const users = usersCollection.docs.map((doc: { data: () => any; }) => doc.data());
+        
+                const uid = firebase.auth().currentUser?.uid;
+                const user = users.find((user: { uid: string | undefined; }) => user.uid === uid);
+                */
                 if (user === null || user === void 0 ? void 0 : user.enrolled) {
                     console.debug("Enrolled in Rally");
-                    // FIXME this should be  proper UUIDv4 from firestore
-                    this._rallyId = uid;
+                    // FIXME this should be  proper UUIDv4 from firestore, @see https://github.com/mozilla-rally/rally-web-platform/issues/34
+                    this._rallyId = user.uid;
                 }
                 else {
                     console.debug("Not enrolled in Rally, trigger onboarding");
                     this._promptSignUp().catch(err => console.error(err));
                     return;
                 }
-                const extensionId = browser$1.runtime.id;
+                const extensionId = chrome.runtime.id;
                 if (extensionId in user.enrolledStudies && user.enrolledStudies[extensionId].enrolled) {
                     console.debug("Study is enrolled");
                 }
                 else {
                     console.debug("Study installed but not enrolled, trigger study onboarding");
+                    this._pause();
                     this._promptSignUp().catch(err => console.error(err));
                     return;
                 }
@@ -23440,7 +23443,8 @@ class Rally {
                 // Start running the study.
                 this._resume();
             }
-        }));
+        });
+        firebase.auth().onAuthStateChanged(this._authStateChangedCallback);
         this._promptSignUp().catch(err => console.error(err));
     }
     _promptSignUp(study) {
@@ -23454,7 +23458,7 @@ class Rally {
             }
             else {
                 // Otherwise, open the website.
-                browser$1.tabs.create({ url: Rally.SITE });
+                chrome.tabs.create({ url: Rally.SITE });
             }
         });
     }

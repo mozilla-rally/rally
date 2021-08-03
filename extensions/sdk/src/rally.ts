@@ -30,6 +30,7 @@ export class Rally {
   private _db: firebase.firestore.Firestore;
 
   _state: runStates;
+  _authStateChangedCallback: (user: any) => Promise<void>;
 
   /**
    * Initialize the Rally library.
@@ -67,30 +68,32 @@ export class Rally {
     const firebaseApp = firebase.initializeApp(firebaseConfig);
     this._db = firebase.firestore(firebaseApp);
 
-    firebase.auth().onAuthStateChanged(async user => {
+    this._authStateChangedCallback = async (user: any) => {
       if (user) {
+        /*
         const usersCollection = await this._db.collection("users").get();
-        const users = usersCollection.docs.map(doc => doc.data());
+        const users = usersCollection.docs.map((doc: { data: () => any; }) => doc.data());
 
         const uid = firebase.auth().currentUser?.uid;
-        const user = users.find(user => user.uid === uid);
-
+        const user = users.find((user: { uid: string | undefined; }) => user.uid === uid);
+        */
         if (user?.enrolled) {
           console.debug("Enrolled in Rally");
-          // FIXME this should be  proper UUIDv4 from firestore
-          this._rallyId = uid;
+          // FIXME this should be  proper UUIDv4 from firestore, @see https://github.com/mozilla-rally/rally-web-platform/issues/34
+          this._rallyId = user.uid;
         } else {
           console.debug("Not enrolled in Rally, trigger onboarding");
           this._promptSignUp().catch(err => console.error(err));
           return;
         }
 
-        const extensionId = browser.runtime.id;
+        const extensionId = chrome.runtime.id;
         let enrolled = false;
         if (extensionId in user.enrolledStudies && user.enrolledStudies[extensionId].enrolled) {
           console.debug("Study is enrolled");
         } else {
           console.debug("Study installed but not enrolled, trigger study onboarding");
+          this._pause();
           this._promptSignUp().catch(err => console.error(err));
           return;
         }
@@ -99,7 +102,9 @@ export class Rally {
         // Start running the study.
         this._resume();
       }
-    });
+    }
+
+    firebase.auth().onAuthStateChanged(this._authStateChangedCallback);
 
     this._promptSignUp().catch(err => console.error(err));
   }
@@ -113,7 +118,7 @@ export class Rally {
       browser.tabs.update(tab.id, { highlighted: true, active: true });
     } else {
       // Otherwise, open the website.
-      browser.tabs.create({ url: Rally.SITE });
+      chrome.tabs.create({ url: Rally.SITE });
     }
   }
 
