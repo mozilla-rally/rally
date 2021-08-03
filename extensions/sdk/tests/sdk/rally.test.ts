@@ -6,7 +6,19 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-import { exposeMockFirebaseApp } from 'mock-firebase-ts';
+jest.mock('firebase/app', () => ({
+  __esModule: true,
+  default: {
+    apps: [],
+    initializeApp: jest.fn(),
+    auth: () => {
+      return {
+        onAuthStateChanged: jest.fn(),
+      }
+    },
+    firestore: jest.fn(),
+  },
+}));
 
 const chrome = require("sinon-chrome/extensions");
 // We need to provide the `browser.runtime.id` for sinon-chrome to
@@ -20,48 +32,58 @@ jest.mock("webextension-polyfill", () => require("sinon-chrome/webextensions"));
 import { strict as assert } from 'assert';
 import { Rally, runStates } from '../../src/rally';
 
-describe('Rally_initialize', function () {
-  describe('Rally', function () {
-    beforeEach(() => {
-      chrome.runtime.sendMessage.flush();
-      chrome.runtime.sendMessage.yields();
-    });
-    afterEach(() => {
-      delete global.fetch;
-      chrome.flush();
-    });
+describe('Rally SDK', function () {
+  beforeEach(() => {
+    chrome.runtime.sendMessage.flush();
+    chrome.runtime.sendMessage.yields();
+  });
+  afterEach(() => {
+    delete global.fetch;
+    chrome.flush();
+  });
 
-    it('must fail with an invalid callback function', function () {
-      assert.throws(
-        // @ts-ignore
-        () => new Rally(true, "not-a-function, will fail")
-      );
-    });
+  it('must fail with an invalid callback function', function () {
+    assert.throws(
+      // @ts-ignore
+      () => new Rally(true, "not-a-function, will fail")
+    );
+  });
 
-    it('pauses and resumes when receiving messages', async function () {
-      let pausedCallbackCalled = false;
-      let resumeCallbackCalled = false;
+  it('pauses and resumes when receiving messages', async function () {
+    let pausedCallbackCalled = false;
+    let resumeCallbackCalled = false;
 
-      const rally = new Rally(
-        true, // Developer mode.
-        (message) => {
-          if (message === runStates.PAUSED) {
-            pausedCallbackCalled = true;
-          } else if (message === runStates.RUNNING) {
-            resumeCallbackCalled = true;
-          }
-        },
-      )
+    const rally = new Rally(
+      true, // Developer mode.
+      (message) => {
+        if (message === runStates.PAUSED) {
+          pausedCallbackCalled = true;
+        } else if (message === runStates.RUNNING) {
+          resumeCallbackCalled = true;
+        }
+      },
+    )
 
-      assert.equal(rally._state, runStates.PAUSED);
+    assert.equal(rally._state, runStates.PAUSED);
 
-      await rally._resume();
-      assert.equal(rally._state, runStates.RUNNING);
-      assert.ok(resumeCallbackCalled);
+    await rally._resume();
+    assert.equal(rally._state, runStates.RUNNING);
+    assert.ok(resumeCallbackCalled);
 
-      await rally._pause();
-      assert.ok(rally._state === runStates.PAUSED);
-      assert.ok(pausedCallbackCalled);
-    });
+    await rally._pause();
+    assert.ok(rally._state === runStates.PAUSED);
+    assert.ok(pausedCallbackCalled);
+  });
+
+  it('handles sign-up message from web and receives credentials', async function () {
+    const rally = new Rally(
+      true, // Developer mode.
+      () => { }
+    );
+
+    const credential = {};
+    const message = { type: "complete-signup", data: credential };
+
+    rally._handleWebMessage(message, `https://__RALLY_HOST__`);
   });
 });

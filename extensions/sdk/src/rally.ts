@@ -2,7 +2,7 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-import { v4 as uuidv4 } from "uuid";
+// import { v4 as uuidv4 } from "uuid";
 import { browser } from "webextension-polyfill-ts";
 
 // Fall back to Chrome API for missing WebExtension polyfills.
@@ -31,8 +31,6 @@ export class Rally {
 
   _state: runStates;
 
-  firebaseApp: firebase.app.App;
-
   /**
    * Initialize the Rally library.
    *
@@ -47,8 +45,6 @@ export class Rally {
    *        received regarding the current study state ("paused" or "running".)
    */
   constructor(enableDevMode: boolean, stateChangeCallback: (runState: runStates) => void) {
-    console.debug("Rally.initialize");
-
     if (!stateChangeCallback) {
       throw new Error("Rally.initialize - Initialization failed, stateChangeCallback is required.")
     }
@@ -68,8 +64,8 @@ export class Rally {
     chrome.runtime.onMessageExternal.addListener(
       async (m: any, s: any) => this._handleWebMessage(m, s));
 
-    this.firebaseApp = firebase.initializeApp(firebaseConfig);
-    this._db = firebase.firestore(this.firebaseApp);
+    const firebaseApp = firebase.initializeApp(firebaseConfig);
+    this._db = firebase.firestore(firebaseApp);
 
     firebase.auth().onAuthStateChanged(async user => {
       if (user) {
