@@ -40,21 +40,27 @@ describe('Rally_initialize', function () {
 
     it('pauses and resumes when receiving messages', async function () {
       let pausedCallbackCalled = false;
-      const rallyPaused = new Rally(
+      let resumeCallbackCalled = false;
+
+      const rally = new Rally(
         true, // Developer mode.
         (message) => {
-          pausedCallbackCalled = true;
-          assert.equal(message, runStates.RUNNING);
+          if (message === runStates.PAUSED) {
+            pausedCallbackCalled = true;
+          } else if (message === runStates.RUNNING) {
+            resumeCallbackCalled = true;
+          }
         },
       )
 
-      const mocked = exposeMockFirebaseApp(rallyPaused.firebaseApp);
+      assert.equal(rally._state, runStates.PAUSED);
 
-      assert.ok(rallyPaused._state === runStates.PAUSED);
+      await rally._resume();
+      assert.equal(rally._state, runStates.RUNNING);
+      assert.ok(resumeCallbackCalled);
 
-      await rallyPaused._handleExternalMessage({ type: "resume" }, "");
-      assert.equal(rallyPaused._state, runStates.RUNNING);
-
+      await rally._pause();
+      assert.ok(rally._state === runStates.PAUSED);
       assert.ok(pausedCallbackCalled);
     });
   });

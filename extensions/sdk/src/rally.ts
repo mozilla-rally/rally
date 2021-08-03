@@ -156,22 +156,6 @@ export class Rally {
   }
 
   /**
-   * Handler for external messages coming from Rally services.
-   */
-  async _handleExternalMessage(message: { type: string; }, sender: string) {
-    switch (message.type) {
-      case "pause":
-        this._pause();
-        break;
-      case "resume":
-        this._resume();
-        break;
-      default:
-        throw new Error(`Rally._handleExternalMessage - unexpected message type ${message.type}`);
-    }
-  }
-
-  /**
  * Handles messages coming in from the external website.
  *
  * @param {Object} message
