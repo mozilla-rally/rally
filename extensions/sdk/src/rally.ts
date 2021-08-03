@@ -27,8 +27,11 @@ export class Rally {
 
   private _enableDevMode: boolean;
   private _rallyId: string | undefined;
-  private _state: runStates;
   private _db: firebase.firestore.Firestore;
+
+  _state: runStates;
+
+  firebaseApp: firebase.app.App;
 
   /**
    * Initialize the Rally library.
@@ -65,8 +68,8 @@ export class Rally {
     chrome.runtime.onMessageExternal.addListener(
       async (m: any, s: any) => this._handleWebMessage(m, s));
 
-    const firebaseApp = firebase.initializeApp(firebaseConfig);
-    this._db = firebase.firestore(firebaseApp);
+    this.firebaseApp = firebase.initializeApp(firebaseConfig);
+    this._db = firebase.firestore(this.firebaseApp);
 
     firebase.auth().onAuthStateChanged(async user => {
       if (user) {
@@ -108,7 +111,7 @@ export class Rally {
   async _promptSignUp(study?: string) {
     const tabs = await browser.tabs.query({ url: `*://${Rally.HOST}/*` });
     // If there are any tabs with the Rally site loaded, focus the latest one.
-    if (tabs.length > 0) {
+    if (tabs && tabs.length > 0) {
       const tab: any = tabs.pop();
       browser.windows.update(tab.windowId, { focused: true });
       browser.tabs.update(tab.id, { highlighted: true, active: true });
