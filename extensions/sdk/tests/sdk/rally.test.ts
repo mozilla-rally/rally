@@ -16,6 +16,7 @@ jest.mock('firebase/app', () => ({
         signInWithEmailAndPassword: jest.fn(),
         onAuthStateChanged: jest.fn(),
         currentUser: {
+          uid: "test123",
           email: "test1@example.com"
         }
       }
@@ -25,7 +26,7 @@ jest.mock('firebase/app', () => ({
         collection: jest.fn(() => {
           return {
             get: jest.fn(() => {
-              return { docs: [{ data: () => { return { user: { enrolled: true, uid: "test123" }, enrolledStudies: { "test-study": { enrolled: true } } } } }] };
+              return { docs: [{ data: () => { return { enrolled: true, uid: "test123", enrolledStudies: { "test-study": { enrolled: true } } } } }] };
             }),
           }
         }),

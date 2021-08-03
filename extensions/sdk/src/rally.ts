@@ -74,10 +74,9 @@ export class Rally {
         const users = usersCollection.docs.map((doc: { data: () => any; }) => doc.data());
 
         const uid = firebase.auth().currentUser?.uid;
-        const userDoc = users.find((user: { uid: string | undefined; }) => user.uid === uid);
+        const userDoc = users.find(user => user.uid === uid);
 
-        console.debug("users:", userDoc, users, user.uid);
-        if (userDoc?.user.enrolled) {
+        if (userDoc?.enrolled) {
           console.debug("Enrolled in Rally");
           // FIXME this should be  proper UUIDv4 from firestore, @see https://github.com/mozilla-rally/rally-web-platform/issues/34
           this._rallyId = user.uid;
