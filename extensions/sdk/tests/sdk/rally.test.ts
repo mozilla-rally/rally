@@ -142,6 +142,7 @@ describe('Rally SDK', function () {
 
     // If the user is authenticated, enrolled in Rally, and not enrolled in a study, the study should pause, and trigger study onboarding.
     chrome.runtime.id = "invalid-study-id";
+    pausedCallbackCalled = false;
     resumeCallbackCalled = false;
     await rally._authStateChangedCallback({ uid: "test123" });
     // FIXME check that chrome.tabs.create is called with the correct route.
