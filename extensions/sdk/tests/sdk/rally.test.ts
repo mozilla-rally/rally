@@ -129,11 +129,15 @@ describe('Rally SDK', function () {
 
     // If the user is authenticated but enrolled in Rally, onboarding should be triggered.
     await rally._authStateChangedCallback({ uid: "test123" });
+    assert.ok(!pausedCallbackCalled);
     assert.ok(!resumeCallbackCalled);
     // FIXME check that chrome.tabs.create is called with the correct route.
 
     // If the user is authenticated, enrolled in Rally, and enrolled in a study, the study should start data collection.
     chrome.runtime.id = "test-study";
+    pausedCallbackCalled = false;
+    resumeCallbackCalled = false;
+
     await rally._authStateChangedCallback({ uid: "test123" });
 
     assert.equal(rally._state, runStates.RUNNING);
