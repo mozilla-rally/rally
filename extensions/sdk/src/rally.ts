@@ -226,7 +226,13 @@ export class Rally {
 
   async _completeSignUp(credential: any) {
     try {
-      console.debug(credential);
+
+      // Sign out existing user when new credentials are passed.
+      if (firebase.auth().currentUser) {
+        this._pause();
+        firebase.auth().signOut();
+      }
+
       switch (credential.providerId) {
         case authProviders.GOOGLE:
           const gCred = firebase.auth.GoogleAuthProvider.credential(credential.oauthIdToken)
