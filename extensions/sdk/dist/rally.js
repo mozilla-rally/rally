@@ -23381,6 +23381,11 @@ exports.runStates = void 0;
     runStates[runStates["RUNNING"] = 0] = "RUNNING";
     runStates[runStates["PAUSED"] = 1] = "PAUSED";
 })(exports.runStates || (exports.runStates = {}));
+var authProviders;
+(function (authProviders) {
+    authProviders["GOOGLE"] = "google.com";
+    authProviders["EMAIL"] = "email";
+})(authProviders || (authProviders = {}));
 class Rally {
     /**
      * Initialize the Rally library.
@@ -23559,7 +23564,18 @@ class Rally {
         var _a;
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                yield firebase.auth().signInWithEmailAndPassword(credential.email, credential.password);
+                console.debug(credential);
+                switch (credential.providerId) {
+                    case authProviders.GOOGLE:
+                        const gCred = firebase.auth.GoogleAuthProvider.credential(credential.oauthIdToken);
+                        yield firebase.auth().signInWithCredential(gCred);
+                        break;
+                    case authProviders.EMAIL:
+                        yield firebase.auth().signInWithEmailAndPassword(credential.email, credential.password);
+                        break;
+                    default:
+                        throw new Error(`Auth provider not implemented: ${credential.providerId}`);
+                }
                 console.debug("logged in as:", (_a = firebase.auth().currentUser) === null || _a === void 0 ? void 0 : _a.email);
                 return true;
             }

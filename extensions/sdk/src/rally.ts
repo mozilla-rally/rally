@@ -21,6 +21,11 @@ export enum runStates {
   PAUSED,
 }
 
+enum authProviders {
+  GOOGLE = "google.com",
+  EMAIL = "email",
+}
+
 export class Rally {
   static readonly SITE: string = "__RALLY_BASE_URL__";
   static readonly HOST: string = "__RALLY_HOST__";
@@ -221,7 +226,18 @@ export class Rally {
 
   async _completeSignUp(credential: any) {
     try {
-      await firebase.auth().signInWithEmailAndPassword(credential.email, credential.password);
+      console.debug(credential);
+      switch (credential.providerId) {
+        case authProviders.GOOGLE:
+          const gCred = firebase.auth.GoogleAuthProvider.credential(credential.oauthIdToken)
+          await firebase.auth().signInWithCredential(gCred);
+          break;
+        case authProviders.EMAIL:
+          await firebase.auth().signInWithEmailAndPassword(credential.email, credential.password);
+          break;
+        default:
+          throw new Error(`Auth provider not implemented: ${credential.providerId}`);
+      }
       console.debug("logged in as:", firebase.auth().currentUser?.email);
       return true;
     } catch (ex) {
