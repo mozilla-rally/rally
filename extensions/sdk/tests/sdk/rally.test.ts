@@ -14,6 +14,7 @@ jest.mock('firebase/app', () => ({
     auth: jest.fn(() => {
       return {
         signInWithEmailAndPassword: jest.fn(),
+        signOut: jest.fn(),
         onAuthStateChanged: jest.fn(),
         currentUser: {
           uid: "test123",
@@ -112,7 +113,7 @@ describe('Rally SDK', function () {
     const email = "test1@example.com";
     const password = "password1";
 
-    const credential = { email, password };
+    const credential = { email, password, providerId: "email" };
     const message = { type: "complete-signup", data: credential };
     const sender = { url: `https://__RALLY_HOST__` };
 
@@ -122,7 +123,7 @@ describe('Rally SDK', function () {
     assert.equal(result.data.signedUp, true);
 
     // @ts-ignore FIXME typescript doesn't understand this is a jest mock
-    expect(firebase.auth.mock.calls.length).toBe(4);
+    expect(firebase.auth.mock.calls.length).toBe(6);
 
     // @ts-ignore FIXME typescript doesn't understand this is a jest mock
     expect(firebase.firestore.mock.calls.length).toBe(2);
