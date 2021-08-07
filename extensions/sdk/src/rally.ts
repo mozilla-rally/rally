@@ -172,7 +172,11 @@ export class Rally {
  * Handles messages coming in from the external website.
  *
  * @param {Object} message
- *        The payload of the message.
+ *        The payload of the message. May be an empty objecty, or contain auth credential.
+ *
+ *        email credential: { email, password, providerId }
+ *        oAuth credential: { oauthIdToken, providerId }
+ *
  * @param {runtime.MessageSender} sender
  *        An object containing information about who sent
  *        the message.
@@ -180,7 +184,7 @@ export class Rally {
  *          It can be resolved with a value that is sent to the
  *          `sender` or rejected in case of errors.
  */
-  async _handleWebMessage(message: { type: string, data: object }, sender: any) {
+  async _handleWebMessage(message: { type: string, data: { email?: string, password?: string, oauthIdToken?: string, providerId?: authProviders } }, sender: any) {
     console.log("Rally - received web message", message, "from", sender);
 
     try {
