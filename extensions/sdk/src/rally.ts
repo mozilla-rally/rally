@@ -21,9 +21,16 @@ export enum runStates {
   PAUSED,
 }
 
-enum authProviders {
+export enum authProviders {
   GOOGLE = "google.com",
   EMAIL = "email",
+}
+
+export enum webMessages {
+  WEB_CHECK = "web-check",
+  COMPLETE_SIGNUP = "complete-signup",
+  WEB_CHECK_RESPONSE = "web-check-response",
+  COMPLETE_SIGNUP_RESPONSE = "complete-signup-response",
 }
 
 export class Rally {
@@ -173,7 +180,7 @@ export class Rally {
  *          It can be resolved with a value that is sent to the
  *          `sender` or rejected in case of errors.
  */
-  async _handleWebMessage(message: any, sender: any) {
+  async _handleWebMessage(message: { type: string, data: object }, sender: any) {
     console.log("Rally - received web message", message, "from", sender);
 
     try {
@@ -198,17 +205,17 @@ export class Rally {
     // information out? Can it be used to mess with studies?
 
     switch (message.type) {
-      case "web-check":
-        // The `web-check` message should be safe: any installed addon with
+      case webMessages.WEB_CHECK:
+        // The `web-check` message should be safe: any installed extension with
         // the `management` privileges could check for the presence of the
-        // core addon and expose that to the web. By exposing this ourselves
+        // Rally SDK and expose that to the web. By exposing this ourselves
         // through content scripts enabled on our domain, we don't make things
         // worse.
         return {
-          type: "web-check-response",
+          type: webMessages.WEB_CHECK_RESPONSE,
           data: {}
         }
-      case "complete-signup":
+      case webMessages.COMPLETE_SIGNUP:
         // The `complete-signup` message should be safe: It's a one-direction
         // communication from the page, containing the credentials from the currently-authenticated user.
         //
@@ -218,7 +225,7 @@ export class Rally {
         // extension to send data anywhere attacker-controlled, since the data collection endpoint is hardcoded and signed
         // along with the extension.
         const signedUp = await this._completeSignUp(message.data);
-        return { type: "complete-signup-result", data: { signedUp } };
+        return { type: webMessages.COMPLETE_SIGNUP_RESPONSE, data: { signedUp } };
       default:
         throw new Error(`Rally._handleWebMessage - unexpected message type "${message.type}"`);
     }

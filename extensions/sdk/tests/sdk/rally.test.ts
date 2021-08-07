@@ -50,7 +50,7 @@ global.chrome = chrome;
 jest.mock("webextension-polyfill", () => require("sinon-chrome/webextensions"));
 
 import { strict as assert } from 'assert';
-import { Rally, runStates } from '../../src/rally';
+import { Rally, runStates, authProviders, webMessages } from '../../src/rally';
 
 describe('Rally SDK', function () {
   beforeEach(() => {
@@ -113,13 +113,13 @@ describe('Rally SDK', function () {
     const email = "test1@example.com";
     const password = "password1";
 
-    const credential = { email, password, providerId: "email" };
-    const message = { type: "complete-signup", data: credential };
+    const credential = { email, password, providerId: authProviders.EMAIL };
+    const message = { type: webMessages.COMPLETE_SIGNUP, data: credential };
     const sender = { url: `https://__RALLY_HOST__` };
 
     const result = await rally._handleWebMessage(message, sender);
 
-    assert.equal(result.type, "complete-signup-result");
+    assert.equal(result.type, webMessages.COMPLETE_SIGNUP_RESPONSE);
     assert.equal(result.data.signedUp, true);
 
     // @ts-ignore FIXME typescript doesn't understand this is a jest mock

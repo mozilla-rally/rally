@@ -23381,11 +23381,18 @@ exports.runStates = void 0;
     runStates[runStates["RUNNING"] = 0] = "RUNNING";
     runStates[runStates["PAUSED"] = 1] = "PAUSED";
 })(exports.runStates || (exports.runStates = {}));
-var authProviders;
+exports.authProviders = void 0;
 (function (authProviders) {
     authProviders["GOOGLE"] = "google.com";
     authProviders["EMAIL"] = "email";
-})(authProviders || (authProviders = {}));
+})(exports.authProviders || (exports.authProviders = {}));
+exports.webMessages = void 0;
+(function (webMessages) {
+    webMessages["WEB_CHECK"] = "web-check";
+    webMessages["COMPLETE_SIGNUP"] = "complete-signup";
+    webMessages["WEB_CHECK_RESPONSE"] = "web-check-response";
+    webMessages["COMPLETE_SIGNUP_RESPONSE"] = "complete-signup-response";
+})(exports.webMessages || (exports.webMessages = {}));
 class Rally {
     /**
      * Initialize the Rally library.
@@ -23534,17 +23541,17 @@ class Rally {
             // thoroughly of the implications: can the message be used to leak
             // information out? Can it be used to mess with studies?
             switch (message.type) {
-                case "web-check":
-                    // The `web-check` message should be safe: any installed addon with
+                case exports.webMessages.WEB_CHECK:
+                    // The `web-check` message should be safe: any installed extension with
                     // the `management` privileges could check for the presence of the
-                    // core addon and expose that to the web. By exposing this ourselves
+                    // Rally SDK and expose that to the web. By exposing this ourselves
                     // through content scripts enabled on our domain, we don't make things
                     // worse.
                     return {
-                        type: "web-check-response",
+                        type: exports.webMessages.WEB_CHECK_RESPONSE,
                         data: {}
                     };
-                case "complete-signup":
+                case exports.webMessages.COMPLETE_SIGNUP:
                     // The `complete-signup` message should be safe: It's a one-direction
                     // communication from the page, containing the credentials from the currently-authenticated user.
                     //
@@ -23554,7 +23561,7 @@ class Rally {
                     // extension to send data anywhere attacker-controlled, since the data collection endpoint is hardcoded and signed
                     // along with the extension.
                     const signedUp = yield this._completeSignUp(message.data);
-                    return { type: "complete-signup-result", data: { signedUp } };
+                    return { type: exports.webMessages.COMPLETE_SIGNUP_RESPONSE, data: { signedUp } };
                 default:
                     throw new Error(`Rally._handleWebMessage - unexpected message type "${message.type}"`);
             }
@@ -23570,11 +23577,11 @@ class Rally {
                     firebase.auth().signOut();
                 }
                 switch (credential.providerId) {
-                    case authProviders.GOOGLE:
+                    case exports.authProviders.GOOGLE:
                         const gCred = firebase.auth.GoogleAuthProvider.credential(credential.oauthIdToken);
                         yield firebase.auth().signInWithCredential(gCred);
                         break;
-                    case authProviders.EMAIL:
+                    case exports.authProviders.EMAIL:
                         yield firebase.auth().signInWithEmailAndPassword(credential.email, credential.password);
                         break;
                     default:
