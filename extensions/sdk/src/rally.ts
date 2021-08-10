@@ -32,6 +32,11 @@ export enum webMessages {
   COMPLETE_SIGNUP_RESPONSE = "complete-signup-response",
 }
 
+enum routes {
+  ONBOARD = "onboard",
+  LOGIN = "login"
+}
+
 export class Rally {
   static readonly SITE: string = "__RALLY_BASE_URL__";
   static readonly HOST: string = "__RALLY_HOST__";
@@ -104,7 +109,7 @@ export class Rally {
           this._rallyId = user.uid;
         } else {
           console.debug("Not enrolled in Rally, trigger onboarding");
-          this._promptSignUp().catch(err => console.error(err));
+          this._promptSignUp(routes.ONBOARD).catch(err => console.error(err));
           return;
         }
 
@@ -118,7 +123,7 @@ export class Rally {
         } else {
           console.debug("Study installed but not enrolled, trigger study onboarding");
           this._pause();
-          this._promptSignUp().catch(err => console.error(err));
+          this._promptSignUp(routes.ONBOARD, extensionId).catch(err => console.error(err));
           return;
         }
 
@@ -127,15 +132,30 @@ export class Rally {
         this._resume();
       } else {
         // Not logged in, trigger onboarding.
-        this._promptSignUp().catch(err => console.error(err));
+        this._promptSignUp(routes.LOGIN).catch(err => console.error(err));
       }
     }
 
     onAuthStateChanged(this._auth, this._authStateChangedCallback);
   }
 
-  async _promptSignUp(study?: string) {
-    const tabs = await browser.tabs.query({ url: `*://${Rally.HOST}/*` });
+  async _promptSignUp(reason: string, study?: string) {
+    let route: string;
+    switch (reason) {
+      case routes.ONBOARD:
+        route = reason;
+        if (study) {
+          route += `/study/${study}`;
+        }
+        break;
+      case routes.LOGIN:
+        route = "/login";
+        break;
+      default:
+        throw new Error(`_promptSignUp: unknown sign-up reason ${reason} for study ${study}`);
+    }
+
+    const tabs = await browser.tabs.query({ url: `*://${Rally.HOST}/${route}` });
     // If there are any tabs with the Rally site loaded, focus the latest one.
     if (tabs && tabs.length > 0) {
       const tab: any = tabs.pop();
@@ -143,7 +163,9 @@ export class Rally {
       browser.tabs.update(tab.id, { highlighted: true, active: true });
     } else {
       // Otherwise, open the website.
-      chrome.tabs.create({ url: Rally.SITE });
+      chrome.tabs.create({
+        url: `${Rally.SITE}/${route}`
+      });
     }
   }
 
@@ -251,10 +273,9 @@ export class Rally {
   async _completeSignUp(credential: any) {
     try {
 
-      // Sign out existing user when new credentials are passed.
+      // Pause study when new credentials are passed.
       if (this._auth.currentUser) {
         this._pause();
-        this._auth.signOut();
       }
 
       switch (credential.providerId) {

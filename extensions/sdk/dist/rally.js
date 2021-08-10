@@ -20766,6 +20766,11 @@ exports.webMessages = void 0;
     webMessages["WEB_CHECK_RESPONSE"] = "web-check-response";
     webMessages["COMPLETE_SIGNUP_RESPONSE"] = "complete-signup-response";
 })(exports.webMessages || (exports.webMessages = {}));
+var routes;
+(function (routes) {
+    routes["ONBOARD"] = "onboard";
+    routes["LOGIN"] = "login";
+})(routes || (routes = {}));
 class Rally {
     /**
      * Initialize the Rally library.
@@ -20816,7 +20821,7 @@ class Rally {
                 }
                 else {
                     console.debug("Not enrolled in Rally, trigger onboarding");
-                    this._promptSignUp().catch(err => console.error(err));
+                    this._promptSignUp(routes.ONBOARD).catch(err => console.error(err));
                     return;
                 }
                 const extensionId = chrome.runtime.id;
@@ -20829,7 +20834,7 @@ class Rally {
                 else {
                     console.debug("Study installed but not enrolled, trigger study onboarding");
                     this._pause();
-                    this._promptSignUp().catch(err => console.error(err));
+                    this._promptSignUp(routes.ONBOARD, extensionId).catch(err => console.error(err));
                     return;
                 }
                 // If we made it this far, then the user is signed in, enrolled in Rally, and enrolled in this study.
@@ -20838,14 +20843,28 @@ class Rally {
             }
             else {
                 // Not logged in, trigger onboarding.
-                this._promptSignUp().catch(err => console.error(err));
+                this._promptSignUp(routes.LOGIN).catch(err => console.error(err));
             }
         });
         onAuthStateChanged(this._auth, this._authStateChangedCallback);
     }
-    _promptSignUp(study) {
+    _promptSignUp(reason, study) {
         return __awaiter(this, void 0, void 0, function* () {
-            const tabs = yield browser$1.tabs.query({ url: `*://${Rally.HOST}/*` });
+            let route;
+            switch (reason) {
+                case routes.ONBOARD:
+                    route = reason;
+                    if (study) {
+                        route += `/study/${study}`;
+                    }
+                    break;
+                case routes.LOGIN:
+                    route = "/login";
+                    break;
+                default:
+                    throw new Error(`_promptSignUp: unknown sign-up reason ${reason} for study ${study}`);
+            }
+            const tabs = yield browser$1.tabs.query({ url: `*://${Rally.HOST}/${route}` });
             // If there are any tabs with the Rally site loaded, focus the latest one.
             if (tabs && tabs.length > 0) {
                 const tab = tabs.pop();
@@ -20854,7 +20873,9 @@ class Rally {
             }
             else {
                 // Otherwise, open the website.
-                chrome.tabs.create({ url: Rally.SITE });
+                chrome.tabs.create({
+                    url: `${Rally.SITE}/${route}`
+                });
             }
         });
     }
@@ -20958,10 +20979,9 @@ class Rally {
         var _a;
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                // Sign out existing user when new credentials are passed.
+                // Pause study when new credentials are passed.
                 if (this._auth.currentUser) {
                     this._pause();
-                    this._auth.signOut();
                 }
                 switch (credential.providerId) {
                     case exports.authProviders.GOOGLE:
