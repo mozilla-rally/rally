@@ -8,46 +8,47 @@
 
 jest.mock('firebase/app', () => ({
   __esModule: true,
-  default: {
-    apps: [],
-    initializeApp: jest.fn(),
-    auth: jest.fn(() => {
-      return {
-        signInWithEmailAndPassword: jest.fn(),
-        signOut: jest.fn(),
-        onAuthStateChanged: jest.fn(),
-        currentUser: {
-          uid: "test123",
-          email: "test1@example.com"
-        }
-      }
-    }),
-    firestore: jest.fn(() => {
-      return {
-        collection: jest.fn(() => {
-          return {
-            doc: jest.fn(() => {
-              return {
-                get: () => {
-                  return {
-                    exists: true,
-                    data: () => {
-                      return { enrolled: true, uid: "test123", enrolledStudies: { "test-study": { enrolled: true } } }
-                    }
-                  }
-                }
-              };
-            }),
-          }
-        }),
-      }
-    }),
-  }
-}));
+  apps: [],
+  initializeApp: jest.fn(),
+}))
 
-import firebase from 'firebase/app'
-import 'firebase/auth'
-import 'firebase/firestore'
+jest.mock('firebase/auth', () => ({
+  __esModule: true,
+  apps: [],
+  getAuth: jest.fn(() => {
+    return {
+      currentUser: {
+        uid: "test123",
+        email: "test1@example.com"
+      },
+      signOut: jest.fn(),
+      signInWithEmailAndPassword: jest.fn(),
+      onAuthStateChanged: jest.fn(),
+    }
+  }),
+  signInWithCredential: jest.fn(),
+  signInWithEmailAndPassword: jest.fn(),
+  onAuthStateChanged: jest.fn(),
+}))
+
+jest.mock('firebase/firestore', () => ({
+  __esModule: true,
+  apps: [],
+  doc: jest.fn(),
+  getDoc: jest.fn(() => {
+    return {
+      exists: true,
+      data: () => {
+        return { enrolled: true, uid: "test123", enrolledStudies: { "test-study": { enrolled: true } } }
+      }
+    }
+  }),
+  getFirestore: jest.fn(),
+}))
+
+import { initializeApp } from "firebase/app"
+import { getAuth, onAuthStateChanged, signInWithCredential, signInWithEmailAndPassword } from "firebase/auth";
+import { getFirestore, doc, getDoc } from "firebase/firestore";
 
 const chrome = require("sinon-chrome/extensions");
 // We need to provide the `browser.runtime.id` for sinon-chrome to
@@ -130,12 +131,6 @@ describe('Rally SDK', function () {
 
     assert.equal(result.type, webMessages.COMPLETE_SIGNUP_RESPONSE);
     assert.equal(result.data.signedUp, true);
-
-    // @ts-ignore FIXME typescript doesn't understand this is a jest mock
-    expect(firebase.auth.mock.calls.length).toBe(6);
-
-    // @ts-ignore FIXME typescript doesn't understand this is a jest mock
-    expect(firebase.firestore.mock.calls.length).toBe(2);
 
     // If the user is authenticated but enrolled in Rally, onboarding should be triggered.
     await rally._authStateChangedCallback({ uid: "test123" });

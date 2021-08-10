@@ -8,10 +8,9 @@ import { browser } from "webextension-polyfill-ts";
 // Fall back to Chrome API for missing WebExtension polyfills.
 declare var chrome: any;
 
-// Firebase App (the core Firebase SDK) is always required and must be listed first
-import firebase from "firebase/app";
-import "firebase/auth";
-import "firebase/firestore";
+import { initializeApp } from "firebase/app"
+import { getAuth, onAuthStateChanged, signInWithCredential, signInWithEmailAndPassword } from "firebase/auth";
+import { getFirestore, doc, getDoc } from "firebase/firestore";
 
 // @ts-ignore - FIXME provide type
 import firebaseConfig from "../config/firebase.config.js";
@@ -39,10 +38,11 @@ export class Rally {
 
   private _enableDevMode: boolean;
   private _rallyId: string | undefined;
-  private _db: firebase.firestore.Firestore;
 
   _state: runStates;
   _authStateChangedCallback: (user: any) => Promise<void>;
+  _auth: any;
+  _db: any;
 
   /**
    * Initialize the Rally library.
@@ -77,23 +77,26 @@ export class Rally {
     chrome.runtime.onMessageExternal.addListener(
       async (m: any, s: any) => this._handleWebMessage(m, s));
 
-    const firebaseApp = firebase.initializeApp(firebaseConfig);
-    this._db = firebase.firestore(firebaseApp);
+    const firebaseApp = initializeApp(firebaseConfig);
+
+    this._auth = getAuth(firebaseApp);
+    this._db = getFirestore(firebaseApp);
 
     this._authStateChangedCallback = async (user: any) => {
       if (user) {
-        const uid = firebase.auth().currentUser?.uid;
-        const docRef = this._db.collection("users").doc(uid);
-        const userDoc = await docRef.get();
+        const uid = this._auth.currentUser?.uid;
+
+        const docRef = doc(this._db, "users", uid);
+        const docSnap = await getDoc(docRef);
 
         // If the user is able to log in but their "users" document does not exist, something is wrong on the server.
         // Bail out for now, try again next extension startup.
         // TODO: this would be the sort of thing diagnostic telemetry could be useful for (Sentry etc)
-        if (!userDoc.exists) {
+        if (!docSnap.exists) {
           throw new Error(`User document for UID ${uid} does not exist in Firestore`);
         }
 
-        const userData = userDoc.data();
+        const userData = docSnap.data();
 
         console.debug("debug1:", userData);
         if (userData?.enrolled) {
@@ -128,7 +131,7 @@ export class Rally {
       }
     }
 
-    firebase.auth().onAuthStateChanged(this._authStateChangedCallback);
+    onAuthStateChanged(this._auth, this._authStateChangedCallback);
   }
 
   async _promptSignUp(study?: string) {
@@ -249,23 +252,23 @@ export class Rally {
     try {
 
       // Sign out existing user when new credentials are passed.
-      if (firebase.auth().currentUser) {
+      if (this._auth.currentUser) {
         this._pause();
-        firebase.auth().signOut();
+        this._auth.signOut();
       }
 
       switch (credential.providerId) {
         case authProviders.GOOGLE:
-          const gCred = firebase.auth.GoogleAuthProvider.credential(credential.oauthIdToken)
-          await firebase.auth().signInWithCredential(gCred);
+          const gCred = this._auth.GoogleAuthProvider.credential(credential.oauthIdToken)
+          await signInWithCredential(gCred, this._auth);
           break;
         case authProviders.EMAIL:
-          await firebase.auth().signInWithEmailAndPassword(credential.email, credential.password);
+          await signInWithEmailAndPassword(this._auth, credential.email, credential.password);
           break;
         default:
           throw new Error(`Auth provider not implemented: ${credential.providerId}`);
       }
-      console.debug("logged in as:", firebase.auth().currentUser?.email);
+      console.debug("logged in as:", this._auth.currentUser?.email);
       return true;
     } catch (ex) {
       console.error("login failed:", ex.code, ex.message);
