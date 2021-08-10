@@ -20822,6 +20822,7 @@ class Rally {
                 const extensionId = chrome.runtime.id;
                 if ("enrolledStudies" in userData
                     && extensionId in userData.enrolledStudies
+                    // FIXME this check seems redundant, shouldn't presence in `enrolledStudies` be enough?
                     && userData.enrolledStudies[extensionId].enrolled) {
                     console.debug("Study is enrolled");
                 }
@@ -20964,8 +20965,8 @@ class Rally {
                 }
                 switch (credential.providerId) {
                     case exports.authProviders.GOOGLE:
-                        const gCred = this._auth.GoogleAuthProvider.credential(credential.oauthIdToken);
-                        yield signInWithCredential(gCred, this._auth);
+                        const gCred = GoogleAuthProvider.credential(credential.oauthIdToken);
+                        yield signInWithCredential(this._auth, gCred);
                         break;
                     case exports.authProviders.EMAIL:
                         yield signInWithEmailAndPassword(this._auth, credential.email, credential.password);

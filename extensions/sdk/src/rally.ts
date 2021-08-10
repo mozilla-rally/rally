@@ -9,7 +9,7 @@ import { browser } from "webextension-polyfill-ts";
 declare var chrome: any;
 
 import { initializeApp } from "firebase/app"
-import { getAuth, onAuthStateChanged, signInWithCredential, signInWithEmailAndPassword } from "firebase/auth";
+import { getAuth, onAuthStateChanged, signInWithCredential, signInWithEmailAndPassword, GoogleAuthProvider } from "firebase/auth";
 import { getFirestore, doc, getDoc } from "firebase/firestore";
 
 // @ts-ignore - FIXME provide type
@@ -112,6 +112,7 @@ export class Rally {
         let enrolled = false;
         if ("enrolledStudies" in userData
           && extensionId in userData.enrolledStudies
+          // FIXME this check seems redundant, shouldn't presence in `enrolledStudies` be enough?
           && userData.enrolledStudies[extensionId].enrolled) {
           console.debug("Study is enrolled");
         } else {
@@ -258,8 +259,8 @@ export class Rally {
 
       switch (credential.providerId) {
         case authProviders.GOOGLE:
-          const gCred = this._auth.GoogleAuthProvider.credential(credential.oauthIdToken)
-          await signInWithCredential(gCred, this._auth);
+          const gCred = GoogleAuthProvider.credential(credential.oauthIdToken)
+          await signInWithCredential(this._auth, gCred);
           break;
         case authProviders.EMAIL:
           await signInWithEmailAndPassword(this._auth, credential.email, credential.password);
