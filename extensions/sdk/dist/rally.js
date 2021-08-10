@@ -20809,7 +20809,6 @@ class Rally {
                     throw new Error(`User document for UID ${uid} does not exist in Firestore`);
                 }
                 const userData = docSnap.data();
-                console.debug("debug1:", userData);
                 if (userData === null || userData === void 0 ? void 0 : userData.enrolled) {
                     console.debug("Enrolled in Rally");
                     // FIXME this should be  proper UUIDv4 from firestore, @see https://github.com/mozilla-rally/rally-web-platform/issues/34
