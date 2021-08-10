@@ -82,13 +82,21 @@ export class Rally {
 
     this._authStateChangedCallback = async (user: any) => {
       if (user) {
-        const usersCollection = await this._db.collection("users").get();
-        const users = usersCollection.docs.map((doc: { data: () => any; }) => doc.data());
-
         const uid = firebase.auth().currentUser?.uid;
-        const userDoc = users.find(user => user.uid === uid);
+        const docRef = this._db.collection("users").doc(uid);
+        const userDoc = await docRef.get();
 
-        if (userDoc?.enrolled) {
+        // If the user is able to log in but their "users" document does not exist, something is wrong on the server.
+        // Bail out for now, try again next extension startup.
+        // TODO: this would be the sort of thing diagnostic telemetry could be useful for (Sentry etc)
+        if (!userDoc.exists) {
+          throw new Error(`User document for UID ${uid} does not exist in Firestore`);
+        }
+
+        const userData = userDoc.data();
+
+        console.debug("debug1:", userData);
+        if (userData?.enrolled) {
           console.debug("Enrolled in Rally");
           // FIXME this should be  proper UUIDv4 from firestore, @see https://github.com/mozilla-rally/rally-web-platform/issues/34
           this._rallyId = user.uid;
@@ -100,7 +108,9 @@ export class Rally {
 
         const extensionId = chrome.runtime.id;
         let enrolled = false;
-        if (extensionId in userDoc.enrolledStudies && userDoc.enrolledStudies[extensionId].enrolled) {
+        if ("enrolledStudies" in userData
+          && extensionId in userData.enrolledStudies
+          && userData.enrolledStudies[extensionId].enrolled) {
           console.debug("Study is enrolled");
         } else {
           console.debug("Study installed but not enrolled, trigger study onboarding");
@@ -164,7 +174,7 @@ export class Rally {
    * @returns {String} rallyId
    *        The Rally ID (if set).
    */
-  get rallyId() {
+  get rallyId(): string | undefined {
     return this._rallyId;
   }
 
@@ -172,7 +182,7 @@ export class Rally {
  * Handles messages coming in from the external website.
  *
  * @param {Object} message
- *        The payload of the message. May be an empty objecty, or contain auth credential.
+ *        The payload of the message. May be an empty object, or contain auth credential.
  *
  *        email credential: { email, password, providerId }
  *        oAuth credential: { oauthIdToken, providerId }

@@ -23425,11 +23425,17 @@ class Rally {
         this._authStateChangedCallback = (user) => __awaiter(this, void 0, void 0, function* () {
             var _a;
             if (user) {
-                const usersCollection = yield this._db.collection("users").get();
-                const users = usersCollection.docs.map((doc) => doc.data());
                 const uid = (_a = firebase.auth().currentUser) === null || _a === void 0 ? void 0 : _a.uid;
-                const userDoc = users.find(user => user.uid === uid);
-                if (userDoc === null || userDoc === void 0 ? void 0 : userDoc.enrolled) {
+                const docRef = this._db.collection("users").doc(uid);
+                const userDoc = yield docRef.get();
+                // If the user is able to log in but their "users" document does not exist, something is wrong on the server.
+                // Bail out for now, try again next extension startup.
+                // TODO: this would be the sort of thing diagnostic telemetry could be useful for (Sentry etc)
+                if (!userDoc.exists) {
+                    throw new Error(`User document for UID ${uid} does not exist in Firestore`);
+                }
+                const userData = userDoc.data();
+                if (userData === null || userData === void 0 ? void 0 : userData.enrolled) {
                     console.debug("Enrolled in Rally");
                     // FIXME this should be  proper UUIDv4 from firestore, @see https://github.com/mozilla-rally/rally-web-platform/issues/34
                     this._rallyId = user.uid;
@@ -23440,7 +23446,9 @@ class Rally {
                     return;
                 }
                 const extensionId = chrome.runtime.id;
-                if (extensionId in userDoc.enrolledStudies && userDoc.enrolledStudies[extensionId].enrolled) {
+                if ("enrolledStudies" in userDoc
+                    && extensionId in userData.enrolledStudies
+                    && userData.enrolledStudies[extensionId].enrolled) {
                     console.debug("Study is enrolled");
                 }
                 else {
@@ -23509,7 +23517,11 @@ class Rally {
    * Handles messages coming in from the external website.
    *
    * @param {Object} message
-   *        The payload of the message.
+   *        The payload of the message. May be an empty object, or contain auth credential.
+   *
+   *        email credential: { email, password, providerId }
+   *        oAuth credential: { oauthIdToken, providerId }
+   *
    * @param {runtime.MessageSender} sender
    *        An object containing information about who sent
    *        the message.

@@ -26,8 +26,17 @@ jest.mock('firebase/app', () => ({
       return {
         collection: jest.fn(() => {
           return {
-            get: jest.fn(() => {
-              return { docs: [{ data: () => { return { enrolled: true, uid: "test123", enrolledStudies: { "test-study": { enrolled: true } } } } }] };
+            doc: jest.fn(() => {
+              return {
+                get: () => {
+                  return {
+                    exists: true,
+                    data: () => {
+                      return { enrolled: true, uid: "test123", enrolledStudies: { "test-study": { enrolled: true } } }
+                    }
+                  }
+                }
+              };
             }),
           }
         }),
