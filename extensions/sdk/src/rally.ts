@@ -98,7 +98,6 @@ export class Rally {
 
         const userData = docSnap.data();
 
-        console.debug("debug1:", userData);
         if (userData?.enrolled) {
           console.debug("Enrolled in Rally");
           // FIXME this should be  proper UUIDv4 from firestore, @see https://github.com/mozilla-rally/rally-web-platform/issues/34
