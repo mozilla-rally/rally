@@ -46,10 +46,6 @@ jest.mock('firebase/firestore', () => ({
   getFirestore: jest.fn(),
 }))
 
-import { initializeApp } from "firebase/app"
-import { getAuth, onAuthStateChanged, signInWithCredential, signInWithEmailAndPassword } from "firebase/auth";
-import { getFirestore, doc, getDoc } from "firebase/firestore";
-
 const chrome = require("sinon-chrome/extensions");
 // We need to provide the `browser.runtime.id` for sinon-chrome to
 // be happy and play nice with webextension-polyfill. See this issue:
@@ -96,11 +92,11 @@ describe('Rally SDK', function () {
 
     assert.equal(rally._state, runStates.PAUSED);
 
-    await rally._resume();
+    rally._resume();
     assert.equal(rally._state, runStates.RUNNING);
     assert.ok(resumeCallbackCalled);
 
-    await rally._pause();
+    rally._pause();
     assert.ok(rally._state === runStates.PAUSED);
     assert.ok(pausedCallbackCalled);
   });
