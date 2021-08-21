@@ -10,7 +10,7 @@ declare var chrome: any;
 
 import { initializeApp } from "firebase/app"
 import { getAuth, onAuthStateChanged, signInWithCredential, signInWithEmailAndPassword, GoogleAuthProvider } from "firebase/auth";
-import { getFirestore, doc, getDoc } from "firebase/firestore";
+import { getFirestore, doc, getDoc, onSnapshot, setDoc } from "firebase/firestore";
 
 // @ts-ignore - FIXME provide type
 import firebaseConfig from "../config/firebase.config.js";
@@ -34,7 +34,7 @@ export enum webMessages {
 
 enum routes {
   ONBOARD = "onboard",
-  LOGIN = "login"
+  SIGNUP = "signup"
 }
 
 export class Rally {
@@ -88,68 +88,145 @@ export class Rally {
     this._db = getFirestore(firebaseApp);
 
     this._authStateChangedCallback = async (user: any) => {
+      console.debug("_authStateChangedCallback fired");
       if (user) {
         const uid = this._auth.currentUser?.uid;
 
-        const docRef = doc(this._db, "users", uid);
-        const docSnap = await getDoc(docRef);
+        onSnapshot(doc(this._db, "users", uid), async userDoc => {
+          console.debug("onSnapshot for users fired");
+          if (!userDoc.exists) {
+            throw new Error("No profile exists for this user on the server.");
+          }
 
-        // If the user is able to log in but their "users" document does not exist, something is wrong on the server.
-        // Bail out for now, try again next extension startup.
-        // TODO: this would be the sort of thing diagnostic telemetry could be useful for (Sentry etc)
-        if (!docSnap.exists) {
-          throw new Error(`User document for UID ${uid} does not exist in Firestore`);
-        }
+          const user = this._auth.currentUser;
 
-        const userData = docSnap.data();
+          const userData = userDoc.data();
+          // FIXME validate schema
 
-        if (userData?.enrolled) {
-          console.debug("Enrolled in Rally");
-          // FIXME this should be  proper UUIDv4 from firestore, @see https://github.com/mozilla-rally/rally-web-platform/issues/34
-          this._rallyId = user.uid;
-        } else {
-          console.debug("Not enrolled in Rally, trigger onboarding");
-          this._promptSignUp(routes.ONBOARD).catch(err => console.error(err));
-          return;
-        }
+          const enrolled = !!await this._checkEnrollment(user, userData);
+          if (!enrolled) {
+            if (this._state !== runStates.PAUSED) {
+              this._pause();
+            }
+            if (userData) {
+              userData.enrolledStudies[browser.runtime.id].attached = false;
+              setDoc(doc(this._db, "users", uid), { enrolledStudies: userData.enrolledStudies }, { merge: true });
+            }
+            this._promptSignUp(routes.ONBOARD).catch(err => console.error(err));
+            return;
+          }
 
-        const extensionId = chrome.runtime.id;
-        let enrolled = false;
-        if ("enrolledStudies" in userData
-          && extensionId in userData.enrolledStudies
-          // FIXME this check seems redundant, shouldn't presence in `enrolledStudies` be enough?
-          && userData.enrolledStudies[extensionId].enrolled) {
-          console.debug("Study is enrolled");
-        } else {
-          console.debug("Study installed but not enrolled, trigger study onboarding");
-          this._pause();
-          this._promptSignUp(routes.ONBOARD, extensionId).catch(err => console.error(err));
-          return;
-        }
+          const studyEnrolled = !!await this._checkStudyEnrollment(user, userData)
+          if (!studyEnrolled) {
+            if (this._state !== runStates.PAUSED) {
+              this._pause();
+            }
+            // FIXME this can interfere with onboarding, site needs to handle it
+            // this._promptSignUp(routes.ONBOARD, browser.runtime.id).catch(err => console.error(err));
+            return;
+          }
 
-        // If we made it this far, then the user is signed in, enrolled in Rally, and enrolled in this study.
-        // Start running the study.
-        this._resume();
+          // check the study state before resuming
+          const studyDoc = await getDoc(doc(this._db, "studies", browser.runtime.id));
+          const studyData = studyDoc.data();
+
+          if (!(studyData?.studyPaused && studyData.studyEnded)) {
+            if (userData) {
+              userData.enrolledStudies[browser.runtime.id].attached = true;
+              setDoc(doc(this._db, "users", uid), { enrolledStudies: userData.enrolledStudies }, { merge: true });
+            }
+            this._resume();
+          }
+        });
       } else {
-        // Not logged in, trigger onboarding.
-        this._promptSignUp(routes.LOGIN).catch(err => console.error(err));
+        this._promptSignUp(routes.SIGNUP).catch(err => console.error(err));
       }
     }
 
     onAuthStateChanged(this._auth, this._authStateChangedCallback);
+
+    onSnapshot(doc(this._db, "studies", browser.runtime.id), async studyDoc => {
+      console.debug("onSnapshot for studies fired");
+      if (!studyDoc.exists) {
+        throw new Error("No record of this study exists on server.");
+      }
+
+      const studyData = studyDoc.data();
+      // FIXME validate schema
+
+      if (studyData?.studyPaused) {
+        console.info(`Rally study ${studyData.name} is paused.`);
+        this._pause();
+        return;
+      } else {
+        // check enrollment first
+        const user = this._auth.currentUser;
+        if (!user) {
+          return;
+        }
+        const userDoc = await getDoc(doc(this._db, "users", user.uid));
+        const userData = userDoc.data();
+
+        const enrolled = !!this._checkEnrollment(user, userData);
+        if (userData) {
+          userData.enrolledStudies[browser.runtime.id].attached = true;
+          setDoc(doc(this._db, "users", user.uid), { enrolledStudies: userData.enrolledStudies }, { merge: true });
+        }
+        if (enrolled && this._state !== runStates.RUNNING) {
+          this._resume();
+        } else if (this._state !== runStates.PAUSED) {
+          this._pause();
+        }
+      }
+
+      if (studyData?.studyEnded) {
+        console.info(`Rally study ${studyData.name} has ended, uninstalling.`);
+        await browser.management.uninstallSelf();
+        return;
+      }
+    });
+  }
+
+  async _checkEnrollment(user: any, userData: any) {
+    if (userData?.enrolled) {
+      console.debug("Enrolled in Rally");
+      // FIXME this should be  proper UUIDv4 from firestore, @see https://github.com/mozilla-rally/rally-web-platform/issues/34
+      this._rallyId = user.uid;
+      return true;
+    } else {
+      console.debug("Not enrolled in Rally");
+      return false;
+    }
+  }
+
+  async _checkStudyEnrollment(user: any, userData: any) {
+    const extensionId = browser.runtime.id;
+    let enrolled = false;
+    if ("enrolledStudies" in userData
+      && extensionId in userData.enrolledStudies
+      // FIXME this check seems redundant, shouldn't presence in `enrolledStudies` be enough?
+      && userData.enrolledStudies[extensionId].enrolled) {
+      console.debug("Current study is enrolled");
+
+      // If we made it this far, then the user is signed in, enrolled in Rally, and enrolled in this study.
+      return true;
+    } else {
+      console.debug("Current study installed but not enrolled");
+      return false;
+    }
   }
 
   async _promptSignUp(reason: string, study?: string) {
-    let route: string;
+    let route: string = "";
     switch (reason) {
       case routes.ONBOARD:
-        route = reason;
         if (study) {
-          route += `/study/${study}`;
+          // FIXME we should trigger the individual study route = `studies/${study}`;
+          route = `studies`;
         }
         break;
-      case routes.LOGIN:
-        route = "/login";
+      case routes.SIGNUP:
+        route = "signup";
         break;
       default:
         throw new Error(`_promptSignUp: unknown sign-up reason ${reason} for study ${study}`);
@@ -204,24 +281,23 @@ export class Rally {
   }
 
   /**
- * Handles messages coming in from the external website.
- *
- * @param {Object} message
- *        The payload of the message. May be an empty object, or contain auth credential.
- *
- *        email credential: { email, password, providerId }
- *        oAuth credential: { oauthIdToken, providerId }
- *
- * @param {runtime.MessageSender} sender
- *        An object containing information about who sent
- *        the message.
- * @returns {Promise} The response to the received message.
- *          It can be resolved with a value that is sent to the
- *          `sender` or rejected in case of errors.
- */
+  * Handles messages coming in from the external website.
+  *
+  * @param {Object} message
+  *        The payload of the message. May be an empty object, or contain auth credential.
+  *
+  *        email credential: { email, password, providerId }
+  *        oAuth credential: { oauthIdToken, providerId }
+  *
+  * @param {runtime.MessageSender} sender
+  *        An object containing information about who sent
+  *        the message.
+  * @returns {Promise} The response to the received message.
+  *          It can be resolved with a value that is sent to the
+  *          `sender` or rejected in case of errors.
+  */
   async _handleWebMessage(message: { type: string, data: { email?: string, password?: string, oauthIdToken?: string, providerId?: authProviders } }, sender: any) {
     console.log("Rally - received web message", message, "from", sender);
-
     try {
       // Security check - only allow messages from our own site!
       let platformURL = new URL(`https://${Rally.HOST}`);
@@ -232,7 +308,6 @@ export class Rally {
     } catch (ex) {
       throw new Error(`Rally - cannot validate sender URL ${sender.url}: ${ex.message}`);
     }
-
     // ** IMPORTANT **
     //
     // The website should *NOT EVER* be trusted. Other addons could be
