@@ -11,7 +11,12 @@ export default {
     input: 'src/rally.ts',
     output: {
         dir: 'dist',
-        format: 'cjs'
+        format: 'iife'
+    },
+    input: 'src/content-script.ts',
+    output: {
+        dir: 'dist',
+        format: 'iife'
     },
     plugins: [
         replace({
