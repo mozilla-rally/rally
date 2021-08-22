@@ -10,7 +10,7 @@ declare var chrome: any;
 
 import { initializeApp } from "firebase/app"
 import { connectAuthEmulator, getAuth, onAuthStateChanged, signInWithCustomToken } from "firebase/auth";
-import { getFirestore, doc, getDoc, onSnapshot, setDoc } from "firebase/firestore";
+import { connectFirestoreEmulator, getFirestore, doc, getDoc, onSnapshot, setDoc } from "firebase/firestore";
 
 // @ts-ignore - FIXME provide type
 import firebaseConfig from "../config/firebase.config.js";
@@ -88,18 +88,23 @@ export class Rally {
     this._auth = getAuth(firebaseApp);
     this._db = getFirestore(firebaseApp);
 
+    connectAuthEmulator(this._auth, 'http://localhost:9099');
+    connectFirestoreEmulator(this._db, 'localhost', 8080);
+
     this._authStateChangedCallback = async (user: any) => {
       console.debug("_authStateChangedCallback fired");
       if (user) {
-        const uid = this._auth.currentUser?.uid;
+        // This should be a restricted user, which can see a minimal part of the users data.
+        // The users Firebase UID is needed for this, and it is available in a custom claim on the JWT.
+        const idTokenResult = await this._auth.currentUser.getIdTokenResult();
+        const uid = idTokenResult.claims.firebaseUid;
 
+        // FIXME unregister this if auth state changes, also make it more testeable...
         onSnapshot(doc(this._db, "users", uid), async userDoc => {
           console.debug("onSnapshot for users fired");
           if (!userDoc.exists) {
             throw new Error("No profile exists for this user on the server.");
           }
-
-          const user = this._auth.currentUser;
 
           const userData = userDoc.data();
           // FIXME validate schema
@@ -144,7 +149,6 @@ export class Rally {
       }
     }
 
-    connectAuthEmulator(this._auth, 'http://localhost:9099');
     onAuthStateChanged(this._auth, this._authStateChangedCallback);
 
     onSnapshot(doc(this._db, "studies", browser.runtime.id), async studyDoc => {
@@ -161,12 +165,17 @@ export class Rally {
         this._pause();
         return;
       } else {
-        // check enrollment first
+        // This should be a restricted user, which can see a minimal part of the users data.
+        // The users Firebase UID is needed for this, and it is available in a custom claim on the JWT.
+
         const user = this._auth.currentUser;
         if (!user) {
           return;
         }
-        const userDoc = await getDoc(doc(this._db, "users", user.uid));
+        const idTokenResult = await this._auth.currentUser.getIdTokenResult();
+        const uid = idTokenResult.claims.firebaseUid;
+
+        const userDoc = await getDoc(doc(this._db, "users", uid));
         const userData = userDoc.data();
 
         const enrolled = !!this._checkEnrollment(user, userData);
@@ -188,11 +197,9 @@ export class Rally {
       }
     });
 
-    this._port;
     browser.runtime.onConnect.addListener((port) => {
       console.debug("Rally - bg port connected");
-      this._port = port;
-      this._port.onMessage.addListener((m, s) => this._handleWebMessage(m, s));
+      port.onMessage.addListener((m, s) => this._handleWebMessage(m, s));
     });
   }
 
@@ -203,7 +210,7 @@ export class Rally {
       this._rallyId = user.uid;
       return true;
     } else {
-      console.debug("Not enrolled in Rally");
+      console.debug("Not enrolled in Rally:", user, userData);
       return false;
     }
   }

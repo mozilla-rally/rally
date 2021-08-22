@@ -29,6 +29,17 @@ function __extends$1(d, b) {
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 }
 
+var __assign = function() {
+    __assign = Object.assign || function __assign(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p)) t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
+};
+
 function __rest(s, e) {
     var t = {};
     for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p) && e.indexOf(p) < 0)
@@ -1741,6 +1752,52 @@ var Deferred = /** @class */ (function () {
     };
     return Deferred;
 }());
+
+/**
+ * @license
+ * Copyright 2021 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+function createMockUserToken(token, projectId) {
+    if (token.uid) {
+        throw new Error('The "uid" field is no longer supported by mockUserToken. Please use "sub" instead for Firebase Auth User ID.');
+    }
+    // Unsecured JWTs use "none" as the algorithm.
+    var header = {
+        alg: 'none',
+        type: 'JWT'
+    };
+    var project = projectId || 'demo-project';
+    var iat = token.iat || 0;
+    var sub = token.sub || token.user_id;
+    if (!sub) {
+        throw new Error("mockUserToken must contain 'sub' or 'user_id' field!");
+    }
+    var payload = __assign({ 
+        // Set all required fields to decent defaults
+        iss: "https://securetoken.google.com/" + project, aud: project, iat: iat, exp: iat + 3600, auth_time: iat, sub: sub, user_id: sub, firebase: {
+            sign_in_provider: 'custom',
+            identities: {}
+        } }, token);
+    // Unsecured JWTs use the empty string as a signature.
+    var signature = '';
+    return [
+        base64.encodeString(JSON.stringify(header), /*webSafe=*/ false),
+        base64.encodeString(JSON.stringify(payload), /*webSafe=*/ false),
+        signature
+    ].join('.');
+}
 
 /**
  * @license
@@ -19777,6 +19834,33 @@ class nu {
     }
 }
 
+/**
+ * A CredentialsProvider that always returns a constant token. Used for
+ * emulator token mocking.
+ */ class iu {
+    constructor(t) {
+        this.token = t, 
+        /**
+         * Stores the listener registered with setChangeListener()
+         * This isn't actually necessary since the UID never changes, but we use this
+         * to verify the listen contract is adhered to in tests.
+         */
+        this.changeListener = null;
+    }
+    getToken() {
+        return Promise.resolve(this.token);
+    }
+    invalidateToken() {}
+    setChangeListener(t, e) {
+        this.changeListener = e, 
+        // Fire with initial user.
+        t.enqueueRetryable((() => e(this.token.user)));
+    }
+    removeChangeListener() {
+        this.changeListener = null;
+    }
+}
+
 class ru {
     constructor(t) {
         /** Tracks the current User. */
@@ -20119,6 +20203,21 @@ class wu {
             const e = eu.get(t);
             e && ($("ComponentProvider", "Removing Datastore"), eu.delete(t), e.terminate());
         }(this), Promise.resolve();
+    }
+}
+
+function mu(t, e, n, s = {}) {
+    const i = (t = fu(t, _u))._getSettings();
+    if ("firestore.googleapis.com" !== i.host && i.host !== e && F("Host has been set in both settings() and useEmulator(), emulator host will be used"), 
+    t._setSettings(Object.assign(Object.assign({}, i), {
+        host: `${e}:${n}`,
+        ssl: !1
+    })), s.mockUserToken) {
+        // Let createMockUserToken validate first (catches common mistakes like
+        // invalid field "uid" and missing field "sub" / "user_id".)
+        const e = createMockUserToken(s.mockUserToken), n = s.mockUserToken.sub || s.mockUserToken.user_id;
+        if (!n) throw new C(D.INVALID_ARGUMENT, "mockUserToken must contain 'sub' or 'user_id' field!");
+        t._credentials = new iu(new nu(e, new Ar(n)));
     }
 }
 
@@ -21833,17 +21932,21 @@ class Rally {
         const firebaseApp = initializeApp(firebaseConfig);
         this._auth = getAuth(firebaseApp);
         this._db = Cu(firebaseApp);
+        connectAuthEmulator(this._auth, 'http://localhost:9099');
+        mu(this._db, 'localhost', 8080);
         this._authStateChangedCallback = (user) => __awaiter(this, void 0, void 0, function* () {
-            var _a;
             console.debug("_authStateChangedCallback fired");
             if (user) {
-                const uid = (_a = this._auth.currentUser) === null || _a === void 0 ? void 0 : _a.uid;
+                // This should be a restricted user, which can see a minimal part of the users data.
+                // The users Firebase UID is needed for this, and it is available in a custom claim on the JWT.
+                const idTokenResult = yield this._auth.currentUser.getIdTokenResult();
+                const uid = idTokenResult.claims.firebaseUid;
+                // FIXME unregister this if auth state changes, also make it more testeable...
                 dh(Iu(this._db, "users", uid), (userDoc) => __awaiter(this, void 0, void 0, function* () {
                     console.debug("onSnapshot for users fired");
                     if (!userDoc.exists) {
                         throw new Error("No profile exists for this user on the server.");
                     }
-                    const user = this._auth.currentUser;
                     const userData = userDoc.data();
                     // FIXME validate schema
                     const enrolled = !!(yield this._checkEnrollment(user, userData));
@@ -21883,7 +21986,6 @@ class Rally {
                 this._promptSignUp(routes.SIGNUP).catch(err => console.error(err));
             }
         });
-        connectAuthEmulator(this._auth, 'http://localhost:9099');
         onAuthStateChanged(this._auth, this._authStateChangedCallback);
         dh(Iu(this._db, "studies", browser$1.runtime.id), (studyDoc) => __awaiter(this, void 0, void 0, function* () {
             console.debug("onSnapshot for studies fired");
@@ -21898,12 +22000,15 @@ class Rally {
                 return;
             }
             else {
-                // check enrollment first
+                // This should be a restricted user, which can see a minimal part of the users data.
+                // The users Firebase UID is needed for this, and it is available in a custom claim on the JWT.
                 const user = this._auth.currentUser;
                 if (!user) {
                     return;
                 }
-                const userDoc = yield nh(Iu(this._db, "users", user.uid));
+                const idTokenResult = yield this._auth.currentUser.getIdTokenResult();
+                const uid = idTokenResult.claims.firebaseUid;
+                const userDoc = yield nh(Iu(this._db, "users", uid));
                 const userData = userDoc.data();
                 const enrolled = !!this._checkEnrollment(user, userData);
                 if (userData) {
@@ -21923,11 +22028,9 @@ class Rally {
                 return;
             }
         }));
-        this._port;
         browser$1.runtime.onConnect.addListener((port) => {
             console.debug("Rally - bg port connected");
-            this._port = port;
-            this._port.onMessage.addListener((m, s) => this._handleWebMessage(m, s));
+            port.onMessage.addListener((m, s) => this._handleWebMessage(m, s));
         });
     }
     _checkEnrollment(user, userData) {
@@ -21939,7 +22042,7 @@ class Rally {
                 return true;
             }
             else {
-                console.debug("Not enrolled in Rally");
+                console.debug("Not enrolled in Rally:", user, userData);
                 return false;
             }
         });
