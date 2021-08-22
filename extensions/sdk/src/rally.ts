@@ -9,7 +9,7 @@ import { browser } from "webextension-polyfill-ts";
 declare var chrome: any;
 
 import { initializeApp } from "firebase/app"
-import { getAuth, onAuthStateChanged, signInWithCredential, signInWithEmailAndPassword, GoogleAuthProvider } from "firebase/auth";
+import { getAuth, onAuthStateChanged, signInWithCustomToken } from "firebase/auth";
 import { getFirestore, doc, getDoc, onSnapshot, setDoc } from "firebase/firestore";
 
 // @ts-ignore - FIXME provide type
@@ -38,9 +38,6 @@ enum routes {
 }
 
 export class Rally {
-  static readonly SITE: string = "__RALLY_BASE_URL__";
-  static readonly HOST: string = "__RALLY_HOST__";
-
   private _enableDevMode: boolean;
   private _rallyId: string | undefined;
 
@@ -48,6 +45,7 @@ export class Rally {
   _authStateChangedCallback: (user: any) => Promise<void>;
   _auth: any;
   _db: any;
+  _rallySite: string;
 
   /**
    * Initialize the Rally library.
@@ -61,8 +59,11 @@ export class Rally {
    *        A function to call when the study is paused or running.
    *        Takes a single parameter, `message`, which is the {String}
    *        received regarding the current study state ("paused" or "running".)
+   *
+   * @param {String} rallySite
+   *        A string containing the Rally Web Platform site.
    */
-  constructor(enableDevMode: boolean, stateChangeCallback: (runState: runStates) => void) {
+  constructor(enableDevMode: boolean, stateChangeCallback: (runState: runStates) => void, rallySite: string) {
     if (!stateChangeCallback) {
       throw new Error("Rally.initialize - Initialization failed, stateChangeCallback is required.")
     }
@@ -78,6 +79,8 @@ export class Rally {
     // Set the initial state to paused, and register callback for future changes.
     this._state = runStates.PAUSED;
     this._stateChangeCallback = stateChangeCallback;
+
+    this._rallySite = rallySite;
 
     chrome.runtime.onMessageExternal.addListener(
       async (m: any, s: any) => this._handleWebMessage(m, s));
@@ -232,7 +235,7 @@ export class Rally {
         throw new Error(`_promptSignUp: unknown sign-up reason ${reason} for study ${study}`);
     }
 
-    const tabs = await browser.tabs.query({ url: `*://${Rally.HOST}/${route}` });
+    const tabs = await browser.tabs.query({ url: `${this._rallySite}/${route}` });
     // If there are any tabs with the Rally site loaded, focus the latest one.
     if (tabs && tabs.length > 0) {
       const tab: any = tabs.pop();
@@ -241,7 +244,7 @@ export class Rally {
     } else {
       // Otherwise, open the website.
       chrome.tabs.create({
-        url: `${Rally.SITE}/${route}`
+        url: `${this._rallySite}/${route}`
       });
     }
   }
@@ -296,11 +299,11 @@ export class Rally {
   *          It can be resolved with a value that is sent to the
   *          `sender` or rejected in case of errors.
   */
-  async _handleWebMessage(message: { type: string, data: { email?: string, password?: string, oauthIdToken?: string, providerId?: authProviders } }, sender: any) {
+  async _handleWebMessage(message: { type: webMessages, data: {} }, sender: any) {
     console.log("Rally - received web message", message, "from", sender);
     try {
       // Security check - only allow messages from our own site!
-      let platformURL = new URL(`https://${Rally.HOST}`);
+      let platformURL = new URL(this._rallySite);
       let senderURL = new URL(sender.url);
       if (platformURL.origin != senderURL.origin) {
         throw new Error(`Rally - received message from unexpected URL ${sender.url}`);
@@ -345,7 +348,7 @@ export class Rally {
     }
   }
 
-  async _completeSignUp(credential: any) {
+  async _completeSignUp(data) {
     try {
 
       // Pause study when new credentials are passed.
@@ -353,17 +356,7 @@ export class Rally {
         this._pause();
       }
 
-      switch (credential.providerId) {
-        case authProviders.GOOGLE:
-          const gCred = GoogleAuthProvider.credential(credential.oauthIdToken)
-          await signInWithCredential(this._auth, gCred);
-          break;
-        case authProviders.EMAIL:
-          await signInWithEmailAndPassword(this._auth, credential.email, credential.password);
-          break;
-        default:
-          throw new Error(`Auth provider not implemented: ${credential.providerId}`);
-      }
+      await signInWithCustomToken(this._auth, data.rallyToken);
       console.debug("logged in as:", this._auth.currentUser?.email);
       return true;
     } catch (ex) {

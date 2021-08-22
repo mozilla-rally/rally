@@ -1,7 +1,3 @@
-'use strict';
-
-Object.defineProperty(exports, '__esModule', { value: true });
-
 /*! *****************************************************************************
 Copyright (c) Microsoft Corporation.
 
@@ -1933,32 +1929,6 @@ function querystring(querystringParams) {
         _loop_1(key, value);
     }
     return params.length ? '&' + params.join('&') : '';
-}
-/**
- * Decodes a querystring (e.g. ?arg=val&arg2=val2) into a params object
- * (e.g. {arg: 'val', arg2: 'val2'})
- */
-function querystringDecode(querystring) {
-    var obj = {};
-    var tokens = querystring.replace(/^\?/, '').split('&');
-    tokens.forEach(function (token) {
-        if (token) {
-            var _a = token.split('='), key = _a[0], value = _a[1];
-            obj[decodeURIComponent(key)] = decodeURIComponent(value);
-        }
-    });
-    return obj;
-}
-/**
- * Extract the query string part of a URL, including the leading question mark (if present).
- */
-function extractQuerystring(url) {
-    var queryStart = url.indexOf('?');
-    if (!queryStart) {
-        return '';
-    }
-    var fragmentStart = url.indexOf('#', queryStart);
-    return url.substring(queryStart, fragmentStart > 0 ? fragmentStart : undefined);
 }
 
 /**
@@ -5487,173 +5457,6 @@ class AuthCredential {
         return debugFail('not implemented');
     }
 }
-async function updateEmailPassword(auth, request) {
-    return _performApiRequest(auth, "POST" /* POST */, "/v1/accounts:update" /* SET_ACCOUNT_INFO */, request);
-}
-
-/**
- * @license
- * Copyright 2020 Google LLC
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *   http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-async function signInWithPassword(auth, request) {
-    return _performSignInRequest(auth, "POST" /* POST */, "/v1/accounts:signInWithPassword" /* SIGN_IN_WITH_PASSWORD */, _addTidIfNecessary(auth, request));
-}
-
-/**
- * @license
- * Copyright 2020 Google LLC
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *   http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-async function signInWithEmailLink$1(auth, request) {
-    return _performSignInRequest(auth, "POST" /* POST */, "/v1/accounts:signInWithEmailLink" /* SIGN_IN_WITH_EMAIL_LINK */, _addTidIfNecessary(auth, request));
-}
-async function signInWithEmailLinkForLinking(auth, request) {
-    return _performSignInRequest(auth, "POST" /* POST */, "/v1/accounts:signInWithEmailLink" /* SIGN_IN_WITH_EMAIL_LINK */, _addTidIfNecessary(auth, request));
-}
-
-/**
- * @license
- * Copyright 2020 Google LLC
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *   http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-/**
- * Interface that represents the credentials returned by {@link EmailAuthProvider} for
- * {@link ProviderId}.PASSWORD
- *
- * @remarks
- * Covers both {@link SignInMethod}.EMAIL_PASSWORD and
- * {@link SignInMethod}.EMAIL_LINK.
- *
- * @public
- */
-class EmailAuthCredential extends AuthCredential {
-    /** @internal */
-    constructor(
-    /** @internal */
-    _email, 
-    /** @internal */
-    _password, signInMethod, 
-    /** @internal */
-    _tenantId = null) {
-        super("password" /* PASSWORD */, signInMethod);
-        this._email = _email;
-        this._password = _password;
-        this._tenantId = _tenantId;
-    }
-    /** @internal */
-    static _fromEmailAndPassword(email, password) {
-        return new EmailAuthCredential(email, password, "password" /* EMAIL_PASSWORD */);
-    }
-    /** @internal */
-    static _fromEmailAndCode(email, oobCode, tenantId = null) {
-        return new EmailAuthCredential(email, oobCode, "emailLink" /* EMAIL_LINK */, tenantId);
-    }
-    /** {@inheritdoc AuthCredential.toJSON} */
-    toJSON() {
-        return {
-            email: this._email,
-            password: this._password,
-            signInMethod: this.signInMethod,
-            tenantId: this._tenantId
-        };
-    }
-    /**
-     * Static method to deserialize a JSON representation of an object into an {@link  AuthCredential}.
-     *
-     * @param json - Either `object` or the stringified representation of the object. When string is
-     * provided, `JSON.parse` would be called first.
-     *
-     * @returns If the JSON input does not represent an {@link AuthCredential}, null is returned.
-     */
-    static fromJSON(json) {
-        const obj = typeof json === 'string' ? JSON.parse(json) : json;
-        if ((obj === null || obj === void 0 ? void 0 : obj.email) && (obj === null || obj === void 0 ? void 0 : obj.password)) {
-            if (obj.signInMethod === "password" /* EMAIL_PASSWORD */) {
-                return this._fromEmailAndPassword(obj.email, obj.password);
-            }
-            else if (obj.signInMethod === "emailLink" /* EMAIL_LINK */) {
-                return this._fromEmailAndCode(obj.email, obj.password, obj.tenantId);
-            }
-        }
-        return null;
-    }
-    /** @internal */
-    async _getIdTokenResponse(auth) {
-        switch (this.signInMethod) {
-            case "password" /* EMAIL_PASSWORD */:
-                return signInWithPassword(auth, {
-                    returnSecureToken: true,
-                    email: this._email,
-                    password: this._password
-                });
-            case "emailLink" /* EMAIL_LINK */:
-                return signInWithEmailLink$1(auth, {
-                    email: this._email,
-                    oobCode: this._password
-                });
-            default:
-                _fail(auth, "internal-error" /* INTERNAL_ERROR */);
-        }
-    }
-    /** @internal */
-    async _linkToIdToken(auth, idToken) {
-        switch (this.signInMethod) {
-            case "password" /* EMAIL_PASSWORD */:
-                return updateEmailPassword(auth, {
-                    idToken,
-                    returnSecureToken: true,
-                    email: this._email,
-                    password: this._password
-                });
-            case "emailLink" /* EMAIL_LINK */:
-                return signInWithEmailLinkForLinking(auth, {
-                    idToken,
-                    email: this._email,
-                    oobCode: this._password
-                });
-            default:
-                _fail(auth, "internal-error" /* INTERNAL_ERROR */);
-        }
-    }
-    /** @internal */
-    _getReauthenticationResolver(auth) {
-        return this._getIdTokenResponse(auth);
-    }
-}
 
 /**
  * @license
@@ -5810,201 +5613,6 @@ class OAuthCredential extends AuthCredential {
         return request;
     }
 }
-
-/**
- * @license
- * Copyright 2020 Google LLC
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *   http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-/**
- * Maps the mode string in action code URL to Action Code Info operation.
- *
- * @param mode
- */
-function parseMode(mode) {
-    switch (mode) {
-        case 'recoverEmail':
-            return "RECOVER_EMAIL" /* RECOVER_EMAIL */;
-        case 'resetPassword':
-            return "PASSWORD_RESET" /* PASSWORD_RESET */;
-        case 'signIn':
-            return "EMAIL_SIGNIN" /* EMAIL_SIGNIN */;
-        case 'verifyEmail':
-            return "VERIFY_EMAIL" /* VERIFY_EMAIL */;
-        case 'verifyAndChangeEmail':
-            return "VERIFY_AND_CHANGE_EMAIL" /* VERIFY_AND_CHANGE_EMAIL */;
-        case 'revertSecondFactorAddition':
-            return "REVERT_SECOND_FACTOR_ADDITION" /* REVERT_SECOND_FACTOR_ADDITION */;
-        default:
-            return null;
-    }
-}
-/**
- * Helper to parse FDL links
- *
- * @param url
- */
-function parseDeepLink(url) {
-    const link = querystringDecode(extractQuerystring(url))['link'];
-    // Double link case (automatic redirect).
-    const doubleDeepLink = link
-        ? querystringDecode(extractQuerystring(link))['deep_link_id']
-        : null;
-    // iOS custom scheme links.
-    const iOSDeepLink = querystringDecode(extractQuerystring(url))['deep_link_id'];
-    const iOSDoubleDeepLink = iOSDeepLink
-        ? querystringDecode(extractQuerystring(iOSDeepLink))['link']
-        : null;
-    return iOSDoubleDeepLink || iOSDeepLink || doubleDeepLink || link || url;
-}
-/**
- * A utility class to parse email action URLs such as password reset, email verification,
- * email link sign in, etc.
- *
- * @public
- */
-class ActionCodeURL {
-    /**
-     * @param actionLink - The link from which to extract the URL.
-     * @returns The ActionCodeURL object, or null if the link is invalid.
-     *
-     * @internal
-     */
-    constructor(actionLink) {
-        var _a, _b, _c, _d, _e, _f;
-        const searchParams = querystringDecode(extractQuerystring(actionLink));
-        const apiKey = (_a = searchParams["apiKey" /* API_KEY */]) !== null && _a !== void 0 ? _a : null;
-        const code = (_b = searchParams["oobCode" /* CODE */]) !== null && _b !== void 0 ? _b : null;
-        const operation = parseMode((_c = searchParams["mode" /* MODE */]) !== null && _c !== void 0 ? _c : null);
-        // Validate API key, code and mode.
-        _assert(apiKey && code && operation, "argument-error" /* ARGUMENT_ERROR */);
-        this.apiKey = apiKey;
-        this.operation = operation;
-        this.code = code;
-        this.continueUrl = (_d = searchParams["continueUrl" /* CONTINUE_URL */]) !== null && _d !== void 0 ? _d : null;
-        this.languageCode = (_e = searchParams["languageCode" /* LANGUAGE_CODE */]) !== null && _e !== void 0 ? _e : null;
-        this.tenantId = (_f = searchParams["tenantId" /* TENANT_ID */]) !== null && _f !== void 0 ? _f : null;
-    }
-    /**
-     * Parses the email action link string and returns an {@link ActionCodeURL} if the link is valid,
-     * otherwise returns null.
-     *
-     * @param link  - The email action link string.
-     * @returns The ActionCodeURL object, or null if the link is invalid.
-     *
-     * @public
-     */
-    static parseLink(link) {
-        const actionLink = parseDeepLink(link);
-        try {
-            return new ActionCodeURL(actionLink);
-        }
-        catch (_a) {
-            return null;
-        }
-    }
-}
-
-/**
- * @license
- * Copyright 2020 Google LLC
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *   http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-/**
- * Provider for generating {@link EmailAuthCredential}.
- *
- * @public
- */
-class EmailAuthProvider {
-    constructor() {
-        /**
-         * Always set to {@link ProviderId}.PASSWORD, even for email link.
-         */
-        this.providerId = EmailAuthProvider.PROVIDER_ID;
-    }
-    /**
-     * Initialize an {@link AuthCredential} using an email and password.
-     *
-     * @example
-     * ```javascript
-     * const authCredential = EmailAuthProvider.credential(email, password);
-     * const userCredential = await signInWithCredential(auth, authCredential);
-     * ```
-     *
-     * @example
-     * ```javascript
-     * const userCredential = await signInWithEmailAndPassword(auth, email, password);
-     * ```
-     *
-     * @param email - Email address.
-     * @param password - User account password.
-     * @returns The auth provider credential.
-     */
-    static credential(email, password) {
-        return EmailAuthCredential._fromEmailAndPassword(email, password);
-    }
-    /**
-     * Initialize an {@link AuthCredential} using an email and an email link after a sign in with
-     * email link operation.
-     *
-     * @example
-     * ```javascript
-     * const authCredential = EmailAuthProvider.credentialWithLink(auth, email, emailLink);
-     * const userCredential = await signInWithCredential(auth, authCredential);
-     * ```
-     *
-     * @example
-     * ```javascript
-     * await sendSignInLinkToEmail(auth, email);
-     * // Obtain emailLink from user.
-     * const userCredential = await signInWithEmailLink(auth, email, emailLink);
-     * ```
-     *
-     * @param auth - The Auth instance used to verify the link.
-     * @param email - Email address.
-     * @param emailLink - Sign-in email link.
-     * @returns - The auth provider credential.
-     */
-    static credentialWithLink(email, emailLink) {
-        const actionCodeUrl = ActionCodeURL.parseLink(emailLink);
-        _assert(actionCodeUrl, "argument-error" /* ARGUMENT_ERROR */);
-        return EmailAuthCredential._fromEmailAndCode(email, actionCodeUrl.code, actionCodeUrl.tenantId);
-    }
-}
-/**
- * Always set to {@link ProviderId}.PASSWORD, even for email link.
- */
-EmailAuthProvider.PROVIDER_ID = "password" /* PASSWORD */;
-/**
- * Always set to {@link SignInMethod}.EMAIL_PASSWORD.
- */
-EmailAuthProvider.EMAIL_PASSWORD_SIGN_IN_METHOD = "password" /* EMAIL_PASSWORD */;
-/**
- * Always set to {@link SignInMethod}.EMAIL_LINK.
- */
-EmailAuthProvider.EMAIL_LINK_SIGN_IN_METHOD = "emailLink" /* EMAIL_LINK */;
 
 /**
  * @license
@@ -6747,38 +6355,68 @@ async function _signInWithCredential(auth, credential, bypassAuthState = false) 
     }
     return userCredential;
 }
+
 /**
- * Asynchronously signs in with the given credentials.
+ * @license
+ * Copyright 2020 Google LLC
  *
- * @remarks
- * An {@link AuthProvider} can be used to generate the credential.
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- * @param auth - The Auth instance.
- * @param credential - The auth credential.
+ *   http://www.apache.org/licenses/LICENSE-2.0
  *
- * @public
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
-async function signInWithCredential(auth, credential) {
-    return _signInWithCredential(_castAuth(auth), credential);
+async function signInWithCustomToken$1(auth, request) {
+    return _performSignInRequest(auth, "POST" /* POST */, "/v1/accounts:signInWithCustomToken" /* SIGN_IN_WITH_CUSTOM_TOKEN */, _addTidIfNecessary(auth, request));
 }
+
 /**
- * Asynchronously signs in using an email and password.
+ * @license
+ * Copyright 2020 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+/**
+ * Asynchronously signs in using a custom token.
  *
  * @remarks
- * Fails with an error if the email address and password do not match.
+ * Custom tokens are used to integrate Firebase Auth with existing auth systems, and must
+ * be generated by an auth backend using the
+ * {@link https://firebase.google.com/docs/reference/admin/node/admin.auth.Auth#createcustomtoken | createCustomToken}
+ * method in the {@link https://firebase.google.com/docs/auth/admin | Admin SDK} .
  *
- * Note: The user's password is NOT the password used to access the user's email account. The
- * email address serves as a unique identifier for the user, and the password is used to access
- * the user's account in your Firebase project. See also: {@link createUserWithEmailAndPassword}.
+ * Fails with an error if the token is invalid, expired, or not accepted by the Firebase Auth service.
  *
  * @param auth - The Auth instance.
- * @param email - The users email address.
- * @param password - The users password.
+ * @param customToken - The custom token to sign in with.
  *
  * @public
  */
-function signInWithEmailAndPassword(auth, email, password) {
-    return signInWithCredential(getModularInstance(auth), EmailAuthProvider.credential(email, password));
+async function signInWithCustomToken(auth, customToken) {
+    const authInternal = _castAuth(auth);
+    const response = await signInWithCustomToken$1(authInternal, {
+        token: customToken,
+        returnSecureToken: true
+    });
+    const cred = await UserCredentialImpl._fromIdTokenResponse(authInternal, "signIn" /* SIGN_IN */, response);
+    await authInternal._updateCurrentUser(cred.user);
+    return cred;
 }
 /**
  * Adds an observer for changes to the user's sign-in state.
@@ -22032,23 +21670,23 @@ var firebaseConfig = {
 /* This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
-exports.runStates = void 0;
+var runStates;
 (function (runStates) {
     runStates[runStates["RUNNING"] = 0] = "RUNNING";
     runStates[runStates["PAUSED"] = 1] = "PAUSED";
-})(exports.runStates || (exports.runStates = {}));
-exports.authProviders = void 0;
+})(runStates || (runStates = {}));
+var authProviders;
 (function (authProviders) {
     authProviders["GOOGLE"] = "google.com";
     authProviders["EMAIL"] = "email";
-})(exports.authProviders || (exports.authProviders = {}));
-exports.webMessages = void 0;
+})(authProviders || (authProviders = {}));
+var webMessages;
 (function (webMessages) {
     webMessages["WEB_CHECK"] = "web-check";
     webMessages["COMPLETE_SIGNUP"] = "complete-signup";
     webMessages["WEB_CHECK_RESPONSE"] = "web-check-response";
     webMessages["COMPLETE_SIGNUP_RESPONSE"] = "complete-signup-response";
-})(exports.webMessages || (exports.webMessages = {}));
+})(webMessages || (webMessages = {}));
 var routes;
 (function (routes) {
     routes["ONBOARD"] = "onboard";
@@ -22067,8 +21705,11 @@ class Rally {
      *        A function to call when the study is paused or running.
      *        Takes a single parameter, `message`, which is the {String}
      *        received regarding the current study state ("paused" or "running".)
+     *
+     * @param {String} rallySite
+     *        A string containing the Rally Web Platform site.
      */
-    constructor(enableDevMode, stateChangeCallback) {
+    constructor(enableDevMode, stateChangeCallback, rallySite) {
         if (!stateChangeCallback) {
             throw new Error("Rally.initialize - Initialization failed, stateChangeCallback is required.");
         }
@@ -22078,8 +21719,9 @@ class Rally {
         this._enableDevMode = Boolean(enableDevMode);
         this._rallyId = undefined;
         // Set the initial state to paused, and register callback for future changes.
-        this._state = exports.runStates.PAUSED;
+        this._state = runStates.PAUSED;
         this._stateChangeCallback = stateChangeCallback;
+        this._rallySite = rallySite;
         chrome.runtime.onMessageExternal.addListener((m, s) => __awaiter(this, void 0, void 0, function* () { return this._handleWebMessage(m, s); }));
         const firebaseApp = initializeApp(firebaseConfig);
         this._auth = getAuth(firebaseApp);
@@ -22099,7 +21741,7 @@ class Rally {
                     // FIXME validate schema
                     const enrolled = !!(yield this._checkEnrollment(user, userData));
                     if (!enrolled) {
-                        if (this._state !== exports.runStates.PAUSED) {
+                        if (this._state !== runStates.PAUSED) {
                             this._pause();
                         }
                         if (userData) {
@@ -22111,7 +21753,7 @@ class Rally {
                     }
                     const studyEnrolled = !!(yield this._checkStudyEnrollment(user, userData));
                     if (!studyEnrolled) {
-                        if (this._state !== exports.runStates.PAUSED) {
+                        if (this._state !== runStates.PAUSED) {
                             this._pause();
                         }
                         // FIXME this can interfere with onboarding, site needs to handle it
@@ -22160,10 +21802,10 @@ class Rally {
                     userData.enrolledStudies[browser$1.runtime.id].attached = true;
                     ah(Iu(this._db, "users", user.uid), { enrolledStudies: userData.enrolledStudies }, { merge: true });
                 }
-                if (enrolled && this._state !== exports.runStates.RUNNING) {
+                if (enrolled && this._state !== runStates.RUNNING) {
                     this._resume();
                 }
-                else if (this._state !== exports.runStates.PAUSED) {
+                else if (this._state !== runStates.PAUSED) {
                     this._pause();
                 }
             }
@@ -22221,7 +21863,7 @@ class Rally {
                 default:
                     throw new Error(`_promptSignUp: unknown sign-up reason ${reason} for study ${study}`);
             }
-            const tabs = yield browser$1.tabs.query({ url: `*://${Rally.HOST}/${route}` });
+            const tabs = yield browser$1.tabs.query({ url: `${this._rallySite}/${route}` });
             // If there are any tabs with the Rally site loaded, focus the latest one.
             if (tabs && tabs.length > 0) {
                 const tab = tabs.pop();
@@ -22231,7 +21873,7 @@ class Rally {
             else {
                 // Otherwise, open the website.
                 chrome.tabs.create({
-                    url: `${Rally.SITE}/${route}`
+                    url: `${this._rallySite}/${route}`
                 });
             }
         });
@@ -22240,18 +21882,18 @@ class Rally {
      * Pause the current study.
      */
     _pause() {
-        if (this._state !== exports.runStates.PAUSED) {
-            this._state = exports.runStates.PAUSED;
-            this._stateChangeCallback(exports.runStates.PAUSED);
+        if (this._state !== runStates.PAUSED) {
+            this._state = runStates.PAUSED;
+            this._stateChangeCallback(runStates.PAUSED);
         }
     }
     /**
      * Resume the current study, if paused.
      */
     _resume() {
-        if (this._state !== exports.runStates.RUNNING) {
-            this._state = exports.runStates.RUNNING;
-            this._stateChangeCallback(exports.runStates.RUNNING);
+        if (this._state !== runStates.RUNNING) {
+            this._state = runStates.RUNNING;
+            this._stateChangeCallback(runStates.RUNNING);
         }
     }
     _stateChangeCallback(runState) {
@@ -22287,7 +21929,7 @@ class Rally {
             console.log("Rally - received web message", message, "from", sender);
             try {
                 // Security check - only allow messages from our own site!
-                let platformURL = new URL(`https://${Rally.HOST}`);
+                let platformURL = new URL(this._rallySite);
                 let senderURL = new URL(sender.url);
                 if (platformURL.origin != senderURL.origin) {
                     throw new Error(`Rally - received message from unexpected URL ${sender.url}`);
@@ -22306,17 +21948,17 @@ class Rally {
             // thoroughly of the implications: can the message be used to leak
             // information out? Can it be used to mess with studies?
             switch (message.type) {
-                case exports.webMessages.WEB_CHECK:
+                case webMessages.WEB_CHECK:
                     // The `web-check` message should be safe: any installed extension with
                     // the `management` privileges could check for the presence of the
                     // Rally SDK and expose that to the web. By exposing this ourselves
                     // through content scripts enabled on our domain, we don't make things
                     // worse.
                     return {
-                        type: exports.webMessages.WEB_CHECK_RESPONSE,
+                        type: webMessages.WEB_CHECK_RESPONSE,
                         data: {}
                     };
-                case exports.webMessages.COMPLETE_SIGNUP:
+                case webMessages.COMPLETE_SIGNUP:
                     // The `complete-signup` message should be safe: It's a one-direction
                     // communication from the page, containing the credentials from the currently-authenticated user.
                     //
@@ -22326,13 +21968,13 @@ class Rally {
                     // extension to send data anywhere attacker-controlled, since the data collection endpoint is hardcoded and signed
                     // along with the extension.
                     const signedUp = yield this._completeSignUp(message.data);
-                    return { type: exports.webMessages.COMPLETE_SIGNUP_RESPONSE, data: { signedUp } };
+                    return { type: webMessages.COMPLETE_SIGNUP_RESPONSE, data: { signedUp } };
                 default:
                     throw new Error(`Rally._handleWebMessage - unexpected message type "${message.type}"`);
             }
         });
     }
-    _completeSignUp(credential) {
+    _completeSignUp(data) {
         var _a;
         return __awaiter(this, void 0, void 0, function* () {
             try {
@@ -22340,17 +21982,7 @@ class Rally {
                 if (this._auth.currentUser) {
                     this._pause();
                 }
-                switch (credential.providerId) {
-                    case exports.authProviders.GOOGLE:
-                        const gCred = GoogleAuthProvider.credential(credential.oauthIdToken);
-                        yield signInWithCredential(this._auth, gCred);
-                        break;
-                    case exports.authProviders.EMAIL:
-                        yield signInWithEmailAndPassword(this._auth, credential.email, credential.password);
-                        break;
-                    default:
-                        throw new Error(`Auth provider not implemented: ${credential.providerId}`);
-                }
+                yield signInWithCustomToken(this._auth, data.rallyToken);
                 console.debug("logged in as:", (_a = this._auth.currentUser) === null || _a === void 0 ? void 0 : _a.email);
                 return true;
             }
@@ -22361,7 +21993,5 @@ class Rally {
         });
     }
 }
-Rally.SITE = "https://rally-web-spike.web.app";
-Rally.HOST = "rally-web-spike.web.app";
 
-exports.Rally = Rally;
+export { Rally, authProviders, runStates, webMessages };
