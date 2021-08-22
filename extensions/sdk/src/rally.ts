@@ -9,7 +9,7 @@ import { browser } from "webextension-polyfill-ts";
 declare var chrome: any;
 
 import { initializeApp } from "firebase/app"
-import { getAuth, onAuthStateChanged, signInWithCustomToken } from "firebase/auth";
+import { connectAuthEmulator, getAuth, onAuthStateChanged, signInWithCustomToken } from "firebase/auth";
 import { getFirestore, doc, getDoc, onSnapshot, setDoc } from "firebase/firestore";
 
 // @ts-ignore - FIXME provide type
@@ -46,6 +46,7 @@ export class Rally {
   _auth: any;
   _db: any;
   _rallySite: string;
+  private _port: any;
 
   /**
    * Initialize the Rally library.
@@ -80,11 +81,8 @@ export class Rally {
     this._state = runStates.PAUSED;
     this._stateChangeCallback = stateChangeCallback;
 
+    console.debug("Rally site set to:", rallySite);
     this._rallySite = rallySite;
-
-    chrome.runtime.onMessageExternal.addListener(
-      async (m: any, s: any) => this._handleWebMessage(m, s));
-
     const firebaseApp = initializeApp(firebaseConfig);
 
     this._auth = getAuth(firebaseApp);
@@ -146,6 +144,7 @@ export class Rally {
       }
     }
 
+    connectAuthEmulator(this._auth, 'http://localhost:9099');
     onAuthStateChanged(this._auth, this._authStateChangedCallback);
 
     onSnapshot(doc(this._db, "studies", browser.runtime.id), async studyDoc => {
@@ -187,6 +186,13 @@ export class Rally {
         await browser.management.uninstallSelf();
         return;
       }
+    });
+
+    this._port;
+    browser.runtime.onConnect.addListener((port) => {
+      console.debug("Rally - bg port connected");
+      this._port = port;
+      this._port.onMessage.addListener((m, s) => this._handleWebMessage(m, s));
     });
   }
 
@@ -301,16 +307,6 @@ export class Rally {
   */
   async _handleWebMessage(message: { type: webMessages, data: {} }, sender: any) {
     console.log("Rally - received web message", message, "from", sender);
-    try {
-      // Security check - only allow messages from our own site!
-      let platformURL = new URL(this._rallySite);
-      let senderURL = new URL(sender.url);
-      if (platformURL.origin != senderURL.origin) {
-        throw new Error(`Rally - received message from unexpected URL ${sender.url}`);
-      }
-    } catch (ex) {
-      throw new Error(`Rally - cannot validate sender URL ${sender.url}: ${ex.message}`);
-    }
     // ** IMPORTANT **
     //
     // The website should *NOT EVER* be trusted. Other addons could be
@@ -350,7 +346,7 @@ export class Rally {
 
   async _completeSignUp(data) {
     try {
-
+      console.debug("Rally._completeSignUp - ", data);
       // Pause study when new credentials are passed.
       if (this._auth.currentUser) {
         this._pause();

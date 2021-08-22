@@ -7568,6 +7568,7 @@ var routes;
 /* This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
+var port = browser$1.runtime.connect({ name: "port-from-cs" });
 /**
  * Send an event to the web page.
  *
@@ -7596,18 +7597,22 @@ function handlePageEvents(event) {
     console.debug(`Rally - "${event.type}" message received from the page`);
     switch (event.type) {
         case webMessages.COMPLETE_SIGNUP: {
-            browser$1.runtime.sendMessage(webMessages.COMPLETE_SIGNUP, event);
+            // browser.runtime.sendMessage({ type: event.type, data: event.detail });
+            port.postMessage({ type: event.type, data: event.detail });
             break;
         }
         case webMessages.WEB_CHECK: {
-            browser$1.runtime.sendMessage(webMessages.WEB_CHECK, {});
+            port.postMessage({ type: event.type, data: {} });
             break;
         }
         default:
             console.error(`Rally - unknown message ${event.type} received`);
     }
 }
-window.addEventListener("complete-signup", e => handlePageEvents(e));
+// @ts-ignore
+window.addEventListener(webMessages.COMPLETE_SIGNUP, e => handlePageEvents(e));
+// @ts-ignore
+window.addEventListener(webMessages.WEB_CHECK, e => handlePageEvents(e));
 console.debug("Rally - Running content script");
 // Send an event as soon as injected, to notify the web page if
 // it is already open.

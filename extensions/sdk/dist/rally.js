@@ -5391,6 +5391,113 @@ class Subscription {
 }
 
 /**
+ * Changes the Auth instance to communicate with the Firebase Auth Emulator, instead of production
+ * Firebase Auth services.
+ *
+ * @remarks
+ * This must be called synchronously immediately following the first call to
+ * {@link initializeAuth}.  Do not use with production credentials as emulator
+ * traffic is not encrypted.
+ *
+ *
+ * @example
+ * ```javascript
+ * connectAuthEmulator(auth, 'http://127.0.0.1:9099', { disableWarnings: true });
+ * ```
+ *
+ * @param auth - The Auth instance.
+ * @param url - The URL at which the emulator is running (eg, 'http://localhost:9099').
+ * @param options.disableWarnings - (Optional: default false) Disable the warning banner attached to the DOM
+ *
+ * @public
+ */
+function connectAuthEmulator(auth, url, options) {
+    const authInternal = _castAuth(auth);
+    _assert(authInternal._canInitEmulator, authInternal, "emulator-config-failed" /* EMULATOR_CONFIG_FAILED */);
+    _assert(/^https?:\/\//.test(url), authInternal, "invalid-emulator-scheme" /* INVALID_EMULATOR_SCHEME */);
+    const disableWarnings = !!(options === null || options === void 0 ? void 0 : options.disableWarnings);
+    const protocol = extractProtocol(url);
+    const { host, port } = extractHostAndPort(url);
+    const portStr = port === null ? '' : `:${port}`;
+    // Always replace path with "/" (even if input url had no path at all, or had a different one).
+    authInternal.config.emulator = { url: `${protocol}//${host}${portStr}/` };
+    authInternal.settings.appVerificationDisabledForTesting = true;
+    authInternal.emulatorConfig = Object.freeze({
+        host,
+        port,
+        protocol: protocol.replace(':', ''),
+        options: Object.freeze({ disableWarnings })
+    });
+    emitEmulatorWarning(disableWarnings);
+}
+function extractProtocol(url) {
+    const protocolEnd = url.indexOf(':');
+    return protocolEnd < 0 ? '' : url.substr(0, protocolEnd + 1);
+}
+function extractHostAndPort(url) {
+    const protocol = extractProtocol(url);
+    const authority = /(\/\/)?([^?#/]+)/.exec(url.substr(protocol.length)); // Between // and /, ? or #.
+    if (!authority) {
+        return { host: '', port: null };
+    }
+    const hostAndPort = authority[2].split('@').pop() || ''; // Strip out "username:password@".
+    const bracketedIPv6 = /^(\[[^\]]+\])(:|$)/.exec(hostAndPort);
+    if (bracketedIPv6) {
+        const host = bracketedIPv6[1];
+        return { host, port: parsePort(hostAndPort.substr(host.length + 1)) };
+    }
+    else {
+        const [host, port] = hostAndPort.split(':');
+        return { host, port: parsePort(port) };
+    }
+}
+function parsePort(portStr) {
+    if (!portStr) {
+        return null;
+    }
+    const port = Number(portStr);
+    if (isNaN(port)) {
+        return null;
+    }
+    return port;
+}
+function emitEmulatorWarning(disableBanner) {
+    function attachBanner() {
+        const el = document.createElement('p');
+        const sty = el.style;
+        el.innerText =
+            'Running in emulator mode. Do not use with production credentials.';
+        sty.position = 'fixed';
+        sty.width = '100%';
+        sty.backgroundColor = '#ffffff';
+        sty.border = '.1em solid #000000';
+        sty.color = '#b50000';
+        sty.bottom = '0px';
+        sty.left = '0px';
+        sty.margin = '0px';
+        sty.zIndex = '10000';
+        sty.textAlign = 'center';
+        el.classList.add('firebase-emulator-warning');
+        document.body.appendChild(el);
+    }
+    if (typeof console !== 'undefined' && typeof console.info === 'function') {
+        console.info('WARNING: You are using the Auth Emulator,' +
+            ' which is intended for local testing only.  Do not use with' +
+            ' production credentials.');
+    }
+    if (typeof window !== 'undefined' &&
+        typeof document !== 'undefined' &&
+        !disableBanner) {
+        if (document.readyState === 'loading') {
+            window.addEventListener('DOMContentLoaded', attachBanner);
+        }
+        else {
+            attachBanner();
+        }
+    }
+}
+
+/**
  * @license
  * Copyright 2020 Google LLC
  *
@@ -21721,8 +21828,8 @@ class Rally {
         // Set the initial state to paused, and register callback for future changes.
         this._state = runStates.PAUSED;
         this._stateChangeCallback = stateChangeCallback;
+        console.debug("Rally site set to:", rallySite);
         this._rallySite = rallySite;
-        chrome.runtime.onMessageExternal.addListener((m, s) => __awaiter(this, void 0, void 0, function* () { return this._handleWebMessage(m, s); }));
         const firebaseApp = initializeApp(firebaseConfig);
         this._auth = getAuth(firebaseApp);
         this._db = Cu(firebaseApp);
@@ -21776,6 +21883,7 @@ class Rally {
                 this._promptSignUp(routes.SIGNUP).catch(err => console.error(err));
             }
         });
+        connectAuthEmulator(this._auth, 'http://localhost:9099');
         onAuthStateChanged(this._auth, this._authStateChangedCallback);
         dh(Iu(this._db, "studies", browser$1.runtime.id), (studyDoc) => __awaiter(this, void 0, void 0, function* () {
             console.debug("onSnapshot for studies fired");
@@ -21815,6 +21923,12 @@ class Rally {
                 return;
             }
         }));
+        this._port;
+        browser$1.runtime.onConnect.addListener((port) => {
+            console.debug("Rally - bg port connected");
+            this._port = port;
+            this._port.onMessage.addListener((m, s) => this._handleWebMessage(m, s));
+        });
     }
     _checkEnrollment(user, userData) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -21927,17 +22041,6 @@ class Rally {
     _handleWebMessage(message, sender) {
         return __awaiter(this, void 0, void 0, function* () {
             console.log("Rally - received web message", message, "from", sender);
-            try {
-                // Security check - only allow messages from our own site!
-                let platformURL = new URL(this._rallySite);
-                let senderURL = new URL(sender.url);
-                if (platformURL.origin != senderURL.origin) {
-                    throw new Error(`Rally - received message from unexpected URL ${sender.url}`);
-                }
-            }
-            catch (ex) {
-                throw new Error(`Rally - cannot validate sender URL ${sender.url}: ${ex.message}`);
-            }
             // ** IMPORTANT **
             //
             // The website should *NOT EVER* be trusted. Other addons could be
@@ -21978,6 +22081,7 @@ class Rally {
         var _a;
         return __awaiter(this, void 0, void 0, function* () {
             try {
+                console.debug("Rally._completeSignUp - ", data);
                 // Pause study when new credentials are passed.
                 if (this._auth.currentUser) {
                     this._pause();

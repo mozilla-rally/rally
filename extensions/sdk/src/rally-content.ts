@@ -5,6 +5,9 @@
 import { browser } from "webextension-polyfill-ts";
 import { webMessages } from "./rally";
 
+
+const port = browser.runtime.connect({ name: "rally-content" });
+
 /**
  * Send an event to the web page.
  *
@@ -31,16 +34,17 @@ function sendAddonAliveEvent() {
  * All the messages passing through here must NOT BE TRUSTED, as
  * any actor could inject custom scripts and impersonate the web page.
  */
-function handlePageEvents(event: Event) {
+function handlePageEvents(event: CustomEvent) {
   console.debug(`Rally - "${event.type}" message received from the page`);
 
   switch (event.type) {
     case webMessages.COMPLETE_SIGNUP: {
-      browser.runtime.sendMessage(webMessages.COMPLETE_SIGNUP, event);
+      // browser.runtime.sendMessage({ type: event.type, data: event.detail });
+      port.postMessage({ type: event.type, data: event.detail });
       break;
     }
     case webMessages.WEB_CHECK: {
-      browser.runtime.sendMessage(webMessages.WEB_CHECK, {});
+      port.postMessage({ type: event.type, data: {} });
       break;
     }
     default:
@@ -48,7 +52,10 @@ function handlePageEvents(event: Event) {
   }
 }
 
-window.addEventListener("complete-signup", e => handlePageEvents(e));
+// @ts-ignore
+window.addEventListener(webMessages.COMPLETE_SIGNUP, e => handlePageEvents(e));
+// @ts-ignore
+window.addEventListener(webMessages.WEB_CHECK, e => handlePageEvents(e));
 
 console.debug("Rally - Running content script");
 // Send an event as soon as injected, to notify the web page if
