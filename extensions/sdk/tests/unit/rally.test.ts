@@ -18,8 +18,14 @@ jest.mock('firebase/auth', () => ({
   getAuth: jest.fn(() => {
     return {
       currentUser: {
-        uid: "test123",
-        email: "test1@example.com"
+        uid: "testExtension:test123",
+        getIdTokenResult: jest.fn(() => {
+          return {
+            claims: {
+              firebaseUid: "test123",
+            }
+          }
+        })
       },
       signOut: jest.fn(),
       onAuthStateChanged: jest.fn(),
@@ -27,6 +33,7 @@ jest.mock('firebase/auth', () => ({
   }),
   signInWithCustomToken: jest.fn(),
   onAuthStateChanged: jest.fn(),
+  connectAuthEmulator: jest.fn(),
 }))
 
 jest.mock('firebase/firestore', () => ({
@@ -42,7 +49,8 @@ jest.mock('firebase/firestore', () => ({
     }
   }),
   getFirestore: jest.fn(),
-  onSnapshot: jest.fn()
+  onSnapshot: jest.fn(),
+  connectFirestoreEmulator: jest.fn()
 }))
 
 interface globalThis {
