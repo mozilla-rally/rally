@@ -21932,8 +21932,11 @@ class Rally {
         const firebaseApp = initializeApp(firebaseConfig);
         this._auth = getAuth(firebaseApp);
         this._db = Cu(firebaseApp);
-        connectAuthEmulator(this._auth, 'http://localhost:9099');
-        mu(this._db, 'localhost', 8080);
+        // @ts-ignore
+        {
+            connectAuthEmulator(this._auth, 'http://localhost:9099');
+            mu(this._db, 'localhost', 8080);
+        }
         this._authStateChangedCallback = (user) => __awaiter(this, void 0, void 0, function* () {
             console.debug("_authStateChangedCallback fired");
             if (user) {

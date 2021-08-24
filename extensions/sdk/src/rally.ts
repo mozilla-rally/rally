@@ -88,8 +88,11 @@ export class Rally {
     this._auth = getAuth(firebaseApp);
     this._db = getFirestore(firebaseApp);
 
-    connectAuthEmulator(this._auth, 'http://localhost:9099');
-    connectFirestoreEmulator(this._db, 'localhost', 8080);
+    // @ts-ignore
+    if (__INTEGRATION_TEST_MODE__) {
+      connectAuthEmulator(this._auth, 'http://localhost:9099');
+      connectFirestoreEmulator(this._db, 'localhost', 8080);
+    }
 
     this._authStateChangedCallback = async (user: any) => {
       console.debug("_authStateChangedCallback fired");
