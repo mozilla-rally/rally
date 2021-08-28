@@ -2,7 +2,7 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-// import { v4 as uuidv4 } from "uuid";
+import { v4 as uuidv4 } from "uuid";
 import { browser } from "webextension-polyfill-ts";
 
 // Fall back to Chrome API for missing WebExtension polyfills.
@@ -14,6 +14,7 @@ import { connectFirestoreEmulator, getFirestore, doc, getDoc, onSnapshot, setDoc
 
 // @ts-ignore - FIXME provide type
 import firebaseConfig from "../config/firebase.config.js";
+import { extension } from "webextension-polyfill";
 
 export enum runStates {
   RUNNING,
@@ -75,8 +76,6 @@ export class Rally {
 
     this._enableDevMode = Boolean(enableDevMode);
 
-    this._rallyId = undefined;
-
     // Set the initial state to paused, and register callback for future changes.
     this._state = runStates.PAUSED;
     this._stateChangeCallback = stateChangeCallback;
@@ -97,54 +96,44 @@ export class Rally {
     this._authStateChangedCallback = async (user: any) => {
       console.debug("_authStateChangedCallback fired");
       if (user) {
-        // This should be a restricted user, which can see a minimal part of the users data.
+        // This is a restricted user, which can see a minimal part of the users data.
         // The users Firebase UID is needed for this, and it is available in a custom claim on the JWT.
         const idTokenResult = await this._auth.currentUser.getIdTokenResult();
         const uid = idTokenResult.claims.firebaseUid;
 
-        // FIXME unregister this if auth state changes, also make it more testeable...
-        onSnapshot(doc(this._db, "users", uid), async userDoc => {
-          console.debug("onSnapshot for users fired");
-          if (!userDoc.exists) {
-            throw new Error("No profile exists for this user on the server.");
+        // This contains the Rally ID, need to call the Rally state change callback with it.
+        onSnapshot(doc(this._db, "extensionUsers", uid), async extensionUserDoc => {
+          console.debug("onSnapshot for extensionUsers fired:", extensionUserDoc);
+          // https://datatracker.ietf.org/doc/html/rfc4122#section-4.1.7
+          const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-5][0-9a-f]{3}-[089ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+
+          const data = extensionUserDoc.data();
+          const rallyId = data.rallyId;
+
+          if (rallyId) {
+            if (rallyId.match(uuidRegex)) {
+              // Stored Rally ID looks fine, cache it and call the Rally state change callback with it.
+              this._rallyId = rallyId;
+              this._stateChangeCallback(this._state, this._rallyId);
+            } else {
+              // Do not loop or destroy data if the stored Rally ID is invalid, bail out instead.
+              throw new Error(`Stored Rally ID is not a valid UUID: ${rallyId}`);
+            }
+          } else {
+            // If the Rally ID does not exist, generate and store it. This will cause onSnapshot to be called
+            // again, so no need for anything else.
+            const newRallyId = uuidv4();
+            setDoc(doc(this._db, "extensionUsers", uid), { rallyId: newRallyId }, { merge: true });
           }
+        });
 
-          const userData = userDoc.data();
-          // FIXME validate schema
-
-          const enrolled = !!await this._checkEnrollment(user, userData);
-          if (!enrolled) {
-            if (this._state !== runStates.PAUSED) {
-              this._pause();
-            }
-            if (userData) {
-              userData.enrolledStudies[browser.runtime.id].attached = false;
-              setDoc(doc(this._db, "users", uid), { enrolledStudies: userData.enrolledStudies }, { merge: true });
-            }
-            this._promptSignUp(routes.ONBOARD).catch(err => console.error(err));
-            return;
-          }
-
-          const studyEnrolled = !!await this._checkStudyEnrollment(user, userData)
-          if (!studyEnrolled) {
-            if (this._state !== runStates.PAUSED) {
-              this._pause();
-            }
-            // FIXME this can interfere with onboarding, site needs to handle it
-            // this._promptSignUp(routes.ONBOARD, browser.runtime.id).catch(err => console.error(err));
-            return;
-          }
-
-          // check the study state before resuming
-          const studyDoc = await getDoc(doc(this._db, "studies", browser.runtime.id));
-          const studyData = studyDoc.data();
-
-          if (!(studyData?.studyPaused && studyData.studyEnded)) {
-            if (userData) {
-              userData.enrolledStudies[browser.runtime.id].attached = true;
-              setDoc(doc(this._db, "users", uid), { enrolledStudies: userData.enrolledStudies }, { merge: true });
-            }
-            this._resume();
+        onSnapshot(doc(this._db, "users", uid, "studies", "exampleStudy1"), async userStudiesDoc => {
+          console.debug("onSnapshot for user studies fired:", userStudiesDoc);
+          const data = userStudiesDoc.data();
+          if (data.enrolled) {
+            this._stateChangeCallback(runStates.RUNNING, this._rallyId);
+          } else {
+            this._stateChangeCallback(runStates.PAUSED, this._rallyId);
           }
         });
       } else {
@@ -153,52 +142,6 @@ export class Rally {
     }
 
     onAuthStateChanged(this._auth, this._authStateChangedCallback);
-
-    onSnapshot(doc(this._db, "studies", browser.runtime.id), async studyDoc => {
-      console.debug("onSnapshot for studies fired");
-      if (!studyDoc.exists) {
-        throw new Error("No record of this study exists on server.");
-      }
-
-      const studyData = studyDoc.data();
-      // FIXME validate schema
-
-      if (studyData?.studyPaused) {
-        console.info(`Rally study ${studyData.name} is paused.`);
-        this._pause();
-        return;
-      } else {
-        // This should be a restricted user, which can see a minimal part of the users data.
-        // The users Firebase UID is needed for this, and it is available in a custom claim on the JWT.
-
-        const user = this._auth.currentUser;
-        if (!user) {
-          return;
-        }
-        const idTokenResult = await this._auth.currentUser.getIdTokenResult();
-        const uid = idTokenResult.claims.firebaseUid;
-
-        const userDoc = await getDoc(doc(this._db, "users", uid));
-        const userData = userDoc.data();
-
-        const enrolled = !!this._checkEnrollment(user, userData);
-        if (userData) {
-          userData.enrolledStudies[browser.runtime.id].attached = true;
-          setDoc(doc(this._db, "users", user.uid), { enrolledStudies: userData.enrolledStudies }, { merge: true });
-        }
-        if (enrolled && this._state !== runStates.RUNNING) {
-          this._resume();
-        } else if (this._state !== runStates.PAUSED) {
-          this._pause();
-        }
-      }
-
-      if (studyData?.studyEnded) {
-        console.info(`Rally study ${studyData.name} has ended, uninstalling.`);
-        await browser.management.uninstallSelf();
-        return;
-      }
-    });
 
     browser.runtime.onConnect.addListener((port) => {
       console.debug("Rally - bg port connected");
@@ -209,8 +152,6 @@ export class Rally {
   async _checkEnrollment(user: any, userData: any) {
     if (userData?.enrolled) {
       console.debug("Enrolled in Rally");
-      // FIXME this should be  proper UUIDv4 from firestore, @see https://github.com/mozilla-rally/rally-web-platform/issues/34
-      this._rallyId = user.uid;
       return true;
     } else {
       console.debug("Not enrolled in Rally:", user, userData);
@@ -271,7 +212,7 @@ export class Rally {
   _pause() {
     if (this._state !== runStates.PAUSED) {
       this._state = runStates.PAUSED;
-      this._stateChangeCallback(runStates.PAUSED);
+      this._stateChangeCallback(runStates.PAUSED, this._rallyId);
     }
   }
 
@@ -281,22 +222,12 @@ export class Rally {
   _resume() {
     if (this._state !== runStates.RUNNING) {
       this._state = runStates.RUNNING;
-      this._stateChangeCallback(runStates.RUNNING);
+      this._stateChangeCallback(runStates.RUNNING, this._rallyId);
     }
   }
 
-  private _stateChangeCallback(runState: runStates) {
+  private _stateChangeCallback(runState: runStates, rallyId: string) {
     throw new Error("Method not implemented, must be provided by study.");
-  }
-
-  /**
-   * Get the Rally ID, if set.
-   *
-   * @returns {String} rallyId
-   *        The Rally ID (if set).
-   */
-  get rallyId(): string | undefined {
-    return this._rallyId;
   }
 
   /**

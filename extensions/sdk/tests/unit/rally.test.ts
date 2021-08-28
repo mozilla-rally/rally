@@ -40,6 +40,7 @@ jest.mock('firebase/firestore', () => ({
   __esModule: true,
   apps: [],
   doc: jest.fn(),
+  setDoc: jest.fn(),
   getDoc: jest.fn(() => {
     return {
       exists: true,
@@ -49,12 +50,21 @@ jest.mock('firebase/firestore', () => ({
     }
   }),
   getFirestore: jest.fn(),
-  onSnapshot: jest.fn(),
+  onSnapshot: jest.fn(async (doc, callback) => {
+    console.debug("onSnapshot called:", doc, callback);
+    const result = {
+      exists: true,
+      data: async () => {
+        return { rallyId: "blah" }
+      }
+    }
+    await callback(result);
+  }),
   connectFirestoreEmulator: jest.fn()
 }))
 
 interface globalThis {
-  [key:string]: any; // Add index signature
+  [key: string]: any; // Add index signature
 }
 const chrome = require("sinon-chrome/extensions");
 // We need to provide the `browser.runtime.id` for sinon-chrome to

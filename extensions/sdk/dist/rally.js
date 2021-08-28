@@ -129,6 +129,80 @@ function __spreadArray(to, from, pack) {
     return to.concat(ar || from);
 }
 
+// Unique ID creation requires a high quality random # generator. In the browser we therefore
+// require the crypto API and do not support built-in fallback to lower quality random number
+// generators (like Math.random()).
+var getRandomValues;
+var rnds8 = new Uint8Array(16);
+function rng() {
+  // lazy load so that environments that need to polyfill have a chance to do so
+  if (!getRandomValues) {
+    // getRandomValues needs to be invoked in a context where "this" is a Crypto implementation. Also,
+    // find the complete implementation of crypto (msCrypto) on IE11.
+    getRandomValues = typeof crypto !== 'undefined' && crypto.getRandomValues && crypto.getRandomValues.bind(crypto) || typeof msCrypto !== 'undefined' && typeof msCrypto.getRandomValues === 'function' && msCrypto.getRandomValues.bind(msCrypto);
+
+    if (!getRandomValues) {
+      throw new Error('crypto.getRandomValues() not supported. See https://github.com/uuidjs/uuid#getrandomvalues-not-supported');
+    }
+  }
+
+  return getRandomValues(rnds8);
+}
+
+var REGEX = /^(?:[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}|00000000-0000-0000-0000-000000000000)$/i;
+
+function validate(uuid) {
+  return typeof uuid === 'string' && REGEX.test(uuid);
+}
+
+/**
+ * Convert array of 16 byte values to UUID string format of the form:
+ * XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX
+ */
+
+var byteToHex = [];
+
+for (var i = 0; i < 256; ++i) {
+  byteToHex.push((i + 0x100).toString(16).substr(1));
+}
+
+function stringify(arr) {
+  var offset = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
+  // Note: Be careful editing this code!  It's been tuned for performance
+  // and works in ways you may not expect. See https://github.com/uuidjs/uuid/pull/434
+  var uuid = (byteToHex[arr[offset + 0]] + byteToHex[arr[offset + 1]] + byteToHex[arr[offset + 2]] + byteToHex[arr[offset + 3]] + '-' + byteToHex[arr[offset + 4]] + byteToHex[arr[offset + 5]] + '-' + byteToHex[arr[offset + 6]] + byteToHex[arr[offset + 7]] + '-' + byteToHex[arr[offset + 8]] + byteToHex[arr[offset + 9]] + '-' + byteToHex[arr[offset + 10]] + byteToHex[arr[offset + 11]] + byteToHex[arr[offset + 12]] + byteToHex[arr[offset + 13]] + byteToHex[arr[offset + 14]] + byteToHex[arr[offset + 15]]).toLowerCase(); // Consistency check for valid UUID.  If this throws, it's likely due to one
+  // of the following:
+  // - One or more input array values don't map to a hex octet (leading to
+  // "undefined" in the uuid)
+  // - Invalid input values for the RFC `version` or `variant` fields
+
+  if (!validate(uuid)) {
+    throw TypeError('Stringified UUID is invalid');
+  }
+
+  return uuid;
+}
+
+function v4(options, buf, offset) {
+  options = options || {};
+  var rnds = options.random || (options.rng || rng)(); // Per 4.4, set bits for version and `clock_seq_hi_and_reserved`
+
+  rnds[6] = rnds[6] & 0x0f | 0x40;
+  rnds[8] = rnds[8] & 0x3f | 0x80; // Copy bytes to buffer, if provided
+
+  if (buf) {
+    offset = offset || 0;
+
+    for (var i = 0; i < 16; ++i) {
+      buf[offset + i] = rnds[i];
+    }
+
+    return buf;
+  }
+
+  return stringify(rnds);
+}
+
 var commonjsGlobal$1 = typeof globalThis !== 'undefined' ? globalThis : typeof window !== 'undefined' ? window : typeof global !== 'undefined' ? global : typeof self !== 'undefined' ? self : {};
 
 var lib = {};
@@ -9668,7 +9742,7 @@ else
     a && (c = String(a).match(Mc)) ? (this.g = !!b, Oc$1(this, c[1] || "", !0), this.s = Tc$1(c[2] || ""), Pc(this, c[3] || "", !0), Qc(this, c[4]), this.l = Tc$1(c[5] || "", !0), Sc$1(this, c[6] || "", !0), this.o = Tc$1(c[7] || "")) : (this.g = !!b, this.h = new Rc$1(null, this.g)); }
 U$1.prototype.toString = function () { var a = [], b = this.j; b && a.push(Uc$1(b, Vc, !0), ":"); var c = this.i; if (c || "file" == b)
     a.push("//"), (b = this.s) && a.push(Uc$1(b, Vc, !0), "@"), a.push(encodeURIComponent(String(c)).replace(/%25([0-9a-fA-F]{2})/g, "%$1")), c = this.m, null != c && a.push(":", String(c)); if (c = this.l)
-    this.i && "/" != c.charAt(0) && a.push("/"), a.push(Uc$1(c, "/" == c.charAt(0) ? Wc$1 : Xc, !0)); (c = this.h.toString()) && a.push("?", c); (c = this.o) && a.push("#", Uc$1(c, Yc)); return a.join(""); };
+    this.i && "/" != c.charAt(0) && a.push("/"), a.push(Uc$1(c, "/" == c.charAt(0) ? Wc : Xc, !0)); (c = this.h.toString()) && a.push("?", c); (c = this.o) && a.push("#", Uc$1(c, Yc)); return a.join(""); };
 function N$1(a) { return new U$1(a); }
 function Oc$1(a, b, c) { a.j = c ? Tc$1(b, !0) : b; a.j && (a.j = a.j.replace(/:$/, "")); }
 function Pc(a, b, c) { a.i = c ? Tc$1(b, !0) : b; }
@@ -9688,7 +9762,7 @@ function bd(a, b, c, d) { var e = new U$1(null, void 0); a && Oc$1(e, a); b && P
 function Tc$1(a, b) { return a ? b ? decodeURI(a.replace(/%25/g, "%2525")) : decodeURIComponent(a) : ""; }
 function Uc$1(a, b, c) { return "string" === typeof a ? (a = encodeURI(a).replace(b, cd), c && (a = a.replace(/%25([0-9a-fA-F]{2})/g, "%$1")), a) : null; }
 function cd(a) { a = a.charCodeAt(0); return "%" + (a >> 4 & 15).toString(16) + (a & 15).toString(16); }
-var Vc = /[#\/\?@]/g, Xc = /[#\?:]/g, Wc$1 = /[#\?]/g, $c$1 = /[#\?@]/g, Yc = /#/g;
+var Vc = /[#\/\?@]/g, Xc = /[#\?:]/g, Wc = /[#\?]/g, $c$1 = /[#\?@]/g, Yc = /#/g;
 function Rc$1(a, b) { this.h = this.g = null; this.i = a || null; this.j = !!b; }
 function V$1(a) { a.g || (a.g = new S$1, a.h = 0, a.i && Nc(a.i, function (b, c) { a.add(decodeURIComponent(b.replace(/\+/g, " ")), c); })); }
 k = Rc$1.prototype;
@@ -19700,34 +19774,6 @@ async function qc(t) {
     n;
 }
 
-function Wc(t, e, n = {}) {
-    const s = new Ns;
-    return t.asyncQueue.enqueueAndForget((async () => function(t, e, n, s, i) {
-        const r = new Sc({
-            next: r => {
-                // Remove query first before passing event to user to avoid
-                // user actions affecting the now stale query.
-                e.enqueueAndForget((() => Co(t, o)));
-                const c = r.docs.has(n);
-                !c && r.fromCache ? 
-                // TODO(dimond): If we're online and the document doesn't
-                // exist then we resolve with a doc.exists set to false. If
-                // we're offline however, we reject the Promise in this
-                // case. Two options: 1) Cache the negative response from
-                // the server so we can deliver that even when you're
-                // offline 2) Actually reject the Promise in the online case
-                // if the document doesn't exist.
-                i.reject(new C(D.UNAVAILABLE, "Failed to get document because the client is offline.")) : c && r.fromCache && s && "server" === s.source ? i.reject(new C(D.UNAVAILABLE, 'Failed to get document from server. (However, this document does exist in the local cache. Run again without setting source to "server" to retrieve the cached document.)')) : i.resolve(r);
-            },
-            error: t => i.reject(t)
-        }), o = new $o(ne(n.path), r, {
-            includeMetadataChanges: !0,
-            so: !0
-        });
-        return Do(t, o);
-    }(await qc(t), t.asyncQueue, e, n, s))), s.promise;
-}
-
 class Zc {
     /**
      * Constructs a DatabaseInfo using the provided host, databaseId and
@@ -21711,65 +21757,6 @@ function Sa(t) {
     s;
 }
 
-/**
- * @license
- * Copyright 2020 Google LLC
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *   http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-// TODO(mrschmidt) Consider using `BaseTransaction` as the base class in the
-// legacy SDK.
-/**
- * A reference to a transaction.
- *
- * The `Transaction` object passed to a transaction's `updateFunction` provides
- * the methods to read and write data within the transaction context. See
- * {@link runTransaction}.
- */
-/**
- * @license
- * Copyright 2020 Google LLC
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *   http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-/**
- * Reads the document referred to by this `DocumentReference`.
- *
- * Note: `getDoc()` attempts to provide up-to-date data when possible by waiting
- * for data from the server, but it may return cached data or fail if you are
- * offline and the server cannot be reached. To specify this behavior, invoke
- * {@link getDocFromCache} or {@link getDocFromServer}.
- *
- * @param reference - The reference of the document to fetch.
- * @returns A Promise resolved with a `DocumentSnapshot` containing the
- * current document contents.
- */
-function nh(t) {
-    t = fu(t, gu);
-    const e = fu(t.firestore, Su);
-    return Wc(Nu(e), t._key).then((n => mh(e, t, n)));
-}
-
 class sh extends Ya {
     constructor(t) {
         super(), this.firestore = t;
@@ -21923,7 +21910,6 @@ class Rally {
             throw new Error("Rally.initialize - Initialization failed, stateChangeCallback is not a function.");
         }
         this._enableDevMode = Boolean(enableDevMode);
-        this._rallyId = undefined;
         // Set the initial state to paused, and register callback for future changes.
         this._state = runStates.PAUSED;
         this._stateChangeCallback = stateChangeCallback;
@@ -21940,48 +21926,43 @@ class Rally {
         this._authStateChangedCallback = (user) => __awaiter(this, void 0, void 0, function* () {
             console.debug("_authStateChangedCallback fired");
             if (user) {
-                // This should be a restricted user, which can see a minimal part of the users data.
+                // This is a restricted user, which can see a minimal part of the users data.
                 // The users Firebase UID is needed for this, and it is available in a custom claim on the JWT.
                 const idTokenResult = yield this._auth.currentUser.getIdTokenResult();
                 const uid = idTokenResult.claims.firebaseUid;
-                // FIXME unregister this if auth state changes, also make it more testeable...
-                dh(Iu(this._db, "users", uid), (userDoc) => __awaiter(this, void 0, void 0, function* () {
-                    console.debug("onSnapshot for users fired");
-                    if (!userDoc.exists) {
-                        throw new Error("No profile exists for this user on the server.");
+                // This contains the Rally ID, need to call the Rally state change callback with it.
+                dh(Iu(this._db, "extensionUsers", uid), (extensionUserDoc) => __awaiter(this, void 0, void 0, function* () {
+                    console.debug("onSnapshot for extensionUsers fired:", extensionUserDoc);
+                    // https://datatracker.ietf.org/doc/html/rfc4122#section-4.1.7
+                    const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-5][0-9a-f]{3}-[089ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+                    const data = extensionUserDoc.data();
+                    const rallyId = data.rallyId;
+                    if (rallyId) {
+                        if (rallyId.match(uuidRegex)) {
+                            // Stored Rally ID looks fine, cache it and call the Rally state change callback with it.
+                            this._rallyId = rallyId;
+                            this._stateChangeCallback(this._state, this._rallyId);
+                        }
+                        else {
+                            // Do not loop or destroy data if the stored Rally ID is invalid, bail out instead.
+                            throw new Error(`Stored Rally ID is not a valid UUID: ${rallyId}`);
+                        }
                     }
-                    const userData = userDoc.data();
-                    // FIXME validate schema
-                    const enrolled = !!(yield this._checkEnrollment(user, userData));
-                    if (!enrolled) {
-                        if (this._state !== runStates.PAUSED) {
-                            this._pause();
-                        }
-                        if (userData) {
-                            userData.enrolledStudies[browser$1.runtime.id].attached = false;
-                            ah(Iu(this._db, "users", uid), { enrolledStudies: userData.enrolledStudies }, { merge: true });
-                        }
-                        this._promptSignUp(routes.ONBOARD).catch(err => console.error(err));
-                        return;
+                    else {
+                        // If the Rally ID does not exist, generate and store it. This will cause onSnapshot to be called
+                        // again, so no need for anything else.
+                        const newRallyId = v4();
+                        ah(Iu(this._db, "extensionUsers", uid), { rallyId: newRallyId }, { merge: true });
                     }
-                    const studyEnrolled = !!(yield this._checkStudyEnrollment(user, userData));
-                    if (!studyEnrolled) {
-                        if (this._state !== runStates.PAUSED) {
-                            this._pause();
-                        }
-                        // FIXME this can interfere with onboarding, site needs to handle it
-                        // this._promptSignUp(routes.ONBOARD, browser.runtime.id).catch(err => console.error(err));
-                        return;
+                }));
+                dh(Iu(this._db, "users", uid, "studies", "exampleStudy1"), (userStudiesDoc) => __awaiter(this, void 0, void 0, function* () {
+                    console.debug("onSnapshot for user studies fired:", userStudiesDoc);
+                    const data = userStudiesDoc.data();
+                    if (data.enrolled) {
+                        this._stateChangeCallback(runStates.RUNNING, this._rallyId);
                     }
-                    // check the study state before resuming
-                    const studyDoc = yield nh(Iu(this._db, "studies", browser$1.runtime.id));
-                    const studyData = studyDoc.data();
-                    if (!((studyData === null || studyData === void 0 ? void 0 : studyData.studyPaused) && studyData.studyEnded)) {
-                        if (userData) {
-                            userData.enrolledStudies[browser$1.runtime.id].attached = true;
-                            ah(Iu(this._db, "users", uid), { enrolledStudies: userData.enrolledStudies }, { merge: true });
-                        }
-                        this._resume();
+                    else {
+                        this._stateChangeCallback(runStates.PAUSED, this._rallyId);
                     }
                 }));
             }
@@ -21990,47 +21971,6 @@ class Rally {
             }
         });
         onAuthStateChanged(this._auth, this._authStateChangedCallback);
-        dh(Iu(this._db, "studies", browser$1.runtime.id), (studyDoc) => __awaiter(this, void 0, void 0, function* () {
-            console.debug("onSnapshot for studies fired");
-            if (!studyDoc.exists) {
-                throw new Error("No record of this study exists on server.");
-            }
-            const studyData = studyDoc.data();
-            // FIXME validate schema
-            if (studyData === null || studyData === void 0 ? void 0 : studyData.studyPaused) {
-                console.info(`Rally study ${studyData.name} is paused.`);
-                this._pause();
-                return;
-            }
-            else {
-                // This should be a restricted user, which can see a minimal part of the users data.
-                // The users Firebase UID is needed for this, and it is available in a custom claim on the JWT.
-                const user = this._auth.currentUser;
-                if (!user) {
-                    return;
-                }
-                const idTokenResult = yield this._auth.currentUser.getIdTokenResult();
-                const uid = idTokenResult.claims.firebaseUid;
-                const userDoc = yield nh(Iu(this._db, "users", uid));
-                const userData = userDoc.data();
-                const enrolled = !!this._checkEnrollment(user, userData);
-                if (userData) {
-                    userData.enrolledStudies[browser$1.runtime.id].attached = true;
-                    ah(Iu(this._db, "users", user.uid), { enrolledStudies: userData.enrolledStudies }, { merge: true });
-                }
-                if (enrolled && this._state !== runStates.RUNNING) {
-                    this._resume();
-                }
-                else if (this._state !== runStates.PAUSED) {
-                    this._pause();
-                }
-            }
-            if (studyData === null || studyData === void 0 ? void 0 : studyData.studyEnded) {
-                console.info(`Rally study ${studyData.name} has ended, uninstalling.`);
-                yield browser$1.management.uninstallSelf();
-                return;
-            }
-        }));
         browser$1.runtime.onConnect.addListener((port) => {
             console.debug("Rally - bg port connected");
             port.onMessage.addListener((m, s) => this._handleWebMessage(m, s));
@@ -22040,8 +21980,6 @@ class Rally {
         return __awaiter(this, void 0, void 0, function* () {
             if (userData === null || userData === void 0 ? void 0 : userData.enrolled) {
                 console.debug("Enrolled in Rally");
-                // FIXME this should be  proper UUIDv4 from firestore, @see https://github.com/mozilla-rally/rally-web-platform/issues/34
-                this._rallyId = user.uid;
                 return true;
             }
             else {
@@ -22104,7 +22042,7 @@ class Rally {
     _pause() {
         if (this._state !== runStates.PAUSED) {
             this._state = runStates.PAUSED;
-            this._stateChangeCallback(runStates.PAUSED);
+            this._stateChangeCallback(runStates.PAUSED, this._rallyId);
         }
     }
     /**
@@ -22113,20 +22051,11 @@ class Rally {
     _resume() {
         if (this._state !== runStates.RUNNING) {
             this._state = runStates.RUNNING;
-            this._stateChangeCallback(runStates.RUNNING);
+            this._stateChangeCallback(runStates.RUNNING, this._rallyId);
         }
     }
-    _stateChangeCallback(runState) {
+    _stateChangeCallback(runState, rallyId) {
         throw new Error("Method not implemented, must be provided by study.");
-    }
-    /**
-     * Get the Rally ID, if set.
-     *
-     * @returns {String} rallyId
-     *        The Rally ID (if set).
-     */
-    get rallyId() {
-        return this._rallyId;
     }
     /**
     * Handles messages coming in from the external website.
