@@ -103,7 +103,6 @@ export class Rally {
 
         // This contains the Rally ID, need to call the Rally state change callback with it.
         onSnapshot(doc(this._db, "extensionUsers", uid), async extensionUserDoc => {
-          console.debug("onSnapshot for extensionUsers fired:", extensionUserDoc);
           // https://datatracker.ietf.org/doc/html/rfc4122#section-4.1.7
           const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-5][0-9a-f]{3}-[089ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 
@@ -128,7 +127,6 @@ export class Rally {
         });
 
         onSnapshot(doc(this._db, "users", uid, "studies", "exampleStudy1"), async userStudiesDoc => {
-          console.debug("onSnapshot for user studies fired:", userStudiesDoc);
           const data = userStudiesDoc.data();
           if (data.enrolled) {
             this._stateChangeCallback(runStates.RUNNING, this._rallyId);
