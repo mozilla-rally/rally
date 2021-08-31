@@ -160,7 +160,7 @@ export class Rally {
           }
         });
       } else {
-        this._promptSignUp(routes.SIGNUP).catch(err => console.error(err));
+        this._promptSignUp(routes.SIGNUP).catch(err => console.error(`Rally._authStateChangedCallbacke: ${err.message}`));
       }
     }
 
@@ -255,7 +255,7 @@ export class Rally {
   *          `sender` or rejected in case of errors.
   */
   async _handleWebMessage(message: { type: webMessages, data: {} }, sender: any) {
-    console.log("Rally - received web message", message, "from", sender);
+    console.log("Rally_handleWebMessage - received web message", message, "from", sender);
     // ** IMPORTANT **
     //
     // The website should *NOT EVER* be trusted. Other addons could be
