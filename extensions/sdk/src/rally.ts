@@ -129,6 +129,21 @@ export class Rally {
           }
         });
 
+        onSnapshot(doc(this._db, "studies", this._studyId), async studiesDoc => {
+          const data = studiesDoc.data();
+          if (data.studyPaused) {
+            if (this._state !== runStates.PAUSED) {
+              this._pause();
+            }
+          }
+
+          if (data.studyEnded) {
+            if (this._state !== runStates.ENDED) {
+              this._end();
+            }
+          }
+        });
+
         onSnapshot(doc(this._db, "users", uid, "studies", this._studyId), async userStudiesDoc => {
           const data = userStudiesDoc.data();
           if (data.enrolled) {

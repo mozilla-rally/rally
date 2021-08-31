@@ -2,7 +2,11 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-import { doc } from "firebase/firestore";
+import { strict as assert } from 'assert';
+import { Rally, runStates, authProviders, webMessages } from '../../src/rally';
+
+import { doc, onSnapshot } from "firebase/firestore";
+import { onAuthStateChanged } from 'firebase/auth'
 
 jest.mock('firebase/app', () => ({
   __esModule: true,
@@ -47,6 +51,11 @@ jest.mock('firebase/firestore', () => ({
       }
     } else if (collection === "extensionUsers") {
       result = { rallyId: "11f42b4c-8d8e-477e-acd0-b38578228e44" };
+    } else if (collection === "studies") {
+      result = {
+        studyPaused: false,
+        studyEnded: false,
+      }
     }
 
     return result;
@@ -77,10 +86,6 @@ chrome.runtime.id = "testid";
 global.chrome = chrome;
 
 jest.mock("webextension-polyfill", () => require("sinon-chrome/webextensions"));
-
-import { strict as assert } from 'assert';
-import { onAuthStateChanged } from 'firebase/auth'
-import { Rally, runStates, authProviders, webMessages } from '../../src/rally';
 
 describe('Rally SDK', function () {
   beforeEach(() => {

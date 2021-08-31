@@ -21955,6 +21955,19 @@ class Rally {
                         ah(Iu(this._db, "extensionUsers", uid), { rallyId: newRallyId }, { merge: true });
                     }
                 }));
+                dh(Iu(this._db, "studies", this._studyId), (studiesDoc) => __awaiter(this, void 0, void 0, function* () {
+                    const data = studiesDoc.data();
+                    if (data.studyPaused) {
+                        if (this._state !== runStates.PAUSED) {
+                            this._pause();
+                        }
+                    }
+                    if (data.studyEnded) {
+                        if (this._state !== runStates.ENDED) {
+                            this._end();
+                        }
+                    }
+                }));
                 dh(Iu(this._db, "users", uid, "studies", this._studyId), (userStudiesDoc) => __awaiter(this, void 0, void 0, function* () {
                     const data = userStudiesDoc.data();
                     if (data.enrolled) {
