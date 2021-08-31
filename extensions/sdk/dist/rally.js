@@ -9742,7 +9742,7 @@ else
     a && (c = String(a).match(Mc)) ? (this.g = !!b, Oc$1(this, c[1] || "", !0), this.s = Tc$1(c[2] || ""), Pc(this, c[3] || "", !0), Qc(this, c[4]), this.l = Tc$1(c[5] || "", !0), Sc$1(this, c[6] || "", !0), this.o = Tc$1(c[7] || "")) : (this.g = !!b, this.h = new Rc$1(null, this.g)); }
 U$1.prototype.toString = function () { var a = [], b = this.j; b && a.push(Uc$1(b, Vc, !0), ":"); var c = this.i; if (c || "file" == b)
     a.push("//"), (b = this.s) && a.push(Uc$1(b, Vc, !0), "@"), a.push(encodeURIComponent(String(c)).replace(/%25([0-9a-fA-F]{2})/g, "%$1")), c = this.m, null != c && a.push(":", String(c)); if (c = this.l)
-    this.i && "/" != c.charAt(0) && a.push("/"), a.push(Uc$1(c, "/" == c.charAt(0) ? Wc : Xc, !0)); (c = this.h.toString()) && a.push("?", c); (c = this.o) && a.push("#", Uc$1(c, Yc)); return a.join(""); };
+    this.i && "/" != c.charAt(0) && a.push("/"), a.push(Uc$1(c, "/" == c.charAt(0) ? Wc$1 : Xc, !0)); (c = this.h.toString()) && a.push("?", c); (c = this.o) && a.push("#", Uc$1(c, Yc)); return a.join(""); };
 function N$1(a) { return new U$1(a); }
 function Oc$1(a, b, c) { a.j = c ? Tc$1(b, !0) : b; a.j && (a.j = a.j.replace(/:$/, "")); }
 function Pc(a, b, c) { a.i = c ? Tc$1(b, !0) : b; }
@@ -9762,7 +9762,7 @@ function bd(a, b, c, d) { var e = new U$1(null, void 0); a && Oc$1(e, a); b && P
 function Tc$1(a, b) { return a ? b ? decodeURI(a.replace(/%25/g, "%2525")) : decodeURIComponent(a) : ""; }
 function Uc$1(a, b, c) { return "string" === typeof a ? (a = encodeURI(a).replace(b, cd), c && (a = a.replace(/%25([0-9a-fA-F]{2})/g, "%$1")), a) : null; }
 function cd(a) { a = a.charCodeAt(0); return "%" + (a >> 4 & 15).toString(16) + (a & 15).toString(16); }
-var Vc = /[#\/\?@]/g, Xc = /[#\?:]/g, Wc = /[#\?]/g, $c$1 = /[#\?@]/g, Yc = /#/g;
+var Vc = /[#\/\?@]/g, Xc = /[#\?:]/g, Wc$1 = /[#\?]/g, $c$1 = /[#\?@]/g, Yc = /#/g;
 function Rc$1(a, b) { this.h = this.g = null; this.i = a || null; this.j = !!b; }
 function V$1(a) { a.g || (a.g = new S$1, a.h = 0, a.i && Nc(a.i, function (b, c) { a.add(decodeURIComponent(b.replace(/\+/g, " ")), c); })); }
 k = Rc$1.prototype;
@@ -19774,6 +19774,34 @@ async function qc(t) {
     n;
 }
 
+function Wc(t, e, n = {}) {
+    const s = new Ns;
+    return t.asyncQueue.enqueueAndForget((async () => function(t, e, n, s, i) {
+        const r = new Sc({
+            next: r => {
+                // Remove query first before passing event to user to avoid
+                // user actions affecting the now stale query.
+                e.enqueueAndForget((() => Co(t, o)));
+                const c = r.docs.has(n);
+                !c && r.fromCache ? 
+                // TODO(dimond): If we're online and the document doesn't
+                // exist then we resolve with a doc.exists set to false. If
+                // we're offline however, we reject the Promise in this
+                // case. Two options: 1) Cache the negative response from
+                // the server so we can deliver that even when you're
+                // offline 2) Actually reject the Promise in the online case
+                // if the document doesn't exist.
+                i.reject(new C(D.UNAVAILABLE, "Failed to get document because the client is offline.")) : c && r.fromCache && s && "server" === s.source ? i.reject(new C(D.UNAVAILABLE, 'Failed to get document from server. (However, this document does exist in the local cache. Run again without setting source to "server" to retrieve the cached document.)')) : i.resolve(r);
+            },
+            error: t => i.reject(t)
+        }), o = new $o(ne(n.path), r, {
+            includeMetadataChanges: !0,
+            so: !0
+        });
+        return Do(t, o);
+    }(await qc(t), t.asyncQueue, e, n, s))), s.promise;
+}
+
 class Zc {
     /**
      * Constructs a DatabaseInfo using the provided host, databaseId and
@@ -21757,6 +21785,65 @@ function Sa(t) {
     s;
 }
 
+/**
+ * @license
+ * Copyright 2020 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+// TODO(mrschmidt) Consider using `BaseTransaction` as the base class in the
+// legacy SDK.
+/**
+ * A reference to a transaction.
+ *
+ * The `Transaction` object passed to a transaction's `updateFunction` provides
+ * the methods to read and write data within the transaction context. See
+ * {@link runTransaction}.
+ */
+/**
+ * @license
+ * Copyright 2020 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+/**
+ * Reads the document referred to by this `DocumentReference`.
+ *
+ * Note: `getDoc()` attempts to provide up-to-date data when possible by waiting
+ * for data from the server, but it may return cached data or fail if you are
+ * offline and the server cannot be reached. To specify this behavior, invoke
+ * {@link getDocFromCache} or {@link getDocFromServer}.
+ *
+ * @param reference - The reference of the document to fetch.
+ * @returns A Promise resolved with a `DocumentSnapshot` containing the
+ * current document contents.
+ */
+function nh(t) {
+    t = fu(t, gu);
+    const e = fu(t.firestore, Su);
+    return Wc(Nu(e), t._key).then((n => mh(e, t, n)));
+}
+
 class sh extends Ya {
     constructor(t) {
         super(), this.firestore = t;
@@ -21941,7 +22028,7 @@ class Rally {
                     if (rallyId) {
                         if (rallyId.match(uuidRegex)) {
                             // Stored Rally ID looks fine, cache it and call the Rally state change callback with it.
-                            this._rallyId = Promise.resolve(rallyId);
+                            this._rallyId = rallyId;
                         }
                         else {
                             // Do not loop or destroy data if the stored Rally ID is invalid, bail out instead.
@@ -21957,12 +22044,19 @@ class Rally {
                 }));
                 dh(Iu(this._db, "studies", this._studyId), (studiesDoc) => __awaiter(this, void 0, void 0, function* () {
                     const data = studiesDoc.data();
-                    if (data.studyPaused) {
+                    if (data.studyPaused === true) {
                         if (this._state !== runStates.PAUSED) {
                             this._pause();
                         }
                     }
-                    if (data.studyEnded) {
+                    else {
+                        const userStudiesDoc = yield nh(Iu(this._db, "users", uid, "studies", this._studyId));
+                        const data = userStudiesDoc.data();
+                        if (data.enrolled && this._state !== runStates.RUNNING) {
+                            this._resume();
+                        }
+                    }
+                    if (data.studyEnded === true) {
                         if (this._state !== runStates.ENDED) {
                             this._end();
                         }
@@ -22123,9 +22217,9 @@ class Rally {
         });
     }
     /**
-     * Return a promse that resolves to the Rally ID.
+     * Returns the Rally ID, if set.
      *
-     * @returns {Promise<string>} - the Rally ID, when available.
+     * @returns string - the Rally ID, when available.
      */
     get rallyId() {
         return this._rallyId;

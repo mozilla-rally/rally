@@ -8,6 +8,8 @@ import { Rally, runStates, authProviders, webMessages } from '../../src/rally';
 import { doc, onSnapshot } from "firebase/firestore";
 import { onAuthStateChanged } from 'firebase/auth'
 
+const FAKE_RALLY_ID = "11f42b4c-8d8e-477e-acd0-b38578228e44";
+
 jest.mock('firebase/app', () => ({
   __esModule: true,
   apps: [],
@@ -50,7 +52,7 @@ jest.mock('firebase/firestore', () => ({
         result = { enrolled: false, uid: "test123", enrolledStudies: { "test-study": { enrolled: true } } };
       }
     } else if (collection === "extensionUsers") {
-      result = { rallyId: "11f42b4c-8d8e-477e-acd0-b38578228e44" };
+      result = { rallyId: FAKE_RALLY_ID };
     } else if (collection === "studies") {
       result = {
         studyPaused: false,
@@ -183,13 +185,15 @@ describe('Rally SDK', function () {
           result = { enrolled: true, uid: "test123", enrolledStudies: { "test-study": { enrolled: true } } };
         }
       } else if (collection === "extensionUsers") {
-        result = { rallyId: "11f42b4c-8d8e-477e-acd0-b38578228e44" };
+        result = { rallyId: FAKE_RALLY_ID };
       }
 
       return result;
     });
 
     await rally._authStateChangedCallback({ uid: "test123" });
+
+    assert.equal(await rally.rallyId, FAKE_RALLY_ID);
 
     assert.equal(rally._state, runStates.RUNNING);
     assert.ok(!pausedCallbackCalled);
@@ -210,7 +214,7 @@ describe('Rally SDK', function () {
           result = { enrolled: true, uid: "test123", enrolledStudies: { "test-study": { enrolled: true } } };
         }
       } else if (collection === "extensionUsers") {
-        result = { rallyId: "11f42b4c-8d8e-477e-acd0-b38578228e44" };
+        result = { rallyId: FAKE_RALLY_ID };
       }
 
       return result;
@@ -237,7 +241,7 @@ describe('Rally SDK', function () {
           result = { enrolled: true, uid: "test123", enrolledStudies: { "test-study": { enrolled: true } } };
         }
       } else if (collection === "extensionUsers") {
-        result = { rallyId: "11f42b4c-8d8e-477e-acd0-b38578228e44" };
+        result = { rallyId: FAKE_RALLY_ID };
       }
 
       return result;

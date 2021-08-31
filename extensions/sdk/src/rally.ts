@@ -10,7 +10,7 @@ declare var chrome: any;
 
 import { initializeApp } from "firebase/app"
 import { connectAuthEmulator, getAuth, onAuthStateChanged, signInWithCustomToken } from "firebase/auth";
-import { connectFirestoreEmulator, getFirestore, doc, onSnapshot, setDoc } from "firebase/firestore";
+import { connectFirestoreEmulator, getFirestore, doc, onSnapshot, getDoc, setDoc } from "firebase/firestore";
 
 // @ts-ignore - FIXME provide type
 import firebaseConfig from "../config/firebase.config.js";
@@ -42,7 +42,7 @@ enum routes {
 
 export class Rally {
   private _enableDevMode: boolean;
-  private _rallyId: Promise<string>;
+  private _rallyId: string;
 
   _state: runStates;
   _authStateChangedCallback: (user: any) => Promise<void>;
@@ -116,7 +116,7 @@ export class Rally {
           if (rallyId) {
             if (rallyId.match(uuidRegex)) {
               // Stored Rally ID looks fine, cache it and call the Rally state change callback with it.
-              this._rallyId = Promise.resolve(rallyId);
+              this._rallyId = rallyId;
             } else {
               // Do not loop or destroy data if the stored Rally ID is invalid, bail out instead.
               throw new Error(`Stored Rally ID is not a valid UUID: ${rallyId}`);
@@ -131,13 +131,20 @@ export class Rally {
 
         onSnapshot(doc(this._db, "studies", this._studyId), async studiesDoc => {
           const data = studiesDoc.data();
-          if (data.studyPaused) {
+          if (data.studyPaused === true) {
             if (this._state !== runStates.PAUSED) {
               this._pause();
             }
+          } else {
+            const userStudiesDoc = await getDoc(doc(this._db, "users", uid, "studies", this._studyId));
+            const data = userStudiesDoc.data();
+
+            if (data.enrolled && this._state !== runStates.RUNNING) {
+              this._resume();
+            }
           }
 
-          if (data.studyEnded) {
+          if (data.studyEnded === true) {
             if (this._state !== runStates.ENDED) {
               this._end();
             }
@@ -303,9 +310,9 @@ export class Rally {
   }
 
   /**
-   * Return a promse that resolves to the Rally ID.
+   * Returns the Rally ID, if set.
    *
-   * @returns {Promise<string>} - the Rally ID, when available.
+   * @returns string - the Rally ID, when available.
    */
   get rallyId() {
     return this._rallyId;
