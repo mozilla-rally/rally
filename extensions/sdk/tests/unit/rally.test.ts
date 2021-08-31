@@ -2,9 +2,7 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-/* This Source Code Form is subject to the terms of the Mozilla Public
- * License, v. 2.0. If a copy of the MPL was not distributed with this
- * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
+import { doc } from "firebase/firestore";
 
 jest.mock('firebase/app', () => ({
   __esModule: true,
@@ -39,26 +37,31 @@ jest.mock('firebase/auth', () => ({
 jest.mock('firebase/firestore', () => ({
   __esModule: true,
   apps: [],
-  doc: jest.fn(),
-  setDoc: jest.fn(),
-  getDoc: jest.fn(() => {
-    return {
-      exists: true,
-      data: () => {
-        return { enrolled: true, uid: "test123", enrolledStudies: { "test-study": { enrolled: true } } }
+  doc: jest.fn((db, collection, uid, subcollection, studyName) => {
+    let result = {};
+    if (collection === "users") {
+      if (subcollection && subcollection === "studies") {
+        result = { enrolled: false };
+      } else {
+        result = { enrolled: false, uid: "test123", enrolledStudies: { "test-study": { enrolled: true } } };
       }
+    } else if (collection === "extensionUsers") {
+      result = { rallyId: "11f42b4c-8d8e-477e-acd0-b38578228e44" };
     }
+
+    return result;
   }),
+  setDoc: jest.fn(),
+  getDoc: jest.fn(),
   getFirestore: jest.fn(),
-  onSnapshot: jest.fn(async (doc, callback) => {
-    console.debug("onSnapshot called:", doc, callback);
+  onSnapshot: jest.fn((doc, callback) => {
     const result = {
       exists: true,
-      data: async () => {
-        return { rallyId: "blah" }
+      data: () => {
+        return doc
       }
     }
-    await callback(result);
+    callback(result);
   }),
   connectFirestoreEmulator: jest.fn()
 }))
@@ -96,7 +99,7 @@ describe('Rally SDK', function () {
     );
   });
 
-  it('pauses and resumes when receiving messages', async function () {
+  it('calls callback appropriately when paused and resumed', async function () {
     let pausedCallbackCalled = false;
     let resumeCallbackCalled = false;
 
@@ -109,7 +112,8 @@ describe('Rally SDK', function () {
           resumeCallbackCalled = true;
         }
       },
-      "http://localhost"
+      "http://localhost",
+      "exampleStudy1"
     )
 
     assert.equal(rally._state, runStates.PAUSED);
@@ -126,6 +130,7 @@ describe('Rally SDK', function () {
   it('handles sign-up message from web and receives credentials', async function () {
     let pausedCallbackCalled = false;
     let resumeCallbackCalled = false;
+    let endedCallbackCalled = false;
 
     const rally = new Rally(
       true, // Developer mode.
@@ -134,9 +139,13 @@ describe('Rally SDK', function () {
           pausedCallbackCalled = true;
         } else if (message === runStates.RUNNING) {
           resumeCallbackCalled = true;
+        } else if (message === runStates.ENDED) {
+          endedCallbackCalled = true;
         }
+
       },
-      "http://localhost"
+      "http://localhost",
+      "exampleStudy1"
     );
 
     const rallyToken = "...";
@@ -146,41 +155,95 @@ describe('Rally SDK', function () {
     const result = await rally._handleWebMessage(message, sender);
 
     assert.equal(result.type, webMessages.COMPLETE_SIGNUP_RESPONSE);
-    console.debug(result);
     assert.equal(result.data.signedUp, true);
 
-    // If the user is authenticated but enrolled in Rally, onboarding should be triggered.
+    // If the user is authenticated but not enrolled in Rally, onboarding should be triggered.
     await rally._authStateChangedCallback({ uid: "test123" });
     assert.ok(!pausedCallbackCalled);
     assert.ok(!resumeCallbackCalled);
-    // FIXME check that chrome.tabs.create is called with the correct route.
+    assert.ok(!endedCallbackCalled);
 
     // If the user is authenticated, enrolled in Rally, and enrolled in a study, the study should start data collection.
-    chrome.runtime.id = "test-study";
     pausedCallbackCalled = false;
     resumeCallbackCalled = false;
+    endedCallbackCalled = false;
+
+    // @ts-ignore
+    doc.mockImplementation((db, collection, uid, subcollection, studyName) => {
+      let result = {};
+      if (collection === "users") {
+        if (subcollection && subcollection === "studies") {
+          result = { enrolled: true };
+        } else {
+          result = { enrolled: true, uid: "test123", enrolledStudies: { "test-study": { enrolled: true } } };
+        }
+      } else if (collection === "extensionUsers") {
+        result = { rallyId: "11f42b4c-8d8e-477e-acd0-b38578228e44" };
+      }
+
+      return result;
+    });
 
     await rally._authStateChangedCallback({ uid: "test123" });
 
-    // FIXME need to fully mock onSnapshot to get this to work
-    /*
     assert.equal(rally._state, runStates.RUNNING);
-    assert.ok(resumeCallbackCalled);
     assert.ok(!pausedCallbackCalled);
-    */
+    assert.ok(resumeCallbackCalled);
 
-    // If the user is authenticated, enrolled in Rally, and not enrolled in a study, the study should pause, and trigger study onboarding.
-    chrome.runtime.id = "invalid-study-id";
-    // FIXME comment out until onSnapshot is mocked
-    // pausedCallbackCalled = false;
+    // If the user is authenticated, enrolled in Rally, and not enrolled in the current study, the study should pause.
+    pausedCallbackCalled = false;
     resumeCallbackCalled = false;
+    endedCallbackCalled = false;
+
+    // @ts-ignore
+    doc.mockImplementation((db, collection, uid, subcollection, studyName) => {
+      let result = {};
+      if (collection === "users") {
+        if (subcollection && subcollection === "studies") {
+          result = { enrolled: false };
+        } else {
+          result = { enrolled: true, uid: "test123", enrolledStudies: { "test-study": { enrolled: true } } };
+        }
+      } else if (collection === "extensionUsers") {
+        result = { rallyId: "11f42b4c-8d8e-477e-acd0-b38578228e44" };
+      }
+
+      return result;
+    });
+
     await rally._authStateChangedCallback({ uid: "test123" });
-    // FIXME check that chrome.tabs.create is called with the correct route.
 
     assert.equal(rally._state, runStates.PAUSED);
-    // FIXME comment out until onSnapshot is mocked
-    // assert.ok(pausedCallbackCalled);
+    assert.ok(pausedCallbackCalled);
     assert.ok(!resumeCallbackCalled);
 
+    // If the user is authenticated, enrolled in Rally, and re-enrolled in the current study, the study should resume.
+    pausedCallbackCalled = false;
+    resumeCallbackCalled = false;
+    endedCallbackCalled = false;
+
+    // @ts-ignore
+    doc.mockImplementation((db, collection, uid, subcollection, studyName) => {
+      let result = {};
+      if (collection === "users") {
+        if (subcollection && subcollection === "studies") {
+          result = { enrolled: true };
+        } else {
+          result = { enrolled: true, uid: "test123", enrolledStudies: { "test-study": { enrolled: true } } };
+        }
+      } else if (collection === "extensionUsers") {
+        result = { rallyId: "11f42b4c-8d8e-477e-acd0-b38578228e44" };
+      }
+
+      return result;
+    });
+
+    await rally._authStateChangedCallback({ uid: "test123" });
+
+    assert.equal(rally._state, runStates.RUNNING);
+    assert.ok(!pausedCallbackCalled);
+    assert.ok(resumeCallbackCalled);
+
+    // FIXME mock calling onSnapshot
   });
 });

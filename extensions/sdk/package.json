@@ -6,6 +6,7 @@
   "type": "module",
   "scripts": {
     "build": "rollup -c",
+    "dev": "rollup -c ",
     "build:test:integration": "rollup -c --config-integration-test-mode",
     "test:unit": "jest",
     "test": "npm run build && npm run test:unit"

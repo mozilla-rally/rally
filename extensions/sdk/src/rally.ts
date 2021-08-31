@@ -10,15 +10,17 @@ declare var chrome: any;
 
 import { initializeApp } from "firebase/app"
 import { connectAuthEmulator, getAuth, onAuthStateChanged, signInWithCustomToken } from "firebase/auth";
-import { connectFirestoreEmulator, getFirestore, doc, getDoc, onSnapshot, setDoc } from "firebase/firestore";
+import { connectFirestoreEmulator, getFirestore, doc, onSnapshot, setDoc } from "firebase/firestore";
 
 // @ts-ignore - FIXME provide type
 import firebaseConfig from "../config/firebase.config.js";
 import { extension } from "webextension-polyfill";
 
+
 export enum runStates {
   RUNNING,
   PAUSED,
+  ENDED
 }
 
 export enum authProviders {
@@ -40,7 +42,7 @@ enum routes {
 
 export class Rally {
   private _enableDevMode: boolean;
-  private _rallyId: string | undefined;
+  private _rallyId: Promise<string>;
 
   _state: runStates;
   _authStateChangedCallback: (user: any) => Promise<void>;
@@ -48,6 +50,7 @@ export class Rally {
   _db: any;
   _rallySite: string;
   private _port: any;
+  private _studyId: string;
 
   /**
    * Initialize the Rally library.
@@ -64,8 +67,11 @@ export class Rally {
    *
    * @param {String} rallySite
    *        A string containing the Rally Web Platform site.
+   *
+   * @param {String} studyId
+   *        A string containing the unique name of the study, separate from the Firefox add-on ID and Chrome extension ID.
    */
-  constructor(enableDevMode: boolean, stateChangeCallback: (runState: runStates) => void, rallySite: string) {
+  constructor(enableDevMode: boolean, stateChangeCallback: (runState: runStates) => void, rallySite: string, studyId: string) {
     if (!stateChangeCallback) {
       throw new Error("Rally.initialize - Initialization failed, stateChangeCallback is required.")
     }
@@ -75,26 +81,24 @@ export class Rally {
     }
 
     this._enableDevMode = Boolean(enableDevMode);
+    this._rallySite = rallySite;
+    this._studyId = studyId;
 
     // Set the initial state to paused, and register callback for future changes.
     this._state = runStates.PAUSED;
     this._stateChangeCallback = stateChangeCallback;
 
-    console.debug("Rally site set to:", rallySite);
-    this._rallySite = rallySite;
     const firebaseApp = initializeApp(firebaseConfig);
 
     this._auth = getAuth(firebaseApp);
     this._db = getFirestore(firebaseApp);
 
-    // @ts-ignore
-    if (__INTEGRATION_TEST_MODE__) {
+    if (this._enableDevMode) {
       connectAuthEmulator(this._auth, 'http://localhost:9099');
       connectFirestoreEmulator(this._db, 'localhost', 8080);
     }
 
     this._authStateChangedCallback = async (user: any) => {
-      console.debug("_authStateChangedCallback fired");
       if (user) {
         // This is a restricted user, which can see a minimal part of the users data.
         // The users Firebase UID is needed for this, and it is available in a custom claim on the JWT.
@@ -112,8 +116,7 @@ export class Rally {
           if (rallyId) {
             if (rallyId.match(uuidRegex)) {
               // Stored Rally ID looks fine, cache it and call the Rally state change callback with it.
-              this._rallyId = rallyId;
-              this._stateChangeCallback(this._state, this._rallyId);
+              this._rallyId = Promise.resolve(rallyId);
             } else {
               // Do not loop or destroy data if the stored Rally ID is invalid, bail out instead.
               throw new Error(`Stored Rally ID is not a valid UUID: ${rallyId}`);
@@ -126,12 +129,12 @@ export class Rally {
           }
         });
 
-        onSnapshot(doc(this._db, "users", uid, "studies", "exampleStudy1"), async userStudiesDoc => {
+        onSnapshot(doc(this._db, "users", uid, "studies", this._studyId), async userStudiesDoc => {
           const data = userStudiesDoc.data();
           if (data.enrolled) {
-            this._stateChangeCallback(runStates.RUNNING, this._rallyId);
+            this._resume();
           } else {
-            this._stateChangeCallback(runStates.PAUSED, this._rallyId);
+            this._pause();
           }
         });
       } else {
@@ -142,36 +145,8 @@ export class Rally {
     onAuthStateChanged(this._auth, this._authStateChangedCallback);
 
     browser.runtime.onConnect.addListener((port) => {
-      console.debug("Rally - bg port connected");
       port.onMessage.addListener((m, s) => this._handleWebMessage(m, s));
     });
-  }
-
-  async _checkEnrollment(user: any, userData: any) {
-    if (userData?.enrolled) {
-      console.debug("Enrolled in Rally");
-      return true;
-    } else {
-      console.debug("Not enrolled in Rally:", user, userData);
-      return false;
-    }
-  }
-
-  async _checkStudyEnrollment(user: any, userData: any) {
-    const extensionId = browser.runtime.id;
-    let enrolled = false;
-    if ("enrolledStudies" in userData
-      && extensionId in userData.enrolledStudies
-      // FIXME this check seems redundant, shouldn't presence in `enrolledStudies` be enough?
-      && userData.enrolledStudies[extensionId].enrolled) {
-      console.debug("Current study is enrolled");
-
-      // If we made it this far, then the user is signed in, enrolled in Rally, and enrolled in this study.
-      return true;
-    } else {
-      console.debug("Current study installed but not enrolled");
-      return false;
-    }
   }
 
   async _promptSignUp(reason: string, study?: string) {
@@ -210,7 +185,7 @@ export class Rally {
   _pause() {
     if (this._state !== runStates.PAUSED) {
       this._state = runStates.PAUSED;
-      this._stateChangeCallback(runStates.PAUSED, this._rallyId);
+      this._stateChangeCallback(runStates.PAUSED);
     }
   }
 
@@ -220,11 +195,24 @@ export class Rally {
   _resume() {
     if (this._state !== runStates.RUNNING) {
       this._state = runStates.RUNNING;
-      this._stateChangeCallback(runStates.RUNNING, this._rallyId);
+      this._stateChangeCallback(runStates.RUNNING);
     }
   }
 
-  private _stateChangeCallback(runState: runStates, rallyId: string) {
+  /**
+   * End the current study. This leaves the study installed,
+   * but marks it as finished. May be resumed later (in case of error).
+   *
+   * @param runState
+   * @param rallyId
+   */
+  _end() {
+    this._state = runStates.ENDED;
+    this._stateChangeCallback(runStates.ENDED);
+  }
+
+
+  private _stateChangeCallback(runState: runStates) {
     throw new Error("Method not implemented, must be provided by study.");
   }
 
@@ -292,11 +280,19 @@ export class Rally {
       }
 
       await signInWithCustomToken(this._auth, data.rallyToken);
-      console.debug("logged in as:", this._auth.currentUser?.email);
       return true;
     } catch (ex) {
-      console.error("login failed:", ex.code, ex.message);
+      console.error("Rally._completeSignUp - signInWithCustomToken failed:", ex.code, ex.message);
       return false;
     }
+  }
+
+  /**
+   * Return a promse that resolves to the Rally ID.
+   *
+   * @returns {Promise<string>} - the Rally ID, when available.
+   */
+  get rallyId() {
+    return this._rallyId;
   }
 }
