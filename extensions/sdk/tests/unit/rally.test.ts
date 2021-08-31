@@ -253,6 +253,8 @@ describe('Rally SDK', function () {
     assert.ok(!pausedCallbackCalled);
     assert.ok(resumeCallbackCalled);
 
+    assert.equal(rally.rallyId, FAKE_RALLY_ID);
+
     // FIXME mock calling onSnapshot
   });
 });
