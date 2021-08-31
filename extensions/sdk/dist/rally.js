@@ -22021,40 +22021,48 @@ class Rally {
                 const uid = idTokenResult.claims.firebaseUid;
                 // This contains the Rally ID, need to call the Rally state change callback with it.
                 dh(Iu(this._db, "extensionUsers", uid), (extensionUserDoc) => __awaiter(this, void 0, void 0, function* () {
+                    if (!extensionUserDoc || !extensionUserDoc.data) {
+                        throw new Error("Rally onSnapshot - invalid extension users document");
+                    }
                     // https://datatracker.ietf.org/doc/html/rfc4122#section-4.1.7
                     const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-5][0-9a-f]{3}-[089ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
-                    const data = extensionUserDoc.data();
-                    // If the document does not exist, try again later. This is created dynamically by the site.
-                    if (!data) {
-                        return;
-                    }
-                    const rallyId = data.rallyId;
-                    if (rallyId) {
-                        if (rallyId.match(uuidRegex)) {
-                            // Stored Rally ID looks fine, cache it and call the Rally state change callback with it.
-                            this._rallyId = rallyId;
-                        }
-                        else {
-                            // Do not loop or destroy data if the stored Rally ID is invalid, bail out instead.
-                            throw new Error(`Stored Rally ID is not a valid UUID: ${rallyId}`);
+                    if (extensionUserDoc && extensionUserDoc.data) {
+                        const data = extensionUserDoc.data();
+                        if (data && data.rallyId) {
+                            if (data.rallyId.match(uuidRegex)) {
+                                // Stored Rally ID looks fine, cache it and call the Rally state change callback with it.
+                                this._rallyId = data.rallyId;
+                            }
+                            else {
+                                // Do not loop or destroy data if the stored Rally ID is invalid, bail out instead.
+                                throw new Error(`Stored Rally ID is not a valid UUID: ${data.rallyId}`);
+                            }
                         }
                     }
                     else {
                         // If the Rally ID does not exist, generate and store it. This will cause onSnapshot to be called
                         // again, so no need for anything else.
                         const newRallyId = v4();
-                        ah(Iu(this._db, "extensionUsers", uid), { rallyId: newRallyId }, { merge: true });
+                        yield ah(Iu(this._db, "extensionUsers", uid), { rallyId: newRallyId }, { merge: true });
                     }
                 }));
                 dh(Iu(this._db, "studies", this._studyId), (studiesDoc) => __awaiter(this, void 0, void 0, function* () {
+                    // TODO do runtime validation of this document
+                    if (!studiesDoc || !studiesDoc.data) {
+                        throw new Error("Rally onSnapshot - invalid studies document");
+                    }
                     const data = studiesDoc.data();
-                    if (data.studyPaused === true) {
+                    if (data.studyPaused && data.studyPaused === true) {
                         if (this._state !== runStates.PAUSED) {
                             this._pause();
                         }
                     }
                     else {
                         const userStudiesDoc = yield nh(Iu(this._db, "users", uid, "studies", this._studyId));
+                        if (!userStudiesDoc || !userStudiesDoc.data) {
+                            // This document is created by the site and may not exist yet.
+                            return;
+                        }
                         const data = userStudiesDoc.data();
                         if (data.enrolled && this._state !== runStates.RUNNING) {
                             this._resume();
@@ -22067,6 +22075,10 @@ class Rally {
                     }
                 }));
                 dh(Iu(this._db, "users", uid, "studies", this._studyId), (userStudiesDoc) => __awaiter(this, void 0, void 0, function* () {
+                    if (!userStudiesDoc || !userStudiesDoc.data) {
+                        // This document is created by the site and may not exist yet.
+                        return;
+                    }
                     const data = userStudiesDoc.data();
                     if (data.enrolled) {
                         this._resume();
@@ -22206,6 +22218,9 @@ class Rally {
     _completeSignUp(data) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
+                if (!data || !data.rallyToken) {
+                    throw new Error("Rally._completeSignUp - rally token not well-formed");
+                }
                 console.debug("Rally._completeSignUp - ", data);
                 // Pause study when new credentials are passed.
                 if (this._auth.currentUser) {

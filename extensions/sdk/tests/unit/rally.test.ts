@@ -49,7 +49,7 @@ jest.mock('firebase/firestore', () => ({
       if (subcollection && subcollection === "studies") {
         result = { enrolled: false };
       } else {
-        result = { enrolled: false, uid: "test123", enrolledStudies: { "test-study": { enrolled: true } } };
+        result = { enrolled: false, uid: "test123" };
       }
     } else if (collection === "extensionUsers") {
       result = { rallyId: FAKE_RALLY_ID };
@@ -156,7 +156,7 @@ describe('Rally SDK', function () {
     );
 
     const rallyToken = "...";
-    const message = { type: webMessages.COMPLETE_SIGNUP, data: rallyToken };
+    const message = { type: webMessages.COMPLETE_SIGNUP, data: { rallyToken } };
     const sender = { url: `http://localhost` };
 
     const result = await rally._handleWebMessage(message, sender);
@@ -182,10 +182,15 @@ describe('Rally SDK', function () {
         if (subcollection && subcollection === "studies") {
           result = { enrolled: true };
         } else {
-          result = { enrolled: true, uid: "test123", enrolledStudies: { "test-study": { enrolled: true } } };
+          result = { enrolled: true, uid: "test123" };
         }
       } else if (collection === "extensionUsers") {
         result = { rallyId: FAKE_RALLY_ID };
+      } else if (collection === "studies") {
+        result = {
+          studyPaused: false,
+          studyEnded: false,
+        }
       }
 
       return result;
@@ -193,7 +198,7 @@ describe('Rally SDK', function () {
 
     await rally._authStateChangedCallback({ uid: "test123" });
 
-    assert.equal(await rally.rallyId, FAKE_RALLY_ID);
+    assert.equal(rally.rallyId, FAKE_RALLY_ID);
 
     assert.equal(rally._state, runStates.RUNNING);
     assert.ok(!pausedCallbackCalled);
@@ -211,10 +216,15 @@ describe('Rally SDK', function () {
         if (subcollection && subcollection === "studies") {
           result = { enrolled: false };
         } else {
-          result = { enrolled: true, uid: "test123", enrolledStudies: { "test-study": { enrolled: true } } };
+          result = { enrolled: true, uid: "test123" };
         }
       } else if (collection === "extensionUsers") {
         result = { rallyId: FAKE_RALLY_ID };
+      } else if (collection === "studies") {
+        result = {
+          studyPaused: false,
+          studyEnded: false,
+        }
       }
 
       return result;
@@ -238,10 +248,15 @@ describe('Rally SDK', function () {
         if (subcollection && subcollection === "studies") {
           result = { enrolled: true };
         } else {
-          result = { enrolled: true, uid: "test123", enrolledStudies: { "test-study": { enrolled: true } } };
+          result = { enrolled: true, uid: "test123" };
         }
       } else if (collection === "extensionUsers") {
         result = { rallyId: FAKE_RALLY_ID };
+      } else if (collection === "studies") {
+        result = {
+          studyPaused: false,
+          studyEnded: false,
+        }
       }
 
       return result;

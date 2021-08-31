@@ -107,41 +107,49 @@ export class Rally {
 
         // This contains the Rally ID, need to call the Rally state change callback with it.
         onSnapshot(doc(this._db, "extensionUsers", uid), async extensionUserDoc => {
+          if (!extensionUserDoc || !extensionUserDoc.data) {
+            throw new Error("Rally onSnapshot - invalid extension users document");
+          }
+
           // https://datatracker.ietf.org/doc/html/rfc4122#section-4.1.7
           const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-5][0-9a-f]{3}-[089ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 
-          const data = extensionUserDoc.data();
-          // If the document does not exist, try again later. This is created dynamically by the site.
-          if (!data) {
-            return;
-          }
+          if (extensionUserDoc && extensionUserDoc.data) {
+            const data = extensionUserDoc.data();
 
-          const rallyId = data.rallyId;
-
-          if (rallyId) {
-            if (rallyId.match(uuidRegex)) {
-              // Stored Rally ID looks fine, cache it and call the Rally state change callback with it.
-              this._rallyId = rallyId;
-            } else {
-              // Do not loop or destroy data if the stored Rally ID is invalid, bail out instead.
-              throw new Error(`Stored Rally ID is not a valid UUID: ${rallyId}`);
+            if (data && data.rallyId) {
+              if (data.rallyId.match(uuidRegex)) {
+                // Stored Rally ID looks fine, cache it and call the Rally state change callback with it.
+                this._rallyId = data.rallyId;
+              } else {
+                // Do not loop or destroy data if the stored Rally ID is invalid, bail out instead.
+                throw new Error(`Stored Rally ID is not a valid UUID: ${data.rallyId}`);
+              }
             }
           } else {
             // If the Rally ID does not exist, generate and store it. This will cause onSnapshot to be called
             // again, so no need for anything else.
             const newRallyId = uuidv4();
-            setDoc(doc(this._db, "extensionUsers", uid), { rallyId: newRallyId }, { merge: true });
+            await setDoc(doc(this._db, "extensionUsers", uid), { rallyId: newRallyId }, { merge: true });
           }
         });
 
         onSnapshot(doc(this._db, "studies", this._studyId), async studiesDoc => {
+          // TODO do runtime validation of this document
+          if (!studiesDoc || !studiesDoc.data) {
+            throw new Error("Rally onSnapshot - invalid studies document");
+          }
           const data = studiesDoc.data();
-          if (data.studyPaused === true) {
+          if (data.studyPaused && data.studyPaused === true) {
             if (this._state !== runStates.PAUSED) {
               this._pause();
             }
           } else {
             const userStudiesDoc = await getDoc(doc(this._db, "users", uid, "studies", this._studyId));
+            if (!userStudiesDoc || !userStudiesDoc.data) {
+              // This document is created by the site and may not exist yet.
+              return;
+            }
             const data = userStudiesDoc.data();
 
             if (data.enrolled && this._state !== runStates.RUNNING) {
@@ -157,6 +165,11 @@ export class Rally {
         });
 
         onSnapshot(doc(this._db, "users", uid, "studies", this._studyId), async userStudiesDoc => {
+          if (!userStudiesDoc || !userStudiesDoc.data) {
+            // This document is created by the site and may not exist yet.
+            return;
+          }
+
           const data = userStudiesDoc.data();
           if (data.enrolled) {
             this._resume();
@@ -300,6 +313,10 @@ export class Rally {
 
   async _completeSignUp(data) {
     try {
+      if (!data || !data.rallyToken) {
+        throw new Error("Rally._completeSignUp - rally token not well-formed");
+      }
+
       console.debug("Rally._completeSignUp - ", data);
       // Pause study when new credentials are passed.
       if (this._auth.currentUser) {
