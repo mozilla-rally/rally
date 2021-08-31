@@ -111,6 +111,11 @@ export class Rally {
           const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-5][0-9a-f]{3}-[089ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 
           const data = extensionUserDoc.data();
+          // If the document does not exist, try again later. This is created dynamically by the site.
+          if (!data) {
+            return;
+          }
+
           const rallyId = data.rallyId;
 
           if (rallyId) {

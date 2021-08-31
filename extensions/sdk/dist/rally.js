@@ -22024,6 +22024,10 @@ class Rally {
                     // https://datatracker.ietf.org/doc/html/rfc4122#section-4.1.7
                     const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-5][0-9a-f]{3}-[089ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
                     const data = extensionUserDoc.data();
+                    // If the document does not exist, try again later. This is created dynamically by the site.
+                    if (!data) {
+                        return;
+                    }
                     const rallyId = data.rallyId;
                     if (rallyId) {
                         if (rallyId.match(uuidRegex)) {
@@ -22073,7 +22077,7 @@ class Rally {
                 }));
             }
             else {
-                this._promptSignUp(routes.SIGNUP).catch(err => console.error(err));
+                this._promptSignUp(routes.SIGNUP).catch(err => console.error(`Rally._authStateChangedCallbacke: ${err.message}`));
             }
         });
         onAuthStateChanged(this._auth, this._authStateChangedCallback);
@@ -22162,7 +22166,7 @@ class Rally {
     */
     _handleWebMessage(message, sender) {
         return __awaiter(this, void 0, void 0, function* () {
-            console.log("Rally - received web message", message, "from", sender);
+            console.log("Rally_handleWebMessage - received web message", message, "from", sender);
             // ** IMPORTANT **
             //
             // The website should *NOT EVER* be trusted. Other addons could be
