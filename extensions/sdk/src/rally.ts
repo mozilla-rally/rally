@@ -2,7 +2,6 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-import { v4 as uuidv4 } from "uuid";
 import { browser } from "webextension-polyfill-ts";
 
 // Fall back to Chrome API for missing WebExtension polyfills.
@@ -127,10 +126,7 @@ export class Rally {
               }
             }
           } else {
-            // If the Rally ID does not exist, generate and store it. This will cause onSnapshot to be called
-            // again, so no need for anything else.
-            const newRallyId = uuidv4();
-            await setDoc(doc(this._db, "extensionUsers", uid), { rallyId: newRallyId }, { merge: true });
+            // TODO
           }
         });
 
