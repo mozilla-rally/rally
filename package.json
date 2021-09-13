@@ -21,7 +21,7 @@
     "@rollup/plugin-replace": "^2.4.2",
     "eslint": "^7.26.0",
     "eslint-plugin-import": "^2.24.2",
-    "eslint-plugin-mocha": "^8.1.0",
+    "eslint-plugin-mocha": "^9.0.0",
     "eslint-plugin-node": "^11.1.0",
     "geckodriver": "^2.0.4",
     "globby": "^11.0.3",
