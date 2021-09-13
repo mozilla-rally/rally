@@ -20850,9 +20850,10 @@ class Rally {
                 const idTokenResult = yield this._auth.currentUser.getIdTokenResult();
                 const uid = idTokenResult.claims.firebaseUid;
                 // This contains the Rally ID, need to call the Rally state change callback with it.
-                dh(Iu(this._db, "extensionUsers", uid), (extensionUserDoc) => __awaiter(this, void 0, void 0, function* () {
+                dh(Iu(this._db, "extensionUsers", uid), extensionUserDoc => {
                     if (!extensionUserDoc.exists()) {
-                        throw new Error("Rally onSnapshot - extensionUser document does not exist");
+                        // throw new Error("Rally onSnapshot - extensionUser document does not exist");
+                        console.error("Rally onSnapshot - extensionUser document does not exist");
                     }
                     // https://datatracker.ietf.org/doc/html/rfc4122#section-4.1.7
                     const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-5][0-9a-f]{3}-[089ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
@@ -20867,12 +20868,12 @@ class Rally {
                             throw new Error(`Stored Rally ID is not a valid UUID: ${data.rallyId}`);
                         }
                     }
-                }));
+                });
                 dh(Iu(this._db, "studies", this._studyId), (studiesDoc) => __awaiter(this, void 0, void 0, function* () {
                     // TODO do runtime validation of this document
-                    if (!studiesDoc.exists()) {
-                        throw new Error("Rally onSnapshot - studies document does not exist");
-                    }
+                    // if (!studiesDoc.exists()) {
+                    //  throw new Error("Rally onSnapshot - studies document does not exist");
+                    //}
                     const data = studiesDoc.data();
                     if (data.studyPaused && data.studyPaused === true) {
                         if (this._state !== runStates.PAUSED) {
@@ -20881,11 +20882,11 @@ class Rally {
                     }
                     else {
                         const userStudiesDoc = yield nh(Iu(this._db, "users", uid, "studies", this._studyId));
-                        if (!userStudiesDoc.exists()) {
-                            // This document is created by the site and may not exist yet.
-                            console.warn("Rally.onSnapshot - userStudies document does not exist yet");
-                            return;
-                        }
+                        // if (!userStudiesDoc.exists()) {
+                        // This document is created by the site and may not exist yet.
+                        //  console.warn("Rally.onSnapshot - userStudies document does not exist yet");
+                        //  return;
+                        //}
                         const data = userStudiesDoc.data();
                         if (data.enrolled && this._state !== runStates.RUNNING) {
                             this._resume();
@@ -20898,11 +20899,11 @@ class Rally {
                     }
                 }));
                 dh(Iu(this._db, "users", uid, "studies", this._studyId), (userStudiesDoc) => __awaiter(this, void 0, void 0, function* () {
-                    if (!userStudiesDoc.exists()) {
-                        // This document is created by the site and may not exist yet.
-                        console.warn("Rally.onSnapshot - userStudies document does not exist");
-                        return;
-                    }
+                    //if (!userStudiesDoc.exists()) {
+                    // This document is created by the site and may not exist yet.
+                    //  console.warn("Rally.onSnapshot - userStudies document does not exist");
+                    //  return;
+                    //}
                     const data = userStudiesDoc.data();
                     if (data.enrolled) {
                         this._resume();
@@ -20988,7 +20989,7 @@ class Rally {
     _handleWebMessage(message, sender) {
         return __awaiter(this, void 0, void 0, function* () {
             if (sender.id !== browser$1.runtime.id) {
-                throw new Error(`Rally._handleWebMessage - unknown sender ${sender.id}`);
+                throw new Error(`Rally._handleWebMessage - unknown sender ${sender.id}, expected ${browser$1.runtime.id}`);
             }
             console.log("Rally._handleWebMessage - received web message", message, "from", sender);
             // ** IMPORTANT **

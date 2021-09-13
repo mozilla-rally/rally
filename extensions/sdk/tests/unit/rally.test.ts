@@ -44,20 +44,19 @@ jest.mock('firebase/firestore', () => ({
   __esModule: true,
   apps: [],
   doc: jest.fn((db, collection, uid, subcollection, studyName) => {
-    let result = {};
+    let result = { exists: () => true };
     if (collection === "users") {
       if (subcollection && subcollection === "studies") {
-        result = { enrolled: false };
+        result["enrolled"] = false;
       } else {
-        result = { enrolled: false, uid: "test123" };
+        result["enrolled"] = false;
+        result["uid"] = "test123";
       }
     } else if (collection === "extensionUsers") {
-      result = { rallyId: FAKE_RALLY_ID };
+      result["rallyId"] = FAKE_RALLY_ID;
     } else if (collection === "studies") {
-      result = {
-        studyPaused: false,
-        studyEnded: false,
-      }
+      result["studyPaused"] = false;
+      result["studyEnded"] = false;
     }
 
     return result;
@@ -67,7 +66,7 @@ jest.mock('firebase/firestore', () => ({
   getFirestore: jest.fn(),
   onSnapshot: jest.fn((doc, callback) => {
     const result = {
-      exists: true,
+      exists: () => true,
       data: () => {
         return doc
       }
@@ -156,13 +155,13 @@ describe('Rally SDK', function () {
     );
 
     const rallyToken = "...";
-    const message = { type: webMessages.COMPLETE_SIGNUP, data: { rallyToken } };
-    const sender = { url: `http://localhost` };
+    const message = { type: webMessages.COMPLETE_SIGNUP_RESPONSE, data: { rallyToken } };
+    // TODO mock browser.extension.id response
+    const sender = { id: null, url: `http://localhost` };
 
-    const result = await rally._handleWebMessage(message, sender);
+    await rally._handleWebMessage(message, sender);
 
-    assert.equal(result.type, webMessages.COMPLETE_SIGNUP_RESPONSE);
-    assert.equal(result.data.signedUp, true);
+    // TODO check for complete-signup-response
 
     // If the user is authenticated but not enrolled in Rally, onboarding should be triggered.
     await rally._authStateChangedCallback({ uid: "test123" });
@@ -177,20 +176,19 @@ describe('Rally SDK', function () {
 
     // @ts-ignore
     doc.mockImplementation((db, collection, uid, subcollection, studyName) => {
-      let result = {};
+      let result = { exists: () => true };
       if (collection === "users") {
         if (subcollection && subcollection === "studies") {
-          result = { enrolled: true };
+          result["enrolled"] = true;
         } else {
-          result = { enrolled: true, uid: "test123" };
+          result["enrolled"] = true;
+          result["uid"] = "test123";
         }
       } else if (collection === "extensionUsers") {
-        result = { rallyId: FAKE_RALLY_ID };
+        result["rallyId"] = FAKE_RALLY_ID;
       } else if (collection === "studies") {
-        result = {
-          studyPaused: false,
-          studyEnded: false,
-        }
+        result["studyPaused"] = false;
+        result["studyEnded"] = false;
       }
 
       return result;
@@ -211,20 +209,19 @@ describe('Rally SDK', function () {
 
     // @ts-ignore
     doc.mockImplementation((db, collection, uid, subcollection, studyName) => {
-      let result = {};
+      let result = { exists: () => true };
       if (collection === "users") {
         if (subcollection && subcollection === "studies") {
-          result = { enrolled: false };
+          result["enrolled"] = false;
         } else {
-          result = { enrolled: true, uid: "test123" };
+          result["enrolled"] = true;
+          result["uid"] = "test123";
         }
       } else if (collection === "extensionUsers") {
-        result = { rallyId: FAKE_RALLY_ID };
+        result["rallyId"] = FAKE_RALLY_ID;
       } else if (collection === "studies") {
-        result = {
-          studyPaused: false,
-          studyEnded: false,
-        }
+        result["studyPaused"] = false;
+        result["studyEnded"] = false;
       }
 
       return result;
@@ -243,20 +240,19 @@ describe('Rally SDK', function () {
 
     // @ts-ignore
     doc.mockImplementation((db, collection, uid, subcollection, studyName) => {
-      let result = {};
+      let result = { exists: () => true };
       if (collection === "users") {
         if (subcollection && subcollection === "studies") {
-          result = { enrolled: true };
+          result["enrolled"] = true;
         } else {
-          result = { enrolled: true, uid: "test123" };
+          result["enrolled"] = true;
+          result["uid"] = "test123";
         }
       } else if (collection === "extensionUsers") {
-        result = { rallyId: FAKE_RALLY_ID };
+        result["rallyId"] = FAKE_RALLY_ID;
       } else if (collection === "studies") {
-        result = {
-          studyPaused: false,
-          studyEnded: false,
-        }
+        result["studyPaused"] = false;
+        result["studyEnded"] = false;
       }
 
       return result;
