@@ -20881,8 +20881,9 @@ class Rally {
                     }
                     else {
                         const userStudiesDoc = yield nh(Iu(this._db, "users", uid, "studies", this._studyId));
-                        if (!userStudiesDoc || !userStudiesDoc.data) {
+                        if (!userStudiesDoc.exists()) {
                             // This document is created by the site and may not exist yet.
+                            console.warn("Rally.onSnapshot - userStudies document does not exist yet");
                             return;
                         }
                         const data = userStudiesDoc.data();
@@ -20899,7 +20900,8 @@ class Rally {
                 dh(Iu(this._db, "users", uid, "studies", this._studyId), (userStudiesDoc) => __awaiter(this, void 0, void 0, function* () {
                     if (!userStudiesDoc.exists()) {
                         // This document is created by the site and may not exist yet.
-                        throw new Error("Rally onSnapshot - userStudies document does not exist");
+                        console.warn("Rally.onSnapshot - userStudies document does not exist");
+                        return;
                     }
                     const data = userStudiesDoc.data();
                     if (data.enrolled) {

@@ -138,10 +138,13 @@ export class Rally {
             }
           } else {
             const userStudiesDoc = await getDoc(doc(this._db, "users", uid, "studies", this._studyId));
-            if (!userStudiesDoc || !userStudiesDoc.data) {
+
+            if (!userStudiesDoc.exists()) {
               // This document is created by the site and may not exist yet.
+              console.warn("Rally.onSnapshot - userStudies document does not exist yet");
               return;
             }
+
             const data = userStudiesDoc.data();
 
             if (data.enrolled && this._state !== runStates.RUNNING) {
@@ -159,7 +162,8 @@ export class Rally {
         onSnapshot(doc(this._db, "users", uid, "studies", this._studyId), async userStudiesDoc => {
           if (!userStudiesDoc.exists()) {
             // This document is created by the site and may not exist yet.
-            throw new Error("Rally onSnapshot - userStudies document does not exist");
+            console.warn("Rally.onSnapshot - userStudies document does not exist");
+            return;
           }
 
           const data = userStudiesDoc.data();
