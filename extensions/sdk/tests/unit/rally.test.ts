@@ -10,6 +10,8 @@ import { onAuthStateChanged } from 'firebase/auth'
 
 const FAKE_RALLY_ID = "11f42b4c-8d8e-477e-acd0-b38578228e44";
 
+const flushPromises = () => new Promise(setImmediate);
+
 jest.mock('firebase/app', () => ({
   __esModule: true,
   apps: [],
@@ -62,7 +64,14 @@ jest.mock('firebase/firestore', () => ({
     return result;
   }),
   setDoc: jest.fn(),
-  getDoc: jest.fn(),
+  getDoc: jest.fn(doc => {
+    return {
+      exists: () => true,
+      data: () => {
+        return doc
+      }
+    }
+  }),
   getFirestore: jest.fn(),
   onSnapshot: jest.fn((doc, callback) => {
     const result = {
@@ -194,6 +203,8 @@ describe('Rally SDK', function () {
       return result;
     });
 
+
+
     await rally._authStateChangedCallback({ uid: "test123" });
 
     assert.equal(rally.rallyId, FAKE_RALLY_ID);
@@ -267,5 +278,6 @@ describe('Rally SDK', function () {
     assert.equal(rally.rallyId, FAKE_RALLY_ID);
 
     // FIXME mock calling onSnapshot
+    await flushPromises();
   });
 });

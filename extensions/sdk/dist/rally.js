@@ -20852,8 +20852,7 @@ class Rally {
                 // This contains the Rally ID, need to call the Rally state change callback with it.
                 dh(Iu(this._db, "extensionUsers", uid), extensionUserDoc => {
                     if (!extensionUserDoc.exists()) {
-                        // throw new Error("Rally onSnapshot - extensionUser document does not exist");
-                        console.error("Rally onSnapshot - extensionUser document does not exist");
+                        throw new Error("Rally onSnapshot - extensionUser document does not exist");
                     }
                     // https://datatracker.ietf.org/doc/html/rfc4122#section-4.1.7
                     const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-5][0-9a-f]{3}-[089ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
@@ -20871,9 +20870,9 @@ class Rally {
                 });
                 dh(Iu(this._db, "studies", this._studyId), (studiesDoc) => __awaiter(this, void 0, void 0, function* () {
                     // TODO do runtime validation of this document
-                    // if (!studiesDoc.exists()) {
-                    //  throw new Error("Rally onSnapshot - studies document does not exist");
-                    //}
+                    if (!studiesDoc.exists()) {
+                        throw new Error("Rally onSnapshot - studies document does not exist");
+                    }
                     const data = studiesDoc.data();
                     if (data.studyPaused && data.studyPaused === true) {
                         if (this._state !== runStates.PAUSED) {
@@ -20882,11 +20881,12 @@ class Rally {
                     }
                     else {
                         const userStudiesDoc = yield nh(Iu(this._db, "users", uid, "studies", this._studyId));
-                        // if (!userStudiesDoc.exists()) {
-                        // This document is created by the site and may not exist yet.
-                        //  console.warn("Rally.onSnapshot - userStudies document does not exist yet");
-                        //  return;
-                        //}
+                        // TODO do runtime validation of this document
+                        if (userStudiesDoc && !userStudiesDoc.exists()) {
+                            // This document is created by the site and may not exist yet.
+                            console.warn("Rally.onSnapshot - userStudies document does not exist yet");
+                            return;
+                        }
                         const data = userStudiesDoc.data();
                         if (data.enrolled && this._state !== runStates.RUNNING) {
                             this._resume();
@@ -20899,11 +20899,11 @@ class Rally {
                     }
                 }));
                 dh(Iu(this._db, "users", uid, "studies", this._studyId), (userStudiesDoc) => __awaiter(this, void 0, void 0, function* () {
-                    //if (!userStudiesDoc.exists()) {
-                    // This document is created by the site and may not exist yet.
-                    //  console.warn("Rally.onSnapshot - userStudies document does not exist");
-                    //  return;
-                    //}
+                    if (!userStudiesDoc.exists()) {
+                        // This document is created by the site and may not exist yet.
+                        console.warn("Rally.onSnapshot - userStudies document does not exist");
+                        return;
+                    }
                     const data = userStudiesDoc.data();
                     if (data.enrolled) {
                         this._resume();
