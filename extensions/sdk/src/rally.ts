@@ -127,7 +127,6 @@ export class Rally {
         });
 
         onSnapshot(doc(this._db, "studies", this._studyId), async studiesDoc => {
-          console.debug("this._studyId", this._studyId);
           // TODO do runtime validation of this document
           if (!studiesDoc.exists()) {
             throw new Error("Rally onSnapshot - studies document does not exist");
@@ -138,7 +137,6 @@ export class Rally {
               this._pause();
             }
           } else {
-            console.debug("this._studyId", this._studyId);
             const userStudiesDoc = await getDoc(doc(this._db, "users", uid, "studies", this._studyId));
             if (!userStudiesDoc || !userStudiesDoc.data) {
               // This document is created by the site and may not exist yet.
@@ -159,8 +157,6 @@ export class Rally {
         });
 
         onSnapshot(doc(this._db, "users", uid, "studies", this._studyId), async userStudiesDoc => {
-          console.debug("this._studyId", this._studyId);
-
           if (!userStudiesDoc.exists()) {
             // This document is created by the site and may not exist yet.
             throw new Error("Rally onSnapshot - userStudies document does not exist");
@@ -176,10 +172,11 @@ export class Rally {
       } else {
         await this._promptSignUp();
       }
+
+      browser.runtime.onMessage.addListener((m, s) => this._handleWebMessage(m, s));
     }
 
     onAuthStateChanged(this._auth, this._authStateChangedCallback);
-    browser.runtime.onMessage.addListener((m, s) => this._handleWebMessage(m, s));
   }
 
   async _promptSignUp() {
@@ -253,7 +250,10 @@ export class Rally {
   *          `sender` or rejected in case of errors.
   */
   async _handleWebMessage(message: { type: webMessages, data: {} }, sender: any) {
-    console.log("Rally_handleWebMessage - received web message", message, "from", sender);
+    if (sender.id !== browser.runtime.id) {
+      throw new Error(`Rally._handleWebMessage - unknown sender ${sender.id}`);
+    }
+    console.log("Rally._handleWebMessage - received web message", message, "from", sender);
     // ** IMPORTANT **
     //
     // The website should *NOT EVER* be trusted. Other addons could be
@@ -266,7 +266,6 @@ export class Rally {
 
     switch (message.type) {
       case webMessages.WEB_CHECK:
-        console.debug("bg script received web-check");
         // The `web-check` message should be safe: any installed extension with
         // the `management` privileges could check for the presence of the
         // Rally SDK and expose that to the web. By exposing this ourselves
@@ -274,16 +273,16 @@ export class Rally {
         // worse.
         // FIXME check internally to see if we need this yet or not.
         // Now that the site is open, send a message asking for a JWT.
-        console.debug("sending complete-signup request to sender:", sender);
-        console.debug("this._studyId", this._studyId);
-
         if (!this._signedIn) {
           console.debug("not signed in, sending complete_signup request");
           await browser.tabs.sendMessage(sender.tab.id, { type: webMessages.COMPLETE_SIGNUP, data: { studyId: this._studyId } });
+        } else {
+          console.debug("already signed in, not sending complete_signup request");
         }
 
         console.debug("sending web-check-response to sender:", sender, " done");
         await browser.tabs.sendMessage(sender.tab.id, { type: webMessages.WEB_CHECK_RESPONSE, data: {} });
+        break;
 
       case webMessages.COMPLETE_SIGNUP_RESPONSE:
         // The `complete-signup-response` message should be safe: It's a response
@@ -294,9 +293,7 @@ export class Rally {
         // could potentially pass us a working credential that is attacker-controlled, but this should not cause the
         // extension to send data anywhere attacker-controlled, since the data collection endpoint is hardcoded and signed
         // along with the extension.
-        console.debug("Finishing signup", message);
         const signedUp = await this._completeSignUp(message.data);
-        console.debug("Finished signup:", signedUp);
         break;
       default:
         throw new Error(`Rally._handleWebMessage - unexpected message type "${message.type}"`);
@@ -307,7 +304,7 @@ export class Rally {
     console.debug("Rally._completeSignUp called:", data);
     try {
       if (!data || !data.rallyToken) {
-        throw new Error("Rally._completeSignUp - rally token not well-formed:", data);
+        throw new Error(`Rally._completeSignUp - rally token not well-formed: ${data.rallyToken}`);
       }
 
       console.debug("Rally._completeSignUp - ", data);

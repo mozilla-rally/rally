@@ -20869,7 +20869,6 @@ class Rally {
                     }
                 }));
                 dh(Iu(this._db, "studies", this._studyId), (studiesDoc) => __awaiter(this, void 0, void 0, function* () {
-                    console.debug("this._studyId", this._studyId);
                     // TODO do runtime validation of this document
                     if (!studiesDoc.exists()) {
                         throw new Error("Rally onSnapshot - studies document does not exist");
@@ -20881,7 +20880,6 @@ class Rally {
                         }
                     }
                     else {
-                        console.debug("this._studyId", this._studyId);
                         const userStudiesDoc = yield nh(Iu(this._db, "users", uid, "studies", this._studyId));
                         if (!userStudiesDoc || !userStudiesDoc.data) {
                             // This document is created by the site and may not exist yet.
@@ -20899,7 +20897,6 @@ class Rally {
                     }
                 }));
                 dh(Iu(this._db, "users", uid, "studies", this._studyId), (userStudiesDoc) => __awaiter(this, void 0, void 0, function* () {
-                    console.debug("this._studyId", this._studyId);
                     if (!userStudiesDoc.exists()) {
                         // This document is created by the site and may not exist yet.
                         throw new Error("Rally onSnapshot - userStudies document does not exist");
@@ -20916,9 +20913,9 @@ class Rally {
             else {
                 yield this._promptSignUp();
             }
+            browser$1.runtime.onMessage.addListener((m, s) => this._handleWebMessage(m, s));
         });
         onAuthStateChanged(this._auth, this._authStateChangedCallback);
-        browser$1.runtime.onMessage.addListener((m, s) => this._handleWebMessage(m, s));
     }
     _promptSignUp() {
         return __awaiter(this, void 0, void 0, function* () {
@@ -20988,7 +20985,10 @@ class Rally {
     */
     _handleWebMessage(message, sender) {
         return __awaiter(this, void 0, void 0, function* () {
-            console.log("Rally_handleWebMessage - received web message", message, "from", sender);
+            if (sender.id !== browser$1.runtime.id) {
+                throw new Error(`Rally._handleWebMessage - unknown sender ${sender.id}`);
+            }
+            console.log("Rally._handleWebMessage - received web message", message, "from", sender);
             // ** IMPORTANT **
             //
             // The website should *NOT EVER* be trusted. Other addons could be
@@ -21000,7 +21000,6 @@ class Rally {
             // information out? Can it be used to mess with studies?
             switch (message.type) {
                 case webMessages.WEB_CHECK:
-                    console.debug("bg script received web-check");
                     // The `web-check` message should be safe: any installed extension with
                     // the `management` privileges could check for the presence of the
                     // Rally SDK and expose that to the web. By exposing this ourselves
@@ -21008,14 +21007,16 @@ class Rally {
                     // worse.
                     // FIXME check internally to see if we need this yet or not.
                     // Now that the site is open, send a message asking for a JWT.
-                    console.debug("sending complete-signup request to sender:", sender);
-                    console.debug("this._studyId", this._studyId);
                     if (!this._signedIn) {
                         console.debug("not signed in, sending complete_signup request");
                         yield browser$1.tabs.sendMessage(sender.tab.id, { type: webMessages.COMPLETE_SIGNUP, data: { studyId: this._studyId } });
                     }
+                    else {
+                        console.debug("already signed in, not sending complete_signup request");
+                    }
                     console.debug("sending web-check-response to sender:", sender, " done");
                     yield browser$1.tabs.sendMessage(sender.tab.id, { type: webMessages.WEB_CHECK_RESPONSE, data: {} });
+                    break;
                 case webMessages.COMPLETE_SIGNUP_RESPONSE:
                     // The `complete-signup-response` message should be safe: It's a response
                     // from the page, containing the credentials from the currently-authenticated user.
@@ -21025,9 +21026,7 @@ class Rally {
                     // could potentially pass us a working credential that is attacker-controlled, but this should not cause the
                     // extension to send data anywhere attacker-controlled, since the data collection endpoint is hardcoded and signed
                     // along with the extension.
-                    console.debug("Finishing signup", message);
-                    const signedUp = yield this._completeSignUp(message.data);
-                    console.debug("Finished signup:", signedUp);
+                    yield this._completeSignUp(message.data);
                     break;
                 default:
                     throw new Error(`Rally._handleWebMessage - unexpected message type "${message.type}"`);
@@ -21039,7 +21038,7 @@ class Rally {
             console.debug("Rally._completeSignUp called:", data);
             try {
                 if (!data || !data.rallyToken) {
-                    throw new Error("Rally._completeSignUp - rally token not well-formed:", data);
+                    throw new Error(`Rally._completeSignUp - rally token not well-formed: ${data.rallyToken}`);
                 }
                 console.debug("Rally._completeSignUp - ", data);
                 // Pause study when new credentials are passed.

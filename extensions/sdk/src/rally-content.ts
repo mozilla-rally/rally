@@ -14,13 +14,21 @@ import { webMessages } from "./rally";
  *        {type: "message-type", data: {...}}
  */
 function sendToPage(message: { type: any; data: { studyId?: string }; }) {
-  console.debug(`Rally: sending message ${message.type} to page with data: ${message.data.studyId}`);
+  console.debug(`Rally.sendToPage (content) - sending message ${message.type} to page with data: ${message.data.studyId}`);
 
-  const event = new CustomEvent("complete-signup", { detail: message.data.studyId });
-  window.dispatchEvent(
-    // Each study needs its own token. Send to content script.
-    event
-  );
+  switch (message.type) {
+    case webMessages.COMPLETE_SIGNUP: {
+      window.dispatchEvent(new CustomEvent("complete-signup", { detail: message.data.studyId }));
+      break;
+    }
+    case webMessages.WEB_CHECK_RESPONSE: {
+      window.dispatchEvent(new CustomEvent("web-request", {}));
+      break;
+    }
+    default: {
+      throw new Error(`Rally.sendToPage (content) - unknown message type: ${message.type}`);
+    }
+  }
 }
 
 /**
@@ -32,23 +40,23 @@ function sendToPage(message: { type: any; data: { studyId?: string }; }) {
  * any actor could inject custom scripts and impersonate the web page.
  */
 async function handlePageEvents(event: CustomEvent) {
-  console.debug(`Rally - "${event.type}" message received from the page`);
+  console.debug(`Rally.handlePageEvents (content) - "${event.type}" message received from the page`);
 
   switch (event.type) {
     // Listen for a web-check message, the site will send this when it is initialized.
     case webMessages.WEB_CHECK: {
-      console.debug("rally-content - web-check request received");
+      console.debug("Rally.handlePageEvents (content) - web-check request received, sending to background script");
       browser.runtime.sendMessage({ type: webMessages.WEB_CHECK, data: {} });
       break;
     }
     // Listen for a complete-signup message, which will contain the JWT.
     case webMessages.COMPLETE_SIGNUP_RESPONSE: {
-      console.debug("rally-content - Sending complete-signup-response message to background script");
+      console.debug("Rally.handlePageEvents (content) - complete-signup-response received, sending to background script");
       browser.runtime.sendMessage({ type: webMessages.COMPLETE_SIGNUP_RESPONSE, data: event.detail });
       break;
     }
     default:
-      console.error(`Rally - unknown message ${event.type} received`);
+      console.error(`Rally.handlePageEvents (content) - unknown message ${event.type} received`);
   }
 }
 
@@ -56,19 +64,19 @@ function handleBackgroundEvents(message: { type: webMessages, data: {} }, sender
   switch (message.type) {
     // Listen for a complete-signup message, which will contain the JWT.
     case webMessages.COMPLETE_SIGNUP: {
-      console.debug("rally-content - complete-signup request:", message);
+      console.debug("Rally.handleBackgroundEvents (content) - complete-signup request:", message);
       sendToPage(message);
       break;
     }
     // Listen for a complete-signup message, which will contain the JWT.
     case webMessages.WEB_CHECK_RESPONSE: {
-      console.debug("rally-content - web-check-response request:", message);
+      console.debug("Rally.handleBackgroundEvents (content) - web-check-response request:", message);
       sendToPage(message);
       break;
     }
 
     default:
-      console.error(`Rally - unknown message ${message.type} received`);
+      console.error(`Rally.handleBackgroundEvents (content) - unknown message ${message.type} received`);
   }
 }
 
