@@ -20786,10 +20786,10 @@ var authProviders;
 })(authProviders || (authProviders = {}));
 var webMessages;
 (function (webMessages) {
-    webMessages["WEB_CHECK"] = "web-check";
-    webMessages["COMPLETE_SIGNUP"] = "complete-signup";
-    webMessages["WEB_CHECK_RESPONSE"] = "web-check-response";
-    webMessages["COMPLETE_SIGNUP_RESPONSE"] = "complete-signup-response";
+    webMessages["WEB_CHECK"] = "rally-sdk.web-check";
+    webMessages["COMPLETE_SIGNUP"] = "rally-sdk.complete-signup";
+    webMessages["WEB_CHECK_RESPONSE"] = "rally-sdk.web-check-response";
+    webMessages["COMPLETE_SIGNUP_RESPONSE"] = "rally-sdk.complete-signup-response";
 })(webMessages || (webMessages = {}));
 class Rally {
     /**
@@ -21027,7 +21027,7 @@ class Rally {
                     yield this._completeSignUp(message.data);
                     break;
                 default:
-                    throw new Error(`Rally._handleWebMessage - unexpected message type "${message.type}"`);
+                    console.warn(`Rally._handleWebMessage - unexpected message type "${message.type}"`);
             }
         });
     }

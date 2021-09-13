@@ -21,10 +21,10 @@ export enum authProviders {
 }
 
 export enum webMessages {
-  WEB_CHECK = "web-check",
-  COMPLETE_SIGNUP = "complete-signup",
-  WEB_CHECK_RESPONSE = "web-check-response",
-  COMPLETE_SIGNUP_RESPONSE = "complete-signup-response",
+  WEB_CHECK = "rally-sdk.web-check",
+  COMPLETE_SIGNUP = "rally-sdk.complete-signup",
+  WEB_CHECK_RESPONSE = "rally-sdk.web-check-response",
+  COMPLETE_SIGNUP_RESPONSE = "rally-sdk.complete-signup-response",
 }
 
 export class Rally {
@@ -298,7 +298,7 @@ export class Rally {
         const signedUp = await this._completeSignUp(message.data);
         break;
       default:
-        throw new Error(`Rally._handleWebMessage - unexpected message type "${message.type}"`);
+        console.warn(`Rally._handleWebMessage - unexpected message type "${message.type}"`);
     }
   }
 

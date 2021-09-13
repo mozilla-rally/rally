@@ -18,15 +18,15 @@ function sendToPage(message: { type: any; data: { studyId?: string }; }) {
 
   switch (message.type) {
     case webMessages.COMPLETE_SIGNUP: {
-      window.dispatchEvent(new CustomEvent("complete-signup", { detail: message.data.studyId }));
+      window.dispatchEvent(new CustomEvent(webMessages.COMPLETE_SIGNUP, { detail: message.data.studyId }));
       break;
     }
     case webMessages.WEB_CHECK_RESPONSE: {
-      window.dispatchEvent(new CustomEvent("web-request", {}));
+      window.dispatchEvent(new CustomEvent(webMessages.WEB_CHECK_RESPONSE, {}));
       break;
     }
     default: {
-      throw new Error(`Rally.sendToPage (content) - unknown message type: ${message.type}`);
+      console.warn(`Rally.sendToPage (content) - unknown message type: ${message.type}`);
     }
   }
 }
@@ -56,7 +56,7 @@ async function handlePageEvents(event: CustomEvent) {
       break;
     }
     default:
-      console.error(`Rally.handlePageEvents (content) - unknown message ${event.type} received`);
+      console.warn(`Rally.handlePageEvents (content) - unknown message ${event.type} received`);
   }
 }
 

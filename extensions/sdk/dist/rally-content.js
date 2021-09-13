@@ -7565,10 +7565,10 @@ var authProviders;
 })(authProviders || (authProviders = {}));
 var webMessages;
 (function (webMessages) {
-    webMessages["WEB_CHECK"] = "web-check";
-    webMessages["COMPLETE_SIGNUP"] = "complete-signup";
-    webMessages["WEB_CHECK_RESPONSE"] = "web-check-response";
-    webMessages["COMPLETE_SIGNUP_RESPONSE"] = "complete-signup-response";
+    webMessages["WEB_CHECK"] = "rally-sdk.web-check";
+    webMessages["COMPLETE_SIGNUP"] = "rally-sdk.complete-signup";
+    webMessages["WEB_CHECK_RESPONSE"] = "rally-sdk.web-check-response";
+    webMessages["COMPLETE_SIGNUP_RESPONSE"] = "rally-sdk.complete-signup-response";
 })(webMessages || (webMessages = {}));
 
 /* This Source Code Form is subject to the terms of the Mozilla Public
@@ -7586,15 +7586,15 @@ function sendToPage(message) {
     console.debug(`Rally.sendToPage (content) - sending message ${message.type} to page with data: ${message.data.studyId}`);
     switch (message.type) {
         case webMessages.COMPLETE_SIGNUP: {
-            window.dispatchEvent(new CustomEvent("complete-signup", { detail: message.data.studyId }));
+            window.dispatchEvent(new CustomEvent(webMessages.COMPLETE_SIGNUP, { detail: message.data.studyId }));
             break;
         }
         case webMessages.WEB_CHECK_RESPONSE: {
-            window.dispatchEvent(new CustomEvent("web-request", {}));
+            window.dispatchEvent(new CustomEvent(webMessages.WEB_CHECK_RESPONSE, {}));
             break;
         }
         default: {
-            throw new Error(`Rally.sendToPage (content) - unknown message type: ${message.type}`);
+            console.warn(`Rally.sendToPage (content) - unknown message type: ${message.type}`);
         }
     }
 }
@@ -7623,7 +7623,7 @@ function handlePageEvents(event) {
                 break;
             }
             default:
-                console.error(`Rally.handlePageEvents (content) - unknown message ${event.type} received`);
+                console.warn(`Rally.handlePageEvents (content) - unknown message ${event.type} received`);
         }
     });
 }
