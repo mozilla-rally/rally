@@ -20828,6 +20828,7 @@ class Rally {
         // Set the initial state to paused, and register callback for future changes.
         this._state = runStates.PAUSED;
         this._stateChangeCallback = stateChangeCallback;
+        console.debug("Rally - firebase config:", firebaseConfig);
         const firebaseApp = initializeApp(firebaseConfig);
         this._auth = getAuth(firebaseApp);
         this._db = Cu(firebaseApp);

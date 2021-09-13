@@ -81,6 +81,7 @@ export class Rally {
     this._state = runStates.PAUSED;
     this._stateChangeCallback = stateChangeCallback;
 
+    console.debug("Rally - firebase config:", firebaseConfig);
     const firebaseApp = initializeApp(firebaseConfig);
 
     this._auth = getAuth(firebaseApp);
