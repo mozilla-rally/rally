@@ -8,9 +8,6 @@ import { initializeApp } from "firebase/app"
 import { connectAuthEmulator, getAuth, onAuthStateChanged, signInWithCustomToken } from "firebase/auth";
 import { connectFirestoreEmulator, getFirestore, doc, onSnapshot, getDoc, setDoc } from "firebase/firestore";
 
-// @ts-ignore - FIXME provide type
-import firebaseConfig from "../config/firebase.config.js";
-
 
 export enum runStates {
   RUNNING,
@@ -61,8 +58,11 @@ export class Rally {
    *
    * @param {String} studyId
    *        A string containing the unique name of the study, separate from the Firefox add-on ID and Chrome extension ID.
+   *
+   * @param {object} firebaseConfig
+   *        An object containing the Firebase backend configuration.
    */
-  constructor(enableDevMode: boolean, stateChangeCallback: (runState: runStates) => void, rallySite: string, studyId: string) {
+  constructor(enableDevMode: boolean, stateChangeCallback: (runState: runStates) => void, rallySite: string, studyId: string, firebaseConfig: object) {
     if (!stateChangeCallback) {
       throw new Error("Rally.initialize - Initialization failed, stateChangeCallback is required.")
     }
@@ -183,7 +183,7 @@ export class Rally {
   async _promptSignUp() {
     let loadedTab: Tabs.Tab;
 
-    const tabs = await browser.tabs.query({ url: `http://${this._rallySite}:3000/*` });
+    const tabs = await browser.tabs.query({ url: `${this._rallySite}/*` });
     // If there are any tabs with the Rally site loaded, focus the latest one.
     if (tabs && tabs.length > 0) {
       loadedTab = tabs.pop();

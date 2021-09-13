@@ -128,7 +128,8 @@ describe('Rally SDK', function () {
         }
       },
       "http://localhost",
-      "exampleStudy1"
+      "exampleStudy1",
+      {}
     )
 
     assert.equal(rally._state, runStates.PAUSED);
@@ -160,7 +161,8 @@ describe('Rally SDK', function () {
 
       },
       "http://localhost",
-      "exampleStudy1"
+      "exampleStudy1",
+      {}
     );
 
     const rallyToken = "...";

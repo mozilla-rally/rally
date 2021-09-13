@@ -20770,15 +20770,6 @@ function dh(t, ...e) {
     }, e), s._setSettings(e), s;
 }), "PUBLIC" /* PUBLIC */)), registerVersion("@firebase/firestore", "0.0.900-exp.6ef484a04", Ph);
 
-var firebaseConfig = {
-  apiKey: "AIzaSyAJv0aTJMCbG_e6FJZzc6hSzri9qDCmvoo",
-  authDomain: "rally-web-spike.firebaseapp.com",
-  projectId: "rally-web-spike",
-  storageBucket: "rally-web-spike.appspot.com",
-  messagingSenderId: "85993993890",
-  appId: "1:85993993890:web:b975ff99733d2d8b50c9fb"
-};
-
 /* This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
@@ -20819,8 +20810,11 @@ class Rally {
      *
      * @param {String} studyId
      *        A string containing the unique name of the study, separate from the Firefox add-on ID and Chrome extension ID.
+     *
+     * @param {object} firebaseConfig
+     *        An object containing the Firebase backend configuration.
      */
-    constructor(enableDevMode, stateChangeCallback, rallySite, studyId) {
+    constructor(enableDevMode, stateChangeCallback, rallySite, studyId, firebaseConfig) {
         if (!stateChangeCallback) {
             throw new Error("Rally.initialize - Initialization failed, stateChangeCallback is required.");
         }
@@ -20923,7 +20917,7 @@ class Rally {
     _promptSignUp() {
         return __awaiter(this, void 0, void 0, function* () {
             let loadedTab;
-            const tabs = yield browser$1.tabs.query({ url: `http://${this._rallySite}:3000/*` });
+            const tabs = yield browser$1.tabs.query({ url: `${this._rallySite}/*` });
             // If there are any tabs with the Rally site loaded, focus the latest one.
             if (tabs && tabs.length > 0) {
                 loadedTab = tabs.pop();
