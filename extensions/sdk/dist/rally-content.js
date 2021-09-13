@@ -1,3 +1,56 @@
+/*! *****************************************************************************
+Copyright (c) Microsoft Corporation.
+
+Permission to use, copy, modify, and/or distribute this software for any
+purpose with or without fee is hereby granted.
+
+THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH
+REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY
+AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT,
+INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM
+LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR
+OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
+PERFORMANCE OF THIS SOFTWARE.
+***************************************************************************** */
+/* global Reflect, Promise */
+
+var extendStatics$1 = function(d, b) {
+    extendStatics$1 = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
+    return extendStatics$1(d, b);
+};
+
+function __extends$1(d, b) {
+    if (typeof b !== "function" && b !== null)
+        throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
+    extendStatics$1(d, b);
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+}
+
+function __rest(s, e) {
+    var t = {};
+    for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p) && e.indexOf(p) < 0)
+        t[p] = s[p];
+    if (s != null && typeof Object.getOwnPropertySymbols === "function")
+        for (var i = 0, p = Object.getOwnPropertySymbols(s); i < p.length; i++) {
+            if (e.indexOf(p[i]) < 0 && Object.prototype.propertyIsEnumerable.call(s, p[i]))
+                t[p[i]] = s[p[i]];
+        }
+    return t;
+}
+
+function __awaiter(thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+}
+
 var commonjsGlobal$1 = typeof globalThis !== 'undefined' ? globalThis : typeof window !== 'undefined' ? window : typeof global !== 'undefined' ? global : typeof self !== 'undefined' ? self : {};
 
 var lib = {};
@@ -1269,49 +1322,6 @@ var browserPolyfill = {exports: {}};
 Object.defineProperty(lib, "__esModule", { value: true });
 
 var browser$1 = lib.browser = browserPolyfill.exports;
-
-/*! *****************************************************************************
-Copyright (c) Microsoft Corporation.
-
-Permission to use, copy, modify, and/or distribute this software for any
-purpose with or without fee is hereby granted.
-
-THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH
-REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY
-AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT,
-INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM
-LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR
-OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
-PERFORMANCE OF THIS SOFTWARE.
-***************************************************************************** */
-/* global Reflect, Promise */
-
-var extendStatics$1 = function(d, b) {
-    extendStatics$1 = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
-    return extendStatics$1(d, b);
-};
-
-function __extends$1(d, b) {
-    if (typeof b !== "function" && b !== null)
-        throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
-    extendStatics$1(d, b);
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-}
-
-function __rest(s, e) {
-    var t = {};
-    for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p) && e.indexOf(p) < 0)
-        t[p] = s[p];
-    if (s != null && typeof Object.getOwnPropertySymbols === "function")
-        for (var i = 0, p = Object.getOwnPropertySymbols(s); i < p.length; i++) {
-            if (e.indexOf(p[i]) < 0 && Object.prototype.propertyIsEnumerable.call(s, p[i]))
-                t[p[i]] = s[p[i]];
-        }
-    return t;
-}
 
 /**
  * @license
@@ -7560,16 +7570,10 @@ var webMessages;
     webMessages["WEB_CHECK_RESPONSE"] = "web-check-response";
     webMessages["COMPLETE_SIGNUP_RESPONSE"] = "complete-signup-response";
 })(webMessages || (webMessages = {}));
-var routes;
-(function (routes) {
-    routes["ONBOARD"] = "onboard";
-    routes["SIGNUP"] = "signup";
-})(routes || (routes = {}));
 
 /* This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
-const port = browser$1.runtime.connect({ name: "rally-content" });
 /**
  * Send an event to the web page.
  *
@@ -7579,12 +7583,11 @@ const port = browser$1.runtime.connect({ name: "rally-content" });
  *        {type: "message-type", data: {...}}
  */
 function sendToPage(message) {
-    console.debug(`Rally: sending response ${message.type} to page`);
-    const data = message.data || {};
-    window.dispatchEvent(new CustomEvent(message.type, { detail: data }));
-}
-function sendAddonAliveEvent() {
-    sendToPage({ type: webMessages.WEB_CHECK_RESPONSE, data: {} });
+    console.debug(`Rally: sending message ${message.type} to page with data: ${message.data.studyId}`);
+    const event = new CustomEvent("complete-signup", { detail: message.data.studyId });
+    window.dispatchEvent(
+    // Each study needs its own token. Send to content script.
+    event);
 }
 /**
  * Bridge page events to the background script.
@@ -7595,26 +7598,52 @@ function sendAddonAliveEvent() {
  * any actor could inject custom scripts and impersonate the web page.
  */
 function handlePageEvents(event) {
-    console.debug(`Rally - "${event.type}" message received from the page`);
-    switch (event.type) {
+    return __awaiter(this, void 0, void 0, function* () {
+        console.debug(`Rally - "${event.type}" message received from the page`);
+        switch (event.type) {
+            // Listen for a web-check message, the site will send this when it is initialized.
+            case webMessages.WEB_CHECK: {
+                console.debug("rally-content - web-check request received");
+                browser$1.runtime.sendMessage({ type: webMessages.WEB_CHECK, data: {} });
+                break;
+            }
+            // Listen for a complete-signup message, which will contain the JWT.
+            case webMessages.COMPLETE_SIGNUP_RESPONSE: {
+                console.debug("rally-content - Sending complete-signup-response message to background script");
+                browser$1.runtime.sendMessage({ type: webMessages.COMPLETE_SIGNUP_RESPONSE, data: event.detail });
+                break;
+            }
+            default:
+                console.error(`Rally - unknown message ${event.type} received`);
+        }
+    });
+}
+function handleBackgroundEvents(message, sender) {
+    switch (message.type) {
+        // Listen for a complete-signup message, which will contain the JWT.
         case webMessages.COMPLETE_SIGNUP: {
-            // browser.runtime.sendMessage({ type: event.type, data: event.detail });
-            port.postMessage({ type: event.type, data: event.detail });
+            console.debug("rally-content - complete-signup request:", message);
+            sendToPage(message);
             break;
         }
-        case webMessages.WEB_CHECK: {
-            port.postMessage({ type: event.type, data: {} });
+        // Listen for a complete-signup message, which will contain the JWT.
+        case webMessages.WEB_CHECK_RESPONSE: {
+            console.debug("rally-content - web-check-response request:", message);
+            sendToPage(message);
             break;
         }
         default:
-            console.error(`Rally - unknown message ${event.type} received`);
+            console.error(`Rally - unknown message ${message.type} received`);
     }
 }
-// @ts-ignore
-window.addEventListener(webMessages.COMPLETE_SIGNUP, e => handlePageEvents(e));
+// Listen for a web-check message from the website.
 // @ts-ignore
 window.addEventListener(webMessages.WEB_CHECK, e => handlePageEvents(e));
-console.debug("Rally - Running content script");
-// Send an event as soon as injected, to notify the web page if
-// it is already open.
-sendAddonAliveEvent();
+// Listen for a complete-signup-response message from the website.
+// @ts-ignore
+window.addEventListener(webMessages.COMPLETE_SIGNUP_RESPONSE, e => handlePageEvents(e));
+// Listen for messages from the background script.
+browser$1.runtime.onMessage.addListener((message, sender) => {
+    handleBackgroundEvents(message);
+});
+console.debug("Rally SDK - Running content script.");

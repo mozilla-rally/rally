@@ -20800,11 +20800,6 @@ var webMessages;
     webMessages["WEB_CHECK_RESPONSE"] = "web-check-response";
     webMessages["COMPLETE_SIGNUP_RESPONSE"] = "complete-signup-response";
 })(webMessages || (webMessages = {}));
-var routes;
-(function (routes) {
-    routes["ONBOARD"] = "onboard";
-    routes["SIGNUP"] = "signup";
-})(routes || (routes = {}));
 class Rally {
     /**
      * Initialize the Rally library.
@@ -20835,6 +20830,7 @@ class Rally {
         this._enableDevMode = Boolean(enableDevMode);
         this._rallySite = rallySite;
         this._studyId = studyId;
+        this._signedIn = false;
         // Set the initial state to paused, and register callback for future changes.
         this._state = runStates.PAUSED;
         this._stateChangeCallback = stateChangeCallback;
@@ -20847,35 +20843,36 @@ class Rally {
         }
         this._authStateChangedCallback = (user) => __awaiter(this, void 0, void 0, function* () {
             if (user) {
+                // Record that we have signed in, so we don't keep trying to onboard.
+                this._signedIn = true;
                 // This is a restricted user, which can see a minimal part of the users data.
                 // The users Firebase UID is needed for this, and it is available in a custom claim on the JWT.
                 const idTokenResult = yield this._auth.currentUser.getIdTokenResult();
                 const uid = idTokenResult.claims.firebaseUid;
                 // This contains the Rally ID, need to call the Rally state change callback with it.
                 dh(Iu(this._db, "extensionUsers", uid), (extensionUserDoc) => __awaiter(this, void 0, void 0, function* () {
-                    if (!extensionUserDoc || !extensionUserDoc.data) {
-                        throw new Error("Rally onSnapshot - invalid extension users document");
+                    if (!extensionUserDoc.exists()) {
+                        throw new Error("Rally onSnapshot - extensionUser document does not exist");
                     }
                     // https://datatracker.ietf.org/doc/html/rfc4122#section-4.1.7
                     const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-5][0-9a-f]{3}-[089ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
-                    if (extensionUserDoc && extensionUserDoc.data) {
-                        const data = extensionUserDoc.data();
-                        if (data && data.rallyId) {
-                            if (data.rallyId.match(uuidRegex)) {
-                                // Stored Rally ID looks fine, cache it and call the Rally state change callback with it.
-                                this._rallyId = data.rallyId;
-                            }
-                            else {
-                                // Do not loop or destroy data if the stored Rally ID is invalid, bail out instead.
-                                throw new Error(`Stored Rally ID is not a valid UUID: ${data.rallyId}`);
-                            }
+                    const data = extensionUserDoc.data();
+                    if (data && data.rallyId) {
+                        if (data.rallyId.match(uuidRegex)) {
+                            // Stored Rally ID looks fine, cache it and call the Rally state change callback with it.
+                            this._rallyId = data.rallyId;
+                        }
+                        else {
+                            // Do not loop or destroy data if the stored Rally ID is invalid, bail out instead.
+                            throw new Error(`Stored Rally ID is not a valid UUID: ${data.rallyId}`);
                         }
                     }
                 }));
                 dh(Iu(this._db, "studies", this._studyId), (studiesDoc) => __awaiter(this, void 0, void 0, function* () {
+                    console.debug("this._studyId", this._studyId);
                     // TODO do runtime validation of this document
-                    if (!studiesDoc || !studiesDoc.data) {
-                        throw new Error("Rally onSnapshot - invalid studies document");
+                    if (!studiesDoc.exists()) {
+                        throw new Error("Rally onSnapshot - studies document does not exist");
                     }
                     const data = studiesDoc.data();
                     if (data.studyPaused && data.studyPaused === true) {
@@ -20884,6 +20881,7 @@ class Rally {
                         }
                     }
                     else {
+                        console.debug("this._studyId", this._studyId);
                         const userStudiesDoc = yield nh(Iu(this._db, "users", uid, "studies", this._studyId));
                         if (!userStudiesDoc || !userStudiesDoc.data) {
                             // This document is created by the site and may not exist yet.
@@ -20901,9 +20899,10 @@ class Rally {
                     }
                 }));
                 dh(Iu(this._db, "users", uid, "studies", this._studyId), (userStudiesDoc) => __awaiter(this, void 0, void 0, function* () {
-                    if (!userStudiesDoc || !userStudiesDoc.data) {
+                    console.debug("this._studyId", this._studyId);
+                    if (!userStudiesDoc.exists()) {
                         // This document is created by the site and may not exist yet.
-                        return;
+                        throw new Error("Rally onSnapshot - userStudies document does not exist");
                     }
                     const data = userStudiesDoc.data();
                     if (data.enrolled) {
@@ -20915,41 +20914,26 @@ class Rally {
                 }));
             }
             else {
-                this._promptSignUp(routes.SIGNUP).catch(err => console.error(`Rally._authStateChangedCallbacke: ${err.message}`));
+                yield this._promptSignUp();
             }
         });
         onAuthStateChanged(this._auth, this._authStateChangedCallback);
-        browser$1.runtime.onConnect.addListener((port) => {
-            port.onMessage.addListener((m, s) => this._handleWebMessage(m, s));
-        });
+        browser$1.runtime.onMessage.addListener((m, s) => this._handleWebMessage(m, s));
     }
-    _promptSignUp(reason, study) {
+    _promptSignUp() {
         return __awaiter(this, void 0, void 0, function* () {
-            let route = "";
-            switch (reason) {
-                case routes.ONBOARD:
-                    if (study) {
-                        // FIXME we should trigger the individual study route = `studies/${study}`;
-                        route = `studies`;
-                    }
-                    break;
-                case routes.SIGNUP:
-                    route = "signup";
-                    break;
-                default:
-                    throw new Error(`_promptSignUp: unknown sign-up reason ${reason} for study ${study}`);
-            }
-            const tabs = yield browser$1.tabs.query({ url: `${this._rallySite}/${route}` });
+            let loadedTab;
+            const tabs = yield browser$1.tabs.query({ url: `http://${this._rallySite}:3000/*` });
             // If there are any tabs with the Rally site loaded, focus the latest one.
             if (tabs && tabs.length > 0) {
-                const tab = tabs.pop();
-                browser$1.windows.update(tab.windowId, { focused: true });
-                browser$1.tabs.update(tab.id, { highlighted: true, active: true });
+                loadedTab = tabs.pop();
+                yield browser$1.windows.update(loadedTab.windowId, { focused: true });
+                yield browser$1.tabs.update(loadedTab.id, { highlighted: true, active: true });
             }
             else {
                 // Otherwise, open the website.
-                chrome.tabs.create({
-                    url: `${this._rallySite}/${route}`
+                loadedTab = yield browser$1.tabs.create({
+                    url: this._rallySite
                 });
             }
         });
@@ -21016,26 +21000,35 @@ class Rally {
             // information out? Can it be used to mess with studies?
             switch (message.type) {
                 case webMessages.WEB_CHECK:
+                    console.debug("bg script received web-check");
                     // The `web-check` message should be safe: any installed extension with
                     // the `management` privileges could check for the presence of the
                     // Rally SDK and expose that to the web. By exposing this ourselves
                     // through content scripts enabled on our domain, we don't make things
                     // worse.
-                    return {
-                        type: webMessages.WEB_CHECK_RESPONSE,
-                        data: {}
-                    };
-                case webMessages.COMPLETE_SIGNUP:
-                    // The `complete-signup` message should be safe: It's a one-direction
-                    // communication from the page, containing the credentials from the currently-authenticated user.
+                    // FIXME check internally to see if we need this yet or not.
+                    // Now that the site is open, send a message asking for a JWT.
+                    console.debug("sending complete-signup request to sender:", sender);
+                    console.debug("this._studyId", this._studyId);
+                    if (!this._signedIn) {
+                        console.debug("not signed in, sending complete_signup request");
+                        yield browser$1.tabs.sendMessage(sender.tab.id, { type: webMessages.COMPLETE_SIGNUP, data: { studyId: this._studyId } });
+                    }
+                    console.debug("sending web-check-response to sender:", sender, " done");
+                    yield browser$1.tabs.sendMessage(sender.tab.id, { type: webMessages.WEB_CHECK_RESPONSE, data: {} });
+                case webMessages.COMPLETE_SIGNUP_RESPONSE:
+                    // The `complete-signup-response` message should be safe: It's a response
+                    // from the page, containing the credentials from the currently-authenticated user.
                     //
                     // Note that credentials should *NEVER* be passed to web content, but accepting them from web content
                     // should be relatively safe. An attacker-controlled site (whether through MITM, rogue extension, XSS, etc.)
                     // could potentially pass us a working credential that is attacker-controlled, but this should not cause the
                     // extension to send data anywhere attacker-controlled, since the data collection endpoint is hardcoded and signed
                     // along with the extension.
+                    console.debug("Finishing signup", message);
                     const signedUp = yield this._completeSignUp(message.data);
-                    return { type: webMessages.COMPLETE_SIGNUP_RESPONSE, data: { signedUp } };
+                    console.debug("Finished signup:", signedUp);
+                    break;
                 default:
                     throw new Error(`Rally._handleWebMessage - unexpected message type "${message.type}"`);
             }
@@ -21043,9 +21036,10 @@ class Rally {
     }
     _completeSignUp(data) {
         return __awaiter(this, void 0, void 0, function* () {
+            console.debug("Rally._completeSignUp called:", data);
             try {
                 if (!data || !data.rallyToken) {
-                    throw new Error("Rally._completeSignUp - rally token not well-formed");
+                    throw new Error("Rally._completeSignUp - rally token not well-formed:", data);
                 }
                 console.debug("Rally._completeSignUp - ", data);
                 // Pause study when new credentials are passed.

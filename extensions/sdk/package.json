@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "build": "rollup -c",
-    "dev": "rollup -c ",
+    "dev": "rollup -c -w",
     "test:unit": "jest",
     "test": "npm run build && npm run test:unit"
   },
