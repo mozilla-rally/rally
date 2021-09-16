@@ -22,7 +22,8 @@
   "content_scripts": [
     {
       "matches": [
-        "*://localhost/*"
+        "*://localhost/*",
+        "https://rally-web-spike.web.app/*"
       ],
       "js": [
         "dist/content/rally-content.js"
