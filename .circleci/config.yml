@@ -31,7 +31,7 @@ jobs:
           command: npm install && sudo add-apt-repository ppa:ubuntu-mozilla-daily/ppa && sudo apt update && sudo apt install firefox-trunk
       - run:
           name: Run Selenium tests
-          command: export PATH=.:$PATH && npm run test-integration
+          command: export PATH=.:$PATH && npm run test:integration
 
 workflows:
   version: 2

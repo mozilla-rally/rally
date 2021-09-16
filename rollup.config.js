@@ -73,8 +73,8 @@ export default (cliArgs) => {
   // background script might want to reference the bundled
   // scripts (e.g., browser.contentScripts.register() or new
   // Worker()).
-  const scriptPaths = globby.sync([ `src/**/*.content.js`, `src/**/*.worker.js` ]);
-  for(const scriptPath of scriptPaths) {
+  const scriptPaths = globby.sync([`src/**/*.content.js`, `src/**/*.worker.js`]);
+  for (const scriptPath of scriptPaths) {
     rollupConfig.push({
       input: scriptPath,
       output: {
@@ -88,6 +88,25 @@ export default (cliArgs) => {
           browser: true,
         }),
         commonjs(),
+        // Copy in the Rally SDK content script and webextension polyfill.
+        copy({
+          targets: [{
+            src: [
+              "node_modules/@mozilla/rally/dist/rally-content.js",
+            ],
+            dest: "dist/content/",
+          }],
+          flatten: true,
+        }),
+        copy({
+          targets: [{
+            src: [
+              "node_modules/webextension-polyfill/dist/browser-polyfill.js",
+            ],
+            dest: "dist/",
+          }],
+          flatten: true,
+        }),
       ],
     });
   }

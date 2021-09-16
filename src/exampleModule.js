@@ -5,3 +5,7 @@
 export function initialize() {
     console.log("example module initialized.");
 }
+
+export function uninitialize() {
+    console.log("example module uninitialized.");
+}
