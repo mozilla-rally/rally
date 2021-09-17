@@ -22,13 +22,13 @@ import {
   uninitialize as exampleModuleUninitialize
 } from './exampleModule';
 
-// The following constants are automatically provided by the build system.
-
 // Developer mode runs locally and does not use the Firebase server.
 // Data is collected locally, and an options page is provided to export it.
+// eslint-disable-next-line no-undef
 const enableDevMode = Boolean(__ENABLE_DEVELOPER_MODE__);
 // Emulator mode connects to the Firebase emulators. Note that the Firebase
 // config below must match.
+// eslint-disable-next-line no-undef
 const enableEmulatorMode = Boolean(__ENABLE_EMULATOR_MODE__);
 
 // The Rally-assigned Study ID.
