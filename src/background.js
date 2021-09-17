@@ -26,10 +26,10 @@ import {
 
 // Developer mode runs locally and does not use the Firebase server.
 // Data is collected locally, and an options page is provided to export it.
-const enableDevMode = !!__ENABLE_DEVELOPER_MODE__;
+const enableDevMode = Boolean(__ENABLE_DEVELOPER_MODE__);
 // Emulator mode connects to the Firebase emulators. Note that the Firebase
 // config below must match.
-const enableEmulatorMode = !!__ENABLE_EMULATOR_MODE__;
+const enableEmulatorMode = Boolean(__ENABLE_EMULATOR_MODE__);
 
 // The Rally-assigned Study ID.
 let studyId = "rally-study-template";
@@ -78,14 +78,22 @@ async function stateChangeCallback(newState) {
 
       // Example: initialize the example module.
       exampleModuleInitialize();
+      console.debug("storing data");
+      await browser.storage.local.set({ "started": true });
+
 
       // Example: set a listener for WebScience page navigation events on
       // *://*.mozilla.org/* pages. Note that the manifest origin
       // permissions currently only include *://*.mozilla.org/*. You should
       // update the manifest permissions as needed for your study.
 
-      this.pageDataListener = (pageData) => {
-        console.log(`WebScience page navigation event fired with page data: ${pageData}`);
+      this.pageDataListener = async (pageData) => {
+        console.log(`WebScience page navigation event fired with page data:`, pageData);
+        if (enableDevMode) {
+          const data = {};
+          data[pageData.pageId] = pageData;
+          await browser.storage.local.set(data);
+        }
       };
 
       webScience.pageNavigation.onPageData.addListener(this.pageDataListener, { matchPatterns: ["*://*.mozilla.org/*"] });
@@ -119,9 +127,13 @@ async function stateChangeCallback(newState) {
       this.contentScript.unregister();
       this.worker.terminate();
 
+      await browser.storage.local.set({ "paused": true });
+
       break;
     case (runStates.ENDED):
       console.log(`Study ended with Rally ID: ${rally.rallyId}`);
+
+      await browser.storage.local.set({ "ended": true });
 
       break;
     default:
@@ -134,7 +146,7 @@ const rally = new Rally({ enableDevMode, stateChangeCallback, rallySite, studyId
 
 // When in developer mode, open the options page with the playtest controls.
 if (enableDevMode) {
-  browser.runtime.openOptionsPage();
+  browser.storage.local.set({ "initialized": true }).then(browser.runtime.openOptionsPage());
 }
 
 // Take no further action until the rallyStateChange callback is called.

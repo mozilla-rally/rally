@@ -1,7 +1,6 @@
 const buttons = ["resume", "pause", "end", "download"];
 
 for (const button of buttons) {
-    console.debug();
     const element = document.getElementById(button);
     element.addEventListener("click", (event) => {
         switch (event.target.id) {
@@ -18,7 +17,15 @@ for (const button of buttons) {
 
                 break;
             case "download":
-                console.debug("TODO");
+                browser.storage.local.get(null).then(data => {
+                    console.debug("Downloading data:", data);
+                    const dataUrl = (`data:application/json,${encodeURIComponent(JSON.stringify(data))}`);
+
+                    const downloadLink = document.getElementById("downloadLink");
+                    downloadLink.setAttribute("href", dataUrl);
+                    downloadLink.setAttribute("download", "rally-study-template.json");
+                    downloadLink.click();
+                });
                 break;
             default:
                 throw new Error(`Unknown button: ${event.target.id}`);
