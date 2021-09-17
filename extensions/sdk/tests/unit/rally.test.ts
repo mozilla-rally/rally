@@ -118,19 +118,20 @@ describe('Rally SDK', function () {
     let pausedCallbackCalled = false;
     let resumeCallbackCalled = false;
 
-    const rally = new Rally(
-      true, // Developer mode.
-      (message) => {
+    const rally = new Rally({
+      enableDevMode: false,
+      stateChangeCallback: (message) => {
         if (message === runStates.PAUSED) {
           pausedCallbackCalled = true;
         } else if (message === runStates.RUNNING) {
           resumeCallbackCalled = true;
         }
       },
-      "http://localhost",
-      "exampleStudy1",
-      {}
-    )
+      rallySite: "http://localhost",
+      studyId: "exampleStudy1",
+      firebaseConfig: {},
+      enableEmulatorMode: false,
+    })
 
     assert.equal(rally._state, runStates.PAUSED);
 
@@ -148,9 +149,9 @@ describe('Rally SDK', function () {
     let resumeCallbackCalled = false;
     let endedCallbackCalled = false;
 
-    const rally = new Rally(
-      true, // Developer mode.
-      (message) => {
+    const rally = new Rally({
+      enableDevMode: false,
+      stateChangeCallback: (message) => {
         if (message === runStates.PAUSED) {
           pausedCallbackCalled = true;
         } else if (message === runStates.RUNNING) {
@@ -160,10 +161,11 @@ describe('Rally SDK', function () {
         }
 
       },
-      "http://localhost",
-      "exampleStudy1",
-      {}
-    );
+      rallySite: "http://localhost",
+      studyId: "exampleStudy1",
+      firebaseConfig: {},
+      enableEmulatorMode: false
+    });
 
     const rallyToken = "...";
     const message = { type: webMessages.COMPLETE_SIGNUP_RESPONSE, data: { rallyToken } };
