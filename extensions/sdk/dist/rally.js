@@ -20770,6 +20770,80 @@ function dh(t, ...e) {
     }, e), s._setSettings(e), s;
 }), "PUBLIC" /* PUBLIC */)), registerVersion("@firebase/firestore", "0.0.900-exp.6ef484a04", Ph);
 
+// Unique ID creation requires a high quality random # generator. In the browser we therefore
+// require the crypto API and do not support built-in fallback to lower quality random number
+// generators (like Math.random()).
+var getRandomValues;
+var rnds8 = new Uint8Array(16);
+function rng() {
+  // lazy load so that environments that need to polyfill have a chance to do so
+  if (!getRandomValues) {
+    // getRandomValues needs to be invoked in a context where "this" is a Crypto implementation. Also,
+    // find the complete implementation of crypto (msCrypto) on IE11.
+    getRandomValues = typeof crypto !== 'undefined' && crypto.getRandomValues && crypto.getRandomValues.bind(crypto) || typeof msCrypto !== 'undefined' && typeof msCrypto.getRandomValues === 'function' && msCrypto.getRandomValues.bind(msCrypto);
+
+    if (!getRandomValues) {
+      throw new Error('crypto.getRandomValues() not supported. See https://github.com/uuidjs/uuid#getrandomvalues-not-supported');
+    }
+  }
+
+  return getRandomValues(rnds8);
+}
+
+var REGEX = /^(?:[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}|00000000-0000-0000-0000-000000000000)$/i;
+
+function validate(uuid) {
+  return typeof uuid === 'string' && REGEX.test(uuid);
+}
+
+/**
+ * Convert array of 16 byte values to UUID string format of the form:
+ * XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX
+ */
+
+var byteToHex = [];
+
+for (var i = 0; i < 256; ++i) {
+  byteToHex.push((i + 0x100).toString(16).substr(1));
+}
+
+function stringify(arr) {
+  var offset = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
+  // Note: Be careful editing this code!  It's been tuned for performance
+  // and works in ways you may not expect. See https://github.com/uuidjs/uuid/pull/434
+  var uuid = (byteToHex[arr[offset + 0]] + byteToHex[arr[offset + 1]] + byteToHex[arr[offset + 2]] + byteToHex[arr[offset + 3]] + '-' + byteToHex[arr[offset + 4]] + byteToHex[arr[offset + 5]] + '-' + byteToHex[arr[offset + 6]] + byteToHex[arr[offset + 7]] + '-' + byteToHex[arr[offset + 8]] + byteToHex[arr[offset + 9]] + '-' + byteToHex[arr[offset + 10]] + byteToHex[arr[offset + 11]] + byteToHex[arr[offset + 12]] + byteToHex[arr[offset + 13]] + byteToHex[arr[offset + 14]] + byteToHex[arr[offset + 15]]).toLowerCase(); // Consistency check for valid UUID.  If this throws, it's likely due to one
+  // of the following:
+  // - One or more input array values don't map to a hex octet (leading to
+  // "undefined" in the uuid)
+  // - Invalid input values for the RFC `version` or `variant` fields
+
+  if (!validate(uuid)) {
+    throw TypeError('Stringified UUID is invalid');
+  }
+
+  return uuid;
+}
+
+function v4(options, buf, offset) {
+  options = options || {};
+  var rnds = options.random || (options.rng || rng)(); // Per 4.4, set bits for version and `clock_seq_hi_and_reserved`
+
+  rnds[6] = rnds[6] & 0x0f | 0x40;
+  rnds[8] = rnds[8] & 0x3f | 0x80; // Copy bytes to buffer, if provided
+
+  if (buf) {
+    offset = offset || 0;
+
+    for (var i = 0; i < 16; ++i) {
+      buf[offset + i] = rnds[i];
+    }
+
+    return buf;
+  }
+
+  return stringify(rnds);
+}
+
 /* This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
@@ -20790,31 +20864,38 @@ var webMessages;
     webMessages["COMPLETE_SIGNUP"] = "rally-sdk.complete-signup";
     webMessages["WEB_CHECK_RESPONSE"] = "rally-sdk.web-check-response";
     webMessages["COMPLETE_SIGNUP_RESPONSE"] = "rally-sdk.complete-signup-response";
+    webMessages["CHANGE_STATE"] = "rally-sdk.change-state";
 })(webMessages || (webMessages = {}));
 class Rally {
     /**
      * Initialize the Rally library.
      *
-     * @param {Boolean} enableDevMode
-     *        Whether or not to initialize Rally.js in developer mode.
-     *        In this mode we ignore problems when communicating with
-     *        core add-on.
+     * @param {Object} rallyConfig
+     *        Configuration for Rally SDK.
      *
-     * @param {Function} stateChangeCallback
+     * @param {boolean} rallyConfig.enableDevMode
+     *        Whether or not to initialize Rally.js in developer mode.
+     *        In this mode we do not attempt to connect to Firebase, and allow messages to enable/disable enrollment.
+     *
+     * @param {Function} rallyConfig.stateChangeCallback
      *        A function to call when the study is paused or running.
      *        Takes a single parameter, `message`, which is the {String}
      *        received regarding the current study state ("paused" or "running".)
      *
-     * @param {String} rallySite
+     * @param {String} rallyConfig.rallySite
      *        A string containing the Rally Web Platform site.
      *
-     * @param {String} studyId
+     * @param {String} rallyConfig.studyId
      *        A string containing the unique name of the study, separate from the Firefox add-on ID and Chrome extension ID.
      *
-     * @param {object} firebaseConfig
+     * @param {object} rallyConfig.firebaseConfig
      *        An object containing the Firebase backend configuration.
+     *
+     * @param {object} rallyConfig.enableEmulatorMode
+     *        Whether or not to initialize Rally.js in emulator mode.
+     *        In this mode the SDK attempts to use a local Firebase emulator. Note that the firebaseConfig must still be provided.
      */
-    constructor(enableDevMode, stateChangeCallback, rallySite, studyId, firebaseConfig) {
+    constructor({ enableDevMode, stateChangeCallback, rallySite, studyId, firebaseConfig, enableEmulatorMode }) {
         if (!stateChangeCallback) {
             throw new Error("Rally.initialize - Initialization failed, stateChangeCallback is required.");
         }
@@ -20822,17 +20903,24 @@ class Rally {
             throw new Error("Rally.initialize - Initialization failed, stateChangeCallback is not a function.");
         }
         this._enableDevMode = Boolean(enableDevMode);
+        this._enableEmulatorMode = Boolean(enableEmulatorMode);
         this._rallySite = rallySite;
         this._studyId = studyId;
         this._signedIn = false;
         // Set the initial state to paused, and register callback for future changes.
         this._state = runStates.PAUSED;
         this._stateChangeCallback = stateChangeCallback;
-        console.debug("Rally - firebase config:", firebaseConfig);
+        if (this._enableDevMode) {
+            console.debug("Rally SDK - running in developer mode, not using Firebase");
+            browser$1.runtime.onMessage.addListener((m, s) => this._handleWebMessage(m, s));
+            return;
+        }
+        console.debug("Rally SDK - using Firebase config:", firebaseConfig);
         const firebaseApp = initializeApp(firebaseConfig);
         this._auth = getAuth(firebaseApp);
         this._db = Cu(firebaseApp);
-        if (this._enableDevMode) {
+        if (this._enableenableEmulatorMode) {
+            console.debug("Rally SDK - running in Firebase emulator mode:", firebaseConfig);
             connectAuthEmulator(this._auth, 'http://localhost:9099');
             mu(this._db, 'localhost', 8080);
         }
@@ -21025,6 +21113,36 @@ class Rally {
                     // extension to send data anywhere attacker-controlled, since the data collection endpoint is hardcoded and signed
                     // along with the extension.
                     yield this._completeSignUp(message.data);
+                    break;
+                case webMessages.CHANGE_STATE:
+                    console.debug("Rally SDK - received rally-sdk.change-state in dev mode");
+                    if (!this._enableDevMode) {
+                        throw new Error("Rally SDK state can only be changed directly when in developer mode.");
+                    }
+                    if (!message.data.state) {
+                        console.debug(`Rally SDK - No state change requested: ${message.data}`);
+                        return;
+                    }
+                    switch (message.data.state) {
+                        case "resume":
+                            console.debug("Rally SDK - dev mode, resuming study");
+                            if (!this._rallyId) {
+                                this._rallyId = v4();
+                                console.debug(`Rally SDK - dev mode, generated Rally ID: ${this._rallyId}`);
+                            }
+                            this._resume();
+                            break;
+                        case "pause":
+                            console.debug("Rally SDK - dev mode, pausing study");
+                            this._pause();
+                            break;
+                        case "end":
+                            console.debug("Rally SDK - dev mode, ending study");
+                            this._end();
+                            break;
+                        default:
+                            console.debug(`Rally SDK - invalid state change requested: ${message.data.state}`);
+                    }
                     break;
                 default:
                     console.warn(`Rally._handleWebMessage - unexpected message type "${message.type}"`);

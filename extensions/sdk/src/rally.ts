@@ -8,6 +8,7 @@ import { initializeApp } from "firebase/app"
 import { connectAuthEmulator, getAuth, onAuthStateChanged, signInWithCustomToken } from "firebase/auth";
 import { connectFirestoreEmulator, getFirestore, doc, onSnapshot, getDoc, setDoc } from "firebase/firestore";
 
+import { v4 as uuidv4 } from "uuid";
 
 export enum runStates {
   RUNNING,
@@ -20,11 +21,13 @@ export enum authProviders {
   EMAIL = "email",
 }
 
+
 export enum webMessages {
   WEB_CHECK = "rally-sdk.web-check",
   COMPLETE_SIGNUP = "rally-sdk.complete-signup",
   WEB_CHECK_RESPONSE = "rally-sdk.web-check-response",
   COMPLETE_SIGNUP_RESPONSE = "rally-sdk.complete-signup-response",
+  CHANGE_STATE = "rally-sdk.change-state"
 }
 
 export class Rally {
@@ -39,30 +42,38 @@ export class Rally {
   private _port: any;
   private _studyId: string;
   private _signedIn: any;
+  private _enableEmulatorMode: boolean;
+  private _enableenableEmulatorMode: any;
 
   /**
    * Initialize the Rally library.
    *
-   * @param {Boolean} enableDevMode
-   *        Whether or not to initialize Rally.js in developer mode.
-   *        In this mode we ignore problems when communicating with
-   *        core add-on.
+   * @param {Object} rallyConfig
+   *        Configuration for Rally SDK.
    *
-   * @param {Function} stateChangeCallback
+   * @param {boolean} rallyConfig.enableDevMode
+   *        Whether or not to initialize Rally.js in developer mode.
+   *        In this mode we do not attempt to connect to Firebase, and allow messages to enable/disable enrollment.
+   *
+   * @param {Function} rallyConfig.stateChangeCallback
    *        A function to call when the study is paused or running.
    *        Takes a single parameter, `message`, which is the {String}
    *        received regarding the current study state ("paused" or "running".)
    *
-   * @param {String} rallySite
+   * @param {String} rallyConfig.rallySite
    *        A string containing the Rally Web Platform site.
    *
-   * @param {String} studyId
+   * @param {String} rallyConfig.studyId
    *        A string containing the unique name of the study, separate from the Firefox add-on ID and Chrome extension ID.
    *
-   * @param {object} firebaseConfig
+   * @param {object} rallyConfig.firebaseConfig
    *        An object containing the Firebase backend configuration.
+   *
+   * @param {object} rallyConfig.enableEmulatorMode
+   *        Whether or not to initialize Rally.js in emulator mode.
+   *        In this mode the SDK attempts to use a local Firebase emulator. Note that the firebaseConfig must still be provided.
    */
-  constructor(enableDevMode: boolean, stateChangeCallback: (runState: runStates) => void, rallySite: string, studyId: string, firebaseConfig: object) {
+  constructor({ enableDevMode, stateChangeCallback, rallySite, studyId, firebaseConfig, enableEmulatorMode }) {
     if (!stateChangeCallback) {
       throw new Error("Rally.initialize - Initialization failed, stateChangeCallback is required.")
     }
@@ -72,6 +83,7 @@ export class Rally {
     }
 
     this._enableDevMode = Boolean(enableDevMode);
+    this._enableEmulatorMode = Boolean(enableEmulatorMode);
     this._rallySite = rallySite;
     this._studyId = studyId;
 
@@ -81,13 +93,22 @@ export class Rally {
     this._state = runStates.PAUSED;
     this._stateChangeCallback = stateChangeCallback;
 
-    console.debug("Rally - firebase config:", firebaseConfig);
+    if (this._enableDevMode) {
+      console.debug("Rally SDK - running in developer mode, not using Firebase");
+      browser.runtime.onMessage.addListener((m, s) => this._handleWebMessage(m, s));
+
+      return;
+    }
+
+    console.debug("Rally SDK - using Firebase config:", firebaseConfig);
     const firebaseApp = initializeApp(firebaseConfig);
 
     this._auth = getAuth(firebaseApp);
     this._db = getFirestore(firebaseApp);
 
-    if (this._enableDevMode) {
+    if (this._enableenableEmulatorMode) {
+      console.debug("Rally SDK - running in Firebase emulator mode:", firebaseConfig);
+
       connectAuthEmulator(this._auth, 'http://localhost:9099');
       connectFirestoreEmulator(this._db, 'localhost', 8080);
     }
@@ -251,7 +272,7 @@ export class Rally {
   *          It can be resolved with a value that is sent to the
   *          `sender` or rejected in case of errors.
   */
-  async _handleWebMessage(message: { type: webMessages, data: {} }, sender: any) {
+  async _handleWebMessage(message: { type: webMessages, data }, sender: any) {
     if (sender.id !== browser.runtime.id) {
       throw new Error(`Rally._handleWebMessage - unknown sender ${sender.id}, expected ${browser.runtime.id}`);
     }
@@ -295,7 +316,46 @@ export class Rally {
         // could potentially pass us a working credential that is attacker-controlled, but this should not cause the
         // extension to send data anywhere attacker-controlled, since the data collection endpoint is hardcoded and signed
         // along with the extension.
-        const signedUp = await this._completeSignUp(message.data);
+        await this._completeSignUp(message.data);
+
+        break;
+      case webMessages.CHANGE_STATE:
+        console.debug("Rally SDK - received rally-sdk.change-state in dev mode");
+
+        if (!this._enableDevMode) {
+          throw new Error("Rally SDK state can only be changed directly when in developer mode.");
+        }
+
+        if (!message.data.state) {
+          console.debug(`Rally SDK - No state change requested: ${message.data}`);
+          return;
+        }
+
+        switch (message.data.state) {
+          case "resume":
+            console.debug("Rally SDK - dev mode, resuming study");
+            if (!this._rallyId) {
+              this._rallyId = uuidv4();
+              console.debug(`Rally SDK - dev mode, generated Rally ID: ${this._rallyId}`);
+            }
+
+            this._resume();
+
+            break;
+          case "pause":
+            console.debug("Rally SDK - dev mode, pausing study");
+            this._pause();
+
+            break;
+          case "end":
+            console.debug("Rally SDK - dev mode, ending study");
+            this._end();
+
+            break;
+          default:
+            console.debug(`Rally SDK - invalid state change requested: ${message.data.state}`);
+        }
+
         break;
       default:
         console.warn(`Rally._handleWebMessage - unexpected message type "${message.type}"`);

@@ -7569,6 +7569,7 @@ var webMessages;
     webMessages["COMPLETE_SIGNUP"] = "rally-sdk.complete-signup";
     webMessages["WEB_CHECK_RESPONSE"] = "rally-sdk.web-check-response";
     webMessages["COMPLETE_SIGNUP_RESPONSE"] = "rally-sdk.complete-signup-response";
+    webMessages["CHANGE_STATE"] = "rally-sdk.change-state";
 })(webMessages || (webMessages = {}));
 
 /* This Source Code Form is subject to the terms of the Mozilla Public
