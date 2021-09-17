@@ -78,7 +78,6 @@ async function stateChangeCallback(newState) {
 
       // Example: initialize the example module.
       exampleModuleInitialize();
-      console.debug("storing data");
       await browser.storage.local.set({ "started": true });
 
 
