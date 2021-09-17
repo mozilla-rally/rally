@@ -22,6 +22,16 @@ function isDevMode(cliArgs) {
   return Boolean(cliArgs["config-enable-developer-mode"]);
 }
 
+/**
+ * Helper to detect emulator mode.
+ *
+ * @param cliArgs the command line arguments.
+ * @return {Boolean} whether or not emulator mode is enabled.
+ */
+function isEmulatorMode(cliArgs) {
+  return Boolean(cliArgs["config-enable-emulator-mode"]);
+}
+
 export default (cliArgs) => {
   // Configuration for the main background script, src/background.js.
   // The script will be output to dist/background.js with any module
@@ -39,6 +49,7 @@ export default (cliArgs) => {
           // gracefully handles communication errors with the Core
           // Add-on.
           __ENABLE_DEVELOPER_MODE__: isDevMode(cliArgs),
+          __ENABLE_EMULATOR_MODE__: isEmulatorMode(cliArgs),
         }),
         webScienceRollupPlugin(),
         resolve({

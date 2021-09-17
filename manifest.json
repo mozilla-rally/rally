@@ -11,6 +11,10 @@
       "strict_min_version": "87.0"
     }
   },
+  "options_ui": {
+    "page": "public/index.html",
+    "open_in_tab": true
+  },
   "permissions": [
     "<all_urls>",
     "idle",
