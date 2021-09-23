@@ -13,7 +13,7 @@ try {
   const manifestObj = JSON.parse(manifestJSON);
   extensionID = manifestObj.browser_specific_settings.gecko.id;
 }
-catch(error) {
+catch (error) {
   // If this block is empty, there is a linter error.
   extensionID = null;
 }
@@ -26,10 +26,7 @@ module.exports = {
     overwriteDest: true,
   },
   run: {
-    browserConsole: true,
-    startUrl: [
-      extensionID !== null ? `about:devtools-toolbox?id=${extensionID}&type=extension`: "about:debugging#/runtime/this-firefox"
-    ]
+    browserConsole: false
   },
   ignoreFiles: [
     "bin",
