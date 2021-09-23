@@ -15,7 +15,7 @@
     "@mozilla/rally": "github:mozilla-rally/rally-sdk#b3bb288106f3fe66619fae92c9608e6fca6f5e70",
     "@mozilla/web-science": "^0.4.0",
     "@rollup/plugin-commonjs": "^20.0.0",
-    "@rollup/plugin-node-resolve": "^13.0.4",
+    "@rollup/plugin-node-resolve": "^13.0.5",
     "@rollup/plugin-replace": "^3.0.0",
     "eslint": "^7.32.0",
     "eslint-plugin-import": "^2.24.2",
