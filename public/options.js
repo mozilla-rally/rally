@@ -9,14 +9,10 @@ browser.storage.onChanged.addListener((changes, area) => {
             console.debug("change state to running");
             document.getElementById("status").textContent = "RUNNING";
             document.getElementById("status").classList = ["bg-green-300"]
-            document.getElementById("pause").style.visibility = "visible";
-            document.getElementById("resume").style.visibility = "hidden";
         } else if (changes.state.newValue === PAUSED) {
             console.debug("change state to paused");
             document.getElementById("status").textContent = "PAUSED";
             document.getElementById("status").classList = ["bg-red-300"];
-            document.getElementById("pause").style.visibility = "hidden";
-            document.getElementById("resume").style.visibility = "visible";
         } else {
             console.error("Unknown change state:", changes.state);
         }
