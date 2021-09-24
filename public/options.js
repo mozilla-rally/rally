@@ -20,8 +20,6 @@ browser.storage.onChanged.addListener((changes, area) => {
 });
 
 document.getElementById("toggleEnabled").addEventListener("click", async event => {
-    const storage = await browser.storage.local.get("state");
-    console.debug(storage.state);
     if (event.target.checked === true) {
         browser.runtime.sendMessage({ type: "rally-sdk.change-state", data: { state: "resume" } });
     } else {
@@ -41,4 +39,16 @@ document.getElementById("download").addEventListener("click", async event => {
     downloadLink.click();
 });
 
-document.getElementById("status").textContent = "PAUSED";
+browser.storage.local.get("state").then(storage => {
+    if (storage.state === PAUSED) {
+        document.getElementById("status").textContent = "PAUSED";
+        document.getElementById("toggleEnabled").checked = false;
+        document.getElementById("status").classList = ["bg-red-300"];
+    } else if (storage.state === RUNNING) {
+        document.getElementById("status").textContent = "RUNNING";
+        document.getElementById("toggleEnabled").checked = true;
+        document.getElementById("status").classList = ["bg-green-300"]
+    } else {
+        console.error("Unknown state:", storage.state);
+    }
+});
