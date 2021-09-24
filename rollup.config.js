@@ -56,21 +56,7 @@ export default (cliArgs) => {
                 resolve({
                     browser: true,
                 }),
-                commonjs(),
-                // Configuration for non-JavaScript assets (src/**/*) that
-                // are not JavaScript files (i.e., do not end in .js). These
-                // files will be copied to dist/ with the same relative path
-                // they have in src/.
-                copy({
-                    targets: [{
-                        src: [
-                            "src/**/*",
-                            "!src/**/*.js",
-                        ],
-                        dest: "dist/",
-                    }],
-                    flatten: false,
-                }),
+                commonjs()
             ],
         }
     ];
