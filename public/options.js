@@ -1,34 +1,48 @@
-const buttons = ["resume", "pause", "end", "download"];
+const RUNNING = 0;
+const PAUSED = 1;
 
-for (const button of buttons) {
-    const element = document.getElementById(button);
-    element.addEventListener("click", (event) => {
-        switch (event.target.id) {
-            case "resume":
-                browser.runtime.sendMessage({ type: "rally-sdk.change-state", data: { state: "resume" } });
-
-                break;
-            case "pause":
-                browser.runtime.sendMessage({ type: "rally-sdk.change-state", data: { state: "pause" } });
-
-                break;
-            case "end":
-                browser.runtime.sendMessage({ type: "rally-sdk.change-state", data: { state: "end" } });
-
-                break;
-            case "download":
-                browser.storage.local.get(null).then(data => {
-                    console.debug("Downloading data:", data);
-                    const dataUrl = (`data:application/json,${encodeURIComponent(JSON.stringify(data))}`);
-
-                    const downloadLink = document.getElementById("downloadLink");
-                    downloadLink.setAttribute("href", dataUrl);
-                    downloadLink.setAttribute("download", "rally-study-template.json");
-                    downloadLink.click();
-                });
-                break;
-            default:
-                throw new Error(`Unknown button: ${event.target.id}`);
+browser.storage.onChanged.addListener((changes, area) => {
+    console.debug("received storage change:", changes, area);
+    if (changes.state) {
+        console.debug("changes state:", changes.state);
+        if (changes.state.newValue === RUNNING) {
+            console.debug("change state to running");
+            document.getElementById("status").textContent = "RUNNING";
+            document.getElementById("status").classList = ["bg-green-300"]
+            document.getElementById("pause").style.visibility = "visible";
+            document.getElementById("resume").style.visibility = "hidden";
+        } else if (changes.state.newValue === PAUSED) {
+            console.debug("change state to paused");
+            document.getElementById("status").textContent = "PAUSED";
+            document.getElementById("status").classList = ["bg-red-300"];
+            document.getElementById("pause").style.visibility = "hidden";
+            document.getElementById("resume").style.visibility = "visible";
+        } else {
+            console.error("Unknown change state:", changes.state);
         }
-    });
-}
+    }
+});
+
+document.getElementById("toggleEnabled").addEventListener("click", async event => {
+    const storage = await browser.storage.local.get("state");
+    console.debug(storage.state);
+    if (event.target.checked === true) {
+        browser.runtime.sendMessage({ type: "rally-sdk.change-state", data: { state: "resume" } });
+    } else {
+        browser.runtime.sendMessage({ type: "rally-sdk.change-state", data: { state: "pause" } });
+    }
+});
+
+document.getElementById("download").addEventListener("click", async event => {
+    const data = await browser.storage.local.get(null);
+    console.debug("Downloading data:", data);
+
+    const dataUrl = (`data:application/json,${encodeURIComponent(JSON.stringify(data))}`);
+
+    const downloadLink = document.getElementById("downloadLink");
+    downloadLink.setAttribute("href", dataUrl);
+    downloadLink.setAttribute("download", "rally-study-template.json");
+    downloadLink.click();
+});
+
+document.getElementById("status").textContent = "PAUSED";

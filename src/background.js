@@ -78,7 +78,7 @@ async function stateChangeCallback(newState) {
 
       // Example: initialize the example module.
       exampleModuleInitialize();
-      await browser.storage.local.set({ "started": true });
+      await browser.storage.local.set({ "state": runStates.RUNNING });
 
 
       // Example: set a listener for WebScience page navigation events on
@@ -126,7 +126,7 @@ async function stateChangeCallback(newState) {
       this.contentScript.unregister();
       this.worker.terminate();
 
-      await browser.storage.local.set({ "paused": true });
+      await browser.storage.local.set({ "state": runStates.PAUSED });
 
       break;
     case (runStates.ENDED):
