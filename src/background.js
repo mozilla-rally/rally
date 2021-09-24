@@ -148,4 +148,8 @@ if (enableDevMode) {
   browser.storage.local.set({ "initialized": true }).then(browser.runtime.openOptionsPage());
 }
 
+chrome.browserAction.onClicked.addListener(async () =>
+  await browser.runtime.openOptionsPage()
+);
+
 // Take no further action until the rallyStateChange callback is called.
