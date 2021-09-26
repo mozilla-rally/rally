@@ -15,6 +15,7 @@
     "package:emulator": "npm run build:emulator && npm run package:webext -- -n emulator.zip --overwrite-dest",
     "start": "npm run build && web-ext run",
     "test:integration": "./scripts/integration-test.sh",
+    "test:integration:webserver": "cd tests/integration/webarchive/www.mozilla.org && ws",
     "test:integration:jest": "jest ./tests/integration/",
     "dev:extension": "rollup -c --config-enable-developer-mode -w",
     "dev:extension:emulator": "rollup -c --config-enable-emulator-mode -w",

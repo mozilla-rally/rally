@@ -7,7 +7,6 @@ import fs from "fs";
 import { findAndAct, getChromeDriver, getFirefoxDriver, extensionLogsPresent, WAIT_FOR_PROPERTY } from "./utils";
 import { By, until } from "selenium-webdriver";
 import firefox from "selenium-webdriver/firefox";
-import chrome from "selenium-webdriver/chrome";
 
 import minimist from "minimist";
 
@@ -118,8 +117,7 @@ describe("Rally Web Platform UX flows", function () {
 
     // TODO confirm no data available yet
 
-    // FIXME archive this pageset locally instead of hitting network.
-    await driver.get("https://mozilla.org");
+    await driver.get("http://localhost:8000");
     await driver.wait(until.titleIs(`Internet for people, not profit — Mozilla`));
 
     await findAndAct(driver, By.linkText("Explore Firefox"), e => e.click());

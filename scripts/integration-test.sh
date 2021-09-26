@@ -1,5 +1,8 @@
 #!/bin/bash
 set -eo pipefail
+trap 'kill $(jobs -p)' EXIT
+
+npm run test:integration:webserver &
 
 echo "Testing Firefox, developer mode, headless."
 npm run test:integration:jest -- --test_browser=firefox --load_extension=true --headless_mode=false 2>&1 | tee integration.log

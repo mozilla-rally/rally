@@ -2,7 +2,8 @@
 set -eo pipefail
 
 # NOTE - to prevent being throttled, use `--wait` to wait a random number of seconds.
-# You may also want to customize the user agent, and choose to honor robots.txt (--execute robots).
+# You may also want to customize the user agent, and choose to honor robots.txt (`--execute robots=off`),
+# depending on if you control the site being archived or not.
 wget \
     --mirror \
     --warc-file=MOZILLA_DOT_ORG \
@@ -10,7 +11,7 @@ wget \
     --page-requisites \
     --html-extension \
     --convert-links \
-    --execute-robots=on \
+    --execute robots=on \
     --directory-prefix=. \
     --domains=mozilla.org,www.mozilla.org \
     --user-agent=Mozilla\
