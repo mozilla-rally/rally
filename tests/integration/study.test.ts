@@ -117,15 +117,21 @@ describe("Rally Web Platform UX flows", function () {
 
     // TODO confirm no data available yet
 
+    // Collect some data locally by browsing the archived rally.mozilla.org
     await driver.get("http://localhost:8000");
-    await driver.wait(until.titleIs(`Internet for people, not profit — Mozilla`));
+    await driver.wait(until.titleIs(`Mozilla Rally`));
 
-    await findAndAct(driver, By.linkText("Explore Firefox"), e => e.click());
+    await findAndAct(driver, By.linkText("How Rally Works"), e => e.click());
+    await driver.wait(until.titleIs("How Rally Works"));
 
-    await driver.wait(until.titleIs("Firefox - Protect your life online with privacy-first products — Mozilla"));
+    await findAndAct(driver, By.linkText("Current Studies"), e => e.click());
+    await driver.wait(until.titleIs("Current Studies"));
 
-    await findAndAct(driver, By.linkText("Browsers"), e => e.click());
-    await driver.wait(until.titleIs("Get the browsers that put your privacy first — and always have"));
+    await findAndAct(driver, By.linkText("About Us"), e => e.click());
+    await driver.wait(until.titleIs("About Mozilla Rally"));
+
+    await findAndAct(driver, By.linkText("Careers"), e => e.click());
+    await driver.wait(until.titleIs("Careers"));
 
     // The path to pages inside the extension are determined differently on Firefox vs. Chrome.
     // For Firefox, this is a random UUID stored in the `extensions.webextensions.uuids` pref.

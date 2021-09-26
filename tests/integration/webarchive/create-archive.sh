@@ -6,15 +6,15 @@ set -eo pipefail
 # depending on if you control the site being archived or not.
 wget \
     --mirror \
-    --warc-file=MOZILLA_DOT_ORG \
+    --warc-file=RALLY_DOT_MOZILLA_DOT_ORG \
     --warc-cdx \
     --page-requisites \
     --html-extension \
     --convert-links \
     --execute robots=on \
     --directory-prefix=. \
-    --domains=mozilla.org,www.mozilla.org \
+    --domains=rally.mozilla.org \
     --user-agent=Mozilla\
     --wait=0 \
     --random-wait \
-    https://www.mozilla.org/en-US/
+    https://rally.mozilla.org/
