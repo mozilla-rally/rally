@@ -166,11 +166,11 @@ describe("Rally Web Platform UX flows", function () {
     // TODO enable auto-download, which needs to be done per-browser.
     // await findAndAct(driver, By.id("download"), e => e.click());
 
-    await driver.executeScript(`document.getElementById("toggleEnabled").click()`);
-    await driver.wait(
-      until.elementTextIs(driver.findElement(By.id("status")), "PAUSED"),
-      WAIT_FOR_PROPERTY
-    );
-    await extensionLogsPresent(driver, testBrowser, `Rally SDK - dev mode, pausing study`);
+    // await driver.executeScript(`document.getElementById("toggleEnabled").click()`);
+    // await driver.wait(
+    //   until.elementTextIs(driver.findElement(By.id("status")), "PAUSED"),
+    //   WAIT_FOR_PROPERTY
+    // );
+    // await extensionLogsPresent(driver, testBrowser, `Rally SDK - dev mode, pausing study`);
   });
 });
