@@ -11,7 +11,6 @@ import firefox from "selenium-webdriver/firefox";
 import minimist from "minimist";
 
 const args = (minimist(process.argv.slice(2)));
-console.debug(args);
 for (const arg of ["test_browser", "load_extension", "headless_mode"]) {
   if (!(arg in args)) {
     throw new Error(`Missing required option: --${arg}`);
