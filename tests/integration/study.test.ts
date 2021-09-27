@@ -48,7 +48,7 @@ describe("Rally Web Platform UX flows", function () {
 
     // If installed, the extension will open its options page.
     if (loadExtension) {
-      await driver.wait(until.titleIs("Rally Study Template"));
+      await driver.wait(until.titleIs("Rally Study Template"), WAIT_FOR_PROPERTY);
     }
   });
 
@@ -119,19 +119,19 @@ describe("Rally Web Platform UX flows", function () {
 
     // Collect some data locally by browsing the archived rally.mozilla.org
     await driver.get("http://localhost:8000");
-    await driver.wait(until.titleIs(`Mozilla Rally`));
+    await driver.wait(until.titleIs(`Mozilla Rally`), WAIT_FOR_PROPERTY);
 
     await findAndAct(driver, By.linkText("How Rally Works"), e => e.click());
-    await driver.wait(until.titleIs("How Rally Works"));
+    await driver.wait(until.titleIs("How Rally Works"), WAIT_FOR_PROPERTY);
 
     await findAndAct(driver, By.linkText("Current Studies"), e => e.click());
-    await driver.wait(until.titleIs("Current Studies"));
+    await driver.wait(until.titleIs("Current Studies"), WAIT_FOR_PROPERTY);
 
     await findAndAct(driver, By.linkText("About Us"), e => e.click());
-    await driver.wait(until.titleIs("About Mozilla Rally"));
+    await driver.wait(until.titleIs("About Mozilla Rally"), WAIT_FOR_PROPERTY);
 
     await findAndAct(driver, By.linkText("Careers"), e => e.click());
-    await driver.wait(until.titleIs("Careers"));
+    await driver.wait(until.titleIs("Careers"), WAIT_FOR_PROPERTY);
 
     // The path to pages inside the extension are determined differently on Firefox vs. Chrome.
     // For Firefox, this is a random UUID stored in the `extensions.webextensions.uuids` pref.
@@ -147,7 +147,7 @@ describe("Rally Web Platform UX flows", function () {
       await driver.setContext(firefox.Context.CONTENT);
 
       // We expect the extension to load its options page in a new tab.
-      await driver.wait(async () => (await driver.getAllWindowHandles()).length >= 2);
+      await driver.wait(async () => (await driver.getAllWindowHandles()).length >= 2, WAIT_FOR_PROPERTY);
 
       // Selenium is still focused on the old tab, so switch to the new window handle.
       let latestTab = (await driver.getAllWindowHandles()).length - 1;
@@ -161,7 +161,7 @@ describe("Rally Web Platform UX flows", function () {
     }
 
 
-    await driver.wait(until.titleIs("Rally Study Template"));
+    await driver.wait(until.titleIs("Rally Study Template"), WAIT_FOR_PROPERTY);
 
     // FIXME Selenium does not work well with system dialogs like the download dialog.
     // TODO enable auto-download, which needs to be done per-browser.
