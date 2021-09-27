@@ -31,7 +31,7 @@ jobs:
           command: npm install
       - run:
           name: Install Firefox, and dependencies for official Google Chrome package
-          command: sudo apt update && sudo apt install firefox default-jre fonts-liberation libgbm1 xdg-utils
+          command: sudo apt update && sudo apt install firefox fonts-liberation libgbm1 xdg-utils
       - run:
           name: Download and install official Google Chrome package
           command: wget 'https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb' && sudo dpkg -i google-chrome-stable_current_amd64.deb
