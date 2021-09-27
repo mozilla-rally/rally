@@ -10,7 +10,7 @@
     "dev:emulator": "npm-run-all --parallel dev:extension:emulator dev:webext",
     "lint": "npm run build && eslint . && web-ext lint",
     "package": "npm run build && npm run package:webext",
-    "package:webext": "web-ext build --ignore-files \"./tests/**/*\" --ignore-files \"./src/**/*\" --ignore-files \"./rollup.config.js\"",
+    "package:webext": "web-ext build",
     "package:developer": "npm run build:developer && npm run package:webext -- -n developer.zip --overwrite-dest",
     "package:emulator": "npm run build:emulator && npm run package:webext -- -n emulator.zip --overwrite-dest",
     "start": "npm run build && web-ext run",
