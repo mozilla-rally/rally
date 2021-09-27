@@ -22,15 +22,16 @@
     "dev:webext": "web-ext run --watch-file dist/background.js"
   },
   "devDependencies": {
-    "@mozilla/rally": "^0.8.0",
     "@babel/preset-env": "^7.15.6",
     "@babel/preset-typescript": "^7.15.0",
+    "@mozilla/rally": "^0.8.0",
     "@mozilla/web-science": "^0.4.0",
     "@rollup/plugin-commonjs": "^21.0.0",
     "@rollup/plugin-node-resolve": "^13.0.5",
     "@rollup/plugin-replace": "^3.0.0",
     "@types/jest": "^27.0.2",
     "@types/selenium-webdriver": "^4.0.15",
+    "chromedriver": "^93.0.1",
     "eslint": "^7.32.0",
     "eslint-plugin-import": "^2.24.2",
     "eslint-plugin-mocha": "^9.0.0",
@@ -43,14 +44,9 @@
     "npm-run-all": "^4.1.5",
     "rollup": "^2.58.0",
     "rollup-plugin-copy": "^3.4.0",
-<<<<<<< HEAD
     "selenium-webdriver": "^4.0.0-rc-2",
     "tailwindcss": "^2.2.16",
-=======
-    "selenium-webdriver": "^4.0.0-rc-1",
-    "tailwindcss": "^2.2.16s",
     "ts-jest": "^27.0.5",
->>>>>>> 509e684 (set up jest+typescript and integration tests for the study template UI)
     "web-ext": "^6.4.0",
     "webextension-polyfill": "^0.8.0"
   },
