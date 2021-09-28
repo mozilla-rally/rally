@@ -91,6 +91,11 @@ export async function extensionLogsPresent(driver: WebDriver, testBrowser: strin
 export async function getFirefoxDriver(loadExtension: boolean, headlessMode: boolean): Promise<WebDriver> {
   const firefoxOptions = new firefox.Options();
   firefoxOptions.setPreference("devtools.console.stdout.content", true);
+  firefoxOptions.setPreference("browser.helperApps.neverAsk.saveToDisk", "text/csv");
+  firefoxOptions.setPreference("browser.download.downloadDir", "/tmp");
+  firefoxOptions.setPreference("browser.download.dir", "/tmp");
+  firefoxOptions.setPreference("browser.download.defaultFolder", "/tmp");
+  firefoxOptions.setPreference("browser.download.folderList", 2);
 
   if (headlessMode) {
     firefoxOptions.headless();

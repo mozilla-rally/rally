@@ -159,18 +159,30 @@ describe("Rally Web Platform UX flows", function () {
       await driver.get(`${extensionUrl}/public/options.html`);
     }
 
-
     await driver.wait(until.titleIs("Rally Study Template"), WAIT_FOR_PROPERTY);
+
+    const expectedError = new Error();
+    expectedError["code"] = "ENOENT";
+    expectedError["errno"] = -2;
+    expectedError["path"] = "/tmp/rally-study-template.csv";
+    expectedError["syscall"] = "access";
+
+    await expect(fs.promises.access(`/tmp/rally-study-template.csv`)).rejects.toEqual(expectedError);
 
     // FIXME Selenium does not work well with system dialogs like the download dialog.
     // TODO enable auto-download, which needs to be done per-browser.
-    // await findAndAct(driver, By.id("download"), e => e.click());
+    await findAndAct(driver, By.id("download"), e => e.click());
 
-    // await driver.executeScript(`document.getElementById("toggleEnabled").click()`);
-    // await driver.wait(
-    //   until.elementTextIs(driver.findElement(By.id("status")), "PAUSED"),
-    //   WAIT_FOR_PROPERTY
-    // );
-    // await extensionLogsPresent(driver, testBrowser, `Rally SDK - dev mode, pausing study`);
+    await fs.promises.access(`/tmp/rally-study-template.csv`);
+    await fs.promises.rm(`/tmp/rally-study-template.csv`)
+
+    await driver.executeScript(`document.getElementById("toggleEnabled").click()`);
+    await driver.wait(
+      until.elementTextIs(driver.findElement(By.id("status")), "PAUSED"),
+      WAIT_FOR_PROPERTY
+    );
+    await extensionLogsPresent(driver, testBrowser, `Rally SDK - dev mode, pausing study`);
   });
+
+
 });
