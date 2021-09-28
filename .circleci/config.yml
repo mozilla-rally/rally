@@ -8,7 +8,7 @@ version: 2.1
 jobs:
   Linting:
     docker:
-      - image: cimg/node:14.13.1
+      - image: cimg/node:16.10.0
     steps:
       - checkout
       - run:
@@ -23,7 +23,7 @@ jobs:
 
   Firefox integration tests:
     docker:
-      - image: cimg/node:14.13.1
+      - image: cimg/node:16.10.0
     steps:
       - checkout
       - run:
