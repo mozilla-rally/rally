@@ -1,5 +1,17 @@
 # Unreleased changes
 
+
+# v0.7.0 (2021-09-29)
+
+# NOTE - the SDK was moved from the rally-core-addon repo to its own rally-sdk
+
+* [1](https://github.com/mozilla-rally/rally-sdk/pull/1): convert rally.js to typescript
+* [7](https://github.com/mozilla-rally/rally-sdk/pull/7): Remove core add-on support, add tests and release process
+* [8](https://github.com/mozilla-rally/rally-sdk/pull/8): Circleci project setup
+* [9](https://github.com/mozilla-rally/rally-sdk/pull/9): Add rally web platform support
+* [14](https://github.com/mozilla-rally/rally-sdk/pull/14): Make Firebase project configurable, and straighten out extension message-passing
+* [15](https://github.com/mozilla-rally/rally-sdk/pull/15): Add a local-only "play-test" mode
+
 # v0.6.0 (2021-04-20)
 
 * [550](https://github.com/mozilla-rally/rally-core-addon/pull/550): Do not use extension ID as namespace, breaks the `rally.js` API (constructor arg change)
