@@ -15,7 +15,7 @@
     "dev:webext": "web-ext run --watch-file dist/background.js"
   },
   "devDependencies": {
-    "@mozilla/rally": "github:mozilla-rally/rally-sdk#b3bb288106f3fe66619fae92c9608e6fca6f5e70",
+    "@mozilla/rally": "^0.8.0",
     "@mozilla/web-science": "^0.4.0",
     "@rollup/plugin-commonjs": "^20.0.0",
     "@rollup/plugin-node-resolve": "^13.0.5",
