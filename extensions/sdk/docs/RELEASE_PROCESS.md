@@ -79,7 +79,7 @@ When CI has finished and is green for your specific release branch, you are read
     4. Under the description, paste the contents of the release notes from `CHANGELOG.md`.
 5. Wait for the CI build to complete for the tag.
     * You can check [on CircleCI for the running build](https://circleci.com/gh/mozilla-rally/rally-sdk).
-6. Send a pull request to merge back the specific release branch to the development branch: <https://github.com/mozilla-rally/rally-f/compare/master...release-v25.0.0?expand=1>
+6. Send a pull request to merge back the specific release branch to the development branch: <https://github.com/mozilla-rally/rally-sdk/compare/master...release-v25.0.0?expand=1>
     * This is important so that no changes are lost.
     * This might have merge conflicts with the `master` branch, which you need to fix before it is merged.
 7. Once the above pull request lands, delete the specific release branch (e.g. `release-v25.0.0`).

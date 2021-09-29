@@ -4,13 +4,6 @@
 
 # v0.8.0 (2021-09-29)
 
-[Full changelog](https://github.com/mozilla-rally/rally-sdk/compare/v0.7.0...v0.8.0)
-
-# v0.7.0 (2021-09-29)
-
-
-# v0.7.0 (2021-09-29)
-
 # NOTE - the SDK was moved from the rally-core-addon repo to its own rally-sdk
 
 * [1](https://github.com/mozilla-rally/rally-sdk/pull/1): convert rally.js to typescript
