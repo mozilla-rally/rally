@@ -5,11 +5,13 @@ function changeState(state) {
     if (state === RUNNING) {
         document.getElementById("status").textContent = "RUNNING";
         document.getElementById("toggleEnabled").checked = true;
-        document.getElementById("status").classList = ["bg-green-300"]
+        document.getElementById("status").classList.remove("bg-red-300");
+        document.getElementById("status").classList.add("bg-green-300");
     } else if (state === PAUSED || state === undefined) {
         document.getElementById("status").textContent = "PAUSED";
         document.getElementById("toggleEnabled").checked = false;
-        document.getElementById("status").classList = ["bg-red-300"];
+        document.getElementById("status").classList.remove("bg-green-300");
+        document.getElementById("status").classList.add("bg-red-300");
     } else {
         console.error("Unknown state:", state);
     }
