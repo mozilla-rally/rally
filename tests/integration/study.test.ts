@@ -161,6 +161,7 @@ describe("Rally Web Platform UX flows", function () {
 
     await driver.wait(until.titleIs("Rally Study Template"), WAIT_FOR_PROPERTY);
 
+    // Fail if the CSV already exists in /tmp/ instead of overwriting or letting the browser download a copy.
     const expectedError = new Error();
     expectedError["code"] = "ENOENT";
     expectedError["errno"] = -2;
@@ -172,6 +173,12 @@ describe("Rally Web Platform UX flows", function () {
     // FIXME Selenium does not work well with system dialogs like the download dialog.
     // TODO enable auto-download, which needs to be done per-browser.
     await findAndAct(driver, By.id("download"), e => e.click());
+
+    // Expect there to be a new line in the CSV for each link clicked during the test.
+    // TODO we could do a more in-depth test here, to ensure the data actually matches. This might
+    // be better to do as a test in web-science though.
+    const csvData = await fs.promises.readFile(`/tmp/rally-study-template.csv`);
+    expect(csvData.toString().split('\n').length).toEqual(6);
 
     await fs.promises.access(`/tmp/rally-study-template.csv`);
     await fs.promises.rm(`/tmp/rally-study-template.csv`)
