@@ -17,7 +17,7 @@
   "devDependencies": {
     "@mozilla/rally": "^0.8.0",
     "@mozilla/web-science": "^0.4.0",
-    "@rollup/plugin-commonjs": "^20.0.0",
+    "@rollup/plugin-commonjs": "^21.0.0",
     "@rollup/plugin-node-resolve": "^13.0.5",
     "@rollup/plugin-replace": "^3.0.0",
     "eslint": "^7.32.0",
