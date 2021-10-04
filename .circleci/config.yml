@@ -8,7 +8,7 @@ version: 2.1
 jobs:
   Linting:
     docker:
-      - image: cimg/node:14.13.1
+      - image: cimg/node:16.10.0
     steps:
       - checkout
       - run:
@@ -23,15 +23,23 @@ jobs:
 
   Firefox integration tests:
     docker:
-      - image: cimg/node:14.13.1
+      - image: cimg/node:16.10.0
     steps:
       - checkout
       - run:
           name: Install the dependencies
-          command: npm install && sudo add-apt-repository ppa:ubuntu-mozilla-daily/ppa && sudo apt update && sudo apt install firefox-trunk
+          command: npm install
+      - run:
+          name: Install Firefox, and dependencies for official Google Chrome package
+          command: sudo apt update && sudo apt install firefox fonts-liberation libgbm1 xdg-utils libnspr4 libnss3
+      - run:
+          name: Download and install official Google Chrome package
+          command: wget 'https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb' && sudo dpkg -i google-chrome-stable_current_amd64.deb
       - run:
           name: Run Selenium tests
-          command: export PATH=.:$PATH && npm run test:integration
+          command: export PATH=.:$PATH && npm run package:developer && npm run test:integration
+      - store_artifacts:
+          path: ./screenshots
 
 workflows:
   version: 2

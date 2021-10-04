@@ -82,8 +82,8 @@ async function stateChangeCallback(newState) {
 
 
       // Example: set a listener for WebScience page navigation events on
-      // *://*.mozilla.org/* pages. Note that the manifest origin
-      // permissions currently only include *://*.mozilla.org/*. You should
+      // http://localhost/* pages. Note that the manifest origin
+      // permissions currently only include http://localhost/*. You should
       // update the manifest permissions as needed for your study.
 
       this.pageDataListener = async (pageData) => {
@@ -95,9 +95,9 @@ async function stateChangeCallback(newState) {
         }
       };
 
-      webScience.pageNavigation.onPageData.addListener(this.pageDataListener, { matchPatterns: ["*://*.mozilla.org/*"] });
+      webScience.pageNavigation.onPageData.addListener(this.pageDataListener, { matchPatterns: ["http://localhost/*"] });
 
-      // Example: register a content script for *://*.mozilla.org/* pages
+      // Example: register a content script for http://localhost/* pages
       // Note that the content script has the same relative path in dist/
       // that it has in src/. The content script can include module
       // dependencies (either your own modules or modules from npm), and
@@ -105,7 +105,7 @@ async function stateChangeCallback(newState) {
       // the build system.
       this.contentScript = await browser.contentScripts.register({
         js: [{ file: "dist/exampleContentScript.content.js" }],
-        matches: ["*://*.mozilla.org/*"]
+        matches: ["http://localhost/*"]
       });
       // Example: launch a Web Worker, which can handle tasks on another
       // thread. Note that the worker script has the same relative path in
