@@ -43,7 +43,6 @@ export class Rally {
   private _studyId: string;
   private _signedIn: any;
   private _enableEmulatorMode: boolean;
-  private _enableenableEmulatorMode: any;
 
   /**
    * Initialize the Rally library.
@@ -106,7 +105,7 @@ export class Rally {
     this._auth = getAuth(firebaseApp);
     this._db = getFirestore(firebaseApp);
 
-    if (this._enableenableEmulatorMode) {
+    if (this._enableEmulatorMode) {
       console.debug("Rally SDK - running in Firebase emulator mode:", firebaseConfig);
 
       connectAuthEmulator(this._auth, 'http://localhost:9099');

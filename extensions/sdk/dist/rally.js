@@ -20919,7 +20919,7 @@ class Rally {
         const firebaseApp = initializeApp(firebaseConfig);
         this._auth = getAuth(firebaseApp);
         this._db = Cu(firebaseApp);
-        if (this._enableenableEmulatorMode) {
+        if (this._enableEmulatorMode) {
             console.debug("Rally SDK - running in Firebase emulator mode:", firebaseConfig);
             connectAuthEmulator(this._auth, 'http://localhost:9099');
             mu(this._db, 'localhost', 8080);
