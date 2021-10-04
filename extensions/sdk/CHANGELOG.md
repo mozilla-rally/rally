@@ -2,6 +2,8 @@
 
 [Full changelog](https://github.com/mozilla-rally/rally-sdk/compare/v0.8.0...master)
 
+* [18](https://github.com/mozilla-rally/rally-sdk/pull/18): Fix typo in enableEmulatorMode argument
+
 # v0.8.0 (2021-09-29)
 
 # NOTE - the SDK was moved from the rally-core-addon repo to its own rally-sdk
