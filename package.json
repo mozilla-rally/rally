@@ -33,7 +33,7 @@
     "@types/selenium-webdriver": "^4.0.15",
     "chromedriver": "^94.0.0",
     "eslint": "^7.32.0",
-    "eslint-plugin-import": "^2.24.2",
+    "eslint-plugin-import": "^2.25.4",
     "eslint-plugin-mocha": "^9.0.0",
     "eslint-plugin-node": "^11.1.0",
     "geckodriver": "^2.0.4",
