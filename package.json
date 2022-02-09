@@ -22,7 +22,7 @@
     "dev:webext": "web-ext run --watch-file dist/background.js"
   },
   "devDependencies": {
-    "@babel/preset-env": "^7.15.8",
+    "@babel/preset-env": "^7.16.11",
     "@babel/preset-typescript": "^7.15.0",
     "@mozilla/rally": "^0.8.1",
     "@mozilla/web-science": "^0.4.0",
