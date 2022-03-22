@@ -20847,25 +20847,28 @@ function v4(options, buf, offset) {
 /* This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
-var runStates;
-(function (runStates) {
-    runStates[runStates["RUNNING"] = 0] = "RUNNING";
-    runStates[runStates["PAUSED"] = 1] = "PAUSED";
-    runStates[runStates["ENDED"] = 2] = "ENDED";
-})(runStates || (runStates = {}));
-var authProviders;
-(function (authProviders) {
-    authProviders["GOOGLE"] = "google.com";
-    authProviders["EMAIL"] = "email";
-})(authProviders || (authProviders = {}));
-var webMessages;
-(function (webMessages) {
-    webMessages["WEB_CHECK"] = "rally-sdk.web-check";
-    webMessages["COMPLETE_SIGNUP"] = "rally-sdk.complete-signup";
-    webMessages["WEB_CHECK_RESPONSE"] = "rally-sdk.web-check-response";
-    webMessages["COMPLETE_SIGNUP_RESPONSE"] = "rally-sdk.complete-signup-response";
-    webMessages["CHANGE_STATE"] = "rally-sdk.change-state";
-})(webMessages || (webMessages = {}));
+var RunStates;
+(function (RunStates) {
+    RunStates[RunStates["Running"] = 0] = "Running";
+    RunStates[RunStates["Paused"] = 1] = "Paused";
+    RunStates[RunStates["Ended"] = 2] = "Ended";
+})(RunStates || (RunStates = {}));
+
+/* This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
+var WebMessages;
+(function (WebMessages) {
+    WebMessages["WebCheck"] = "rally-sdk.web-check";
+    WebMessages["WebCheckResponse"] = "rally-sdk.web-check-response";
+    WebMessages["CompleteSignup"] = "rally-sdk.complete-signup";
+    WebMessages["CompleteSignupResponse"] = "rally-sdk.complete-signup-response";
+    WebMessages["ChangeState"] = "rally-sdk.change-state";
+})(WebMessages || (WebMessages = {}));
+
+/* This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 class Rally {
     /**
      * Initialize the Rally library.
@@ -20908,7 +20911,7 @@ class Rally {
         this._studyId = studyId;
         this._signedIn = false;
         // Set the initial state to paused, and register callback for future changes.
-        this._state = runStates.PAUSED;
+        this._state = RunStates.Paused;
         this._stateChangeCallback = stateChangeCallback;
         if (this._enableDevMode) {
             console.debug("Rally SDK - running in developer mode, not using Firebase");
@@ -20958,7 +20961,7 @@ class Rally {
                     }
                     const data = studiesDoc.data();
                     if (data.studyPaused && data.studyPaused === true) {
-                        if (this._state !== runStates.PAUSED) {
+                        if (this._state !== RunStates.Paused) {
                             this._pause();
                         }
                     }
@@ -20971,12 +20974,12 @@ class Rally {
                             return;
                         }
                         const data = userStudiesDoc.data();
-                        if (data.enrolled && this._state !== runStates.RUNNING) {
+                        if (data.enrolled && this._state !== RunStates.Running) {
                             this._resume();
                         }
                     }
                     if (data.studyEnded === true) {
-                        if (this._state !== runStates.ENDED) {
+                        if (this._state !== RunStates.Ended) {
                             this._end();
                         }
                     }
@@ -21025,18 +21028,18 @@ class Rally {
      * Pause the current study.
      */
     _pause() {
-        if (this._state !== runStates.PAUSED) {
-            this._state = runStates.PAUSED;
-            this._stateChangeCallback(runStates.PAUSED);
+        if (this._state !== RunStates.Paused) {
+            this._state = RunStates.Paused;
+            this._stateChangeCallback(RunStates.Paused);
         }
     }
     /**
      * Resume the current study, if paused.
      */
     _resume() {
-        if (this._state !== runStates.RUNNING) {
-            this._state = runStates.RUNNING;
-            this._stateChangeCallback(runStates.RUNNING);
+        if (this._state !== RunStates.Running) {
+            this._state = RunStates.Running;
+            this._stateChangeCallback(RunStates.Running);
         }
     }
     /**
@@ -21047,8 +21050,8 @@ class Rally {
      * @param rallyId
      */
     _end() {
-        this._state = runStates.ENDED;
-        this._stateChangeCallback(runStates.ENDED);
+        this._state = RunStates.Ended;
+        this._stateChangeCallback(RunStates.Ended);
     }
     _stateChangeCallback(runState) {
         throw new Error("Method not implemented, must be provided by study.");
@@ -21085,7 +21088,7 @@ class Rally {
             // thoroughly of the implications: can the message be used to leak
             // information out? Can it be used to mess with studies?
             switch (message.type) {
-                case webMessages.WEB_CHECK:
+                case WebMessages.WebCheck:
                     // The `web-check` message should be safe: any installed extension with
                     // the `management` privileges could check for the presence of the
                     // Rally SDK and expose that to the web. By exposing this ourselves
@@ -21095,15 +21098,15 @@ class Rally {
                     // Now that the site is open, send a message asking for a JWT.
                     if (!this._signedIn) {
                         console.debug("not signed in, sending complete_signup request");
-                        yield browser$1.tabs.sendMessage(sender.tab.id, { type: webMessages.COMPLETE_SIGNUP, data: { studyId: this._studyId } });
+                        yield browser$1.tabs.sendMessage(sender.tab.id, { type: WebMessages.CompleteSignup, data: { studyId: this._studyId } });
                     }
                     else {
                         console.debug("already signed in, not sending complete_signup request");
                     }
                     console.debug("sending web-check-response to sender:", sender, " done");
-                    yield browser$1.tabs.sendMessage(sender.tab.id, { type: webMessages.WEB_CHECK_RESPONSE, data: {} });
+                    yield browser$1.tabs.sendMessage(sender.tab.id, { type: WebMessages.WebCheckResponse, data: {} });
                     break;
-                case webMessages.COMPLETE_SIGNUP_RESPONSE:
+                case WebMessages.CompleteSignupResponse:
                     // The `complete-signup-response` message should be safe: It's a response
                     // from the page, containing the credentials from the currently-authenticated user.
                     //
@@ -21114,7 +21117,7 @@ class Rally {
                     // along with the extension.
                     yield this._completeSignUp(message.data);
                     break;
-                case webMessages.CHANGE_STATE:
+                case WebMessages.ChangeState:
                     console.debug("Rally SDK - received rally-sdk.change-state in dev mode");
                     if (!this._enableDevMode) {
                         throw new Error("Rally SDK state can only be changed directly when in developer mode.");
@@ -21180,4 +21183,4 @@ class Rally {
     }
 }
 
-export { Rally, authProviders, runStates, webMessages };
+export { Rally };

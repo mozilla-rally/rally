@@ -9,32 +9,14 @@ import { connectAuthEmulator, getAuth, onAuthStateChanged, signInWithCustomToken
 import { connectFirestoreEmulator, getFirestore, doc, onSnapshot, getDoc, setDoc } from "firebase/firestore";
 
 import { v4 as uuidv4 } from "uuid";
-
-export enum runStates {
-  RUNNING,
-  PAUSED,
-  ENDED
-}
-
-export enum authProviders {
-  GOOGLE = "google.com",
-  EMAIL = "email",
-}
-
-
-export enum webMessages {
-  WEB_CHECK = "rally-sdk.web-check",
-  COMPLETE_SIGNUP = "rally-sdk.complete-signup",
-  WEB_CHECK_RESPONSE = "rally-sdk.web-check-response",
-  COMPLETE_SIGNUP_RESPONSE = "rally-sdk.complete-signup-response",
-  CHANGE_STATE = "rally-sdk.change-state"
-}
+import { RunStates } from "./RunStates";
+import { WebMessages } from "./WebMessages";
 
 export class Rally {
   private _enableDevMode: boolean;
   private _rallyId: string;
 
-  _state: runStates;
+  _state: RunStates;
   _authStateChangedCallback: (user: any) => Promise<void>;
   _auth: any;
   _db: any;
@@ -89,7 +71,7 @@ export class Rally {
     this._signedIn = false;
 
     // Set the initial state to paused, and register callback for future changes.
-    this._state = runStates.PAUSED;
+    this._state = RunStates.Paused;
     this._stateChangeCallback = stateChangeCallback;
 
     if (this._enableDevMode) {
@@ -151,7 +133,7 @@ export class Rally {
           }
           const data = studiesDoc.data();
           if (data.studyPaused && data.studyPaused === true) {
-            if (this._state !== runStates.PAUSED) {
+            if (this._state !== RunStates.Paused) {
               this._pause();
             }
           } else {
@@ -165,13 +147,13 @@ export class Rally {
 
             const data = userStudiesDoc.data();
 
-            if (data.enrolled && this._state !== runStates.RUNNING) {
+            if (data.enrolled && this._state !== RunStates.Running) {
               this._resume();
             }
           }
 
           if (data.studyEnded === true) {
-            if (this._state !== runStates.ENDED) {
+            if (this._state !== RunStates.Ended) {
               this._end();
             }
           }
@@ -222,9 +204,9 @@ export class Rally {
    * Pause the current study.
    */
   _pause() {
-    if (this._state !== runStates.PAUSED) {
-      this._state = runStates.PAUSED;
-      this._stateChangeCallback(runStates.PAUSED);
+    if (this._state !== RunStates.Paused) {
+      this._state = RunStates.Paused;
+      this._stateChangeCallback(RunStates.Paused);
     }
   }
 
@@ -232,9 +214,9 @@ export class Rally {
    * Resume the current study, if paused.
    */
   _resume() {
-    if (this._state !== runStates.RUNNING) {
-      this._state = runStates.RUNNING;
-      this._stateChangeCallback(runStates.RUNNING);
+    if (this._state !== RunStates.Running) {
+      this._state = RunStates.Running;
+      this._stateChangeCallback(RunStates.Running);
     }
   }
 
@@ -246,12 +228,12 @@ export class Rally {
    * @param rallyId
    */
   _end() {
-    this._state = runStates.ENDED;
-    this._stateChangeCallback(runStates.ENDED);
+    this._state = RunStates.Ended;
+    this._stateChangeCallback(RunStates.Ended);
   }
 
 
-  private _stateChangeCallback(runState: runStates) {
+  private _stateChangeCallback(runState: RunStates) {
     throw new Error("Method not implemented, must be provided by study.");
   }
 
@@ -271,7 +253,7 @@ export class Rally {
   *          It can be resolved with a value that is sent to the
   *          `sender` or rejected in case of errors.
   */
-  async _handleWebMessage(message: { type: webMessages, data }, sender: any) {
+  async _handleWebMessage(message: { type: WebMessages, data }, sender: any) {
     if (sender.id !== browser.runtime.id) {
       throw new Error(`Rally._handleWebMessage - unknown sender ${sender.id}, expected ${browser.runtime.id}`);
     }
@@ -287,7 +269,7 @@ export class Rally {
     // information out? Can it be used to mess with studies?
 
     switch (message.type) {
-      case webMessages.WEB_CHECK:
+      case WebMessages.WebCheck:
         // The `web-check` message should be safe: any installed extension with
         // the `management` privileges could check for the presence of the
         // Rally SDK and expose that to the web. By exposing this ourselves
@@ -297,16 +279,16 @@ export class Rally {
         // Now that the site is open, send a message asking for a JWT.
         if (!this._signedIn) {
           console.debug("not signed in, sending complete_signup request");
-          await browser.tabs.sendMessage(sender.tab.id, { type: webMessages.COMPLETE_SIGNUP, data: { studyId: this._studyId } });
+          await browser.tabs.sendMessage(sender.tab.id, { type: WebMessages.CompleteSignup, data: { studyId: this._studyId } });
         } else {
           console.debug("already signed in, not sending complete_signup request");
         }
 
         console.debug("sending web-check-response to sender:", sender, " done");
-        await browser.tabs.sendMessage(sender.tab.id, { type: webMessages.WEB_CHECK_RESPONSE, data: {} });
+        await browser.tabs.sendMessage(sender.tab.id, { type: WebMessages.WebCheckResponse, data: {} });
         break;
 
-      case webMessages.COMPLETE_SIGNUP_RESPONSE:
+      case WebMessages.CompleteSignupResponse:
         // The `complete-signup-response` message should be safe: It's a response
         // from the page, containing the credentials from the currently-authenticated user.
         //
@@ -318,7 +300,7 @@ export class Rally {
         await this._completeSignUp(message.data);
 
         break;
-      case webMessages.CHANGE_STATE:
+      case WebMessages.ChangeState:
         console.debug("Rally SDK - received rally-sdk.change-state in dev mode");
 
         if (!this._enableDevMode) {

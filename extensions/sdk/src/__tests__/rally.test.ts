@@ -3,10 +3,10 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 import { strict as assert } from 'assert';
-import { Rally, runStates, authProviders, webMessages } from '../../src/rally';
-
-import { doc, onSnapshot } from "firebase/firestore";
-import { onAuthStateChanged } from 'firebase/auth'
+import { doc } from "firebase/firestore";
+import { Rally } from '../rally';
+import { RunStates } from "../RunStates";
+import { WebMessages } from "../WebMessages";
 
 const FAKE_RALLY_ID = "11f42b4c-8d8e-477e-acd0-b38578228e44";
 
@@ -121,9 +121,9 @@ describe('Rally SDK', function () {
     const rally = new Rally({
       enableDevMode: false,
       stateChangeCallback: (message) => {
-        if (message === runStates.PAUSED) {
+        if (message === RunStates.Paused) {
           pausedCallbackCalled = true;
-        } else if (message === runStates.RUNNING) {
+        } else if (message === RunStates.Running) {
           resumeCallbackCalled = true;
         }
       },
@@ -133,14 +133,14 @@ describe('Rally SDK', function () {
       enableEmulatorMode: false,
     })
 
-    assert.equal(rally._state, runStates.PAUSED);
+    assert.equal(rally._state, RunStates.Paused);
 
     rally._resume();
-    assert.equal(rally._state, runStates.RUNNING);
+    assert.equal(rally._state, RunStates.Running);
     assert.ok(resumeCallbackCalled);
 
     rally._pause();
-    assert.ok(rally._state === runStates.PAUSED);
+    assert.ok(rally._state === RunStates.Paused);
     assert.ok(pausedCallbackCalled);
   });
 
@@ -152,11 +152,11 @@ describe('Rally SDK', function () {
     const rally = new Rally({
       enableDevMode: false,
       stateChangeCallback: (message) => {
-        if (message === runStates.PAUSED) {
+        if (message === RunStates.Paused) {
           pausedCallbackCalled = true;
-        } else if (message === runStates.RUNNING) {
+        } else if (message === RunStates.Running) {
           resumeCallbackCalled = true;
-        } else if (message === runStates.ENDED) {
+        } else if (message === RunStates.Ended) {
           endedCallbackCalled = true;
         }
 
@@ -168,7 +168,7 @@ describe('Rally SDK', function () {
     });
 
     const rallyToken = "...";
-    const message = { type: webMessages.COMPLETE_SIGNUP_RESPONSE, data: { rallyToken } };
+    const message = { type: WebMessages.CompleteSignupResponse, data: { rallyToken } };
     // TODO mock browser.extension.id response
     const sender = { id: null, url: `http://localhost` };
 
@@ -213,7 +213,7 @@ describe('Rally SDK', function () {
 
     assert.equal(rally.rallyId, FAKE_RALLY_ID);
 
-    assert.equal(rally._state, runStates.RUNNING);
+    assert.equal(rally._state, RunStates.Running);
     assert.ok(!pausedCallbackCalled);
     assert.ok(resumeCallbackCalled);
 
@@ -244,7 +244,7 @@ describe('Rally SDK', function () {
 
     await rally._authStateChangedCallback({ uid: "test123" });
 
-    assert.equal(rally._state, runStates.PAUSED);
+    assert.equal(rally._state, RunStates.Paused);
     assert.ok(pausedCallbackCalled);
     assert.ok(!resumeCallbackCalled);
 
@@ -275,7 +275,7 @@ describe('Rally SDK', function () {
 
     await rally._authStateChangedCallback({ uid: "test123" });
 
-    assert.equal(rally._state, runStates.RUNNING);
+    assert.equal(rally._state, RunStates.Running);
     assert.ok(!pausedCallbackCalled);
     assert.ok(resumeCallbackCalled);
 

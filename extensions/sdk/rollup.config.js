@@ -1,7 +1,7 @@
 import commonjs from "@rollup/plugin-commonjs";
 import json from "@rollup/plugin-json";
-import replace from "@rollup/plugin-replace";
 import resolve from "@rollup/plugin-node-resolve";
+import replace from "@rollup/plugin-replace";
 import typescript from '@rollup/plugin-typescript';
 
 /**
@@ -30,7 +30,7 @@ export default (cliArgs) => [
             resolve({
                 browser: true,
             }),
-            typescript({ lib: ["es5", "es6", "dom"], target: "es6" }),
+            typescript({ lib: ["es5", "es6", "dom"], target: "es6", tsconfig: "./tsconfig.json" }),
             commonjs(),
             json()
         ],
@@ -39,7 +39,8 @@ export default (cliArgs) => [
         input: 'src/rally-content.ts',
         output: {
             file: 'dist/rally-content.js',
-            format: 'es'
+            format: 'es',
+            sourcemap: isDevMode(cliArgs) ? "inline" : false
         },
         plugins: [
             replace({
@@ -48,7 +49,7 @@ export default (cliArgs) => [
             resolve({
                 browser: true,
             }),
-            typescript({ lib: ["es5", "es6", "dom"], target: "es6" }),
+            typescript({ lib: ["es5", "es6", "dom"], target: "es6", tsconfig: "./tsconfig.json" }),
             commonjs(),
             json()
         ],

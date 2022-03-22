@@ -3,7 +3,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 import { browser } from "webextension-polyfill-ts";
-import { webMessages } from "./rally";
+import { WebMessages } from "./WebMessages";
 
 /**
  * Send an event to the web page.
@@ -17,12 +17,12 @@ function sendToPage(message: { type: any; data: { studyId?: string }; }) {
   console.debug(`Rally.sendToPage (content) - sending message ${message.type} to page with data: ${message.data.studyId}`);
 
   switch (message.type) {
-    case webMessages.COMPLETE_SIGNUP: {
-      window.dispatchEvent(new CustomEvent(webMessages.COMPLETE_SIGNUP, { detail: message.data.studyId }));
+    case WebMessages.CompleteSignup: {
+      window.dispatchEvent(new CustomEvent(WebMessages.CompleteSignup, { detail: message.data.studyId }));
       break;
     }
-    case webMessages.WEB_CHECK_RESPONSE: {
-      window.dispatchEvent(new CustomEvent(webMessages.WEB_CHECK_RESPONSE, {}));
+    case WebMessages.WebCheckResponse: {
+      window.dispatchEvent(new CustomEvent(WebMessages.WebCheckResponse, {}));
       break;
     }
     default: {
@@ -44,15 +44,15 @@ async function handlePageEvents(event: CustomEvent) {
 
   switch (event.type) {
     // Listen for a web-check message, the site will send this when it is initialized.
-    case webMessages.WEB_CHECK: {
+    case WebMessages.WebCheck: {
       console.debug("Rally.handlePageEvents (content) - web-check request received, sending to background script");
-      browser.runtime.sendMessage({ type: webMessages.WEB_CHECK, data: {} });
+      browser.runtime.sendMessage({ type: WebMessages.WebCheck, data: {} });
       break;
     }
     // Listen for a complete-signup message, which will contain the JWT.
-    case webMessages.COMPLETE_SIGNUP_RESPONSE: {
+    case WebMessages.CompleteSignupResponse: {
       console.debug("Rally.handlePageEvents (content) - complete-signup-response received, sending to background script");
-      browser.runtime.sendMessage({ type: webMessages.COMPLETE_SIGNUP_RESPONSE, data: event.detail });
+      browser.runtime.sendMessage({ type: WebMessages.CompleteSignupResponse, data: event.detail });
       break;
     }
     default:
@@ -60,16 +60,16 @@ async function handlePageEvents(event: CustomEvent) {
   }
 }
 
-function handleBackgroundEvents(message: { type: webMessages, data: {} }, sender: any) {
+function handleBackgroundEvents(message: { type: WebMessages, data: {} }, sender: any) {
   switch (message.type) {
     // Listen for a complete-signup message, which will contain the JWT.
-    case webMessages.COMPLETE_SIGNUP: {
+    case WebMessages.CompleteSignup: {
       console.debug("Rally.handleBackgroundEvents (content) - complete-signup request:", message);
       sendToPage(message);
       break;
     }
     // Listen for a complete-signup message, which will contain the JWT.
-    case webMessages.WEB_CHECK_RESPONSE: {
+    case WebMessages.WebCheckResponse: {
       console.debug("Rally.handleBackgroundEvents (content) - web-check-response request:", message);
       sendToPage(message);
       break;
@@ -82,11 +82,11 @@ function handleBackgroundEvents(message: { type: webMessages, data: {} }, sender
 
 // Listen for a web-check message from the website.
 // @ts-ignore
-window.addEventListener(webMessages.WEB_CHECK, e => handlePageEvents(e));
+window.addEventListener(WebMessages.WebCheck, e => handlePageEvents(e));
 
 // Listen for a complete-signup-response message from the website.
 // @ts-ignore
-window.addEventListener(webMessages.COMPLETE_SIGNUP_RESPONSE, e => handlePageEvents(e));
+window.addEventListener(WebMessages.CompleteSignupResponse, e => handlePageEvents(e));
 
 // Listen for messages from the background script.
 browser.runtime.onMessage.addListener((message, sender) => {

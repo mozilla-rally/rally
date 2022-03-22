@@ -1,6 +1,6 @@
 {
   "name": "@mozilla/rally",
-  "version": "0.8.0",
+  "version": "0.9.0",
   "description": "The Rally partner support library.",
   "main": "./dist/rally.js",
   "type": "module",
@@ -27,7 +27,7 @@
     },
     "setupFiles": [
       "jest-webextension-mock",
-      "<rootDir>/tests/setup.ts"
+      "<rootDir>/setupTests.js"
     ]
   },
   "devDependencies": {
@@ -48,6 +48,7 @@
     "jest": "^27.0.6",
     "jest-transform-stub": "^2.0.0",
     "jest-webextension-mock": "^3.7.17",
+    "rollup": "^2.70.1",
     "sinon-chrome": "^3.0.1",
     "source-map-support": "^0.5.19",
     "ts-jest": "^27.0.4",
