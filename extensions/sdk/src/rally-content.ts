@@ -13,7 +13,7 @@ import { WebMessages } from "./WebMessages";
  *        page. It must have the following structure:
  *        {type: "message-type", data: {...}}
  */
-function sendToPage(message: { type: any; data: { studyId?: string }; }) {
+function sendToPage(message: { type: any; data: { studyId?: string; }; }) {
   console.debug(`Rally.sendToPage (content) - sending message ${message.type} to page with data: ${message.data.studyId}`);
 
   switch (message.type) {
@@ -60,7 +60,7 @@ async function handlePageEvents(event: CustomEvent) {
   }
 }
 
-function handleBackgroundEvents(message: { type: WebMessages, data: {} }, sender: any) {
+function handleBackgroundEvents(message: { type: WebMessages, data: {}; }, sender: any) {
   switch (message.type) {
     // Listen for a complete-signup message, which will contain the JWT.
     case WebMessages.CompleteSignup: {

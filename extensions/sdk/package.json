@@ -2,7 +2,7 @@
   "name": "@mozilla/rally",
   "version": "0.9.0",
   "description": "The Rally partner support library.",
-  "main": "./dist/rally.js",
+  "main": "./dist/Rally.js",
   "type": "module",
   "scripts": {
     "build": "rollup -c",

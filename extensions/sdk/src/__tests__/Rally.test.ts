@@ -4,7 +4,7 @@
 
 import { strict as assert } from 'assert';
 import { doc } from "firebase/firestore";
-import { Rally } from '../rally';
+import { Rally } from '../Rally';
 import { RunStates } from "../RunStates";
 import { WebMessages } from "../WebMessages";
 
@@ -16,7 +16,7 @@ jest.mock('firebase/app', () => ({
   __esModule: true,
   apps: [],
   initializeApp: jest.fn(),
-}))
+}));
 
 jest.mock('firebase/auth', () => ({
   __esModule: true,
@@ -30,17 +30,17 @@ jest.mock('firebase/auth', () => ({
             claims: {
               firebaseUid: "test123",
             }
-          }
+          };
         })
       },
       signOut: jest.fn(),
       onAuthStateChanged: jest.fn(),
-    }
+    };
   }),
   signInWithCustomToken: jest.fn(),
   onAuthStateChanged: jest.fn(),
   connectAuthEmulator: jest.fn(),
-}))
+}));
 
 jest.mock('firebase/firestore', () => ({
   __esModule: true,
@@ -68,22 +68,22 @@ jest.mock('firebase/firestore', () => ({
     return {
       exists: () => true,
       data: () => {
-        return doc
+        return doc;
       }
-    }
+    };
   }),
   getFirestore: jest.fn(),
   onSnapshot: jest.fn((doc, callback) => {
     const result = {
       exists: () => true,
       data: () => {
-        return doc
+        return doc;
       }
-    }
+    };
     callback(result);
   }),
   connectFirestoreEmulator: jest.fn()
-}))
+}));
 
 interface globalThis {
   [key: string]: any; // Add index signature
@@ -106,6 +106,14 @@ describe('Rally SDK', function () {
     delete global.fetch;
     chrome.flush();
   });
+
+  async function invokeAuthChangedCallback(rally: Rally, user: any) {
+    return await Object.getPrototypeOf(rally).authStateChangedCallback.call(rally, user);
+  }
+
+  async function invokeHandleWebMessage(rally: Rally, message: { type: WebMessages, data; }, sender: any) {
+    return await Object.getPrototypeOf(rally).handleWebMessage.call(rally, message, sender);
+  }
 
   it('must fail with an invalid callback function', function () {
     assert.throws(
@@ -131,16 +139,16 @@ describe('Rally SDK', function () {
       studyId: "exampleStudy1",
       firebaseConfig: {},
       enableEmulatorMode: false,
-    })
+    });
 
-    assert.equal(rally._state, RunStates.Paused);
+    assert.equal(rally.state, RunStates.Paused);
 
-    rally._resume();
-    assert.equal(rally._state, RunStates.Running);
+    rally.resume();
+    assert.equal(rally.state, RunStates.Running);
     assert.ok(resumeCallbackCalled);
 
-    rally._pause();
-    assert.ok(rally._state === RunStates.Paused);
+    rally.pause();
+    assert.ok(rally.state === RunStates.Paused);
     assert.ok(pausedCallbackCalled);
   });
 
@@ -172,12 +180,12 @@ describe('Rally SDK', function () {
     // TODO mock browser.extension.id response
     const sender = { id: null, url: `http://localhost` };
 
-    await rally._handleWebMessage(message, sender);
+    await invokeHandleWebMessage(rally, message, sender);
 
     // TODO check for complete-signup-response
 
     // If the user is authenticated but not enrolled in Rally, onboarding should be triggered.
-    await rally._authStateChangedCallback({ uid: "test123" });
+    await invokeAuthChangedCallback(rally, { uid: "test123" });
     assert.ok(!pausedCallbackCalled);
     assert.ok(!resumeCallbackCalled);
     assert.ok(!endedCallbackCalled);
@@ -207,13 +215,11 @@ describe('Rally SDK', function () {
       return result;
     });
 
-
-
-    await rally._authStateChangedCallback({ uid: "test123" });
+    await invokeAuthChangedCallback(rally, { uid: "test123" });
 
     assert.equal(rally.rallyId, FAKE_RALLY_ID);
 
-    assert.equal(rally._state, RunStates.Running);
+    assert.equal(rally.state, RunStates.Running);
     assert.ok(!pausedCallbackCalled);
     assert.ok(resumeCallbackCalled);
 
@@ -242,9 +248,9 @@ describe('Rally SDK', function () {
       return result;
     });
 
-    await rally._authStateChangedCallback({ uid: "test123" });
+    await invokeAuthChangedCallback(rally, { uid: "test123" });
 
-    assert.equal(rally._state, RunStates.Paused);
+    assert.equal(rally.state, RunStates.Paused);
     assert.ok(pausedCallbackCalled);
     assert.ok(!resumeCallbackCalled);
 
@@ -273,9 +279,9 @@ describe('Rally SDK', function () {
       return result;
     });
 
-    await rally._authStateChangedCallback({ uid: "test123" });
+    await invokeAuthChangedCallback(rally, { uid: "test123" });
 
-    assert.equal(rally._state, RunStates.Running);
+    assert.equal(rally.state, RunStates.Running);
     assert.ok(!pausedCallbackCalled);
     assert.ok(resumeCallbackCalled);
 

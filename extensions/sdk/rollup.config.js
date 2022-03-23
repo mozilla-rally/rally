@@ -16,10 +16,10 @@ function isDevMode(cliArgs) {
 
 export default (cliArgs) => [
     {
-        input: 'src/rally.ts',
+        input: 'src/Rally.ts',
         output: {
-            name: "rally",
-            file: 'dist/rally.js',
+            name: "Rally",
+            file: 'dist/Rally.js',
             format: 'es',
             sourcemap: isDevMode(cliArgs) ? "inline" : false
         },
