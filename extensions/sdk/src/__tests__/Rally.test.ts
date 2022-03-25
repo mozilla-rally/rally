@@ -7,6 +7,7 @@ import { doc } from "firebase/firestore";
 import { Rally } from '../Rally';
 import { RunStates } from "../RunStates";
 import { WebMessages } from "../WebMessages";
+import * as chrome from "sinon-chrome/extensions";
 
 const FAKE_RALLY_ID = "11f42b4c-8d8e-477e-acd0-b38578228e44";
 
@@ -45,8 +46,8 @@ jest.mock('firebase/auth', () => ({
 jest.mock('firebase/firestore', () => ({
   __esModule: true,
   apps: [],
-  doc: jest.fn((db, collection, uid, subcollection, studyName) => {
-    let result = { exists: () => true };
+  doc: jest.fn((db, collection, uid, subcollection) => {
+    const result = { exists: () => true };
     if (collection === "users") {
       if (subcollection && subcollection === "studies") {
         result["enrolled"] = false;
@@ -85,10 +86,6 @@ jest.mock('firebase/firestore', () => ({
   connectFirestoreEmulator: jest.fn()
 }));
 
-interface globalThis {
-  [key: string]: any; // Add index signature
-}
-const chrome = require("sinon-chrome/extensions");
 // We need to provide the `browser.runtime.id` for sinon-chrome to
 // be happy and play nice with webextension-polyfill. See this issue:
 // https://github.com/mozilla/webextension-polyfill/issues/218
@@ -107,16 +104,17 @@ describe('Rally SDK', function () {
     chrome.flush();
   });
 
-  async function invokeAuthChangedCallback(rally: Rally, user: any) {
+  async function invokeAuthChangedCallback(rally: Rally, user: any) { // eslint-disable-line @typescript-eslint/no-explicit-any
     return await Object.getPrototypeOf(rally).authStateChangedCallback.call(rally, user);
   }
 
-  async function invokeHandleWebMessage(rally: Rally, message: { type: WebMessages, data; }, sender: any) {
+  async function invokeHandleWebMessage(rally: Rally, message: { type: WebMessages, data; }, sender: any) { // eslint-disable-line @typescript-eslint/no-explicit-any
     return await Object.getPrototypeOf(rally).handleWebMessage.call(rally, message, sender);
   }
 
   it('must fail with an invalid callback function', function () {
     assert.throws(
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore this isn't something that pure Typescript will allow, but there's nothing stopping JS from hitting it at runtime.
       () => new Rally(true, "not-a-function, will fail")
     );
@@ -195,9 +193,10 @@ describe('Rally SDK', function () {
     resumeCallbackCalled = false;
     endedCallbackCalled = false;
 
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
-    doc.mockImplementation((db, collection, uid, subcollection, studyName) => {
-      let result = { exists: () => true };
+    doc.mockImplementation((db, collection, uid, subcollection) => {
+      const result = { exists: () => true };
       if (collection === "users") {
         if (subcollection && subcollection === "studies") {
           result["enrolled"] = true;
@@ -228,9 +227,10 @@ describe('Rally SDK', function () {
     resumeCallbackCalled = false;
     endedCallbackCalled = false;
 
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
-    doc.mockImplementation((db, collection, uid, subcollection, studyName) => {
-      let result = { exists: () => true };
+    doc.mockImplementation((db, collection, uid, subcollection) => {
+      const result = { exists: () => true };
       if (collection === "users") {
         if (subcollection && subcollection === "studies") {
           result["enrolled"] = false;
@@ -259,9 +259,10 @@ describe('Rally SDK', function () {
     resumeCallbackCalled = false;
     endedCallbackCalled = false;
 
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
-    doc.mockImplementation((db, collection, uid, subcollection, studyName) => {
-      let result = { exists: () => true };
+    doc.mockImplementation((db, collection, uid, subcollection) => {
+      const result = { exists: () => true };
       if (collection === "users") {
         if (subcollection && subcollection === "studies") {
           result["enrolled"] = true;

@@ -55,9 +55,9 @@ export class Rally {
   private _rallyId: string;
 
   private _state: RunStates;
-  private _auth: any;
-  private _db: any;
-  private _signedIn: any;
+  private _auth: any; // eslint-disable-line @typescript-eslint/no-explicit-any
+  private _db: any; // eslint-disable-line @typescript-eslint/no-explicit-any
+  private _signedIn: any; // eslint-disable-line @typescript-eslint/no-explicit-any
 
   private _options: RallyOptions;
 
@@ -102,7 +102,7 @@ export class Rally {
     onAuthStateChanged(this._auth, this.authStateChangedCallback);
   }
 
-  private async authStateChangedCallback(user: any) {
+  private async authStateChangedCallback(user: any) { // eslint-disable-line @typescript-eslint/no-explicit-any
     if (user) {
       // Record that we have signed in, so we don't keep trying to onboard.
       this._signedIn = true;
@@ -186,7 +186,7 @@ export class Rally {
     }
 
     browser.runtime.onMessage.addListener((m, s) => this.handleWebMessage(m, s));
-  };
+  }
 
   private async promptSignUp() {
     let loadedTab: Tabs.Tab;
@@ -253,7 +253,7 @@ export class Rally {
   *          It can be resolved with a value that is sent to the
   *          `sender` or rejected in case of errors.
   */
-  private async handleWebMessage(message: { type: WebMessages, data; }, sender: any) {
+  private async handleWebMessage(message: { type: WebMessages, data; }, sender: any) { // eslint-disable-line @typescript-eslint/no-explicit-any
     if (sender.id !== browser.runtime.id) {
       throw new Error(`Rally.handleWebMessage - unknown sender ${sender.id}, expected ${browser.runtime.id}`);
     }

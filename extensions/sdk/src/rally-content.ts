@@ -13,7 +13,7 @@ import { WebMessages } from "./WebMessages";
  *        page. It must have the following structure:
  *        {type: "message-type", data: {...}}
  */
-function sendToPage(message: { type: any; data: { studyId?: string; }; }) {
+function sendToPage(message: { type: any; data: { studyId?: string; }; }) { // eslint-disable-line @typescript-eslint/no-explicit-any
   console.debug(`Rally.sendToPage (content) - sending message ${message.type} to page with data: ${message.data.studyId}`);
 
   switch (message.type) {
@@ -60,7 +60,8 @@ async function handlePageEvents(event: CustomEvent) {
   }
 }
 
-function handleBackgroundEvents(message: { type: WebMessages, data: {}; }, sender: any) {
+// eslint-disable-next-line @typescript-eslint/no-unused-vars,@typescript-eslint/no-explicit-any
+function handleBackgroundEvents(message: { type: WebMessages, data: Record<string, unknown>; }, sender: any) {
   switch (message.type) {
     // Listen for a complete-signup message, which will contain the JWT.
     case WebMessages.CompleteSignup: {
@@ -80,17 +81,25 @@ function handleBackgroundEvents(message: { type: WebMessages, data: {}; }, sende
   }
 }
 
-// Listen for a web-check message from the website.
-// @ts-ignore
-window.addEventListener(WebMessages.WebCheck, e => handlePageEvents(e));
+let isStarted = false;
 
-// Listen for a complete-signup-response message from the website.
-// @ts-ignore
-window.addEventListener(WebMessages.CompleteSignupResponse, e => handlePageEvents(e));
+export function startContentScript() {
+  if (isStarted) {
+    return;
+  }
 
-// Listen for messages from the background script.
-browser.runtime.onMessage.addListener((message, sender) => {
-  handleBackgroundEvents(message, sender);
-});
+  isStarted = true;
 
-console.debug("Rally SDK - Running content script.");
+  // Listen for a web-check message from the website.
+  window.addEventListener(WebMessages.WebCheck, (e: CustomEvent) => handlePageEvents(e));
+
+  // Listen for a complete-signup-response message from the website.
+  window.addEventListener(WebMessages.CompleteSignupResponse, (e: CustomEvent) => handlePageEvents(e));
+
+  // Listen for messages from the background script.
+  browser.runtime.onMessage.addListener((message, sender) => {
+    handleBackgroundEvents(message, sender);
+  });
+
+  console.debug("Rally SDK - Running content script.");
+}

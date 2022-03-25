@@ -17,10 +17,10 @@
 		"baseUrl": ".",
 		"allowJs": true,
 		"checkJs": true,
-		"paths": {
-			"$lib": ["src/lib"],
-			"$lib/*": ["src/lib/*"]
-		}
+		"declaration": true,
+		"declarationDir": "dist",
+		"outDir": "dist"
 	},
-	"include": ["src/**/*.d.ts", "src/**/*.js", "src/**/*.ts", "src/**/*.svelte"]
+	"include": ["src/**/*.d.ts", "src/**/*.js", "src/**/*.ts", "src/**/*.svelte"],
+	"exclude": ["src/**/__tests__/*"]
 }
