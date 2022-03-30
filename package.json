@@ -31,7 +31,7 @@
     "@rollup/plugin-replace": "^3.0.0",
     "@types/jest": "^27.0.2",
     "@types/selenium-webdriver": "^4.0.15",
-    "chromedriver": "^97.0.4",
+    "chromedriver": "^100.0.0",
     "eslint": "^8.8.0",
     "eslint-plugin-import": "^2.25.4",
     "eslint-plugin-mocha": "^10.0.3",
