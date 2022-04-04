@@ -1,4 +1,4 @@
-# @mozilla/rally
+# @mozilla/rally-sdk
 
 This is the Rally partner support library, used to manage the lifecycle of Rally studies.
 
@@ -26,9 +26,9 @@ npm run build
 Manual testing can be done as follows:
 
 1. Run `npm link` in this directory (`rally-sdk`)
-2. In the directory of the testing grounds (e.g. the [study-template](https://github.com/mozilla-rally/study-template)), run `npm link "@mozilla/rally"`. This will make the test project use the local version of `@mozilla/rally`, automatically tracking any change to it.
+2. In the directory of the testing grounds (e.g. the [study-template](https://github.com/mozilla-rally/study-template)), run `npm link "@mozilla/rally-sdk"`. This will make the test project use the local version of `@mozilla/rally-sdk`, automatically tracking any change to it.
 
 And to undo the linking:
 
-3. Run `npm unlink "@mozilla/rally"` in the testing directory.
+3. Run `npm unlink "@mozilla/rally-sdk"` in the testing directory.
 4. Run `npm unlink` in the `support/` directory.

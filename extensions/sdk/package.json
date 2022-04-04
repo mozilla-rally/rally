@@ -51,14 +51,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/mozilla-rally/rally-core-addon.git",
+    "url": "git+https://github.com/mozilla-rally/rally-sdk.git",
     "directory": "support"
   },
   "keywords": [],
   "author": "Mozilla Rally team",
   "license": "MPL-2.0",
   "bugs": {
-    "url": "https://github.com/mozilla-rally/rally-core-addon/issues"
+    "url": "https://github.com/mozilla-rally/rally-sdk/issues"
   },
-  "homepage": "https://github.com/mozilla-rally/rally-core-addon#readme"
+  "homepage": "https://github.com/mozilla-rally/rally-sdk#readme"
 }

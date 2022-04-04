@@ -24,7 +24,7 @@ The development & release process roughly follows the [GitFlow model](https://nv
 
 ## Published artifacts
 
-* A `@mozilla/rally` module [published on NPM(https://www.npmjs.com/package/@mozilla/rally)
+* A `@mozilla/rally-sdk` module [published on NPM(https://www.npmjs.com/package/@mozilla/rally-sdk)
 
 ## Standard Release
 
