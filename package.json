@@ -23,7 +23,7 @@
   },
   "devDependencies": {
     "@babel/preset-env": "^7.16.11",
-    "@babel/preset-typescript": "^7.15.0",
+    "@babel/preset-typescript": "^7.16.7",
     "@mozilla/rally": "^0.8.1",
     "@mozilla/web-science": "^0.4.0",
     "@rollup/plugin-commonjs": "^21.0.0",
