@@ -26,9 +26,9 @@
    * Specify one of: "pnpmVersion", "npmVersion", or "yarnVersion".  See the Rush documentation
    * for details about these alternatives.
    */
-  "pnpmVersion": "6.7.1",
+  // "pnpmVersion": "6.7.1",
 
-  // "npmVersion": "6.14.15",
+  "npmVersion": "6.14.15",
   // "yarnVersion": "1.9.4",
 
   /**
@@ -176,7 +176,7 @@
    * and set projectFolderMaxDepth to a large number.
    */
   // "projectFolderMinDepth": 2,
-  // "projectFolderMaxDepth": 2,
+  "projectFolderMaxDepth": 4,
 
   /**
    * Today the npmjs.com registry enforces fairly strict naming rules for packages, but in the early
