@@ -3,8 +3,8 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 import { FirebaseOptions, initializeApp } from "firebase/app";
-import { connectAuthEmulator, getAuth, onAuthStateChanged, signInWithCustomToken } from "firebase/auth";
-import { connectFirestoreEmulator, doc, getDoc, getFirestore, onSnapshot } from "firebase/firestore";
+import { Auth, connectAuthEmulator, getAuth, onAuthStateChanged, signInWithCustomToken, User } from "firebase/auth";
+import { connectFirestoreEmulator, doc, DocumentData, DocumentSnapshot, FirebaseFirestore, getDoc, getFirestore, onSnapshot } from "firebase/firestore";
 import { v4 as uuidv4 } from "uuid";
 import { browser, Tabs } from "webextension-polyfill-ts";
 import { RunStates } from "./RunStates";
@@ -55,9 +55,9 @@ export class Rally {
   private _rallyId: string;
 
   private _state: RunStates;
-  private _auth: any; // eslint-disable-line @typescript-eslint/no-explicit-any
-  private _db: any; // eslint-disable-line @typescript-eslint/no-explicit-any
-  private _signedIn: any; // eslint-disable-line @typescript-eslint/no-explicit-any
+  private _auth: Auth;
+  private _db: FirebaseFirestore;
+  private _signedIn: boolean;
 
   private _options: RallyOptions;
 
@@ -102,90 +102,115 @@ export class Rally {
     onAuthStateChanged(this._auth, this.authStateChangedCallback);
   }
 
-  private async authStateChangedCallback(user: any) { // eslint-disable-line @typescript-eslint/no-explicit-any
+  private async authStateChangedCallback(user: User) {
+    // Record user's signed in status.
+    this._signedIn = !!user;
+
     if (user) {
-      // Record that we have signed in, so we don't keep trying to onboard.
-      this._signedIn = true;
-
-      // This is a restricted user, which can see a minimal part of the users data.
-      // The users Firebase UID is needed for this, and it is available in a custom claim on the JWT.
-      const idTokenResult = await this._auth.currentUser.getIdTokenResult();
-      const uid = idTokenResult.claims.firebaseUid;
-
-      // This contains the Rally ID, need to call the Rally state change callback with it.
-      onSnapshot(doc(this._db, "extensionUsers", uid), extensionUserDoc => {
-        if (!extensionUserDoc.exists()) {
-          throw new Error("Rally onSnapshot - extensionUser document does not exist");
-        }
-
-        // https://datatracker.ietf.org/doc/html/rfc4122#section-4.1.7
-        const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-5][0-9a-f]{3}-[089ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
-
-        const data = extensionUserDoc.data();
-
-        if (data && data.rallyId) {
-          if (data.rallyId.match(uuidRegex)) {
-            // Stored Rally ID looks fine, cache it and call the Rally state change callback with it.
-            this._rallyId = data.rallyId;
-          } else {
-            // Do not loop or destroy data if the stored Rally ID is invalid, bail out instead.
-            throw new Error(`Stored Rally ID is not a valid UUID: ${data.rallyId}`);
-          }
-        }
-      });
-
-      onSnapshot(doc(this._db, "studies", this._options.studyId), async studiesDoc => {
-        // TODO do runtime validation of this document
-        if (!studiesDoc.exists()) {
-          throw new Error("Rally onSnapshot - studies document does not exist");
-        }
-        const data = studiesDoc.data();
-        if (data.studyPaused && data.studyPaused === true) {
-          if (this._state !== RunStates.Paused) {
-            this.pause();
-          }
-        } else {
-          const userStudiesDoc = await getDoc(doc(this._db, "users", uid, "studies", this._options.studyId));
-          // TODO do runtime validation of this document
-          if (userStudiesDoc && !userStudiesDoc.exists()) {
-            // This document is created by the site and may not exist yet.
-            console.warn("Rally.onSnapshot - userStudies document does not exist yet");
-            return;
-          }
-
-          const data = userStudiesDoc.data();
-
-          if (data.enrolled && this._state !== RunStates.Running) {
-            this.resume();
-          }
-        }
-
-        if (data.studyEnded === true) {
-          if (this._state !== RunStates.Ended) {
-            this.end();
-          }
-        }
-      });
-
-      onSnapshot(doc(this._db, "users", uid, "studies", this._options.studyId), async userStudiesDoc => {
-        if (!userStudiesDoc.exists()) {
-          // This document is created by the site and may not exist yet.
-          console.warn("Rally.onSnapshot - userStudies document does not exist");
-          return;
-        }
-
-        const data = userStudiesDoc.data();
-        if (data.enrolled) {
-          this.resume();
-        } else {
-          this.pause();
-        }
-      });
+      await this.processLoggedInUser();
     } else {
       await this.promptSignUp();
     }
 
     browser.runtime.onMessage.addListener((m, s) => this.handleWebMessage(m, s));
+  }
+
+  private async processLoggedInUser() {
+    // This is a restricted user, which can see a minimal part of the users data.
+    // The users Firebase UID is needed for this, and it is available in a custom claim on the JWT.
+    const idTokenResult = await this._auth.currentUser.getIdTokenResult();
+    const uid = idTokenResult.claims.firebaseUid as string;
+
+    const getUserStudyDoc = () => getDoc(doc(this._db, "users", uid, "studies", this._options.studyId));
+
+    this.monitorUserRecord(uid);
+    this.monitorCurrentStudyRecordForUser(uid);
+    this.monitorCurrentStudyRecord(getUserStudyDoc);
+  }
+
+  // Monitors user record at: extensionUsers/<uid>
+  private monitorUserRecord(uid: string) {
+    // This contains the Rally ID, need to call the Rally state change callback with it.
+    onSnapshot(doc(this._db, "extensionUsers", uid), extensionUserDoc => {
+      if (!extensionUserDoc.exists()) {
+        // User record is either not present or is somehow deleted
+        // hence change the state to be logged out
+        this._signedIn = false;
+
+        throw new Error("Rally onSnapshot - extensionUser document does not exist");
+      }
+
+      // https://datatracker.ietf.org/doc/html/rfc4122#section-4.1.7
+      const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-5][0-9a-f]{3}-[089ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+
+      const data = extensionUserDoc.data();
+
+      if (data && data.rallyId) {
+        if (data.rallyId.match(uuidRegex)) {
+          // Stored Rally ID looks fine, cache it and call the Rally state change callback with it.
+          this._rallyId = data.rallyId;
+        } else {
+          // Do not loop or destroy data if the stored Rally ID is invalid, bail out instead.
+          throw new Error(`Stored Rally ID is not a valid UUID: ${data.rallyId}`);
+        }
+      }
+    });
+  }
+
+  // Monitor user's current study record at: users/<uid>/studies/<studyId> and pause/resume data collection.
+  private monitorCurrentStudyRecordForUser(uid: string) {
+    onSnapshot(doc(this._db, "users", uid, "studies", this._options.studyId), async userStudiesDoc => {
+      if (!userStudiesDoc.exists()) {
+        // This document is created by the site and may not exist yet.
+        console.warn("Rally.onSnapshot - userStudies document does not exist");
+        return;
+      }
+
+      const data = userStudiesDoc.data();
+      if (data.enrolled) {
+        this.resume();
+      } else {
+        this.pause();
+      }
+    });
+  }
+
+  // Monitor current study record at: studies/<studyId> and pause/resume/end data collection.
+  private monitorCurrentStudyRecord(getUserStudyDoc: () => Promise<DocumentSnapshot<DocumentData>>) {
+    onSnapshot(doc(this._db, "studies", this._options.studyId), async studiesDoc => {
+      // TODO do runtime validation of this document
+      if (!studiesDoc.exists()) {
+        throw new Error("Rally onSnapshot - studies document does not exist");
+      }
+
+      const data = studiesDoc.data();
+
+      if (data.studyPaused && data.studyPaused === true) {
+        if (this._state !== RunStates.Paused) {
+          this.pause();
+        }
+      } else {
+        const userStudiesDoc = await getUserStudyDoc();
+        // TODO do runtime validation of this document
+        if (userStudiesDoc && !userStudiesDoc.exists()) {
+          // This document is created by the site and may not exist yet.
+          console.warn("Rally.onSnapshot - userStudies document does not exist yet");
+          return;
+        }
+
+        const data = userStudiesDoc.data();
+
+        if (data.enrolled && this._state !== RunStates.Running) {
+          this.resume();
+        }
+      }
+
+      if (data.studyEnded === true) {
+        if (this._state !== RunStates.Ended) {
+          this.end();
+        }
+      }
+    });
   }
 
   private async promptSignUp() {
