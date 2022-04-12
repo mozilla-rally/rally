@@ -39,7 +39,7 @@
     "@typescript-eslint/eslint-plugin": "^5.17.0",
     "@typescript-eslint/parser": "^5.17.0",
     "eslint": "^8.12.0",
-    "firebase": "^9.0.0-beta.7",
+    "firebase": "^9.6.10",
     "jest": "^27.0.6",
     "jest-transform-stub": "^2.0.0",
     "jest-webextension-mock": "^3.7.17",

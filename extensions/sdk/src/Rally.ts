@@ -4,7 +4,7 @@
 
 import { FirebaseOptions, initializeApp } from "firebase/app";
 import { Auth, connectAuthEmulator, getAuth, onAuthStateChanged, signInWithCustomToken, User } from "firebase/auth";
-import { connectFirestoreEmulator, doc, DocumentData, DocumentSnapshot, FirebaseFirestore, getDoc, getFirestore, onSnapshot } from "firebase/firestore";
+import { connectFirestoreEmulator, doc, DocumentData, DocumentSnapshot, Firestore, getDoc, getFirestore, onSnapshot } from "firebase/firestore";
 import { v4 as uuidv4 } from "uuid";
 import { browser, Tabs } from "webextension-polyfill-ts";
 import { RunStates } from "./RunStates";
@@ -56,7 +56,7 @@ export class Rally {
 
   private _state: RunStates;
   private _auth: Auth;
-  private _db: FirebaseFirestore;
+  private _db: Firestore;
   private _signedIn: boolean;
 
   private _options: RallyOptions;
