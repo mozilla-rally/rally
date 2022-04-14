@@ -99,7 +99,7 @@ export class Rally {
       connectFirestoreEmulator(this._db, 'localhost', 8080);
     }
 
-    onAuthStateChanged(this._auth, this.authStateChangedCallback);
+    onAuthStateChanged(this._auth, user => this.authStateChangedCallback(user));
   }
 
   private async authStateChangedCallback(user: User) {
