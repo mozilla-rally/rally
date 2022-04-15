@@ -1,6 +1,6 @@
 {
   "name": "@mozilla/rally-sdk",
-  "version": "0.9.3",
+  "version": "0.9.4",
   "description": "The Rally partner support library.",
   "main": "./dist",
   "scripts": {

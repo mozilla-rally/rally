@@ -2,7 +2,7 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-import { FirebaseOptions, initializeApp } from "firebase/app";
+import { FirebaseOptions, initializeApp } from "@firebase/app";
 import { Auth, connectAuthEmulator, getAuth, onAuthStateChanged, signInWithCustomToken, User } from "firebase/auth";
 import { connectFirestoreEmulator, doc, DocumentData, DocumentSnapshot, Firestore, getDoc, getFirestore, onSnapshot } from "firebase/firestore";
 import { v4 as uuidv4 } from "uuid";
