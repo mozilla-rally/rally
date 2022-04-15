@@ -3,7 +3,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 export enum RunStates {
-  Running,
-  Paused,
-  Ended
+  Running = "Running",
+  Paused = "Paused",
+  Ended = "Ended"
 }
