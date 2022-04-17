@@ -1,6 +1,6 @@
 {
   "name": "@mozilla/rally-sdk",
-  "version": "0.9.3",
+  "version": "0.9.5",
   "description": "The Rally partner support library.",
   "main": "./dist",
   "scripts": {
@@ -38,7 +38,6 @@
     "@typescript-eslint/eslint-plugin": "^5.17.0",
     "@typescript-eslint/parser": "^5.17.0",
     "eslint": "^8.12.0",
-    "firebase": "^9.6.10",
     "jest": "^27.0.6",
     "jest-transform-stub": "^2.0.0",
     "jest-webextension-mock": "^3.7.17",
@@ -47,6 +46,9 @@
     "typescript": "^4.3.5",
     "uuid": "^8.3.2",
     "webextension-polyfill": "^0.8.0"
+  },
+  "dependencies": {
+    "firebase": "^9.6.10"
   },
   "repository": {
     "type": "git",
