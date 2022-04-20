@@ -391,7 +391,7 @@
   "projects": [
     {
       "packageName": "@mozilla/rally-sdk",
-      "projectFolder": "sdk",
+      "projectFolder": "extensions/sdk",
       "versionPolicyName": "RallyVersionPolicy"
     }
     // {
