@@ -1517,9 +1517,8 @@
     },
     "@rush-temp/rally-sdk": {
       "version": "file:projects/rally-sdk.tgz",
-      "integrity": "sha512-9VMNXR5Epbm6I+XmZ16r1zZ/R4HBip6g6Q0nHBtaf7QL3YXa2VTJSQqPk26d0i5GIoasZaaRpxf0rKe9Hme6GA==",
+      "integrity": "sha512-DQ9W6VaB988P4m3TrxKhmuZPmeOZHWib9hur+0gkAsMsc0Uzqj3l76xI5wqepKt8cxaZBu9nTWMRaj5FTkiPrg==",
       "requires": {
-        "@tsconfig/recommended": "~1.0.1",
         "@types/jest": "^26.0.24",
         "@types/uuid": "^8.3.1",
         "@types/webextension-polyfill": "^0.8.0",
@@ -1581,11 +1580,6 @@
       "version": "1.1.2",
       "resolved": "https://registry.npmjs.org/@tootallnate/once/-/once-1.1.2.tgz",
       "integrity": "sha512-RbzJvlNzmRq5c3O09UipeuXno4tA1FE6ikOjxZK0tuxVv3412l64l5t1W5pj4+rJq9vpkm/kwiR07aZXnsKPxw=="
-    },
-    "@tsconfig/recommended": {
-      "version": "1.0.1",
-      "resolved": "https://registry.npmjs.org/@tsconfig/recommended/-/recommended-1.0.1.tgz",
-      "integrity": "sha512-2xN+iGTbPBEzGSnVp/Hd64vKJCJWxsi9gfs88x4PPMyEjHJoA3o5BY9r5OLPHIZU2pAQxkSAsJFqn6itClP8mQ=="
     },
     "@types/babel__core": {
       "version": "7.1.19",
