@@ -1,4 +1,4 @@
-name: Publish packages to npm
+name: Build all packages
 on:
   push:
   pull_request:
