@@ -22,8 +22,9 @@ jobs:
           # Defaults to the user or organization that owns the workflow file
           scope: "mozilla"
       - run: npm install -g @microsoft/rush
+      - run: rush version --bump
       - run: rush update
-      - run: rush install        
+      - run: rush install      
       - run: rush build
       - run: rush publish --include-all -p --force
         env:
