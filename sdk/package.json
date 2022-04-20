@@ -1,0 +1,70 @@
+{
+  "name": "@mozilla/rally-sdk",
+  "version": "0.9.6",
+  "description": "The Rally partner support library.",
+  "main": "./dist",
+  "scripts": {
+    "clean": "rm -rf dist",
+    "build": "npm run clean && tsc",
+    "dev": "npm run clean && tsc -w",
+    "lint": "eslint . --ext .ts",
+    "test:unit": "jest",
+    "test": "npm run build && npm run test:unit"
+  },
+  "jest": {
+    "preset": "ts-jest",
+    "verbose": true,
+    "moduleFileExtensions": [
+      "js",
+      "json",
+      "jsx",
+      "ts",
+      "tsx",
+      "node"
+    ],
+    "transform": {
+      ".+\\.(css|styl|less|sass|scss|png|jpg|ttf|woff|woff2)$": "jest-transform-stub",
+      "^.+\\.js$": "babel-jest"
+    },
+    "setupFiles": [
+      "jest-webextension-mock",
+      "<rootDir>/setupTests.js"
+    ]
+  },
+  "devDependencies": {
+    "@types/jest": "^26.0.24",
+    "@types/uuid": "^8.3.1",
+    "@types/webextension-polyfill": "^0.8.0",
+    "@typescript-eslint/eslint-plugin": "^5.17.0",
+    "@typescript-eslint/parser": "^5.17.0",
+    "eslint": "^8.12.0",
+    "jest": "^27.0.6",
+    "jest-transform-stub": "^2.0.0",
+    "jest-webextension-mock": "^3.7.17",
+    "sinon-chrome": "^3.0.1",
+    "ts-jest": "^27.0.4",
+    "typescript": "^4.3.5",
+    "uuid": "^8.3.2",
+    "webextension-polyfill": "^0.8.0"
+  },
+  "dependencies": {
+    "firebase": "^9.6.10",
+    "uuid": "^8.3.2",
+    "webextension-polyfill": "^0.8.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mozilla-rally/rally-sdk.git",
+    "directory": "support"
+  },
+  "keywords": [],
+  "author": "Mozilla Rally team",
+  "license": "MPL-2.0",
+  "bugs": {
+    "url": "https://github.com/mozilla-rally/rally-sdk/issues"
+  },
+  "homepage": "https://github.com/mozilla-rally/rally-sdk#readme",
+  "publishConfig": {
+    "access": "public"
+  }
+}
