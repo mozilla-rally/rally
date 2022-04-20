@@ -262,7 +262,7 @@
      * you might configure your system's trigger to look for a special string such as "[skip-ci]"
      * in the commit message, and then customize Rush's message to contain that string.
      */
-    // "versionBumpCommitMessage": "Bump versions [skip ci]",
+    "versionBumpCommitMessage": "Bump versions [skip ci]",
 
     /**
      * The commit message to use when committing changes during 'rush version'.
@@ -271,7 +271,7 @@
      * you might configure your system's trigger to look for a special string such as "[skip-ci]"
      * in the commit message, and then customize Rush's message to contain that string.
      */
-    // "changeLogUpdateCommitMessage": "Update changelogs [skip ci]"
+    "changeLogUpdateCommitMessage": "Update changelogs [skip ci]"
   },
 
   "repository": {
@@ -313,7 +313,7 @@
      * The list of shell commands to run before the Rush installation starts
      */
     "preRushInstall": [
-      // "common/scripts/pre-rush-install.js"
+      "common/scripts/pre-rush-install.js"
     ],
 
     /**
