@@ -26,7 +26,7 @@ function sendToPage(message: { type: any; data: { studyId?: string; }; }) { // e
       break;
     }
     default: {
-      console.warn(`Rally.sendToPage (content) - unknown message type: ${message.type}`);
+      console.debug(`Rally.sendToPage (content) - unknown message type: ${message.type}`);
     }
   }
 }
@@ -56,7 +56,7 @@ async function handlePageEvents(event: CustomEvent) {
       break;
     }
     default:
-      console.warn(`Rally.handlePageEvents (content) - unknown message ${event.type} received`);
+      console.debug(`Rally.handlePageEvents (content) - unknown message ${event.type} received`);
   }
 }
 
@@ -77,7 +77,7 @@ function handleBackgroundEvents(message: { type: WebMessages, data: Record<strin
     }
 
     default:
-      console.error(`Rally.handleBackgroundEvents (content) - unknown message ${message.type} received`);
+      console.debug(`Rally.handleBackgroundEvents (content) - unknown message ${message.type} received`);
   }
 }
 
