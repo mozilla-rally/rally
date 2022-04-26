@@ -282,7 +282,9 @@ export class Rally {
     if (sender.id !== browser.runtime.id) {
       throw new Error(`Rally.handleWebMessage - unknown sender ${sender.id}, expected ${browser.runtime.id}`);
     }
-    console.log("Rally.handleWebMessage - received web message", message, "from", sender);
+    if (this._options.enableDevMode) {
+      console.debug("Rally.handleWebMessage - received web message", message, "from", sender);
+    }
     // ** IMPORTANT **
     //
     // The website should *NOT EVER* be trusted. Other addons could be
@@ -364,7 +366,9 @@ export class Rally {
 
         break;
       default:
-        console.warn(`Rally._handleWebMessage - unexpected message type "${message.type}"`);
+        if (this._options.enableDevMode) {
+          console.debug(`Rally._handleWebMessage - unexpected message type "${message.type}"`);
+        }
     }
   }
 
