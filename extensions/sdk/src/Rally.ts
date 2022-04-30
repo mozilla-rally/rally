@@ -99,7 +99,44 @@ export class Rally {
       connectFirestoreEmulator(this._db, 'localhost', 8080);
     }
 
+    this.storeAttributionCodes()
+      .catch((err) => console.error("Could not store attribution codes:", err));
+
     onAuthStateChanged(this._auth, user => this.authStateChangedCallback(user));
+  }
+
+  /**
+   * Attempt to fetch the attribution codes from the store page URL for this extension.
+   */
+  private async storeAttributionCodes() {
+    const attribution = await browser.storage.local.get("attribution");
+    if (!(Object.keys(attribution).length === 0 && attribution.constructor === Object)) {
+      console.debug("Attribution codes already set:", attribution);
+      return;
+    }
+
+    // Study IDs are in camelCase, store IDs are in hyphen-case.
+    const camelToHyphenCase = str => str.replace(/[A-Z]/g, letter => `-${letter.toLowerCase()}`);
+    const storeId = camelToHyphenCase(this._options.studyId);
+
+    let storeUrl;
+    if ("getBrowserInfo" in browser.runtime) {
+      const browserInfo = await browser.runtime.getBrowserInfo();
+      if (browserInfo.name === "firefox") {
+        storeUrl = `https://addons.mozilla.org/en-US/firefox/addon/${storeId}/*`
+      }
+    } else {
+      storeUrl = `https://chrome.google.com/webstore/detail/${storeId}/*`;
+    }
+
+    const tabs = await browser.tabs.query({ url: storeUrl });
+    const url = new URL(tabs[0].url);
+
+    ["source", "medium", "campaign", "term", "content"].forEach((key) => {
+      attribution[key] = url.searchParams.get(`utm_${key}`);
+    });
+    browser.storage.local.set({ attribution });
+    console.debug("Attribution codes stored:", attribution);
   }
 
   private async authStateChangedCallback(user: User) {
@@ -222,6 +259,12 @@ export class Rally {
       loadedTab = tabs.pop();
       await browser.windows.update(loadedTab.windowId, { focused: true });
       await browser.tabs.update(loadedTab.id, { highlighted: true, active: true });
+      /**
+       * Reload page to load content script after extension install.
+       * FIXME We should be able to do this without reloading the page.
+       * @see https://github.com/mozilla-rally/rally/issues/6
+       */
+      await browser.tabs.reload();
     } else {
       // Otherwise, open the website.
       loadedTab = await browser.tabs.create({
