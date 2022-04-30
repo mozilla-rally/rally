@@ -7,11 +7,9 @@ import { doc } from "firebase/firestore";
 import { Rally } from '../Rally';
 import { RunStates } from "../RunStates";
 import { WebMessages } from "../WebMessages";
-import * as chrome from "sinon-chrome/extensions";
+import browser from 'webextension-polyfill';
 
 const FAKE_RALLY_ID = "11f42b4c-8d8e-477e-acd0-b38578228e44";
-
-const flushPromises = () => new Promise(setImmediate);
 
 jest.mock('firebase/app', () => ({
   __esModule: true,
@@ -86,23 +84,13 @@ jest.mock('firebase/firestore', () => ({
   connectFirestoreEmulator: jest.fn()
 }));
 
-// We need to provide the `browser.runtime.id` for sinon-chrome to
-// be happy and play nice with webextension-polyfill. See this issue:
-// https://github.com/mozilla/webextension-polyfill/issues/218
-chrome.runtime.id = "testid";
-const globalAny: any = global;
-globalAny.chrome = chrome;
-
-jest.mock("webextension-polyfill", () => require("sinon-chrome/webextensions"));
-
 describe('Rally SDK', function () {
   beforeEach(() => {
-    chrome.runtime.sendMessage.flush();
-    chrome.runtime.sendMessage.yields();
+    jest.clearAllMocks();
   });
+
   afterEach(() => {
-    delete globalAny.fetch;
-    chrome.flush();
+    delete global.fetch;
   });
 
   async function invokeAuthChangedCallback(rally: Rally, user: any) { // eslint-disable-line @typescript-eslint/no-explicit-any
@@ -176,8 +164,9 @@ describe('Rally SDK', function () {
 
     const rallyToken = "...";
     const message = { type: WebMessages.CompleteSignupResponse, data: { rallyToken } };
-    // TODO mock browser.extension.id response
-    const sender = { id: null, url: `http://localhost` };
+    const sender = { id: "test-id", url: `http://localhost` };
+
+    browser.runtime.id = "test-id";
 
     await invokeHandleWebMessage(rally, message, sender);
 
@@ -290,6 +279,48 @@ describe('Rally SDK', function () {
     assert.equal(rally.rallyId, FAKE_RALLY_ID);
 
     // FIXME mock calling onSnapshot
-    await flushPromises();
+    await new Promise(process.nextTick);
+  });
+
+  it('gets attribution code from extension store tab, if present', async function () {
+    browser.storage.local.get = jest.fn().mockReturnValueOnce({});
+    browser.tabs.query = jest.fn().mockReturnValueOnce([{
+      "url": "https://chrome.google.com/webstore/detail/example-study-1?" +
+        "utm_source=test_source&utm_medium=test_medium&utm_campaign=test_campaign&utm_term=test_term&utm_content=test_content"
+    }]);
+
+    new Rally({
+      enableDevMode: false,
+      stateChangeCallback: () => { /**/ },
+      rallySite: "http://localhost",
+      studyId: "exampleStudy1",
+      firebaseConfig: {},
+      enableEmulatorMode: false
+    });
+
+    await new Promise(process.nextTick);
+
+    expect(browser.storage.local.set).toBeCalledWith({
+      "attribution": {
+        "campaign": "test_campaign", "content": "test_content", "medium": "test_medium", "source": "test_source", "term": "test_term"
+      }
+    });
+    expect(browser.storage.local.set).toBeCalledTimes(1);
+  });
+
+  it('does not set attribution code if already set', async function () {
+    browser.storage.local.get = jest.fn().mockReturnValueOnce({ "attribution": {} });
+
+    new Rally({
+      enableDevMode: false,
+      stateChangeCallback: () => { /**/ },
+      rallySite: "http://localhost",
+      studyId: "exampleStudy1",
+      firebaseConfig: {},
+      enableEmulatorMode: false
+    });
+
+    await new Promise(process.nextTick);
+    expect(browser.storage.local.set).toBeCalledTimes(0);
   });
 });
