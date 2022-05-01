@@ -3,7 +3,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 import { strict as assert } from 'assert';
-import { doc } from "firebase/firestore";
+import { doc, enableIndexedDbPersistence } from "firebase/firestore";
 import { Rally } from '../Rally';
 import { RunStates } from "../RunStates";
 import { WebMessages } from "../WebMessages";
@@ -113,6 +113,9 @@ describe('Rally SDK', function () {
     let pausedCallbackCalled = false;
     let resumeCallbackCalled = false;
 
+    browser.tabs.query = jest.fn().mockReturnValueOnce([]);
+    browser.storage.local.get = jest.fn().mockReturnValueOnce({});
+
     const rally = new Rally({
       enableDevMode: false,
       stateChangeCallback: (message) => {
@@ -143,6 +146,9 @@ describe('Rally SDK', function () {
     let pausedCallbackCalled = false;
     let resumeCallbackCalled = false;
     let endedCallbackCalled = false;
+
+    browser.tabs.query = jest.fn().mockReturnValueOnce([]);
+    browser.storage.local.get = jest.fn().mockReturnValueOnce({});
 
     const rally = new Rally({
       enableDevMode: false,
@@ -313,7 +319,16 @@ describe('Rally SDK', function () {
   });
 
   it('does not set attribution code if already set', async function () {
-    browser.storage.local.get = jest.fn().mockReturnValueOnce({ "attribution": {} });
+    const attribution = {
+      "campaign": "test_campaign",
+      "content": "test_content",
+      "medium": "test_medium",
+      "source": "test_source",
+      "term": "test_term"
+    };
+
+    browser.tabs.query = jest.fn().mockReturnValueOnce([]);
+    browser.storage.local.get = jest.fn().mockReturnValueOnce({ attribution });
 
     new Rally({
       enableDevMode: false,
@@ -326,6 +341,7 @@ describe('Rally SDK', function () {
 
     await new Promise(process.nextTick);
     expect(browser.storage.local.set).toBeCalledTimes(0);
+    expect(browser.tabs.query).toBeCalledTimes(0);
   });
 
   it('handles web-check message web and sends attribution codes', async function () {
@@ -347,6 +363,8 @@ describe('Rally SDK', function () {
       firebaseConfig: {},
       enableEmulatorMode: false
     });
+
+    expect(browser.tabs.query).toBeCalledTimes(0);
 
     const message = { type: WebMessages.WebCheck, data: {} };
     const sender = { id: "test-id", url: `http://localhost`, tab: { id: "test-tab-id" } };
