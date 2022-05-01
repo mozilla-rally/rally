@@ -13,7 +13,7 @@ import { WebMessages } from "./WebMessages";
  *        page. It must have the following structure:
  *        {type: "message-type", data: {...}}
  */
-function sendToPage(message: { type: any; data: { studyId?: string; }; }) { // eslint-disable-line @typescript-eslint/no-explicit-any
+function sendToPage(message: { type: any; data: Record<string, unknown> }) { // eslint-disable-line @typescript-eslint/no-explicit-any
   console.debug(`Rally.sendToPage (content) - sending message ${message.type} to page with data: ${message.data.studyId}`);
 
   switch (message.type) {
@@ -22,7 +22,10 @@ function sendToPage(message: { type: any; data: { studyId?: string; }; }) { // e
       break;
     }
     case WebMessages.WebCheckResponse: {
-      window.dispatchEvent(new CustomEvent(WebMessages.WebCheckResponse, { detail: { studyId: message.data.studyId } }));
+      window.dispatchEvent(new CustomEvent(WebMessages.WebCheckResponse,
+        {
+          detail: { studyId: message.data.studyId, attribution: message.data.attribution }
+        }));
       break;
     }
     default: {
