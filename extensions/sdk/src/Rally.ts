@@ -130,6 +130,9 @@ export class Rally {
     }
 
     const tabs = await browser.tabs.query({ url: storeUrl });
+    if (!(tabs.length > 0)) {
+      throw new Error("No store URLs present in open tabs");
+    }
     const url = new URL(tabs[0].url);
 
     ["source", "medium", "campaign", "term", "content"].forEach((key) => {
@@ -153,7 +156,12 @@ export class Rally {
   }
 
   private async getAttributionCodes() {
-    return (await browser.storage.local.get("attribution"))["attribution"];
+    const attribution = await browser.storage.local.get("attribution");
+    if ("attribution" in attribution) {
+      return attribution["attribution"];
+    } else {
+      return {};
+    }
   }
 
   private async processLoggedInUser() {
