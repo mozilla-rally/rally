@@ -109,9 +109,9 @@ export class Rally {
    * Attempt to fetch the attribution codes from the store page URL for this extension.
    */
   private async storeAttributionCodes() {
-    const attribution = await browser.storage.local.get("attribution");
+    const attribution = await this.getAttributionCodes();
     if (!(Object.keys(attribution).length === 0 && attribution.constructor === Object)) {
-      console.debug("Attribution codes already set:", attribution);
+      console.debug("Attribution codes already stored");
       return;
     }
 
@@ -150,6 +150,10 @@ export class Rally {
     }
 
     browser.runtime.onMessage.addListener((m, s) => this.handleWebMessage(m, s));
+  }
+
+  private async getAttributionCodes() {
+    return (await browser.storage.local.get("attribution"))["attribution"];
   }
 
   private async processLoggedInUser() {
@@ -339,7 +343,7 @@ export class Rally {
     // information out? Can it be used to mess with studies?
 
     switch (message.type) {
-      case WebMessages.WebCheck:
+      case WebMessages.WebCheck: {
         // The `web-check` message should be safe: any installed extension with
         // the `management` privileges could check for the presence of the
         // Rally SDK and expose that to the web. By exposing this ourselves
@@ -355,9 +359,10 @@ export class Rally {
         }
 
         console.debug("sending web-check-response to sender:", sender, " done");
-        await browser.tabs.sendMessage(sender.tab.id, { type: WebMessages.WebCheckResponse, data: { studyId: this._options.studyId } });
+        const attribution = await this.getAttributionCodes();
+        await browser.tabs.sendMessage(sender.tab.id, { type: WebMessages.WebCheckResponse, data: { studyId: this._options.studyId, attribution } });
         break;
-
+      }
       case WebMessages.CompleteSignupResponse:
         // The `complete-signup-response` message should be safe: It's a response
         // from the page, containing the credentials from the currently-authenticated user.

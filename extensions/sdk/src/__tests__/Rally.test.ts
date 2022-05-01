@@ -164,7 +164,7 @@ describe('Rally SDK', function () {
 
     const rallyToken = "...";
     const message = { type: WebMessages.CompleteSignupResponse, data: { rallyToken } };
-    const sender = { id: "test-id", url: `http://localhost` };
+    const sender = { id: "test-id", url: `http://localhost`, tab: { id: "test-tab-id" } };
 
     browser.runtime.id = "test-id";
 
@@ -302,7 +302,11 @@ describe('Rally SDK', function () {
 
     expect(browser.storage.local.set).toBeCalledWith({
       "attribution": {
-        "campaign": "test_campaign", "content": "test_content", "medium": "test_medium", "source": "test_source", "term": "test_term"
+        "campaign": "test_campaign",
+        "content": "test_content",
+        "medium": "test_medium",
+        "source": "test_source",
+        "term": "test_term"
       }
     });
     expect(browser.storage.local.set).toBeCalledTimes(1);
@@ -322,5 +326,50 @@ describe('Rally SDK', function () {
 
     await new Promise(process.nextTick);
     expect(browser.storage.local.set).toBeCalledTimes(0);
+  });
+
+  it('handles web-check message web and sends attribution codes', async function () {
+    const attribution = {
+      "campaign": "test_campaign",
+      "content": "test_content",
+      "medium": "test_medium",
+      "source": "test_source",
+      "term": "test_term"
+    };
+
+    browser.storage.local.get = jest.fn().mockReturnValueOnce({ attribution });
+
+    const rally = new Rally({
+      enableDevMode: false,
+      stateChangeCallback: () => { /**/ },
+      rallySite: "http://localhost",
+      studyId: "exampleStudy1",
+      firebaseConfig: {},
+      enableEmulatorMode: false
+    });
+
+    const message = { type: WebMessages.WebCheck, data: {} };
+    const sender = { id: "test-id", url: `http://localhost`, tab: { id: "test-tab-id" } };
+    browser.runtime.id = "test-id";
+
+    browser.storage.local.get = jest.fn().mockReturnValueOnce({ attribution });
+
+    await invokeHandleWebMessage(rally, message, sender);
+
+    expect(browser.tabs.sendMessage).toBeCalledTimes(2);
+    expect(browser.tabs.sendMessage).nthCalledWith(1, "test-tab-id", {
+      data: {
+        "studyId": "exampleStudy1",
+      },
+      type: WebMessages.CompleteSignup,
+    });
+
+    expect(browser.tabs.sendMessage).nthCalledWith(2, "test-tab-id", {
+      data: {
+        attribution
+      },
+      type: WebMessages.WebCheckResponse,
+    });
+
   });
 });
