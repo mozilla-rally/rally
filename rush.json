@@ -393,6 +393,12 @@
       "packageName": "@mozilla/rally-sdk",
       "projectFolder": "extensions/sdk",
       "versionPolicyName": "RallyVersionPolicy"
+    },
+    {
+      "packageName": "functions",
+      "projectFolder": "web-platform/functions",
+      "versionPolicyName": "RallyVersionPolicy",
+      "shouldPublish": false
     }
     // {
     //   /**
