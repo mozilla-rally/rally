@@ -15,6 +15,7 @@ This means you might have to go searching through the dependency tree to get a f
 - [study-enrollment](#study-enrollment)
 - [study-unenrollment](#study-unenrollment)
 - [unenrollment](#unenrollment)
+- [uninstall-deletion](#uninstall-deletion)
 
 ## deletion-request
 
@@ -166,6 +167,33 @@ This ping is sent if empty.
 **Bugs related to this ping:**
 
 - <https://github.com/mozilla-rally/rally-core-addon/issues/117>
+
+All Glean pings contain built-in metrics in the [`ping_info`](https://mozilla.github.io/glean/book/user/pings/index.html#the-ping_info-section) and [`client_info`](https://mozilla.github.io/glean/book/user/pings/index.html#the-client_info-section) sections.
+
+In addition to those built-in metrics, the following metrics are added to the ping:
+
+| Name | Type | Description | Data reviews | Extras | Expiration | [Data Sensitivity](https://wiki.mozilla.org/Firefox/Data_Collection) |
+| --- | --- | --- | --- | --- | --- | --- |
+| rally.id |[uuid](https://mozilla.github.io/glean/book/user/metrics/uuid.html) |The id of the Rally client.  |[mozilla-rally/rally-core-addon#505](https://github.com/mozilla-rally/rally-core-addon/pull/505#issuecomment-815826426)||never | |
+
+## uninstall-deletion
+
+This ping is used with the Rally Core Add-on, *not* the Web
+Platform. Its submission is triggered when hitting the
+offboarding page, after the Core Add-on is removed, to make
+sure a data deletion request is sent even when uninstalling
+from the Browser UI, without going through the Rally UI.
+
+
+This ping is sent if empty.
+
+**Data reviews for this ping:**
+
+- <https://bugzilla.mozilla.org/show_bug.cgi?id=1663857#c5>
+
+**Bugs related to this ping:**
+
+- <https://bugzilla.mozilla.org/show_bug.cgi?id=1698934>
 
 All Glean pings contain built-in metrics in the [`ping_info`](https://mozilla.github.io/glean/book/user/pings/index.html#the-ping_info-section) and [`client_info`](https://mozilla.github.io/glean/book/user/pings/index.html#the-client_info-section) sections.
 
