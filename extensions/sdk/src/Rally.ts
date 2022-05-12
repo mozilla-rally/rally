@@ -283,7 +283,7 @@ export class Rally {
       await browser.tabs.update(loadedTab.id, { highlighted: true, active: true });
       /**
        * Reload page to load content script after extension install.
-       * FIXME We should be able to do this without reloading the page.
+       * TODO We should be able to do this without reloading the page.
        * @see https://github.com/mozilla-rally/rally/issues/6
        */
       await browser.tabs.reload();
