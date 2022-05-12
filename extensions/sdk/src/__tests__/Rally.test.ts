@@ -3,7 +3,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 import { strict as assert } from 'assert';
-import { doc, enableIndexedDbPersistence } from "firebase/firestore";
+import { doc } from "firebase/firestore";
 import { Rally } from '../Rally';
 import { RunStates } from "../RunStates";
 import { WebMessages } from "../WebMessages";
