@@ -5,6 +5,7 @@ export default {
       useESM: true,
     },
   },
+  reporters: ["jest-standard-reporter"],
   resolver: "ts-jest-resolver",
   testRegex: "src(/__tests__/.*|(\\.|/)(test|spec))\\.(jsx?|tsx?)$",
   testPathIgnorePatterns: ["lib/", "node_modules/", "setupTests.js"],
