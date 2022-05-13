@@ -1835,7 +1835,7 @@
     },
     "@rush-temp/functions": {
       "version": "file:projects/functions.tgz",
-      "integrity": "sha512-CPnC2kwsm+ai8rE7rhi06IvL58ELKHYEHG9v4TbrDeSaGT0jGnlOMXxglS/aII9HmjWuI8Wjcoa3rSbo4ZwMsw==",
+      "integrity": "sha512-lJksSLNJZjH8Gic0fZBYK9HbDssIwgvU0/l0nvBX1vMrfsPqM0ZXjv/SobveTQ5j0t6ZUxMsHWTBGUu8YwOX2g==",
       "requires": {
         "@mozilla/glean": "^1.0.0",
         "@types/jest": "^27.5.0",
@@ -1854,7 +1854,6 @@
         "firebase-tools": "^10.9.0",
         "jest": "^28.1.0",
         "jest-standard-reporter": "~2.0.0",
-        "node-fetch": "^3.2.4",
         "ts-jest": "^28.0.2",
         "ts-jest-resolver": "^2.0.0",
         "ts-patch": "^2.0.1",
@@ -2749,11 +2748,6 @@
       "integrity": "sha512-v1plID3y9r/lPhviJ1wrXpLeyUIGAZ2SHNYTEapm7/8A9nLPoyvVp3RK/EPFqn5kEznyWgYZNsRtYYIWbuG8KA==",
       "optional": true
     },
-    "data-uri-to-buffer": {
-      "version": "4.0.0",
-      "resolved": "https://registry.npmjs.org/data-uri-to-buffer/-/data-uri-to-buffer-4.0.0.tgz",
-      "integrity": "sha512-Vr3mLBA8qWmcuschSLAOogKgQ/Jwxulv3RNE4FXnYWRGujzrRWQI4m12fQqRkwX06C0KanhLr4hK+GydchZsaA=="
-    },
     "date-and-time": {
       "version": "2.3.1",
       "resolved": "https://registry.npmjs.org/date-and-time/-/date-and-time-2.3.1.tgz",
@@ -3435,15 +3429,6 @@
       "integrity": "sha512-DkPJKQeY6kKwmuMretBhr7G6Vodr7bFwDYTXIkfG1gjvNpaxBTQV3PbXg6bR1c1UP4jPOX0jHUbbHANL9vRjVg==",
       "requires": {
         "bser": "2.1.1"
-      }
-    },
-    "fetch-blob": {
-      "version": "3.1.5",
-      "resolved": "https://registry.npmjs.org/fetch-blob/-/fetch-blob-3.1.5.tgz",
-      "integrity": "sha512-N64ZpKqoLejlrwkIAnb9iLSA3Vx/kjgzpcDhygcqJ2KKjky8nCgUQ+dzXtbrLaWZGZNmNfQTsiQ0weZ1svglHg==",
-      "requires": {
-        "node-domexception": "^1.0.0",
-        "web-streams-polyfill": "^3.0.3"
       }
     },
     "fflate": {
@@ -13873,14 +13858,6 @@
         "mime-types": "^2.1.12"
       }
     },
-    "formdata-polyfill": {
-      "version": "4.0.10",
-      "resolved": "https://registry.npmjs.org/formdata-polyfill/-/formdata-polyfill-4.0.10.tgz",
-      "integrity": "sha512-buewHzMvYL29jdeQTVILecSaZKnt/RJWjoZCF5OW60Z67/GmSLBkOFM7qh1PI3zFNtJbaZL5eQu1vLfazOwj4g==",
-      "requires": {
-        "fetch-blob": "^3.1.2"
-      }
-    },
     "forwarded": {
       "version": "0.2.0",
       "resolved": "https://registry.npmjs.org/forwarded/-/forwarded-0.2.0.tgz",
@@ -15812,21 +15789,6 @@
         }
       }
     },
-    "node-domexception": {
-      "version": "1.0.0",
-      "resolved": "https://registry.npmjs.org/node-domexception/-/node-domexception-1.0.0.tgz",
-      "integrity": "sha512-/jKZoMpw0F8GRwl4/eLROPA3cfcXtLApP0QzLmUT/HuPCZWyB7IY9ZrMeKw2O/nFIqPQB3PVM9aYm0F312AXDQ=="
-    },
-    "node-fetch": {
-      "version": "3.2.4",
-      "resolved": "https://registry.npmjs.org/node-fetch/-/node-fetch-3.2.4.tgz",
-      "integrity": "sha512-WvYJRN7mMyOLurFR2YpysQGuwYrJN+qrrpHjJDuKMcSPdfFccRUla/kng2mz6HWSBxJcqPbvatS6Gb4RhOzCJw==",
-      "requires": {
-        "data-uri-to-buffer": "^4.0.0",
-        "fetch-blob": "^3.1.4",
-        "formdata-polyfill": "^4.0.10"
-      }
-    },
     "node-forge": {
       "version": "0.10.0",
       "resolved": "https://registry.npmjs.org/node-forge/-/node-forge-0.10.0.tgz",
@@ -17116,11 +17078,6 @@
       "requires": {
         "makeerror": "1.0.12"
       }
-    },
-    "web-streams-polyfill": {
-      "version": "3.2.1",
-      "resolved": "https://registry.npmjs.org/web-streams-polyfill/-/web-streams-polyfill-3.2.1.tgz",
-      "integrity": "sha512-e0MO3wdXWKrLbL0DgGnUV7WHVuw9OUvL4hjgnPkIeEvESk74gAITi5G606JtZPp39cd8HA9VQzCIvA49LpPN5Q=="
     },
     "webextension-polyfill": {
       "version": "0.8.0",
