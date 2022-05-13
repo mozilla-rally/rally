@@ -1,38 +1,31 @@
 import { jest } from "@jest/globals";
 import admin from "firebase-admin";
 import functions from "firebase-functions";
-import fetch from "node-fetch";
+import axios from "axios";
 import {
   addRallyUserToFirestoreImpl,
   deleteRallyUserImpl,
   loadFirestore,
-  rallytoken
+  rallytoken,
 } from "../index";
 import { studies } from "../studies";
-
 
 // Firebase can take longer than default 5 sec timeout for tests
 jest.setTimeout(10000);
 
 async function disableFunctionTriggers() {
-  await fetch(
+  await axios.put(
     "http://" +
-    process.env.FIREBASE_EMULATOR_HUB +
-    "/functions/disableBackgroundTriggers",
-    {
-      method: "PUT",
-    }
+      process.env.FIREBASE_EMULATOR_HUB +
+      "/functions/disableBackgroundTriggers"
   );
 }
 
 async function enableFunctionTriggers() {
-  await fetch(
+  await axios.put(
     "http://" +
-    process.env.FIREBASE_EMULATOR_HUB +
-    "/functions/enableBackgroundTriggers",
-    {
-      method: "PUT",
-    }
+      process.env.FIREBASE_EMULATOR_HUB +
+      "/functions/enableBackgroundTriggers"
   );
 }
 
@@ -63,7 +56,7 @@ describe("loadFirestore", () => {
   it("loads data correctly from test user study", async () => {
     await loadFirestore(
       {} as any, // eslint-disable-line @typescript-eslint/no-explicit-any
-      { status: () => ({ send: () => { } }) } as any // eslint-disable-line @typescript-eslint/no-explicit-any,@typescript-eslint/no-empty-function
+      { status: () => ({ send: () => {} }) } as any // eslint-disable-line @typescript-eslint/no-explicit-any,@typescript-eslint/no-empty-function
     );
 
     const studyRef = admin.firestore().collection("studies");
@@ -137,7 +130,8 @@ describe("addRallyUserToFirestore and deleteRallyUserImpl", () => {
     expect(userRecords.user.exists).toBeTruthy();
     expect(userRecords.extensionUser.exists).toBeTruthy();
 
-    const extensionData = userRecords.extensionUser.data() as FirebaseFirestore.DocumentData;
+    const extensionData =
+      userRecords.extensionUser.data() as FirebaseFirestore.DocumentData;
     expect(extensionData.rallyId).toBeDefined();
   }
 
@@ -183,10 +177,10 @@ describe("rallytoken tests", () => {
       doneFn(); // Complete unit test
     });
 
-    response = ({
+    response = {
       set: jest.fn(),
       status: jest.fn().mockReturnValue({ send }),
-    } as unknown) as functions.Response<any>; // eslint-disable-line @typescript-eslint/no-explicit-any
+    } as unknown as functions.Response<any>; // eslint-disable-line @typescript-eslint/no-explicit-any
   }
 
   const uid = "fake-uid";
