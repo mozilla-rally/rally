@@ -4,7 +4,7 @@
   "type": "module",
   "scripts": {
     "lint": "npm run lint:glean && eslint --ext .js,.ts .",
-    "build": "npm run build:glean && tsc",
+    "build": "npm run prepare && npm run build:glean && tsc",
     "build:glean": "glean translate ../glean/metrics.yaml ../glean/pings.yaml -f typescript -o ./src/generated",
     "serve": "npm run build && firebase emulators:start --only functions",
     "shell": "npm run build && firebase functions:shell",
