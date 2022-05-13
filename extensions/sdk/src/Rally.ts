@@ -110,7 +110,7 @@ export class Rally {
    */
   private async storeAttributionCodes() {
     const attribution = await this.getAttributionCodes();
-    if (!(typeof attribution === 'object' && attribution !== null)) {
+    if (!(Object.keys(attribution).length === 0 && attribution.constructor === Object)) {
       console.debug("Attribution codes already stored");
       return;
     }
@@ -119,14 +119,13 @@ export class Rally {
     const camelToHyphenCase = str => str.replace(/[A-Z]/g, letter => `-${letter.toLowerCase()}`);
     const storeId = camelToHyphenCase(this._options.studyId);
 
-    let storeUrl;
-    if ("getBrowserInfo" in browser.runtime) {
-      const browserInfo = await browser.runtime.getBrowserInfo();
-      if (browserInfo.name === "firefox") {
-        storeUrl = `https://addons.mozilla.org/en-US/firefox/addon/${storeId}/*`
-      }
-    } else {
-      storeUrl = `https://chrome.google.com/webstore/detail/${storeId}/*`;
+
+    let storeUrl = `https://chrome.google.com/webstore/detail/${storeId}/*`; // Default
+
+    const browserInfo = browser.runtime && browser.runtime.getBrowserInfo && await browser.runtime.getBrowserInfo();
+
+    if (browserInfo && browserInfo.name === "firefox") {
+      storeUrl = `https://addons.mozilla.org/en-US/firefox/addon/${storeId}/*`;
     }
 
     const tabs = await browser.tabs.query({ url: storeUrl });
