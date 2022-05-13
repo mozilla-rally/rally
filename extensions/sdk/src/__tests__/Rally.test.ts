@@ -384,6 +384,7 @@ describe('Rally SDK', function () {
 
     expect(browser.tabs.sendMessage).nthCalledWith(2, "test-tab-id", {
       data: {
+        "studyId": "exampleStudy1",
         attribution
       },
       type: WebMessages.WebCheckResponse,
