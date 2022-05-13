@@ -25,3 +25,4 @@ jobs:
       - run: rush update
       - run: rush install        
       - run: rush build
+      - run: rush test

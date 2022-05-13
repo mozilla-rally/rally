@@ -24,6 +24,7 @@ jobs:
       - run: rush update
       - run: rush install
       - run: rush build
+      - run: rush test
       - run: rush publish --include-all -p --force
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NODE_AUTH_TOKEN }}
