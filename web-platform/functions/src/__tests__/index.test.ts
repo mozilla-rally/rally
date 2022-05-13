@@ -1,21 +1,24 @@
 import { jest } from "@jest/globals";
-
 import admin from "firebase-admin";
 import functions from "firebase-functions";
+import fetch from "node-fetch";
 import {
   addRallyUserToFirestoreImpl,
   deleteRallyUserImpl,
   loadFirestore,
-  rallytoken,
+  rallytoken
 } from "../index";
 import { studies } from "../studies";
-import fetch from "node-fetch";
+
+
+// Firebase can take longer than default 5 sec timeout for tests
+jest.setTimeout(10000);
 
 async function disableFunctionTriggers() {
   await fetch(
     "http://" +
-      process.env.FIREBASE_EMULATOR_HUB +
-      "/functions/disableBackgroundTriggers",
+    process.env.FIREBASE_EMULATOR_HUB +
+    "/functions/disableBackgroundTriggers",
     {
       method: "PUT",
     }
@@ -25,8 +28,8 @@ async function disableFunctionTriggers() {
 async function enableFunctionTriggers() {
   await fetch(
     "http://" +
-      process.env.FIREBASE_EMULATOR_HUB +
-      "/functions/enableBackgroundTriggers",
+    process.env.FIREBASE_EMULATOR_HUB +
+    "/functions/enableBackgroundTriggers",
     {
       method: "PUT",
     }
@@ -60,7 +63,7 @@ describe("loadFirestore", () => {
   it("loads data correctly from test user study", async () => {
     await loadFirestore(
       {} as any, // eslint-disable-line @typescript-eslint/no-explicit-any
-      { status: () => ({ send: () => {} }) } as any // eslint-disable-line @typescript-eslint/no-explicit-any,@typescript-eslint/no-empty-function
+      { status: () => ({ send: () => { } }) } as any // eslint-disable-line @typescript-eslint/no-explicit-any,@typescript-eslint/no-empty-function
     );
 
     const studyRef = admin.firestore().collection("studies");
