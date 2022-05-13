@@ -105,20 +105,12 @@ export class Rally {
     onAuthStateChanged(this._auth, user => this.authStateChangedCallback(user));
   }
 
-  /**
-   * Attempt to fetch the attribution codes from the store page URL for this extension.
-   */
-  private async storeAttributionCodes() {
-    const attribution = await this.getAttributionCodes();
-    if (!(Object.keys(attribution).length === 0 && attribution.constructor === Object)) {
-      console.debug("Attribution codes already stored");
-      return;
-    }
+  private async getAttributionFromStore() {
+    const attribution = {};
 
     // Study IDs are in camelCase, store IDs are in hyphen-case.
     const camelToHyphenCase = str => str.replace(/[A-Z]/g, letter => `-${letter.toLowerCase()}`);
     const storeId = camelToHyphenCase(this._options.studyId);
-
 
     let storeUrl = `https://chrome.google.com/webstore/detail/${storeId}/*`; // Default
 
@@ -137,6 +129,21 @@ export class Rally {
     ["source", "medium", "campaign", "term", "content"].forEach((key) => {
       attribution[key] = url.searchParams.get(`utm_${key}`);
     });
+
+    return attribution;
+  }
+
+  /**
+   * Attempt to fetch the attribution codes from the store page URL for this extension.
+   */
+  private async storeAttributionCodes() {
+    let attribution = await this.getAttributionCodes();
+    if (!(Object.keys(attribution).length === 0 && attribution.constructor === Object)) {
+      console.debug("Attribution codes already stored");
+      return;
+    }
+
+    attribution = await this.getAttributionFromStore();
     browser.storage.local.set({ attribution });
     console.debug("Attribution codes stored:", attribution);
   }
