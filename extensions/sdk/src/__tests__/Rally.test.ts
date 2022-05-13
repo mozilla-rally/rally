@@ -90,7 +90,8 @@ jest.mock('firebase/firestore', () => ({
 // be happy and play nice with webextension-polyfill. See this issue:
 // https://github.com/mozilla/webextension-polyfill/issues/218
 chrome.runtime.id = "testid";
-global.chrome = chrome;
+const globalAny: any = global;
+globalAny.chrome = chrome;
 
 jest.mock("webextension-polyfill", () => require("sinon-chrome/webextensions"));
 
@@ -100,7 +101,7 @@ describe('Rally SDK', function () {
     chrome.runtime.sendMessage.yields();
   });
   afterEach(() => {
-    delete global.fetch;
+    delete globalAny.fetch;
     chrome.flush();
   });
 
