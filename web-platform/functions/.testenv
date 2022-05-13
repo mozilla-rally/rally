@@ -2,3 +2,4 @@ GCLOUD_PROJECT="demo-rally"
 FIRESTORE_EMULATOR_HOST="localhost:8080"
 FIREBASE_EMULATOR_HUB="localhost:4400"
 NODE_OPTIONS=--experimental-vm-modules
+NODE_NO_WARNINGS=1
