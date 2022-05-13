@@ -18,11 +18,11 @@ function sendToPage(message: { type: any; data: { studyId?: string; }; }) { // e
 
   switch (message.type) {
     case WebMessages.CompleteSignup: {
-      window.dispatchEvent(new CustomEvent(WebMessages.CompleteSignup, { detail: message.data.studyId }));
+      window.dispatchEvent(new CustomEvent(WebMessages.CompleteSignup, { detail: { studyId: message.data.studyId } }));
       break;
     }
     case WebMessages.WebCheckResponse: {
-      window.dispatchEvent(new CustomEvent(WebMessages.WebCheckResponse, {}));
+      window.dispatchEvent(new CustomEvent(WebMessages.WebCheckResponse, { detail: { studyId: message.data.studyId } }));
       break;
     }
     default: {

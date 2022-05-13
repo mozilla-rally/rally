@@ -312,7 +312,7 @@ export class Rally {
         }
 
         console.debug("sending web-check-response to sender:", sender, " done");
-        await browser.tabs.sendMessage(sender.tab.id, { type: WebMessages.WebCheckResponse, data: {} });
+        await browser.tabs.sendMessage(sender.tab.id, { type: WebMessages.WebCheckResponse, data: { studyId: this._options.studyId } });
         break;
 
       case WebMessages.CompleteSignupResponse:
