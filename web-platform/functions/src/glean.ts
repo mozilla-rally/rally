@@ -168,7 +168,7 @@ function initializeGlean(): void {
     appChannel = projectID === PRODUCTION_PROJECT_ID ? "PRODUCTION" : "STAGING";
   }
 
-  if (appChannel !== "PRODUCTION") {
+  if (appChannel !== "PRODUCTION" || process.env.CI) {
     Glean.setSourceTags(["automation"]); // discard non-production pings from non-Live Views
   }
 
