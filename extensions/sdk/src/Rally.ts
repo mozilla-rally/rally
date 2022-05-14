@@ -99,9 +99,7 @@ export class Rally {
       connectFirestoreEmulator(this._db, 'localhost', 8080);
     }
 
-    this.storeAttributionCodes()
-      .catch((err) => console.error("Could not store attribution codes:", err));
-
+    this.storeAttributionCodes();
     onAuthStateChanged(this._auth, user => this.authStateChangedCallback(user));
   }
 
@@ -137,15 +135,19 @@ export class Rally {
    * Attempt to fetch the attribution codes from the store page URL for this extension.
    */
   private async storeAttributionCodes() {
-    let attribution = await this.getAttributionCodes();
-    if (!(Object.keys(attribution).length === 0 && attribution.constructor === Object)) {
-      console.debug("Attribution codes already stored");
-      return;
-    }
+    try {
+      let attribution = await this.getAttributionCodes();
+      if (!(Object.keys(attribution).length === 0 && attribution.constructor === Object)) {
+        console.debug("Attribution codes already stored");
+        return;
+      }
 
-    attribution = await this.getAttributionFromStore();
-    browser.storage.local.set({ attribution });
-    console.debug("Attribution codes stored:", attribution);
+      attribution = await this.getAttributionFromStore();
+      browser.storage.local.set({ attribution });
+      console.debug("Attribution codes stored:", attribution);
+    } catch (ex) {
+      console.error("Could not store attribution codes:", ex);
+    }
   }
 
   private async authStateChangedCallback(user: User) {
