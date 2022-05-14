@@ -141,7 +141,7 @@ export class Rally {
   private async storeAttributionCodes() {
     try {
       let attribution = await this.getAttributionCodes();
-      if (!(Object.keys(attribution).length === 0 && attribution.constructor === Object)) {
+      if (Object.keys(attribution).length) {
         console.debug("Attribution codes already stored");
         return;
       }
@@ -168,7 +168,7 @@ export class Rally {
   }
 
   private async getAttributionCodes() {
-    const attribution = await browser.storage.local.get(  );
+    const attribution = await browser.storage.local.get();
     return attribution && attribution["attribution"] || {};
   }
 
