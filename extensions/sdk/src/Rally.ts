@@ -61,6 +61,10 @@ export class Rally {
 
   private _options: RallyOptions;
 
+  private _chromeStoreUrl = `https://chrome.google.com/webstore/detail/`;
+  private _firefoxStoreUrl = `https://addons.mozilla.org/en-US/firefox/addon/;
+`
+
   constructor(options: RallyOptions) {
     if (!options) {
       throw new Error("Rally.initialize - Invalid options");
@@ -110,12 +114,12 @@ export class Rally {
     const camelToHyphenCase = str => str.replace(/[A-Z]/g, letter => `-${letter.toLowerCase()}`);
     const storeId = camelToHyphenCase(this._options.studyId);
 
-    let storeUrl = `https://chrome.google.com/webstore/detail/${storeId}/*`; // Default
+    let storeUrl = `${this._chromeStoreUrl}/${storeId}/*`;
 
     const browserInfo = browser.runtime && browser.runtime.getBrowserInfo && await browser.runtime.getBrowserInfo();
 
     if (browserInfo && browserInfo.name === "firefox") {
-      storeUrl = `https://addons.mozilla.org/en-US/firefox/addon/${storeId}/*`;
+      storeUrl = `${this._firefoxStoreUrl}/${storeId}/*`;
     }
 
     const tabs = await browser.tabs.query({ url: storeUrl });
@@ -164,7 +168,7 @@ export class Rally {
   }
 
   private async getAttributionCodes() {
-    const attribution = await browser.storage.local.get("attribution");
+    const attribution = await browser.storage.local.get(  );
     return attribution && attribution["attribution"] || {};
   }
 
