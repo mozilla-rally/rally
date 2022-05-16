@@ -109,6 +109,51 @@ describe('Rally SDK', function () {
     );
   });
 
+  it('does not jump to new tab when Rally website is not loaded', async function () {
+    const rally = new Rally({
+      enableDevMode: false,
+      stateChangeCallback: () => { /**/ },
+      rallySite: "http://localhost",
+      studyId: "exampleStudy1",
+      firebaseConfig: {},
+      enableEmulatorMode: false,
+    });
+
+    browser.tabs.query = jest.fn().mockReturnValueOnce([]);
+
+    await invokeAuthChangedCallback(rally, null);
+
+    expect(browser.tabs.query).toBeCalledTimes(1);
+    expect(browser.tabs.update).toBeCalledTimes(0);
+    expect(browser.tabs.reload).toBeCalledTimes(0);
+
+    // A new tab will be opened, since an existing one could not be found.
+    expect(browser.tabs.create).toBeCalledTimes(1);
+
+    rally.shutdown();
+  });
+
+  it('jumps to new tab when Rally website is loaded', async function () {
+    const rally = new Rally({
+      enableDevMode: false,
+      stateChangeCallback: () => { /**/ },
+      rallySite: "http://localhost",
+      studyId: "exampleStudy1",
+      firebaseConfig: {},
+      enableEmulatorMode: false,
+    });
+
+    browser.tabs.query = jest.fn().mockReturnValueOnce([{ windowId: 1, tabId: 1 }]);
+
+    await invokeAuthChangedCallback(rally, null);
+
+    expect(browser.tabs.query).toBeCalledTimes(1);
+    expect(browser.tabs.update).toBeCalledTimes(1);
+    expect(browser.tabs.reload).toBeCalledTimes(1);
+
+    rally.shutdown();
+  });
+
   it('calls callback appropriately when paused and resumed', async function () {
     let pausedCallbackCalled = false;
     let resumeCallbackCalled = false;
