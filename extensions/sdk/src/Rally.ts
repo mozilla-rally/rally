@@ -15,7 +15,7 @@ import { WebMessages } from "./WebMessages";
  */
 export interface RallyOptions {
   /* Whether or not to initialize Rally.js in developer mode.
-   * In this mode we do not attempt to connect to Firebase, 
+   * In this mode we do not attempt to connect to Firebase,
    * and allow messages to enable/disable enrollment.
    */
   readonly enableDevMode: boolean;
@@ -61,6 +61,11 @@ export class Rally {
 
   private _options: RallyOptions;
 
+  private _chromeStoreUrl = `https://chrome.google.com/webstore/detail/`;
+  private _firefoxStoreUrl = `https://addons.mozilla.org/en-US/firefox/addon/;
+`
+  private _listeners: Set<((message: unknown, sender: browser.Runtime.MessageSender) => void | Promise<unknown>)> = new Set();
+
   constructor(options: RallyOptions) {
     if (!options) {
       throw new Error("Rally.initialize - Invalid options");
@@ -82,7 +87,9 @@ export class Rally {
 
     if (options.enableDevMode) {
       console.debug("Rally SDK - running in developer mode, not using Firebase");
-      browser.runtime.onMessage.addListener((m, s) => this.handleWebMessage(m, s));
+      const webListener = (m, s) => this.handleWebMessage(m, s);
+      browser.runtime.onMessage.addListener(webListener);
+      this._listeners.add(webListener);
       return;
     }
 
@@ -99,7 +106,52 @@ export class Rally {
       connectFirestoreEmulator(this._db, 'localhost', 8080);
     }
 
+    this.storeAttributionCodes();
     onAuthStateChanged(this._auth, user => this.authStateChangedCallback(user));
+  }
+
+  private async getAttributionFromStore() {
+    const attribution = await this.getAttributionCodes();
+    if (Object.keys(attribution).length) {
+      throw new Error("Attribution codes already stored");
+    }
+
+    // Study IDs are in camelCase, store IDs are in hyphen-case.
+    const camelToHyphenCase = str => str.replace(/[A-Z]/g, letter => `-${letter.toLowerCase()}`);
+    const storeId = camelToHyphenCase(this._options.studyId);
+
+    let storeUrl = `${this._chromeStoreUrl}/${storeId}/*`;
+
+    const browserInfo = browser.runtime && browser.runtime.getBrowserInfo && await browser.runtime.getBrowserInfo();
+
+    if (browserInfo && browserInfo.name === "firefox") {
+      storeUrl = `${this._firefoxStoreUrl}/${storeId}/*`;
+    }
+
+    const tabs = await browser.tabs.query({ url: storeUrl });
+    if (!(tabs.length > 0)) {
+      throw new Error("No store URLs present in open tabs");
+    }
+    const url = new URL(tabs[0].url);
+
+    ["source", "medium", "campaign", "term", "content"].forEach((key) => {
+      attribution[key] = url.searchParams.get(`utm_${key}`);
+    });
+
+    return attribution;
+  }
+
+  /**
+   * Attempt to fetch the attribution codes from the store page URL for this extension.
+   */
+  private async storeAttributionCodes() {
+    try {
+      const attribution = await this.getAttributionFromStore();
+      browser.storage.local.set({ attribution });
+      console.debug("Attribution codes stored:", attribution);
+    } catch (ex) {
+      console.error("Could not store attribution codes:", ex);
+    }
   }
 
   private async authStateChangedCallback(user: User) {
@@ -112,7 +164,14 @@ export class Rally {
       await this.promptSignUp();
     }
 
-    browser.runtime.onMessage.addListener((m, s) => this.handleWebMessage(m, s));
+    const webListener = (m, s) => this.handleWebMessage(m, s);
+    browser.runtime.onMessage.addListener(webListener);
+    this._listeners.add(webListener);
+  }
+
+  private async getAttributionCodes() {
+    const attribution = await browser.storage.local.get();
+    return attribution && attribution["attribution"] || {};
   }
 
   private async processLoggedInUser() {
@@ -222,6 +281,12 @@ export class Rally {
       loadedTab = tabs.pop();
       await browser.windows.update(loadedTab.windowId, { focused: true });
       await browser.tabs.update(loadedTab.id, { highlighted: true, active: true });
+      /**
+       * Reload page to load content script after extension install.
+       * FIXME We should be able to do this without reloading the page.
+       * @see https://github.com/mozilla-rally/rally/issues/6
+       */
+      await browser.tabs.reload();
     } else {
       // Otherwise, open the website.
       loadedTab = await browser.tabs.create({
@@ -296,7 +361,7 @@ export class Rally {
     // information out? Can it be used to mess with studies?
 
     switch (message.type) {
-      case WebMessages.WebCheck:
+      case WebMessages.WebCheck: {
         // The `web-check` message should be safe: any installed extension with
         // the `management` privileges could check for the presence of the
         // Rally SDK and expose that to the web. By exposing this ourselves
@@ -312,9 +377,10 @@ export class Rally {
         }
 
         console.debug("sending web-check-response to sender:", sender, " done");
-        await browser.tabs.sendMessage(sender.tab.id, { type: WebMessages.WebCheckResponse, data: { studyId: this._options.studyId } });
+        const attribution = await this.getAttributionCodes();
+        await browser.tabs.sendMessage(sender.tab.id, { type: WebMessages.WebCheckResponse, data: { studyId: this._options.studyId, attribution } });
         break;
-
+      }
       case WebMessages.CompleteSignupResponse:
         // The `complete-signup-response` message should be safe: It's a response
         // from the page, containing the credentials from the currently-authenticated user.
@@ -404,5 +470,13 @@ export class Rally {
 
   get state() {
     return this._state;
+  }
+
+  /**
+   * Removes any active listeners and makes it safe to re-instantiate.
+   * Intended for tests, it's unlikely an extension would want to do this.
+   */
+  shutdown() {
+    this._listeners.forEach(listener => browser.runtime.onMessage.removeListener(listener));
   }
 }

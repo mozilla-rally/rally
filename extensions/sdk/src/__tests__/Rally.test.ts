@@ -7,11 +7,9 @@ import { doc } from "firebase/firestore";
 import { Rally } from '../Rally';
 import { RunStates } from "../RunStates";
 import { WebMessages } from "../WebMessages";
-import * as chrome from "sinon-chrome/extensions";
+import browser from 'webextension-polyfill';
 
 const FAKE_RALLY_ID = "11f42b4c-8d8e-477e-acd0-b38578228e44";
-
-const flushPromises = () => new Promise(setImmediate);
 
 jest.mock('firebase/app', () => ({
   __esModule: true,
@@ -86,23 +84,13 @@ jest.mock('firebase/firestore', () => ({
   connectFirestoreEmulator: jest.fn()
 }));
 
-// We need to provide the `browser.runtime.id` for sinon-chrome to
-// be happy and play nice with webextension-polyfill. See this issue:
-// https://github.com/mozilla/webextension-polyfill/issues/218
-chrome.runtime.id = "testid";
-const globalAny: any = global;
-globalAny.chrome = chrome;
-
-jest.mock("webextension-polyfill", () => require("sinon-chrome/webextensions"));
-
 describe('Rally SDK', function () {
   beforeEach(() => {
-    chrome.runtime.sendMessage.flush();
-    chrome.runtime.sendMessage.yields();
+    jest.clearAllMocks();
   });
+
   afterEach(() => {
-    delete globalAny.fetch;
-    chrome.flush();
+    delete global.fetch;
   });
 
   async function invokeAuthChangedCallback(rally: Rally, user: any) { // eslint-disable-line @typescript-eslint/no-explicit-any
@@ -124,6 +112,9 @@ describe('Rally SDK', function () {
   it('calls callback appropriately when paused and resumed', async function () {
     let pausedCallbackCalled = false;
     let resumeCallbackCalled = false;
+
+    browser.tabs.query = jest.fn().mockReturnValueOnce([]);
+    browser.storage.local.get = jest.fn().mockReturnValueOnce({});
 
     const rally = new Rally({
       enableDevMode: false,
@@ -149,12 +140,17 @@ describe('Rally SDK', function () {
     rally.pause();
     assert.ok(rally.state === RunStates.Paused);
     assert.ok(pausedCallbackCalled);
+
+    rally.shutdown();
   });
 
   it('handles sign-up message from web and receives credentials', async function () {
     let pausedCallbackCalled = false;
     let resumeCallbackCalled = false;
     let endedCallbackCalled = false;
+
+    browser.tabs.query = jest.fn().mockReturnValueOnce([]);
+    browser.storage.local.get = jest.fn().mockReturnValueOnce({});
 
     const rally = new Rally({
       enableDevMode: false,
@@ -176,8 +172,9 @@ describe('Rally SDK', function () {
 
     const rallyToken = "...";
     const message = { type: WebMessages.CompleteSignupResponse, data: { rallyToken } };
-    // TODO mock browser.extension.id response
-    const sender = { id: null, url: `http://localhost` };
+    const sender = { id: "test-id", url: `http://localhost`, tab: { id: "test-tab-id" } };
+
+    browser.runtime.id = "test-id";
 
     await invokeHandleWebMessage(rally, message, sender);
 
@@ -290,6 +287,117 @@ describe('Rally SDK', function () {
     assert.equal(rally.rallyId, FAKE_RALLY_ID);
 
     // FIXME mock calling onSnapshot
-    await flushPromises();
+    await new Promise(process.nextTick);
+
+    rally.shutdown();
+  });
+
+  it('gets attribution code from extension store tab, if present', async function () {
+    browser.storage.local.get = jest.fn().mockReturnValueOnce({});
+    browser.tabs.query = jest.fn().mockReturnValueOnce([{
+      "url": "https://chrome.google.com/webstore/detail/example-study-1?" +
+        "utm_source=test_source&utm_medium=test_medium&utm_campaign=test_campaign&utm_term=test_term&utm_content=test_content"
+    }]);
+
+    const rally = new Rally({
+      enableDevMode: false,
+      stateChangeCallback: () => { /**/ },
+      rallySite: "http://localhost",
+      studyId: "exampleStudy1",
+      firebaseConfig: {},
+      enableEmulatorMode: false
+    });
+
+    await new Promise(process.nextTick);
+
+    expect(browser.storage.local.set).toBeCalledWith({
+      "attribution": {
+        "campaign": "test_campaign",
+        "content": "test_content",
+        "medium": "test_medium",
+        "source": "test_source",
+        "term": "test_term"
+      }
+    });
+    expect(browser.storage.local.set).toBeCalledTimes(1);
+
+    rally.shutdown();
+  });
+
+  it('does not set attribution code if already set', async function () {
+    const attribution = {
+      "campaign": "test_campaign",
+      "content": "test_content",
+      "medium": "test_medium",
+      "source": "test_source",
+      "term": "test_term"
+    };
+
+    browser.tabs.query = jest.fn().mockReturnValueOnce([]);
+    browser.storage.local.get = jest.fn().mockReturnValueOnce({ attribution });
+
+    const rally = new Rally({
+      enableDevMode: false,
+      stateChangeCallback: () => { /**/ },
+      rallySite: "http://localhost",
+      studyId: "exampleStudy1",
+      firebaseConfig: {},
+      enableEmulatorMode: false
+    });
+
+    await new Promise(process.nextTick);
+    expect(browser.storage.local.set).toBeCalledTimes(0);
+    expect(browser.tabs.query).toBeCalledTimes(0);
+
+    rally.shutdown();
+  });
+
+  it('handles web-check message web and sends attribution codes', async function () {
+    const attribution = {
+      "campaign": "test_campaign",
+      "content": "test_content",
+      "medium": "test_medium",
+      "source": "test_source",
+      "term": "test_term"
+    };
+
+    browser.storage.local.get = jest.fn().mockReturnValueOnce({ attribution });
+
+    const rally = new Rally({
+      enableDevMode: false,
+      stateChangeCallback: () => { /**/ },
+      rallySite: "http://localhost",
+      studyId: "exampleStudy1",
+      firebaseConfig: {},
+      enableEmulatorMode: false
+    });
+
+    expect(browser.tabs.query).toBeCalledTimes(0);
+
+    const message = { type: WebMessages.WebCheck, data: {} };
+    const sender = { id: "test-id", url: `http://localhost`, tab: { id: "test-tab-id" } };
+    browser.runtime.id = "test-id";
+
+    browser.storage.local.get = jest.fn().mockReturnValueOnce({ attribution });
+
+    await invokeHandleWebMessage(rally, message, sender);
+
+    expect(browser.tabs.sendMessage).toBeCalledTimes(2);
+    expect(browser.tabs.sendMessage).nthCalledWith(1, "test-tab-id", {
+      data: {
+        "studyId": "exampleStudy1",
+      },
+      type: WebMessages.CompleteSignup,
+    });
+
+    expect(browser.tabs.sendMessage).nthCalledWith(2, "test-tab-id", {
+      data: {
+        "studyId": "exampleStudy1",
+        attribution
+      },
+      type: WebMessages.WebCheckResponse,
+    });
+
+    rally.shutdown();
   });
 });
