@@ -61,9 +61,9 @@ export class Rally {
 
   private _options: RallyOptions;
 
-  private _chromeStoreUrl = `https://chrome.google.com/webstore/detail/`;
-  private _firefoxStoreUrl = `https://addons.mozilla.org/en-US/firefox/addon/;
-`
+  private _chromeStoreUrl = `https://chrome.google.com/webstore/detail`;
+  private _firefoxStoreUrl = `https://addons.mozilla.org/en-US/firefox/addon`;
+
   private _listeners: Set<((message: unknown, sender: browser.Runtime.MessageSender) => void | Promise<unknown>)> = new Set();
 
   constructor(options: RallyOptions) {
