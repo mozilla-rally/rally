@@ -140,6 +140,8 @@ describe('Rally SDK', function () {
     rally.pause();
     assert.ok(rally.state === RunStates.Paused);
     assert.ok(pausedCallbackCalled);
+
+    rally.shutdown();
   });
 
   it('handles sign-up message from web and receives credentials', async function () {
@@ -286,6 +288,8 @@ describe('Rally SDK', function () {
 
     // FIXME mock calling onSnapshot
     await new Promise(process.nextTick);
+
+    rally.shutdown();
   });
 
   it('gets attribution code from extension store tab, if present', async function () {
@@ -295,7 +299,7 @@ describe('Rally SDK', function () {
         "utm_source=test_source&utm_medium=test_medium&utm_campaign=test_campaign&utm_term=test_term&utm_content=test_content"
     }]);
 
-    new Rally({
+    const rally = new Rally({
       enableDevMode: false,
       stateChangeCallback: () => { /**/ },
       rallySite: "http://localhost",
@@ -316,6 +320,8 @@ describe('Rally SDK', function () {
       }
     });
     expect(browser.storage.local.set).toBeCalledTimes(1);
+
+    rally.shutdown();
   });
 
   it('does not set attribution code if already set', async function () {
@@ -330,7 +336,7 @@ describe('Rally SDK', function () {
     browser.tabs.query = jest.fn().mockReturnValueOnce([]);
     browser.storage.local.get = jest.fn().mockReturnValueOnce({ attribution });
 
-    new Rally({
+    const rally = new Rally({
       enableDevMode: false,
       stateChangeCallback: () => { /**/ },
       rallySite: "http://localhost",
@@ -342,6 +348,8 @@ describe('Rally SDK', function () {
     await new Promise(process.nextTick);
     expect(browser.storage.local.set).toBeCalledTimes(0);
     expect(browser.tabs.query).toBeCalledTimes(0);
+
+    rally.shutdown();
   });
 
   it('handles web-check message web and sends attribution codes', async function () {
@@ -390,5 +398,6 @@ describe('Rally SDK', function () {
       type: WebMessages.WebCheckResponse,
     });
 
+    rally.shutdown();
   });
 });

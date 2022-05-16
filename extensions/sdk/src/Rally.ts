@@ -15,7 +15,7 @@ import { WebMessages } from "./WebMessages";
  */
 export interface RallyOptions {
   /* Whether or not to initialize Rally.js in developer mode.
-   * In this mode we do not attempt to connect to Firebase, 
+   * In this mode we do not attempt to connect to Firebase,
    * and allow messages to enable/disable enrollment.
    */
   readonly enableDevMode: boolean;
@@ -64,6 +64,7 @@ export class Rally {
   private _chromeStoreUrl = `https://chrome.google.com/webstore/detail/`;
   private _firefoxStoreUrl = `https://addons.mozilla.org/en-US/firefox/addon/;
 `
+  private _listeners: Set<((message: unknown, sender: browser.Runtime.MessageSender) => void | Promise<unknown>)> = new Set();
 
   constructor(options: RallyOptions) {
     if (!options) {
@@ -86,7 +87,9 @@ export class Rally {
 
     if (options.enableDevMode) {
       console.debug("Rally SDK - running in developer mode, not using Firebase");
-      browser.runtime.onMessage.addListener((m, s) => this.handleWebMessage(m, s));
+      const webListener = (m, s) => this.handleWebMessage(m, s);
+      browser.runtime.onMessage.addListener(webListener);
+      this._listeners.add(webListener);
       return;
     }
 
@@ -161,7 +164,9 @@ export class Rally {
       await this.promptSignUp();
     }
 
-    browser.runtime.onMessage.addListener((m, s) => this.handleWebMessage(m, s));
+    const webListener = (m, s) => this.handleWebMessage(m, s);
+    browser.runtime.onMessage.addListener(webListener);
+    this._listeners.add(webListener);
   }
 
   private async getAttributionCodes() {
@@ -465,5 +470,13 @@ export class Rally {
 
   get state() {
     return this._state;
+  }
+
+  /**
+   * Removes any active listeners and makes it safe to re-instantiate.
+   * Intended for tests, it's unlikely an extension would want to do this.
+   */
+  shutdown() {
+    this._listeners.forEach(listener => browser.runtime.onMessage.removeListener(listener));
   }
 }
