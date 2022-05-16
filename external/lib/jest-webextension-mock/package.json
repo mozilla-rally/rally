@@ -11,7 +11,7 @@
         "url": "https://github.com/clarkbw/jest-webextension-mock.git"
     },
     "scripts": {
-        "test": "jest",
+        "test": "jest 2>&1",
         "build": "rollup -c 2>&1",
         "prettier": "prettier --write \"{config,src,__{tests,setups}__}/**/*.js\" rollup.config.js",
         "eslint-check": "eslint --print-config .eslintrc.js | eslint-config-prettier-check"
