@@ -129,6 +129,8 @@ describe('Rally SDK', function () {
 
     // A new tab will be opened, since an existing one could not be found.
     expect(browser.tabs.create).toBeCalledTimes(1);
+
+    rally.shutdown();
   });
 
   it('jumps to new tab when Rally website is loaded', async function () {
@@ -148,6 +150,8 @@ describe('Rally SDK', function () {
     expect(browser.tabs.query).toBeCalledTimes(1);
     expect(browser.tabs.update).toBeCalledTimes(1);
     expect(browser.tabs.reload).toBeCalledTimes(1);
+
+    rally.shutdown();
   });
 
   it('calls callback appropriately when paused and resumed', async function () {
