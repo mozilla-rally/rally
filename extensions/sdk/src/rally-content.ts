@@ -18,13 +18,13 @@ function sendToPage(message: { type: any; data: Record<string, unknown> }) { // 
 
   switch (message.type) {
     case WebMessages.CompleteSignup: {
-      window.dispatchEvent(new CustomEvent(WebMessages.CompleteSignup, { detail: { studyId: message.data.studyId } }));
+      window.dispatchEvent(new CustomEvent(WebMessages.CompleteSignup, { detail: JSON.stringify({ studyId: message.data.studyId }) }));
       break;
     }
     case WebMessages.WebCheckResponse: {
       window.dispatchEvent(new CustomEvent(WebMessages.WebCheckResponse,
         {
-          detail: { studyId: message.data.studyId, attribution: message.data.attribution }
+          detail: JSON.stringify({ studyId: message.data.studyId, attribution: message.data.attribution })
         }));
       break;
     }
