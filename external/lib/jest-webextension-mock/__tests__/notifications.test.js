@@ -1,6 +1,5 @@
-/*
 describe('chrome.notifications', () => {
-  test('create', (done) => {
+  test.skip('create', (done) => {
     const options = { type: 'basic' };
     const callback = jest.fn(() => done());
 
@@ -24,7 +23,7 @@ describe('chrome.notifications', () => {
     expect(callback).toHaveBeenLastCalledWith('id');
   });
 
-  test('create promise', () => {
+  test.skip('create promise', () => {
     const options = { type: 'basic' };
 
     return expect(chrome.notifications.create(options)).resolves.toBe(
@@ -32,7 +31,7 @@ describe('chrome.notifications', () => {
     );
   });
 
-  test('update', (done) => {
+  test.skip('update', (done) => {
     const options = { type: 'basic' };
     const callback = jest.fn(() => done());
 
@@ -47,13 +46,13 @@ describe('chrome.notifications', () => {
     expect(callback).toHaveBeenLastCalledWith(true);
   });
 
-  test('update promise', () => {
+  test.skip('update promise', () => {
     const options = { type: 'basic' };
 
     return expect(chrome.notifications.update(options)).resolves.toBe(true);
   });
 
-  test('clear', (done) => {
+  test.skip('clear', (done) => {
     const callback = jest.fn(() => done());
 
     expect(jest.isMockFunction(chrome.notifications.clear)).toBe(true);
@@ -63,11 +62,11 @@ describe('chrome.notifications', () => {
     expect(callback).toHaveBeenLastCalledWith(true);
   });
 
-  test('clear - promise', () => {
+  test.skip('clear - promise', () => {
     return expect(chrome.notifications.clear('id')).resolves.toBe(true);
   });
 
-  test('getAll', (done) => {
+  test.skip('getAll', (done) => {
     const callback = jest.fn(() => done());
 
     expect(jest.isMockFunction(chrome.notifications.getAll)).toBe(true);
@@ -77,11 +76,11 @@ describe('chrome.notifications', () => {
     expect(callback).toHaveBeenLastCalledWith([]);
   });
 
-  test('getAll - promise', () => {
+  test.skip('getAll - promise', () => {
     return expect(chrome.notifications.getAll()).resolves.toEqual([]);
   });
 
-  test('getPermissionLevel', (done) => {
+  test.skip('getPermissionLevel', (done) => {
     const callback = jest.fn(() => done());
 
     expect(jest.isMockFunction(chrome.notifications.getPermissionLevel)).toBe(
@@ -95,13 +94,13 @@ describe('chrome.notifications', () => {
     expect(callback).toHaveBeenLastCalledWith('granted');
   });
 
-  test('getPermissionLevel - promise', () => {
+  test.skip('getPermissionLevel - promise', () => {
     return expect(chrome.notifications.getPermissionLevel()).resolves.toEqual(
       'granted'
     );
   });
 
-  test('onClosed.addListener', () => {
+  test.skip('onClosed.addListener', () => {
     expect(jest.isMockFunction(chrome.notifications.onClosed.addListener)).toBe(
       true
     );
@@ -110,7 +109,7 @@ describe('chrome.notifications', () => {
     expect(chrome.notifications.onClosed.addListener).toHaveBeenCalledTimes(1);
   });
 
-  test('onClicked.addListener', () => {
+  test.skip('onClicked.addListener', () => {
     expect(
       jest.isMockFunction(chrome.notifications.onClicked.addListener)
     ).toBe(true);
@@ -119,7 +118,7 @@ describe('chrome.notifications', () => {
     expect(chrome.notifications.onClicked.addListener).toHaveBeenCalledTimes(1);
   });
 
-  test('onButtonClicked.addListener', () => {
+  test.skip('onButtonClicked.addListener', () => {
     expect(
       jest.isMockFunction(chrome.notifications.onButtonClicked.addListener)
     ).toBe(true);
@@ -130,7 +129,7 @@ describe('chrome.notifications', () => {
     ).toHaveBeenCalledTimes(1);
   });
 
-  test('onPermissionLevelChanged.addListener', () => {
+  test.skip('onPermissionLevelChanged.addListener', () => {
     expect(
       jest.isMockFunction(
         chrome.notifications.onPermissionLevelChanged.addListener
@@ -143,7 +142,7 @@ describe('chrome.notifications', () => {
     ).toHaveBeenCalledTimes(1);
   });
 
-  test('onShowSettings.addListener', () => {
+  test.skip('onShowSettings.addListener', () => {
     expect(
       jest.isMockFunction(chrome.notifications.onShowSettings.addListener)
     ).toBe(true);
@@ -154,4 +153,3 @@ describe('chrome.notifications', () => {
     ).toHaveBeenCalledTimes(1);
   });
 });
-*/
