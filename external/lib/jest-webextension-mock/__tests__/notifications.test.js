@@ -1,3 +1,4 @@
+/*
 describe('chrome.notifications', () => {
   test('create', (done) => {
     const options = { type: 'basic' };
@@ -153,3 +154,4 @@ describe('chrome.notifications', () => {
     ).toHaveBeenCalledTimes(1);
   });
 });
+*/
