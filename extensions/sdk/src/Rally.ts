@@ -62,8 +62,8 @@ export class Rally {
   private _options: RallyOptions;
 
   private _chromeStoreUrl = `https://chrome.google.com/webstore/detail`;
-  private _firefoxStoreUrl = `https://addons.mozilla.org/en-US/firefox/addon;
-`
+  private _firefoxStoreUrl = `https://addons.mozilla.org/en-US/firefox/addon`;
+
   private _listeners: Set<((message: unknown, sender: browser.Runtime.MessageSender) => void | Promise<unknown>)> = new Set();
 
   constructor(options: RallyOptions) {
@@ -377,7 +377,7 @@ export class Rally {
         }
 
         console.debug("sending web-check-response to sender:", sender, " done");
-        const attribution = await this.getAttributi onCodes();
+        const attribution = await this.getAttributionCodes();
         await browser.tabs.sendMessage(sender.tab.id, { type: WebMessages.WebCheckResponse, data: { studyId: this._options.studyId, attribution } });
         break;
       }
