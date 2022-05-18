@@ -404,6 +404,12 @@
       "packageName": "jest-webextension-mock",
       "projectFolder": "external/lib/jest-webextension-mock",
       "shouldPublish": false
+    },
+    {
+      "packageName": "website",
+      "projectFolder": "web-platform/website",
+      "versionPolicyName": "RallyVersionPolicy",
+      "shouldPublish": false
     }
     // {
     //   /**
