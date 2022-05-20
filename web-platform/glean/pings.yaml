@@ -22,6 +22,18 @@ enrollment:
   notification_emails:
     - than@mozilla.com
 
+unenrollment:
+  description: |
+    This ping is sent when and if the user chooses to leave the platform.
+  include_client_id: false
+  send_if_empty: true
+  bugs:
+    - https://github.com/mozilla-rally/rally-core-addon/issues/117
+  data_reviews:
+    - https://bugzilla.mozilla.org/show_bug.cgi?id=1663857#c5
+  notification_emails:
+    - than@mozilla.com
+
 study-enrollment:
   description: |
     This ping is sent when user clicks the Join button for a study
@@ -64,11 +76,11 @@ demographics:
 
 uninstall-deletion:
   description: |
-    This ping is not directly sent by this add-on. However its
-    submission is triggered when hitting the offboarding page,
-    after the Core Add-on is removed, to make sure a data deletion
-    request is sent even when uninstalling from the Browser UI,
-    without going through the Rally UI.
+    This ping is used with the Rally Core Add-on, *not* the Web
+    Platform. Its submission is triggered when hitting the
+    offboarding page, after the Core Add-on is removed, to make
+    sure a data deletion request is sent even when uninstalling
+    from the Browser UI, without going through the Rally UI.
   include_client_id: false
   send_if_empty: true
   bugs:

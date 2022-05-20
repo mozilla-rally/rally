@@ -20,6 +20,7 @@ rally:
     send_in_pings:
       - deletion-request
       - enrollment
+      - unenrollment
       - study-enrollment
       - study-unenrollment
       - demographics
