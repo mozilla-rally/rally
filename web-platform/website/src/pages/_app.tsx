@@ -1,5 +1,6 @@
 import type { AppProps } from 'next/app';
 import Head from "next/head";
+import { AuthenticationProvider } from "../services/AuthenticationService";
 import "../styles";
 
 function MyApp({ Component, pageProps }: AppProps) {
@@ -11,7 +12,9 @@ function MyApp({ Component, pageProps }: AppProps) {
         <meta name="description" content="Mozilla Rally" />
         <link rel="icon" href="/favicon.svg" />
       </Head>
-      <Component {...pageProps} />
+      <AuthenticationProvider>
+        <Component {...pageProps} />
+      </AuthenticationProvider>
     </>
   );
 }
