@@ -2853,16 +2853,29 @@
         "webextension-polyfill": "^0.8.0"
       }
     },
+    "@rush-temp/rally-typescript-tools": {
+      "version": "file:projects/rally-typescript-tools.tgz",
+      "integrity": "sha512-U+J0IuqQSgqhKSCjoA/WvosWsp6iOqS0ukDWKp/U+7egT2SNharUhSd/464QV7RSqeKWQgdppM98Xzr85QJgyQ==",
+      "requires": {
+        "@typescript-eslint/eslint-plugin": "^5.17.0",
+        "@typescript-eslint/parser": "^5.17.0",
+        "eslint": "^8.15.0",
+        "eslint-config-next": "12.1.6"
+      }
+    },
     "@rush-temp/website": {
       "version": "file:projects/website.tgz",
-      "integrity": "sha512-4wdwGP/TfWEjdfoJd8Zi2iwDZfOuCZWyS5C00mL8cIopCDLOtsydEEh1dB4BqznCw8pUBb9Vhv2WR8ss2qjq5Q==",
+      "integrity": "sha512-YcLhZVB4PjoOpAs1yZd/SkfQYB/7oMIO+MbK3ot7zYJvz21ifWZOQHusX7XF6T0Fnc6zsjv1NUfAmsI/In+rFg==",
       "requires": {
         "@types/node": "^17.0.34",
         "@types/react": "18.0.9",
         "@types/react-dom": "18.0.4",
+        "@typescript-eslint/eslint-plugin": "^5.17.0",
+        "@typescript-eslint/parser": "^5.17.0",
         "eslint": "^8.15.0",
         "eslint-config-next": "12.1.6",
         "next": "12.1.6",
+        "prettier": "^2.1.2",
         "react": "18.1.0",
         "react-dom": "18.1.0",
         "typescript": "^4.6.4",

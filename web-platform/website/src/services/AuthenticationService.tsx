@@ -12,14 +12,14 @@ const AuthenticationContext = createContext<UserContextData>({
   isLoaded: true,
   user: undefined,
   isLoggingIn: false,
-  logout: async () => { },
+  logout: async () => {},
 });
 
 export function useAuthentication() {
   return useContext(AuthenticationContext);
 }
 
-export function AuthenticationProvider(props: { children: React.ReactNode; }) {
+export function AuthenticationProvider(props: { children: React.ReactNode }) {
   const [user, setUser] = useState<User>();
   const [isLoggingIn] = useState(false);
   const [isLoaded, setIsLoaded] = useState(false);
@@ -40,7 +40,7 @@ export function AuthenticationProvider(props: { children: React.ReactNode; }) {
         user,
         isLoaded,
         isLoggingIn,
-        logout
+        logout,
       }}
     >
       {props.children}
