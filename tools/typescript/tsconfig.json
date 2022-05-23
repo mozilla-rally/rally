@@ -10,7 +10,7 @@
 			*/
 		"importsNotUsedAsValues": "error",
 		"isolatedModules": true,
-		"resolveJsonModule": true,		
+		"resolveJsonModule": true,
 		"esModuleInterop": true,
 		"skipLibCheck": true,
 		"forceConsistentCasingInFileNames": true,

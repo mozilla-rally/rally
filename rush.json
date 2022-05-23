@@ -406,6 +406,11 @@
       "shouldPublish": false
     },
     {
+      "packageName": "rally-typescript-tools",
+      "projectFolder": "tools/typescript",
+      "shouldPublish": false
+    },
+    {
       "packageName": "website",
       "projectFolder": "web-platform/website",
       "versionPolicyName": "RallyVersionPolicy",
