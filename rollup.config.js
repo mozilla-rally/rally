@@ -78,6 +78,15 @@ export default (cliArgs) => {
                     }],
                     flatten: true,
                 }),
+                copy({
+                    targets: [{
+                        src: [
+                            "node_modules/dexie/dist/dexie.min.js",
+                        ],
+                        dest: "dist/",
+                    }],
+                    flatten: true,
+                }),
             ],
         }
     ];
