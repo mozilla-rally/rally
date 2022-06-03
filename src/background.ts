@@ -15,6 +15,14 @@ import { Rally, runStates } from "@mozilla/rally";
 import PingEncryptionPlugin from "@mozilla/glean/plugins/encryption";
 import Glean, { Uploader, UploadResult, UploadResultStatus } from "@mozilla/glean/webext";
 
+// Import generated Glean metrics.
+import * as userJourney from "../src/generated/userJourney.js";
+import * as rallyManagementMetrics from "../src/generated/rally.js";
+
+// Import generated Glean pings.
+import * as examplePings from "../src/generated/pings.js";
+
+
 import { Dexie } from "dexie";
 
 import * as webScience from "@mozilla/web-science";
@@ -39,6 +47,8 @@ let studyId = "rally-study-template";
 
 // The website hosting the Rally UI.
 let rallySite = "https://members.rally.mozilla.org";
+
+const publicKey = {};
 
 // The current Firebase configuration.
 let firebaseConfig = {
@@ -91,14 +101,26 @@ async function stateChangeCallback(newState) {
 
       this.pageDataListener = async (pageData) => {
         console.log(`WebScience page navigation event fired with page data:`, pageData);
-        if (enableDevMode) {
-          const data = {};
-          data[pageData.pageId] = pageData;
-          await browser.storage.local.set(data);
+        userJourney.pageId.set(pageData.pageId);
+        userJourney.attentionDuration.set(parseInt(pageData.attentionDuration));
+        userJourney.audioDuration.set(parseInt(pageData.audioDuration));
+        userJourney.maxRelativeScrollDepth.set(parseInt(pageData.maxRelativeScrollDepth));
+
+        const pageVisitStart = new Date(pageData.pageVisitStartTime);
+        const pageVisitStop = new Date(pageData.pageVisitStopTime);
+        userJourney.pageVisitStartDateTime.set(pageVisitStart);
+        userJourney.pageVisitStopDateTime.set(pageVisitStop);
+        // Referrer is optional, and will be an empty string if unset.
+        if (pageData.referrer) {
+          userJourney.referrer.setUrl(pageData.referrer);
         }
+        userJourney.url.setUrl(pageData.url);
+
+        // Submit the metrics constructed above.
+        examplePings.userJourney.submit();
       };
 
-      webScience.pageNavigation.onPageData.addListener(this.pageDataListener, { matchPatterns: ["http://localhost/*"] });
+      webScience.pageNavigation.onPageData.addListener(this.pageDataListener, { matchPatterns: ["<all_urls>"] });
 
       // Example: register a content script for http://localhost/* pages
       // Note that the content script has the same relative path in dist/
@@ -159,6 +181,7 @@ chrome.browserAction.onClicked.addListener(async () =>
 
 // TODO move to dynamic import, and only load in dev mode.
 import pako from "pako";
+import type { Configuration } from "@mozilla/glean/dist/types/core/config";
 
 class GetPingsUploader extends Uploader {
   async post(url: string, body: Uint8Array): Promise<UploadResult> {
@@ -170,7 +193,7 @@ class GetPingsUploader extends Uploader {
     const documentId = url.split("/")[7];
     console.debug("tableName:", tableName);
 
-    const db = new Dexie("pixelhunt");
+    const db = new Dexie("example");
 
     const columns = [];
     const entries = {};
@@ -185,8 +208,7 @@ class GetPingsUploader extends Uploader {
     console.debug("setting stores:", { [tableName]: columns.join() });
     // FIXME get this from glean yaml
     db.version(1).stores({
-      "fbpixelhunt-journey": "id,rally_id,user_journey_page_visit_start_date_time,user_journey_page_visit_stop_date_time,user_journey_attention_duration,user_journey_page_id,user_journey_url",
-      "fbpixelhunt-pixel": "id,rally_id,facebook_pixel_has_facebook_login_cookies,facebook_pixel_pixel_page_id,facebook_pixel_url",
+      "user-journey": "id,rally_id,user_journey_page_visit_start_date_time,user_journey_page_visit_stop_date_time,user_journey_attention_duration,user_journey_page_id,user_journey_url",
       "study-enrollment": "id,rally_id"
     });
 
