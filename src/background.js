@@ -35,17 +35,17 @@ const enableEmulatorMode = Boolean(__ENABLE_EMULATOR_MODE__);
 let studyId = "rally-study-template";
 
 // The website hosting the Rally UI.
-let rallySite = "https://rally-web-spike.web.app/";
+let rallySite = "https://members.rally.mozilla.org";
 
 // The current Firebase configuration.
 let firebaseConfig = {
-  "apiKey": "AIzaSyAJv0aTJMCbG_e6FJZzc6hSzri9qDCmvoo",
-  "authDomain": "rally-web-spike.firebaseapp.com",
-  "projectId": "rally-web-spike",
-  "storageBucket": "rally-web-spike.appspot.com",
-  "messagingSenderId": "85993993890",
-  "appId": "1:85993993890:web:b975ff99733d2d8b50c9fb",
-  "functionsHost": "https://us-central1-rally-web-spike.cloudfunctions.net"
+  "apiKey": "AIzaSyAv_gSjNRMbEq3BFCNHPn0soXMCx2IxLeM",
+  "authDomain": "moz-fx-data-rally-w-prod-dfa4.firebaseapp.com",
+  "projectId": "moz-fx-data-rally-w-prod-dfa4",
+  "storageBucket": "moz-fx-data-rally-w-prod-dfa4.appspot.com",
+  "messagingSenderId": "982322764946",
+  "appId": "1:982322764946:web:f9b6aea488cebde47ada4b",
+  "functionsHost": "https://us-central1-moz-fx-data-rally-w-prod-dfa4.cloudfunctions.net"
 };
 
 // Overrides for dev mode - use local emulators with "exampleStudy1" as study ID.
@@ -103,10 +103,10 @@ async function stateChangeCallback(newState) {
       // dependencies (either your own modules or modules from npm), and
       // they will be automatically bundled into the content script by
       // the build system.
-      this.contentScript = await browser.contentScripts.register({
-        js: [{ file: "dist/exampleContentScript.content.js" }],
-        matches: ["http://localhost/*"]
-      });
+      // this.contentScript = await browser.contentScripts.register({
+      //  js: [{ file: "dist/exampleContentScript.content.js" }],
+      //  matches: ["http://localhost/*"]
+      // });
       // Example: launch a Web Worker, which can handle tasks on another
       // thread. Note that the worker script has the same relative path in
       // dist/ that it has in src/. The worker script can include module
@@ -123,8 +123,10 @@ async function stateChangeCallback(newState) {
       // Take down all resources from run state.
       exampleModuleUninitialize();
       webScience.pageNavigation.onPageData.removeListener(this.pageDataListener);
-      this.contentScript.unregister();
-      this.worker.terminate();
+      // this.contentScript.unregister();
+      if (this.worker) {
+        this.worker.terminate();
+      }
 
       await browser.storage.local.set({ "state": runStates.PAUSED });
 
