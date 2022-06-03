@@ -1,16 +1,16 @@
-const RUNNING = 0;
-const PAUSED = 1;
+const RUNNING = "Running";
+const PAUSED = "Paused";
 
 function changeState(state) {
     if (state === RUNNING) {
-        document.getElementById("status").textContent = "RUNNING";
+        document.getElementById("status").textContent = "Running";
         document.getElementById("toggleEnabled").checked = true;
         document.getElementById("status").classList.remove("bg-red-300");
-        document.getElementById("status").classList.add("bg-green-300");
+        document.getElementById("status").classList.add("bg-white");
     } else if (state === PAUSED || state === undefined) {
-        document.getElementById("status").textContent = "PAUSED";
+        document.getElementById("status").textContent = "Paused";
         document.getElementById("toggleEnabled").checked = false;
-        document.getElementById("status").classList.remove("bg-green-300");
+        document.getElementById("status").classList.remove("bg-white");
         document.getElementById("status").classList.add("bg-red-300");
     } else {
         console.error("Unknown state:", state);

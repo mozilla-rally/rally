@@ -10,7 +10,7 @@
 // Note that Rally and WebScience currently only support Firefox.
 // import { browser } from "webextension-polyfill";
 
-import { Rally, runStates } from "@mozilla/rally";
+import { Rally, RunStates } from "@mozilla/rally-sdk";
 
 import PingEncryptionPlugin from "@mozilla/glean/plugins/encryption";
 import Glean, { Uploader, UploadResult, UploadResultStatus } from "@mozilla/glean/webext";
@@ -86,14 +86,33 @@ if (enableEmulatorMode) {
 // Studies should stop data collection and try to unload as much as possible when in "paused" state.
 async function stateChangeCallback(newState) {
   switch (newState) {
-    case (runStates.RUNNING):
-      console.log(`Study running with Rally ID: ${rally.rallyId}`);
+    case (RunStates.Running):
+      // The all-0 Rally ID indicates developer mode, in case data is accidentally sent.
+      let rallyId = enableDevMode ? "00000000-0000-0000-0000-000000000000" : rally.rallyId;
+
+      // The all-1 Rally ID means that there was an error with the Rally ID.
+      if (!rallyId) {
+        rallyId = "11111111-1111-1111-1111-111111111111";
+      }
+      console.info(`Study running with Rally ID: ${rallyId}`);
+
+      const storage = await browser.storage.local.get("enrolled");
+      if (storage.enrolled !== true) {
+        console.info("Recording enrollment.");
+        rallyManagementMetrics.id.set(rallyId);
+        examplePings.studyEnrollment.submit();
+
+        browser.storage.local.set({
+          enrolled: true,
+        });
+      }
+
       // The Rally API has been initialized.
       // Initialize the study and start it.
 
       // Example: initialize the example module.
       exampleModuleInitialize();
-      await browser.storage.local.set({ "state": runStates.RUNNING });
+      await browser.storage.local.set({ "state": RunStates.Running });
 
 
       // Example: set a listener for WebScience page navigation events on
@@ -144,7 +163,7 @@ async function stateChangeCallback(newState) {
       this.worker = new Worker("/dist/exampleWorkerScript.worker.js");
 
       break;
-    case (runStates.PAUSED):
+    case (RunStates.Paused):
       console.log(`Study paused with Rally ID: ${rally.rallyId}`);
 
       // Take down all resources from run state.
@@ -155,10 +174,10 @@ async function stateChangeCallback(newState) {
         this.worker.terminate();
       }
 
-      await browser.storage.local.set({ "state": runStates.PAUSED });
+      await browser.storage.local.set({ "state": RunStates.Paused });
 
       break;
-    case (runStates.ENDED):
+    case (RunStates.Ended):
       console.log(`Study ended with Rally ID: ${rally.rallyId}`);
 
       await browser.storage.local.set({ "ended": true });
