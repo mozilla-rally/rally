@@ -23,13 +23,13 @@
     "test:integration:jest": "jest ./tests/integration/",
     "dev:extension": "rollup -c --config-enable-developer-mode -w",
     "dev:extension:emulator": "rollup -c --config-enable-emulator-mode -w",
-    "dev:webext": "web-ext run --watch-file dist/background.js"
+    "dev:webext": "web-ext run -t chromium --watch-file dist/background.js"
   },
   "devDependencies": {
     "@babel/preset-env": "^7.16.11",
     "@babel/preset-typescript": "^7.17.12",
     "@mozilla/rally": "^0.8.1",
-    "@mozilla/web-science": "^0.4.0",
+    "@mozilla/web-science": "^0.5.0",
     "@rollup/plugin-commonjs": "^21.0.0",
     "@rollup/plugin-node-resolve": "^13.0.5",
     "@rollup/plugin-replace": "^3.0.0",
