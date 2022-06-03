@@ -19,6 +19,8 @@ import Glean, { Uploader, UploadResult, UploadResultStatus } from "@mozilla/glea
 import * as userJourney from "../src/generated/userJourney.js";
 import * as rallyManagementMetrics from "../src/generated/rally.js";
 
+import browser from "webextension-polyfill";
+
 // Import generated Glean pings.
 import * as examplePings from "../src/generated/pings.js";
 
@@ -170,12 +172,8 @@ async function stateChangeCallback(newState) {
 // Initialize the Rally SDK.
 const rally = new Rally({ enableDevMode, stateChangeCallback, rallySite, studyId, firebaseConfig, enableEmulatorMode });
 
-// When in developer mode, open the options page with the playtest controls.
-if (enableDevMode) {
-  browser.storage.local.set({ "initialized": true }).then(browser.runtime.openOptionsPage());
-}
-
-chrome.browserAction.onClicked.addListener(async () =>
+// When in developer mode, open the options page with the playtest controls when the toolbar button is clicked.
+browser.browserAction.onClicked.addListener(async () =>
   await browser.runtime.openOptionsPage()
 );
 

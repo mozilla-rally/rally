@@ -47,11 +47,12 @@
       ]
     }
   ],
-    "background": {
-      "scripts": [
-        "dist/browser-polyfill.js",
-        "dist/background.js"
-      ]
-    },
-    "incognito": "not_allowed"
-  }
+  "browserAction": {},
+  "background": {
+    "scripts": [
+      "dist/browser-polyfill.js",
+      "dist/background.js"
+    ]
+  },
+  "incognito": "not_allowed"
+}
