@@ -1,0 +1,36 @@
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this
+# file, You can obtain one at http://mozilla.org/MPL/2.0/.
+
+# This file defines the pings that are recorded by the Glean SDK.
+# Their code APIs is automatically generated, at build time using,
+# the `glean_parser` PyPI package.
+
+---
+$schema: moz://mozilla.org/schemas/glean/pings/2-0-0
+
+study-enrollment:
+  description: |
+    This ping is sent when the user has consented to the study.
+  include_client_id: false
+  bugs:
+    - TODO
+  data_reviews:
+    - TODO
+  notification_emails:
+    - TODO
+
+user-journey:
+  description: |
+    A page navigation event
+  include_client_id: false
+  send_if_empty: false
+  bugs:
+    - TODO
+  data_reviews:
+    - TODO
+  notification_emails:
+    - TODO
+  reasons:
+    page-navigation-observed: |
+      Page navigation was observed.

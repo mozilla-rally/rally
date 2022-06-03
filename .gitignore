@@ -105,3 +105,11 @@ dist
 
 # Generated study files
 web-ext-artifacts/
+
+# Ignore Glean's virtual environment and
+# generated files.
+.venv
+generated/
+
+# Manifest file is copied from dev/prod versions
+manifest.json
