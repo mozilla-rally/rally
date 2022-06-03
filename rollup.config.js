@@ -6,9 +6,11 @@
 // part of the build system, and you should not have to modify it.
 
 import commonjs from "@rollup/plugin-commonjs";
+import copy from "rollup-plugin-copy";
 import replace from "@rollup/plugin-replace";
 import resolve from "@rollup/plugin-node-resolve";
-import copy from "rollup-plugin-copy";
+import typescript from "@rollup/plugin-typescript";
+
 import globby from "globby";
 import webScienceRollupPlugin from "@mozilla/web-science/rollup-plugin";
 
@@ -38,10 +40,10 @@ export default (cliArgs) => {
     // dependencies (your own modules or modules from NPM) bundled in.
     const rollupConfig = [
         {
-            input: "src/background.js",
+            input: ["src/background.ts"],
             output: {
                 file: "dist/background.js",
-                sourcemap: isDevMode(cliArgs) ? "inline" : false,
+                sourcemap: (isDevMode(cliArgs) || isEmulatorMode(cliArgs)) ? "inline" : false,
             },
             plugins: [
                 replace({
@@ -56,7 +58,26 @@ export default (cliArgs) => {
                 resolve({
                     browser: true,
                 }),
-                commonjs()
+                commonjs(),
+                typescript(),
+                copy({
+                    targets: [{
+                        src: [
+                            "node_modules/webextension-polyfill/dist/browser-polyfill.min.js",
+                        ],
+                        dest: "dist/",
+                    }],
+                    flatten: true,
+                }),
+                copy({
+                    targets: [{
+                        src: [
+                            "node_modules/webextension-polyfill/dist/browser-polyfill.min.js.map",
+                        ],
+                        dest: "dist/",
+                    }],
+                    flatten: true,
+                }),
             ],
         }
     ];
@@ -71,14 +92,14 @@ export default (cliArgs) => {
     // background script might want to reference the bundled
     // scripts (e.g., browser.contentScripts.register() or new
     // Worker()).
-    const scriptPaths = globby.sync([`src/**/*.content.js`, `src/**/*.worker.js`]);
+    const scriptPaths = globby.sync([`src/**/*.content.ts`, `src/**/*.worker.ts`]);
     for (const scriptPath of scriptPaths) {
         rollupConfig.push({
             input: scriptPath,
             output: {
-                file: `dist/${scriptPath.slice("src/".length)}`,
+                file: `dist/${scriptPath.slice("src/".length).replace(".ts", ".js")}`,
                 format: "iife",
-                sourcemap: isDevMode(cliArgs) ? "inline" : false,
+                sourcemap: (isDevMode(cliArgs) || isEmulatorMode(cliArgs)) ? "inline" : false,
             },
             plugins: [
                 webScienceRollupPlugin(),
@@ -86,25 +107,7 @@ export default (cliArgs) => {
                     browser: true,
                 }),
                 commonjs(),
-                // Copy in the Rally SDK content script and webextension polyfill.
-                copy({
-                    targets: [{
-                        src: [
-                            "node_modules/@mozilla/rally/dist/rally-content.js",
-                        ],
-                        dest: "dist/content/",
-                    }],
-                    flatten: true,
-                }),
-                copy({
-                    targets: [{
-                        src: [
-                            "node_modules/webextension-polyfill/dist/browser-polyfill.js",
-                        ],
-                        dest: "dist/",
-                    }],
-                    flatten: true,
-                }),
+                typescript()
             ],
         });
     }

@@ -10,10 +10,13 @@
 // Note that Rally and WebScience currently only support Firefox.
 // import { browser } from "webextension-polyfill";
 
-// Import the Rally API.
 import { Rally, runStates } from "@mozilla/rally";
 
-// Import the WebScience API.
+import PingEncryptionPlugin from "@mozilla/glean/plugins/encryption";
+import Glean, { Uploader, UploadResult, UploadResultStatus } from "@mozilla/glean/webext";
+
+import { Dexie } from "dexie";
+
 import * as webScience from "@mozilla/web-science";
 
 // Example: import a module.
@@ -153,5 +156,68 @@ if (enableDevMode) {
 chrome.browserAction.onClicked.addListener(async () =>
   await browser.runtime.openOptionsPage()
 );
+
+// TODO move to dynamic import, and only load in dev mode.
+import pako from "pako";
+
+class GetPingsUploader extends Uploader {
+  async post(url: string, body: Uint8Array): Promise<UploadResult> {
+    const ping = JSON.parse(new TextDecoder().decode(pako.inflate(body)));
+
+    console.debug("Dev mode, storing glean ping instead of sending:", ping, url);
+
+    const tableName = url.split("/")[5];
+    const documentId = url.split("/")[7];
+    console.debug("tableName:", tableName);
+
+    const db = new Dexie("pixelhunt");
+
+    const columns = [];
+    const entries = {};
+    for (const metric of Object.keys(ping.metrics)) {
+      for (const [columnName, value] of Object.entries(ping.metrics[metric])) {
+        const validColumnName = columnName.replace(".", "_");
+        columns.push(validColumnName);
+        entries[validColumnName] = value;
+      }
+    }
+
+    console.debug("setting stores:", { [tableName]: columns.join() });
+    // FIXME get this from glean yaml
+    db.version(1).stores({
+      "fbpixelhunt-journey": "id,rally_id,user_journey_page_visit_start_date_time,user_journey_page_visit_stop_date_time,user_journey_attention_duration,user_journey_page_id,user_journey_url",
+      "fbpixelhunt-pixel": "id,rally_id,facebook_pixel_has_facebook_login_cookies,facebook_pixel_pixel_page_id,facebook_pixel_url",
+      "study-enrollment": "id,rally_id"
+    });
+
+    await db.open();
+
+    console.debug("using", tableName, "to store:", entries);
+    await db.table(tableName).put({ id: documentId, ...entries });
+
+    // Tell Glean upload went fine. Glean will then clear the ping from temporary storage.
+    return {
+      status: 200,
+      // @ts-ignore
+      result: UploadResultStatus.Success
+    };
+  }
+}
+
+if (enableDevMode) {
+  console.debug("init glean");
+  Glean.initialize("rally-markup-fb-pixel-hunt", true, {
+    debug: { logPings: true },
+    httpClient: new GetPingsUploader(),
+  } as unknown as Configuration);
+
+} else {
+  Glean.initialize("rally-markup-fb-pixel-hunt", true, {
+    debug: { logPings: false },
+    plugins: [
+      new PingEncryptionPlugin(publicKey)
+    ]
+  } as unknown as Configuration);
+}
 
 // Take no further action until the rallyStateChange callback is called.
