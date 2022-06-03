@@ -1,3 +1,5 @@
+/* global Dexie */
+
 const RUNNING = "Running";
 const PAUSED = "Paused";
 
