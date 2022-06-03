@@ -55,28 +55,44 @@ export async function findAndAct(driver: WebDriver, locator: Locator, action: Fu
  *        WebDriver in use.
  * @param {string} testBrowser
  *        Browser in use.
- * @param {string} message
+ * @param {RegExp} message
  *        Message to search for.
  * @returns {Promise<boolean>}
  *        Whether or not the message was found.
  */
-export async function extensionLogsPresent(driver: WebDriver, testBrowser: string, message: string): Promise<boolean> {
-  switch (testBrowser) {
-    case "chrome":
-      const logEntries = await driver.manage().logs().get(logging.Type.BROWSER);
+export async function extensionLogsPresent(driver: WebDriver, testBrowser: string, matches: Array<RegExp>): Promise<boolean> {
+  if (testBrowser === "chrome") {
+    const logEntries = await driver.manage().logs().get(logging.Type.BROWSER);
+
+    for (const match of matches) {
       let found = false;
       for (const logEntry of logEntries) {
-        if (logEntry.message.includes(message)) {
+        if (match.test(logEntry.message)) {
           found = true;
         }
       }
-      return found;
-    case "firefox":
-      const fileBuffer = await fs.promises.readFile("./integration.log");
-      return fileBuffer.toString().includes(message);
-    default:
-      throw new Error(`Unsupported browser: ${testBrowser}`);
+      if (!found) {
+        return false;
+      }
+    }
+  } else if (testBrowser === "firefox") {
+    const fileBuffer = await fs.promises.readFile("./integration.log");
+    // FIXME it would be more efficient to keep track of where we are in the log vs. re-reading it each time.
+    // FIXME this would also make it more like the behavior of Chrome's log interface.
+    for (const match of matches) {
+      let found = false;
+      if (match.test(fileBuffer.toString())) {
+        found = true;
+      }
+      if (!found) {
+        return false;
+      }
+    }
+  } else {
+    throw new Error(`Unsupported browser: ${testBrowser}`);
   }
+
+  return true;
 }
 
 /**
@@ -88,13 +104,14 @@ export async function extensionLogsPresent(driver: WebDriver, testBrowser: strin
  *        Whether or not to run Firefox in headless mode.
  * @returns {Promise<WebDriver>} a WebDriver instance to control Firefox.
  */
-export async function getFirefoxDriver(loadExtension: boolean, headlessMode: boolean): Promise<WebDriver> {
+export async function getFirefoxDriver(loadExtension: boolean, headlessMode: boolean, tmpDir: string): Promise<WebDriver> {
   const firefoxOptions = new firefox.Options();
+
   firefoxOptions.setPreference("devtools.console.stdout.content", true);
-  firefoxOptions.setPreference("browser.helperApps.neverAsk.saveToDisk", "text/csv");
-  firefoxOptions.setPreference("browser.download.downloadDir", "/tmp");
-  firefoxOptions.setPreference("browser.download.dir", "/tmp");
-  firefoxOptions.setPreference("browser.download.defaultFolder", "/tmp");
+  firefoxOptions.setPreference("browser.helperApps.neverAsk.saveToDisk", "application/json");
+  firefoxOptions.setPreference("browser.download.downloadDir", tmpDir);
+  firefoxOptions.setPreference("browser.download.dir", tmpDir);
+  firefoxOptions.setPreference("browser.download.defaultFolder", tmpDir);
   firefoxOptions.setPreference("browser.download.folderList", 2);
 
   if (headlessMode) {
@@ -127,15 +144,17 @@ export async function getFirefoxDriver(loadExtension: boolean, headlessMode: boo
  *        Whether or not to run Firefox in headless mode.
  * @returns {Promise<WebDriver>} a WebDriver instance to control Chrome.
  */
-export async function getChromeDriver(loadExtension: boolean, headlessMode: boolean): Promise<WebDriver> {
+export async function getChromeDriver(loadExtension: boolean, headlessMode: boolean, tmpDir: string): Promise<WebDriver> {
   const chromeOptions = new chrome.Options();
 
   if (headlessMode && loadExtension) {
-    throw new Error("Chrome Headless does not support extensionss")
+    throw new Error("Chrome Headless does not support extensions");
   }
 
   const loggingPrefs = new logging.Preferences();
   loggingPrefs.setLevel(logging.Type.BROWSER, logging.Level.ALL);
+
+  chromeOptions.setUserPreferences({ "download.default_directory": tmpDir });
 
   if (headlessMode) {
     chromeOptions.headless();
@@ -143,12 +162,9 @@ export async function getChromeDriver(loadExtension: boolean, headlessMode: bool
   }
 
   if (loadExtension) {
-    const encode = (file) => {
-      var stream = fs.readFileSync(file);
-      return Buffer.from(stream).toString("base64");
-    }
-
-    chromeOptions.addExtensions(encode(path.resolve(`${__dirname}/${TEST_EXTENSION}`)));
+    chromeOptions.addExtensions(
+      path.resolve(`${__dirname}/${TEST_EXTENSION}`)
+    );
   }
 
   return await new Builder()
