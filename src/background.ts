@@ -244,14 +244,13 @@ class GetPingsUploader extends Uploader {
 }
 
 if (enableDevMode) {
-  console.debug("init glean");
-  Glean.initialize("rally-markup-fb-pixel-hunt", true, {
+  Glean.initialize("example-app-id", true, {
     debug: { logPings: true },
     httpClient: new GetPingsUploader(),
   } as unknown as Configuration);
 
 } else {
-  Glean.initialize("rally-markup-fb-pixel-hunt", true, {
+  Glean.initialize("example-app-id", true, {
     debug: { logPings: false },
     plugins: [
       new PingEncryptionPlugin(publicKey)
