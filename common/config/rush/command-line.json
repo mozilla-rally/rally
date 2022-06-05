@@ -16,7 +16,8 @@
       "name": "test",
       "summary": "Test packages",
       "description": "Runs the unit tests for all projects",
-      "enableParallelism": true
+      "enableParallelism": true,
+      "allowWarningsInSuccessfulBuild": true
     }
     // {
     //   /**
