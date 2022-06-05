@@ -225,7 +225,7 @@ class GetPingsUploader extends Uploader {
     console.debug("setting stores:", { [tableName]: columns.join() });
     // FIXME get this from glean yaml
     db.version(1).stores({
-      "user-journey": "id,rally_id,user_journey_page_visit_start_date_time,user_journey_page_visit_stop_date_time,user_journey_attention_duration,user_journey_page_id,user_journey_url",
+      "user-journey": "id,rally_id,user_journey_page_visit_start_date_time,user_journey_page_visit_stop_date_time,user_journey_attention_duration,user_journey_page_id,user_journey_referrer,user_journey_url",
       "study-enrollment": "id,rally_id"
     });
 
