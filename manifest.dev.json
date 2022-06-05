@@ -33,7 +33,7 @@
         "https://members.rally.mozilla.org/*"
       ],
       "js": [
-        "dist/content/rally-content.js"
+        "dist/main.content.js"
       ]
     },
     {
