@@ -74,7 +74,7 @@ user_journey:
       The HTTP Referrer URL (if set).
     lifetime: ping
     send_in_pings:
-      - fbpixelhunt-journey
+      - user-journey
     bugs:
       - TODO
     data_reviews:
