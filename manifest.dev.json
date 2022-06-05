@@ -50,7 +50,7 @@
   "browserAction": {},
   "background": {
     "scripts": [
-      "dist/browser-polyfill.js",
+      "dist/browser-polyfill.min.js",
       "dist/background.js"
     ]
   },

@@ -30,7 +30,7 @@
     {
       "matches": [
         "http://localhost/*",
-        "https://rally-web-spike.web.app/*"
+        "https:/members.rally.mozilla.org/*"
       ],
       "js": [
         "dist/content/rally-content.js"
@@ -39,7 +39,7 @@
   ],
   "background": {
     "scripts": [
-      "dist/browser-polyfill.js",
+      "dist/browser-polyfill.min.js",
       "dist/background.js"
     ]
   },
