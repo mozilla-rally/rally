@@ -104,6 +104,12 @@ describe("Facebook Pixel Hunt", function () {
       await driver.switchTo().window((await driver.getAllWindowHandles())[1])
       await driver.wait(until.titleIs("Facebook Pixel Hunt"), WAIT_FOR_PROPERTY);
     }
+
+    // Start a new window for tests, the original will be used to collect logs from the extension.
+    // Selenium is currently not able to access Chrome extension logs directly, so they are messaged to the
+    // original window
+    logWindow = await driver.getWindowHandle();
+    await driver.switchTo().newWindow('window');
   });
 
   afterEach(async () => {
