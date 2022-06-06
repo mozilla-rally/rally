@@ -8,7 +8,7 @@ import minimist from "minimist";
 import { spawn } from "child_process";
 
 import { By, until, WebDriver } from "selenium-webdriver";
-import { findAndAct, getChromeDriver, getFirefoxDriver, extensionLogsPresent, WAIT_FOR_PROPERTY, readCSVData } from "./utils";
+import { findAndAct, getChromeDriver, getFirefoxDriver, extensionLogsPresent, WAIT_FOR_PROPERTY } from "./utils";
 
 const args = (minimist(process.argv.slice(2)));
 for (const arg of ["test_browser", "load_extension", "headless_mode"]) {
