@@ -109,9 +109,11 @@ describe("Rally Study Template", function () {
     if (loadExtension) {
       // If installed, the extension will open its options page automatically.
       // await driver.switchTo().window(testWindow);
-      await driver.wait(async () => {
-        return (await driver.getAllWindowHandles()).length === 2;
-      }, WAIT_FOR_PROPERTY);
+      if (testBrowser === "chrome") {
+        await driver.wait(async () => {
+          return (await driver.getAllWindowHandles()).length === 2;
+        }, WAIT_FOR_PROPERTY);
+      }
       await driver.switchTo().window((await driver.getAllWindowHandles())[0])
       await driver.wait(until.titleIs("Rally Study Template"), WAIT_FOR_PROPERTY);
     }
