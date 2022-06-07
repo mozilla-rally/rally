@@ -101,8 +101,9 @@ export async function addRallyUserToFirestoreImpl(
   return true;
 }
 
-export const addRallyUserToFirestore = functions.auth
-  .user()
+export const addRallyUserToFirestore = functions
+  .runWith({ failurePolicy: true })
+  .auth.user()
   .onCreate(addRallyUserToFirestoreImpl);
 
 export async function deleteRallyUserImpl(
@@ -140,8 +141,9 @@ export async function deleteRallyUserImpl(
   return true;
 }
 
-export const deleteRallyUser = functions.auth
-  .user()
+export const deleteRallyUser = functions
+  .runWith({ failurePolicy: true })
+  .auth.user()
   .onDelete(deleteRallyUserImpl);
 
 /**
@@ -228,8 +230,9 @@ export async function handleUserChangesImpl(
   return true;
 }
 
-export const handleUserChanges = functions.firestore
-  .document("users/{userID}")
+export const handleUserChanges = functions
+  .runWith({ failurePolicy: true })
+  .firestore.document("users/{userID}")
   .onWrite(handleUserChangesImpl);
 
 /*
@@ -299,8 +302,9 @@ export async function handleUserStudyChangesImpl(
   return true;
 }
 
-export const handleUserStudyChanges = functions.firestore
-  .document("users/{userID}/studies/{studyID}")
+export const handleUserStudyChanges = functions
+  .runWith({ failurePolicy: true })
+  .firestore.document("users/{userID}/studies/{studyID}")
   .onWrite(handleUserStudyChangesImpl);
 
 async function getRallyIdForUser(userID: string) {
