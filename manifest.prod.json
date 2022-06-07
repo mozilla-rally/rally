@@ -30,7 +30,7 @@
     {
       "matches": [
         "http://localhost/*",
-        "https:/members.rally.mozilla.org/*"
+        "https://members.rally.mozilla.org/*"
       ],
       "js": [
         "dist/main.content.js"

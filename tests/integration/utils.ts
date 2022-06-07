@@ -162,9 +162,9 @@ export async function getChromeDriver(loadExtension: boolean, headlessMode: bool
   }
 
   if (loadExtension) {
-    // const extFile = path.resolve(`${__dirname}/${TEST_EXTENSION}`);
-    const extFile = path.resolve(`{_dirname}/../../`);
-    chromeOptions.addExtensions(extFile);
+    chromeOptions.addExtensions(
+      path.resolve(`${__dirname}/${TEST_EXTENSION}`)
+    );
   }
 
   return await new Builder()

@@ -35,6 +35,9 @@ module.exports = {
     "public/**/*.map",
     "tsconfig.json",
     "babel.config.cjs",
-    "screenshots"
+    "screenshots",
+    "*.deb",
+    "manifest.dev.json",
+    "manifest.prod.json"
   ],
 };

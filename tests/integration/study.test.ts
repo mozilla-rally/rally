@@ -139,7 +139,7 @@ describe("Rally Study Template", function () {
     await driver.quit();
   });
 
-  it("is a minimal test case", async function () {
+  it("collects and exports data", async function () {
 
     await driver.wait(
       until.elementTextIs(driver.findElement(By.id("status")), "Paused"),
