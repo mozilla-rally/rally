@@ -91,5 +91,8 @@ describe("Rally Study Template", function () {
     console.debug(`Test server stopped on port ${PORT}`);
   });
 
+  it("tests the CI", function () {
+    console.debug("ok");
+  });
 
 });
