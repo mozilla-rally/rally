@@ -37,7 +37,7 @@ jobs:
           command: wget 'https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb' && sudo dpkg -i google-chrome-stable_current_amd64.deb
       - run:
           name: Run Selenium tests
-          command: export PATH=.:$PATH && npm run package:developer && npm run test:integration
+          command: export PATH=.:$PATH && npm run build:glean && npm run package:developer && npm run test:integration
       - store_artifacts:
           path: ./screenshots
 
