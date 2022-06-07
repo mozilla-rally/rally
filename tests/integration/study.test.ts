@@ -80,7 +80,7 @@ async function waitForLogs(matches: RegExp[]) {
   await driver.switchTo().window(testWindow);
 }
 
-describe("Facebook Pixel Hunt", function () {
+describe("Rally Study Template", function () {
   beforeAll(async () => {
     server = spawn("http-server", [PATH, "-p", PORT]);
     console.debug(`Test server running on port ${PORT}`);
@@ -96,20 +96,25 @@ describe("Facebook Pixel Hunt", function () {
     console.info("Using tmpdir:", tmpDir);
     driver = await getDriver(loadExtension, headlessMode, tmpDir);
 
+    /*
+    // Start a new window to collect logs from the extension, the original will be used to run tests.
+    // Selenium is currently not able to access Chrome extension logs directly, so they are messaged to the
+    // original window.
+    testWindow = await driver.getWindowHandle();
+
+    await driver.switchTo().newWindow('window');
+    await driver.get("http://localhost:8000");
+    logWindow = await driver.getWindowHandle();
+    */
     if (loadExtension) {
       // If installed, the extension will open its options page automatically.
+      // await driver.switchTo().window(testWindow);
       await driver.wait(async () => {
         return (await driver.getAllWindowHandles()).length === 2;
       }, WAIT_FOR_PROPERTY);
-      await driver.switchTo().window((await driver.getAllWindowHandles())[1])
-      await driver.wait(until.titleIs("Facebook Pixel Hunt"), WAIT_FOR_PROPERTY);
+      await driver.switchTo().window((await driver.getAllWindowHandles())[0])
+      await driver.wait(until.titleIs("Rally Study Template"), WAIT_FOR_PROPERTY);
     }
-
-    // Start a new window for tests, the original will be used to collect logs from the extension.
-    // Selenium is currently not able to access Chrome extension logs directly, so they are messaged to the
-    // original window
-    logWindow = await driver.getWindowHandle();
-    await driver.switchTo().newWindow('window');
   });
 
   afterEach(async () => {
@@ -132,37 +137,13 @@ describe("Facebook Pixel Hunt", function () {
     await driver.quit();
   });
 
-  it("enables and disables study", async function () {
-    const statusElement = await driver.findElement(By.id("status"));
-
-    await driver.wait(
-      until.elementTextIs(statusElement, "Paused"),
-      WAIT_FOR_PROPERTY
-    );
-    // Selenium seems to think this is not clickable, likely the CSS toggle-button technique we are using.
-    // TODO make sure there aren't any accessibility issues with this.
-    await driver.executeScript(`document.getElementById("toggleEnabled").click()`);
-    await driver.wait(
-      until.elementTextIs(statusElement, "Running"),
-      WAIT_FOR_PROPERTY
-    );
-    await extensionLogsPresent(driver, testBrowser, [/Rally SDK - dev mode, resuming study/]);
-    await driver.executeScript(`document.getElementById("toggleEnabled").click()`);
-
-    await driver.wait(
-      until.elementTextIs(statusElement, "Paused"),
-      WAIT_FOR_PROPERTY
-    );
-    await extensionLogsPresent(driver, testBrowser, [/Rally SDK - dev mode, pausing study/]);
-  });
-
   it("collects and exports data", async function () {
 
     await driver.wait(
       until.elementTextIs(driver.findElement(By.id("status")), "Paused"),
       WAIT_FOR_PROPERTY
     );
-    await extensionLogsPresent(driver, testBrowser, [/Rally SDK - dev mode, resuming study/]);
+    // await waitForLogs([/Rally SDK - dev mode, resuming study/]);
 
     await driver.executeScript(`document.getElementById("toggleEnabled").click()`);
     const statusElement = await driver.findElement(By.id("status"));
@@ -172,8 +153,9 @@ describe("Facebook Pixel Hunt", function () {
     );
 
     // Collect some data locally by browsing the archived test set.
-    const originalTab = (await driver.getAllWindowHandles())[1];
+    const originalTab = (await driver.getAllWindowHandles())[0];
 
+    /*
     // First, visit a page with a plain, old-style <img> tag, which should trigger an HTTP GET.
     await driver.switchTo().newWindow("tab");
     await driver.get(`${BASE_URL}/img.html`);
@@ -182,7 +164,7 @@ describe("Facebook Pixel Hunt", function () {
     await driver.close();
 
     await driver.switchTo().window(originalTab);
-    await driver.wait(until.titleIs("Facebook Pixel Hunt"), WAIT_FOR_PROPERTY);
+    await driver.wait(until.titleIs("Rally Study Template"), WAIT_FOR_PROPERTY);
 
     // Next, watch for JS-generated HTTP POST.
     await driver.switchTo().newWindow("tab");
@@ -192,16 +174,17 @@ describe("Facebook Pixel Hunt", function () {
     await driver.close();
 
     await driver.switchTo().window(originalTab);
-    await driver.wait(until.titleIs("Facebook Pixel Hunt"), WAIT_FOR_PROPERTY);
+    await driver.wait(until.titleIs("Rally Study Template"), WAIT_FOR_PROPERTY);
 
     // Finally, open the index page, which should not fire any trackers.
     await driver.switchTo().newWindow("tab");
     await driver.get(`${BASE_URL}/`);
     await driver.wait(until.titleIs(`Pixel Test Index`), WAIT_FOR_PROPERTY);
     await driver.close();
+    */
 
     await driver.switchTo().window(originalTab);
-    await driver.wait(until.titleIs("Facebook Pixel Hunt"), WAIT_FOR_PROPERTY);
+    await driver.wait(until.titleIs("Rally Study Template"), WAIT_FOR_PROPERTY);
 
     // Selenium does not work well with system dialogs like the download dialog.
     // TODO enable auto-download for Chrome, which needs to be done per-browser.
@@ -209,72 +192,37 @@ describe("Facebook Pixel Hunt", function () {
     // downloads the file to our tmpdir.
     await findAndAct(driver, By.id("download"), e => e.click());
 
-
-    const pixelRecords = await readCSVData(`${tmpDir}/facebook-pixel-hunt-pixels.csv`);
-    const navRecords = await readCSVData(`${tmpDir}/facebook-pixel-hunt-pageNavigations.csv`);
-
-    // Cleanup any downloaded files. We do this before running tests, so if any
-    // tests fail, cleanup is already done.
-    for (const name of ["pixels", "pageNavigations"]) {
-      await fs.promises.access(`${tmpDir}/facebook-pixel-hunt-${name}.csv`);
-      await fs.promises.rm(`${tmpDir}/facebook-pixel-hunt-${name}.csv`);
-    }
-
-
-    /**
-     * Convert a csv-parse record to an object which maps keys to arrays of rows.
-     */
-    function recordToObject(records) {
-      let headers;
-      let result = {};
-      for (const [i, row] of Object.entries(records)) {
-        if (parseInt(i) === 0) {
-          headers = row;
-        } else {
-          for (const [j, entry] of Object.entries(row)) {
-            const header = headers[j];
-            if (header in result) {
-              result[header].push(entry);
-            } else {
-              result[header] = [entry];
-            }
-          }
-        }
-      }
-      return result;
-    }
-
-    // Run some data integrity tests on the output.
-    const navData = recordToObject(navRecords);
-    const pixelData = recordToObject(pixelRecords);
-
-    const totalPages = 2;
-    let pages = 0;
-    for (let i: number; i < totalPages; i++) {
-      expect(navData["pageId"][i]).toBe(pixelData["pageId"][i]);
-      if (navData["url"][i] === `${BASE_URL}/img.html`) {
-        // If this is an image pixel, the query string will be part of the URL, and there will be no formData
-        expect(pixelData["url"][i]).toBe(`${BASE_URL}/tr?id=12345%20%20%20%20%20%20%20%20&ev=ViewContent%20%20%20%20%20%20%20%20&cd[content_name]=ABC%20Leather%20Sandal%20%20%20%20%20%20%20%20&cd[content_category]=Shoes%20%20%20%20%20%20%20%20&cd[content_type]=product%20%20%20%20%20%20%20%20&cd[content_ids]=1234%20%20%20%20%20%20%20%20&cd[value]=0.50%20%20%20%20%20%20%20%20&cd[currency]=USD`);
-
-        expect(navData["url"][i]).toBe(`${BASE_URL}/img.html`);
-        expect(pixelData["formData"][i]).toBe("undefined");
-      } else if (navData["url"][i] === `${BASE_URL}/js.html`) {
-        // the JS-generated pixel will have no query string in the URL, and will have data present in the formData field.
-        expect(pixelData["url"][i]).toBe(`${BASE_URL}/tr`);
-        expect(navData["url"][i]).toBe(`${BASE_URL}/js.html`);
-        expect(pixelData["formData"][1]).toBe("abc=def&ghi=jkl");
-      } else {
-        throw new Error(`unknown url: ${navData["url"][i]}`);
-      }
-      pages++;
-    }
-    expect(pages).toBe(totalPages);
-
     await driver.executeScript(`document.getElementById("toggleEnabled").click()`);
     await driver.wait(
       until.elementTextIs(driver.findElement(By.id("status")), "Paused"),
       WAIT_FOR_PROPERTY
     );
-    await extensionLogsPresent(driver, testBrowser, [/Rally SDK - dev mode, pausing study/]);
+    // await waitForLogs([/Rally SDK - dev mode, pausing study/]);
+  });
+
+  it("enables and disables study", async function () {
+    await driver.wait(
+      until.elementTextIs(driver.findElement(By.id("status")), "Paused"),
+      WAIT_FOR_PROPERTY
+    );
+    // await waitForLogs([/Rally SDK - dev mode, resuming study/]);
+
+    // Selenium seems to think this is not clickable, likely the CSS toggle-button technique we are using.
+    // TODO make sure there aren't any accessibility issues with this.
+    await driver.executeScript(`document.getElementById("toggleEnabled").click()`);
+
+    const statusElement = await driver.findElement(By.id("status"));
+    await driver.wait(
+      until.elementTextIs(statusElement, "Running"),
+      WAIT_FOR_PROPERTY
+    );
+    //await extensionLogsPresent(driver, testBrowser, [/Rally SDK - dev mode, resuming study/]);
+    await driver.executeScript(`document.getElementById("toggleEnabled").click()`);
+
+    await driver.wait(
+      until.elementTextIs(statusElement, "Paused"),
+      WAIT_FOR_PROPERTY
+    );
+    //await extensionLogsPresent(driver, testBrowser, [/Rally SDK - dev mode, pausing study/]);
   });
 });
