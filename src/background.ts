@@ -16,13 +16,13 @@ import PingEncryptionPlugin from "@mozilla/glean/plugins/encryption";
 import Glean, { Uploader, UploadResult, UploadResultStatus } from "@mozilla/glean/webext";
 
 // Import generated Glean metrics.
-import * as userJourney from "../src/generated/userJourney.js";
-import * as rallyManagementMetrics from "../src/generated/rally.js";
+import * as userJourney from "../src/generated/userJourney";
+import * as rallyManagementMetrics from "../src/generated/rally";
 
 import browser from "webextension-polyfill";
 
 // Import generated Glean pings.
-import * as examplePings from "../src/generated/pings.js";
+import * as examplePings from "../src/generated/pings";
 
 
 import { Dexie } from "dexie";
