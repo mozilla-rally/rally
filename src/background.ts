@@ -123,9 +123,11 @@ async function stateChangeCallback(newState) {
       this.pageDataListener = async (pageData) => {
         console.log(`WebScience page navigation event fired with page data:`, pageData);
         userJourney.pageId.set(pageData.pageId);
-        userJourney.attentionDuration.set(parseInt(pageData.attentionDuration));
-        userJourney.audioDuration.set(parseInt(pageData.audioDuration));
-        userJourney.maxRelativeScrollDepth.set(parseInt(pageData.maxRelativeScrollDepth));
+        userJourney.attentionDuration.set(pageData.attentionDuration);
+        userJourney.audioDuration.set(pageData.audioDuration);
+        // Max relative scroll depth is a percentage expressed as a decimal by WebScience,
+        // but Glean is expecting an integer.
+        userJourney.maxRelativeScrollDepth.set(Math.floor(pageData.maxRelativeScrollDepth * 100));
 
         const pageVisitStart = new Date(pageData.pageVisitStartTime);
         const pageVisitStop = new Date(pageData.pageVisitStopTime);
@@ -191,11 +193,6 @@ async function stateChangeCallback(newState) {
 // Initialize the Rally SDK.
 const rally = new Rally({ enableDevMode, stateChangeCallback, rallySite, studyId, firebaseConfig, enableEmulatorMode });
 
-// When in developer mode, open the options page with the playtest controls when the toolbar button is clicked.
-browser.browserAction.onClicked.addListener(async () =>
-  await browser.runtime.openOptionsPage()
-);
-
 // TODO move to dynamic import, and only load in dev mode.
 import pako from "pako";
 import type { Configuration } from "@mozilla/glean/dist/types/core/config";
@@ -244,11 +241,20 @@ class GetPingsUploader extends Uploader {
 }
 
 if (enableDevMode) {
+  // When in developer mode, open the options page with the playtest controls when the toolbar button is clicked.
+  //browser.browserAction.onClicked.addListener(async () =>
+  //  await browser.runtime.openOptionsPage()
+  //);
+  browser.runtime.openOptionsPage().then(() => console.log("ok"));
+
   Glean.initialize("example-app-id", true, {
     debug: { logPings: true },
     httpClient: new GetPingsUploader(),
   } as unknown as Configuration);
 
+  browser.runtime.onMessage.addListener((message, sender) => {
+    console.debug("dev mode received message:", message, "from sender:", sender);
+  });
 } else {
   Glean.initialize("example-app-id", true, {
     debug: { logPings: false },
