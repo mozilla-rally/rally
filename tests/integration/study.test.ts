@@ -139,5 +139,92 @@ describe("Rally Study Template", function () {
     await driver.quit();
   });
 
-  it("is a minimal test case", async function () { });
+  it("is a minimal test case", async function () {
+
+    await driver.wait(
+      until.elementTextIs(driver.findElement(By.id("status")), "Paused"),
+      WAIT_FOR_PROPERTY
+    );
+    // await waitForLogs([/Rally SDK - dev mode, resuming study/]);
+
+    await driver.executeScript(`document.getElementById("toggleEnabled").click()`);
+    const statusElement = await driver.findElement(By.id("status"));
+    await driver.wait(
+      until.elementTextIs(statusElement, "Running"),
+      WAIT_FOR_PROPERTY
+    );
+
+    // Collect some data locally by browsing the archived test set.
+    const originalTab = (await driver.getAllWindowHandles())[0];
+
+    /*
+    // First, visit a page with a plain, old-style <img> tag, which should trigger an HTTP GET.
+    await driver.switchTo().newWindow("tab");
+    await driver.get(`${BASE_URL}/img.html`);
+    await driver.wait(until.titleIs(`Pixel Test (image) Complete`), WAIT_FOR_PROPERTY);
+    await driver.navigate().refresh();
+    await driver.close();
+
+    await driver.switchTo().window(originalTab);
+    await driver.wait(until.titleIs("Rally Study Template"), WAIT_FOR_PROPERTY);
+
+    // Next, watch for JS-generated HTTP POST.
+    await driver.switchTo().newWindow("tab");
+    await driver.get(`${BASE_URL}/js.html`);
+    await driver.wait(until.titleIs(`Pixel Test (JS) Complete`), WAIT_FOR_PROPERTY);
+    await driver.navigate().refresh();
+    await driver.close();
+
+    await driver.switchTo().window(originalTab);
+    await driver.wait(until.titleIs("Rally Study Template"), WAIT_FOR_PROPERTY);
+
+    // Finally, open the index page, which should not fire any trackers.
+    await driver.switchTo().newWindow("tab");
+    await driver.get(`${BASE_URL}/`);
+    await driver.wait(until.titleIs(`Pixel Test Index`), WAIT_FOR_PROPERTY);
+    await driver.close();
+    */
+
+    await driver.switchTo().window(originalTab);
+    await driver.wait(until.titleIs("Rally Study Template"), WAIT_FOR_PROPERTY);
+
+    // Selenium does not work well with system dialogs like the download dialog.
+    // TODO enable auto-download for Chrome, which needs to be done per-browser.
+    // Our `getDriver` will do the right thing for Firefox, which just skips the dialog and
+    // downloads the file to our tmpdir.
+    await findAndAct(driver, By.id("download"), e => e.click());
+
+    await driver.executeScript(`document.getElementById("toggleEnabled").click()`);
+    await driver.wait(
+      until.elementTextIs(driver.findElement(By.id("status")), "Paused"),
+      WAIT_FOR_PROPERTY
+    );
+    // await waitForLogs([/Rally SDK - dev mode, pausing study/]);
+  });
+
+  it("enables and disables study", async function () {
+    await driver.wait(
+      until.elementTextIs(driver.findElement(By.id("status")), "Paused"),
+      WAIT_FOR_PROPERTY
+    );
+    // await waitForLogs([/Rally SDK - dev mode, resuming study/]);
+
+    // Selenium seems to think this is not clickable, likely the CSS toggle-button technique we are using.
+    // TODO make sure there aren't any accessibility issues with this.
+    await driver.executeScript(`document.getElementById("toggleEnabled").click()`);
+
+    const statusElement = await driver.findElement(By.id("status"));
+    await driver.wait(
+      until.elementTextIs(statusElement, "Running"),
+      WAIT_FOR_PROPERTY
+    );
+    //await extensionLogsPresent(driver, testBrowser, [/Rally SDK - dev mode, resuming study/]);
+    await driver.executeScript(`document.getElementById("toggleEnabled").click()`);
+
+    await driver.wait(
+      until.elementTextIs(statusElement, "Paused"),
+      WAIT_FOR_PROPERTY
+    );
+    //await extensionLogsPresent(driver, testBrowser, [/Rally SDK - dev mode, pausing study/]);
+  });
 });
