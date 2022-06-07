@@ -16,16 +16,16 @@ jest.setTimeout(10000);
 async function disableFunctionTriggers() {
   await axios.put(
     "http://" +
-      process.env.FIREBASE_EMULATOR_HUB +
-      "/functions/disableBackgroundTriggers"
+    process.env.FIREBASE_EMULATOR_HUB +
+    "/functions/disableBackgroundTriggers"
   );
 }
 
 async function enableFunctionTriggers() {
   await axios.put(
     "http://" +
-      process.env.FIREBASE_EMULATOR_HUB +
-      "/functions/enableBackgroundTriggers"
+    process.env.FIREBASE_EMULATOR_HUB +
+    "/functions/enableBackgroundTriggers"
   );
 }
 
@@ -56,7 +56,7 @@ describe("loadFirestore", () => {
   it("loads data correctly from test user study", async () => {
     await loadFirestore(
       {} as any, // eslint-disable-line @typescript-eslint/no-explicit-any
-      { status: () => ({ send: () => {} }) } as any // eslint-disable-line @typescript-eslint/no-explicit-any,@typescript-eslint/no-empty-function
+      { status: () => ({ send: () => { } }) } as any // eslint-disable-line @typescript-eslint/no-explicit-any,@typescript-eslint/no-empty-function
     );
 
     const studyRef = admin.firestore().collection("studies");
@@ -65,7 +65,7 @@ describe("loadFirestore", () => {
 
     expect(userStudyDocs.docs.length).toBe(1);
 
-    expect(userStudyDocs.docs[0].data()).toEqual(studies.exampleStudy1);
+    expect(userStudyDocs.docs[0].data()).toEqual(studies.facebookPixelHunt);
   });
 });
 
