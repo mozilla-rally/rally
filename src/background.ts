@@ -19,10 +19,10 @@ import Glean, { Uploader, UploadResult, UploadResultStatus } from "@mozilla/glea
 import * as userJourney from "../src/generated/userJourney";
 import * as rallyManagementMetrics from "../src/generated/rally";
 
-import browser from "webextension-polyfill";
-
 // Import generated Glean pings.
 import * as examplePings from "../src/generated/pings";
+
+import browser from "webextension-polyfill";
 
 
 import { Dexie } from "dexie";
@@ -145,6 +145,8 @@ async function stateChangeCallback(newState) {
 
       webScience.pageNavigation.onPageData.addListener(this.pageDataListener, { matchPatterns: ["<all_urls>"] });
 
+      // FIXME this is Firefox-only, until the new Chrome scripting API ships.
+      //
       // Example: register a content script for http://localhost/* pages
       // Note that the content script has the same relative path in dist/
       // that it has in src/. The content script can include module
@@ -162,6 +164,8 @@ async function stateChangeCallback(newState) {
       // they will be automatically bundled into the worker script by the
       // build system.
 
+      // NOTE: this will be a worker of the background script in mv2, and
+      // a sub-worker of the background service worker in manifest v3.
       this.worker = new Worker("/dist/exampleWorkerScript.worker.js");
 
       break;
@@ -219,11 +223,9 @@ class GetPingsUploader extends Uploader {
       }
     }
 
-    console.debug("setting stores:", { [tableName]: columns.join() });
-    // FIXME get this from glean yaml
     db.version(1).stores({
-      "user-journey": "id,rally_id,user_journey_page_visit_start_date_time,user_journey_page_visit_stop_date_time,user_journey_attention_duration,user_journey_page_id,user_journey_referrer,user_journey_url",
-      "study-enrollment": "id,rally_id"
+      "user-journey": "id, rally_id",
+      "study-enrollment": "id, rally_id"
     });
 
     await db.open();
