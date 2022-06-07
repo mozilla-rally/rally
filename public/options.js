@@ -19,7 +19,11 @@ function changeState(state) {
 browser.storage.local.get("state").then(storage => changeState(storage.state));
 
 // Listen for state changes.
-browser.storage.onChanged.addListener((changes) => changeState(changes.state.newValue));
+browser.storage.onChanged.addListener((changes) => {
+    if (changes.state && changes.state.newValue) {
+        changeState(changes.state.newValue);
+    }
+});
 
 document.getElementById("toggleEnabled").addEventListener("click", async event => {
     if (event.target.checked === true) {
@@ -33,7 +37,7 @@ document.getElementById("download").addEventListener("click", async () => {
     const db = new Dexie("example");
     await db.open();
     // Sort using index, @see `src/background.ts`
-    const journeys = await db.userJourney.sortBy("user_journey_page_visit_stop_date_time").toArray();
+    const journeys = await db.userJourney.orderBy("user_journey_page_visit_stop_date_time").toArray();
 
     const dataUrl = (`data:application/json,${encodeURIComponent(JSON.stringify(journeys, null, 2))}`);
 

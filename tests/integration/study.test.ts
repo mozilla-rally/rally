@@ -217,22 +217,26 @@ describe("Rally Study Template", function () {
       WAIT_FOR_PROPERTY
     );
 
-    const report = JSON.parse(await fs.promises.readFile(`${tmpDir}/rally-study-template.json`, "utf-8"));
+    const reportFilename = `${tmpDir}/rally-study-template.json`;
+    const report = JSON.parse(await fs.promises.readFile(reportFilename, "utf-8"));
 
-    // Cleanup any downloaded files. We do this before running tests, so if any
+    // Cleanup any downloaded files. We do this before running tests on the data, so if any
     // tests fail, cleanup is already done.
     try {
-      await fs.promises.access(`${tmpDir}/rally-study-template.json`);
-      await fs.promises.rm(`${tmpDir}/rally-study-template.json`);
+      await fs.promises.access(reportFilename);
+      await fs.promises.rm(reportFilename);
     } catch (ex) {
-      throw new Error(`Could not clean up downloaded report: ${tmpDir}/rally-study-template.json`);
+      throw new Error(`Could not clean up downloaded report: ${reportFilename}`);
     }
+
+    console.debug("report:", report);
 
     expect(report).toHaveLength(3);
 
     expect(report[0].user_journey_url).toBe("http://localhost:8000/");
-    expect(report[1].user_journey_url).toBe("http://localhost:8000/how-rally-works/index.html");
-    expect(report[2].user_journey_url).toBe("http://localhost:8000/");
+    expect(report[1].user_journey_url).toBe("http://localhost:8000/");
+    expect(report[2].user_journey_url).toBe("http://localhost:8000/how-rally-works/index.html");
+
 
   });
 
