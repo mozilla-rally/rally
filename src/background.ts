@@ -223,8 +223,9 @@ class GetPingsUploader extends Uploader {
       }
     }
 
+    // create an index for the `user_journey_page_visit_stop_date_time` column, so it can be sorted in the UI (@see `public/options.js`)
     db.version(1).stores({
-      "user-journey": "id, rally_id",
+      "user-journey": "id, rally_id, user_journey_page_visit_stop_date_time",
       "study-enrollment": "id, rally_id"
     });
 
@@ -244,10 +245,18 @@ class GetPingsUploader extends Uploader {
 
 if (enableDevMode) {
   // When in developer mode, open the options page with the playtest controls when the toolbar button is clicked.
-  //browser.browserAction.onClicked.addListener(async () =>
-  //  await browser.runtime.openOptionsPage()
-  //);
-  browser.runtime.openOptionsPage().then(() => console.log("ok"));
+  browser.browserAction.onClicked.addListener(async () =>
+    await browser.runtime.openOptionsPage()
+  );
+
+  // Also open it automatically on the first run after a new install only.
+  browser.runtime.onInstalled.addListener(async (details) => {
+    if (details.reason === "install") {
+      await browser.runtime.openOptionsPage()
+    } else {
+      console.debug("unsupported install reason:", details.reason);
+    }
+  });
 
   Glean.initialize("example-app-id", true, {
     debug: { logPings: true },

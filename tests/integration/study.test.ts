@@ -50,7 +50,7 @@ let testWindow;
 
 const PORT = "8000";
 const BASE_URL = `http://localhost:${PORT}`;
-const PATH = "tests/integration/webarchive/localhost";
+const PATH = "tests/integration/webarchive/rally.mozilla.org";
 
 /**
  * Switch to the original window and wait for log to match regexp.
@@ -139,69 +139,6 @@ describe("Rally Study Template", function () {
     await driver.quit();
   });
 
-  it("collects and exports data", async function () {
-
-    await driver.wait(
-      until.elementTextIs(driver.findElement(By.id("status")), "Paused"),
-      WAIT_FOR_PROPERTY
-    );
-    // await waitForLogs([/Rally SDK - dev mode, resuming study/]);
-
-    await driver.executeScript(`document.getElementById("toggleEnabled").click()`);
-    const statusElement = await driver.findElement(By.id("status"));
-    await driver.wait(
-      until.elementTextIs(statusElement, "Running"),
-      WAIT_FOR_PROPERTY
-    );
-
-    // Collect some data locally by browsing the archived test set.
-    const originalTab = (await driver.getAllWindowHandles())[0];
-
-    /*
-    // First, visit a page with a plain, old-style <img> tag, which should trigger an HTTP GET.
-    await driver.switchTo().newWindow("tab");
-    await driver.get(`${BASE_URL}/img.html`);
-    await driver.wait(until.titleIs(`Pixel Test (image) Complete`), WAIT_FOR_PROPERTY);
-    await driver.navigate().refresh();
-    await driver.close();
-
-    await driver.switchTo().window(originalTab);
-    await driver.wait(until.titleIs("Rally Study Template"), WAIT_FOR_PROPERTY);
-
-    // Next, watch for JS-generated HTTP POST.
-    await driver.switchTo().newWindow("tab");
-    await driver.get(`${BASE_URL}/js.html`);
-    await driver.wait(until.titleIs(`Pixel Test (JS) Complete`), WAIT_FOR_PROPERTY);
-    await driver.navigate().refresh();
-    await driver.close();
-
-    await driver.switchTo().window(originalTab);
-    await driver.wait(until.titleIs("Rally Study Template"), WAIT_FOR_PROPERTY);
-
-    // Finally, open the index page, which should not fire any trackers.
-    await driver.switchTo().newWindow("tab");
-    await driver.get(`${BASE_URL}/`);
-    await driver.wait(until.titleIs(`Pixel Test Index`), WAIT_FOR_PROPERTY);
-    await driver.close();
-    */
-
-    await driver.switchTo().window(originalTab);
-    await driver.wait(until.titleIs("Rally Study Template"), WAIT_FOR_PROPERTY);
-
-    // Selenium does not work well with system dialogs like the download dialog.
-    // TODO enable auto-download for Chrome, which needs to be done per-browser.
-    // Our `getDriver` will do the right thing for Firefox, which just skips the dialog and
-    // downloads the file to our tmpdir.
-    await findAndAct(driver, By.id("download"), e => e.click());
-
-    await driver.executeScript(`document.getElementById("toggleEnabled").click()`);
-    await driver.wait(
-      until.elementTextIs(driver.findElement(By.id("status")), "Paused"),
-      WAIT_FOR_PROPERTY
-    );
-    // await waitForLogs([/Rally SDK - dev mode, pausing study/]);
-  });
-
   it("enables and disables study", async function () {
     await driver.wait(
       until.elementTextIs(driver.findElement(By.id("status")), "Paused"),
@@ -227,4 +164,76 @@ describe("Rally Study Template", function () {
     );
     //await extensionLogsPresent(driver, testBrowser, [/Rally SDK - dev mode, pausing study/]);
   });
+
+
+  it("collects and exports data", async function () {
+
+    await driver.wait(
+      until.elementTextIs(driver.findElement(By.id("status")), "Paused"),
+      WAIT_FOR_PROPERTY
+    );
+    // await waitForLogs([/Rally SDK - dev mode, resuming study/]);
+
+    await driver.executeScript(`document.getElementById("toggleEnabled").click()`);
+    const statusElement = await driver.findElement(By.id("status"));
+    await driver.wait(
+      until.elementTextIs(statusElement, "Running"),
+      WAIT_FOR_PROPERTY
+    );
+
+    // Collect some data locally by browsing the archived test set.
+    const originalTab = (await driver.getAllWindowHandles())[0];
+
+    // Start a page visit and then clost the tab which will end the page visit.
+    await driver.switchTo().newWindow("tab");
+    await driver.get(`${BASE_URL}/`);
+    await driver.wait(until.titleIs(`Mozilla Rally`), WAIT_FOR_PROPERTY);
+    await driver.close();
+
+    await driver.switchTo().window(originalTab);
+    await driver.wait(until.titleIs("Rally Study Template"), WAIT_FOR_PROPERTY);
+
+    // Start a page visit, then navigate to a new link without closing the tab.
+    // This will end the page visit for the first page. Then navigate back, ending
+    // the visit for the second.
+    // TODO click links and check that referrer is set.
+    await driver.switchTo().newWindow("tab");
+    await driver.get(`${BASE_URL}/`);
+    await driver.wait(until.titleIs(`Mozilla Rally`), WAIT_FOR_PROPERTY);
+
+    await driver.get(`${BASE_URL}/how-rally-works/index.html`);
+    await driver.wait(until.titleIs(`How Rally Works`), WAIT_FOR_PROPERTY);
+    await driver.navigate().back()
+
+    // TODO add test for scrolling, attention, and audio.
+    await driver.switchTo().window(originalTab);
+    await driver.wait(until.titleIs("Rally Study Template"), WAIT_FOR_PROPERTY);
+
+    await findAndAct(driver, By.id("download"), e => e.click());
+
+    await driver.executeScript(`document.getElementById("toggleEnabled").click()`);
+    await driver.wait(
+      until.elementTextIs(driver.findElement(By.id("status")), "Paused"),
+      WAIT_FOR_PROPERTY
+    );
+
+    const report = JSON.parse(await fs.promises.readFile(`${tmpDir}/rally-study-template.json`, "utf-8"));
+
+    // Cleanup any downloaded files. We do this before running tests, so if any
+    // tests fail, cleanup is already done.
+    try {
+      await fs.promises.access(`${tmpDir}/rally-study-template.json`);
+      await fs.promises.rm(`${tmpDir}/rally-study-template.json`);
+    } catch (ex) {
+      throw new Error(`Could not clean up downloaded report: ${tmpDir}/rally-study-template.json`);
+    }
+
+    expect(report).toHaveLength(3);
+
+    expect(report[0].user_journey_url).toBe("http://localhost:8000/");
+    expect(report[1].user_journey_url).toBe("http://localhost:8000/how-rally-works/index.html");
+    expect(report[2].user_journey_url).toBe("http://localhost:8000/");
+
+  });
+
 });
