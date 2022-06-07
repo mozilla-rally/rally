@@ -37,7 +37,7 @@ document.getElementById("download").addEventListener("click", async () => {
     const db = new Dexie("example");
     await db.open();
     // Sort using index, @see `src/background.ts`
-    const journeys = await db.userJourney.orderBy("user_journey_page_visit_stop_date_time").toArray();
+    const journeys = await db.table("user-journey").orderBy("user_journey_page_visit_stop_date_time").toArray();
 
     const dataUrl = (`data:application/json,${encodeURIComponent(JSON.stringify(journeys, null, 2))}`);
 
