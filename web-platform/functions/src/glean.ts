@@ -112,7 +112,8 @@ export async function demographics(
  */
 export async function studyEnrollment(
   rallyID: string,
-  studyID: string
+  studyID: string,
+  schemaNamespace: string
 ): Promise<void> {
   if (!ENABLE_GLEAN) return;
   const releaseGlean = await gleanLock.acquire();
@@ -120,6 +121,7 @@ export async function studyEnrollment(
 
   rallyMetrics.id.set(rallyID);
   enrollmentMetrics.studyId.set(studyID);
+  enrollmentMetrics.schemaNamespace.set(schemaNamespace);
 
   await submitPingFlag.acquire();
   rallyPings.studyEnrollment.submit();
@@ -134,7 +136,8 @@ export async function studyEnrollment(
  */
 export async function studyUnenrollment(
   rallyID: string,
-  studyID: string
+  studyID: string,
+  schemaNamespace: string
 ): Promise<void> {
   if (!ENABLE_GLEAN) return;
   const releaseGlean = await gleanLock.acquire();
@@ -142,6 +145,7 @@ export async function studyUnenrollment(
 
   rallyMetrics.id.set(rallyID);
   unenrollmentMetrics.studyId.set(studyID);
+  unenrollmentMetrics.schemaNamespace.set(schemaNamespace);
 
   await submitPingFlag.acquire();
   rallyPings.studyUnenrollment.submit();

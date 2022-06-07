@@ -268,12 +268,22 @@ export async function handleUserStudyChangesImpl(
     `Couldn't find Glean Study ID for user ID ${userID} and Firebase study ID ${firebaseStudyID}. Aborting Glean ping process.`
   );
 
+  const schemaNamespace = await getSchemaNamespaceforStudy(studyID);
+
+  // Without the schemaNamespace, study-related Glean pings
+  // won't be tracked properly by the shredder in the future.
+  // This is bad and should be flagged for inspection
+  assert(
+    schemaNamespace,
+    `Couldn't find Glean schemaNamespace for user ID ${userID} and Firebase study ID ${firebaseStudyID}. Aborting Glean ping process.`
+  );
+
   if (!newStudy || (oldStudy && oldStudy.enrolled && !newStudy.enrolled)) {
     // User unenrolled from study
     functions.logger.info(
       `Sending unenrollment ping for study with user ID ${userID} with study ID ${studyID}`
     );
-    await gleanPings.studyUnenrollment(rallyID, studyID);
+    await gleanPings.studyUnenrollment(rallyID, studyID, schemaNamespace);
     return true;
   }
 
@@ -282,7 +292,7 @@ export async function handleUserStudyChangesImpl(
     functions.logger.info(
       `Sending enrollment ping for study with user ID ${userID} with study ID ${studyID}`
     );
-    await gleanPings.studyEnrollment(rallyID, studyID);
+    await gleanPings.studyEnrollment(rallyID, studyID, schemaNamespace);
     return true;
   }
 
@@ -303,4 +313,16 @@ async function getRallyIdForUser(userID: string) {
   const data = extensionUserDoc.data();
 
   return (data && data.rallyId) || null;
+}
+
+async function getSchemaNamespaceforStudy(studyID: string) {
+  const studyDoc = await admin
+    .firestore()
+    .collection("studies")
+    .doc(studyID)
+    .get();
+
+  const data = studyDoc.data();
+
+  return (data && data.schemaNamespace) || null;
 }
