@@ -1,0 +1,128 @@
+.card {
+  border: 1px solid #cdcdd4;
+  margin-bottom: 4rem;
+  display: grid;
+  justify-content: center;
+  padding: 48px;
+
+  @media (max-width: $MD-screen) {
+    padding: 25px;
+  }
+
+  @media (max-width: $SM-screen) {
+    border: none;
+    height: auto !important;
+    padding: 0;
+  }
+
+  &--signin, &--launch, &--create, &--info-card {
+    margin: auto;
+  }
+
+  &--settings {
+    display: block;
+    border: 1px solid #cdcdd4; 
+    margin-bottom: 16px;
+  }
+
+  &--settings-update {
+   padding: 32px 32px 44px; 
+   justify-content: unset;
+   margin: 0 !important; 
+  }
+
+  &--settings {
+    display: block;
+    border: 1px solid #cdcdd4; 
+  }
+
+  &--settings-update {
+   padding: 32px 32px 44px; 
+   justify-content: unset;
+  }
+
+  &--settings-delete {
+    padding: 32px 32px 34.5px;
+    justify-content: unset;
+   }
+
+  &__inner {
+    padding: 0;
+    display: block;
+
+    @media (max-width: $XS-screen) {
+      max-width: 296px;
+    }
+  }
+
+  .card-header {
+    &--settings-update{
+      padding-bottom: 32px;  
+    }
+
+    .title-wrapper {
+      display: flex;
+      justify-content: center;
+
+      &--settings {
+        justify-content: start;
+      } 
+
+      &--launch {
+        display: flex;
+        justify-content: center;
+      }
+    }
+
+    .title-text {
+      z-index: 1;
+      text-align: center;
+      display: inline-block;
+    }
+
+    &--signin {
+      padding-bottom: 48px;
+      h2 {
+        font-weight: bold;
+        line-height: 44px;
+        font-size: 2.375rem;
+      }
+    }
+    &--settings {
+      padding-bottom: 24px;
+      h2 {
+        font-size: 24px;
+        font-family: "Inter";
+        font-style: normal;
+        font-weight: 700;
+        line-height: 28px;
+      }
+    }
+  }
+
+  &__body {
+    .card-content {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      max-width: 368px;
+      width: 368px;
+      margin: auto;
+
+      &--settings {
+        width: 100%;
+        max-width: 612px;
+      }
+      @media (max-width: $MD-screen) {
+        width: 100%;
+      }
+    }
+
+    .card-button {
+      padding: 12px 24px;
+      @media (max-width: $MD-screen) {
+        padding: 10px;
+      }
+    }
+  }
+}

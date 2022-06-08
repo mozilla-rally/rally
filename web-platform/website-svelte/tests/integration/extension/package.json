@@ -1,0 +1,21 @@
+{
+  "name": "textextension",
+  "version": "0.0.1",
+  "description": "A minimal Rally test extension",
+  "main": "dist/background.js",
+  "scripts": {
+    "build": "rollup -c",
+    "dev": "rollup -c -w --config-enable-developer-mode",
+    "package": "web-ext build --overwrite-dest",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "MPL-2.0",
+  "devDependencies": {
+    "@mozilla/rally-sdk": "^0.9.14",
+    "@rollup/plugin-commonjs": "^22.0.0",
+    "@rollup/plugin-node-resolve": "^13.2.1",
+    "@rollup/plugin-replace": "^4.0.0",
+    "web-ext": "^6.8.0"
+  }
+}

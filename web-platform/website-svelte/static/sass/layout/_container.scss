@@ -1,0 +1,54 @@
+.main-content {
+  max-width: 688px;
+  margin: 0 auto;
+  padding: 2.875rem 10%;
+
+  &--account-settings {
+    max-width: unset;    
+    padding: 2.875rem 0%;
+    @media (max-width: $MD-screen) {
+      padding: 0.625rem 10%;
+    }
+  }
+
+  @media (max-width: $SM-screen) {
+    padding: 0.625rem 10%;
+  }
+
+  @media (max-width: 320px) {
+    padding: 0.625rem 1%;
+  }
+}
+
+.lg-container-settings {
+  max-width: 1440px;
+  display: grid;
+  grid-template-columns: 265px 660px;
+  column-gap: 44px;
+  padding: 3.8rem 2.4rem;
+}
+
+.md-container-signin {
+  max-width: 688px;
+  margin: auto;
+  padding: 3.8rem 2.4rem;
+
+  @media (max-width: $SM-screen) {
+    padding: 2rem 0;
+  }
+}
+
+.content-container {
+  display: grid;
+  grid-template-columns: auto;
+  justify-content: center;
+  background-size: 100% 100%;
+  background-attachment: fixed;
+  margin-right: 0;
+  box-sizing: border-box;
+
+  &--account-settings {
+    padding: 0px;
+    justify-content: unset;
+  }
+}

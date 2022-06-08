@@ -1,0 +1,536 @@
+.signin {
+  @extend %XL-12-Col-account-creation;
+
+  &__logo {
+    grid-column: 4/10;
+    text-align: center;
+    @media (max-width: $XS-screen) {
+      width: 289px;
+      margin: auto;
+      grid-column: 6/10;
+    }
+  }
+
+  &__content {
+    width: 100%;
+    display: grid;
+    grid-template-rows: repeat(4, 1fr);
+    height: 50rem;
+    justify-items: center;
+    grid-template-columns: repeat(auto-fit, minmax(100%, 1fr));
+  }
+  &__cards {
+    grid-column: 2/12;
+    margin: auto;
+    @media (max-width: $SM-screen) {
+      padding: 0;
+    }
+
+    .spinner {
+      -webkit-animation: rotator 1.4s linear infinite;
+      animation: rotator 1.4s linear infinite;
+      height: 40rem;
+    }
+
+    .path {
+      stroke-dasharray: 187;
+      stroke-dashoffset: 0;
+      transform-origin: center;
+      -webkit-animation: dash 1.4s ease-in-out infinite,
+        colors 5.6s ease-in-out infinite;
+      animation: dash 1.4s ease-in-out infinite,
+        colors 5.6s ease-in-out infinite;
+    }
+  }
+
+  &__howitworks {
+    grid-column: 5/10;
+    align-self: center;
+    text-align: center;
+    margin-top: 40px;
+    min-width: 300px;
+
+    .external-link {
+      display: flex;
+      align-items: center;
+      color: $color-marketing-gray-70 !important;
+    }
+
+    svg {
+      padding-left: 8px;
+    }
+    @media (max-width: $SM-screen) {
+      min-width: 289px;
+    }
+
+    @media (max-width: $XS-screen) {
+      margin: auto;
+      grid-column: 9/10;
+    }
+  }
+}
+
+.card {
+  .card-header {
+    .title-highlight {
+      display: block;
+      background-color: $color-yellow-35;
+      border-radius: 4px;
+      position: absolute;
+      height: 1.375rem;
+      margin-top: 24px;
+      @media (max-width: $SM-screen) {
+        display: none;
+      }
+    }
+
+    &--info-card {
+      padding-bottom: 32px;
+      .title-text {
+        font-size: 48px !important;
+      }
+    }
+  }
+
+  .card-content {
+    .not-verified {
+      display: flex;
+      padding: 16px;
+      border-radius: 2px;
+      background-color: $color-red-05;
+      margin-bottom: 24px;
+      margin-top: -24px !important;
+      align-items: self-start;
+
+      img {
+        margin-right: 16px;
+        font-size: 2.625rem;
+        color: $color-red-60;
+        margin-top: 2px;
+      }
+
+      &__text {
+        font-family: "Inter";
+        font-style: normal;
+        font-weight: 400;
+        font-size: 1.125;
+        line-height: 20px;
+        color: #000 !important;
+        margin: 0;
+      }
+    }
+    .card-body-info {
+      max-width: 368px;
+      text-align: left;
+      font-size: 18px;
+      color: #000000;
+    }
+
+    &__text {
+      margin: 0;
+      padding: 0;
+      text-align: center;
+      color: #000000;
+    }
+  }
+
+  .card-button {
+    width: 100%;
+    display: flex;
+
+    &__text {
+      width: 300px;
+      display: flex;
+      justify-content: center;
+      text-align: center;
+      margin: auto;
+      @media only screen and (max-width: $XS-screen) {
+        font-size: 1rem;
+        width: 289px;
+      }
+    }
+
+    &--signup {
+      margin: 16px 0px;
+      @media only screen and (max-width: $XS-screen) {
+        width: 289px;
+      }
+    }
+
+    &--create {
+      margin: 16px 0 20px;
+    }
+
+    &--reset {
+      margin-top: 36px;
+    }
+
+    @media (max-width: $SM-screen) {
+      justify-content: space-around;
+    }
+
+    @media (max-width: $XS-screen) {
+      max-width: 289px;
+    }
+  }
+
+  .line-break {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin: 24px 0;
+
+    hr {
+      width: 46%;
+      padding: 0;
+      margin: 0;
+      border: 1px solid #9595a2;
+      border-radius: 10px;
+    }
+
+    &__text {
+      color: #5e5e72;
+    }
+  }
+
+  .form-wrapper {
+    display: grid;
+    margin-bottom: 0;
+    @media only screen and (min-width: $MD-screen) {
+      max-width: 360px;
+      grid-template-columns: repeat(12, 1fr);
+      grid-template-rows: repeat(4, auto);
+      column-gap: 34px;
+    }
+
+    form {
+      input {
+        width: 100%;
+        height: 48px;
+        font-size: 0.875rem;
+        border: 2px solid $color-marketing-gray-50;
+        color: #000000;
+        font-weight: 400;
+      }
+
+      .mzp-c-field-control {
+        &--error {
+          border: 2px solid $color-red-70;
+        }
+      }
+
+      @media only screen and (max-width: $XS-screen) {
+        max-width: 289px;
+      }
+    }
+
+    form,
+    button,
+    .body-text-privacy {
+      grid-column: 1/13;
+
+      @media only screen and (min-width: $MD-screen) {
+        max-width: 368px;
+      }
+    }
+
+    &--forgetpw {
+      max-width: 391px;
+    }
+  }
+
+  .field-set {
+    margin-bottom: 0;
+  }
+
+  .field {
+    &--email {
+      padding-bottom: 24px;
+    }
+
+    &--pw {
+      padding-bottom: 16px;
+    }
+
+    &--pw-create {
+      padding-bottom: 0;
+    }
+  }
+
+  .input-wrapper {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    input {
+      grid-column: 1/-1;
+      grid-row: 1/2;
+      z-index: 1;
+    }
+    img {
+      grid-column: 2/3;
+      grid-row: 1/2;
+      justify-self: end;
+      z-index: 2;
+      margin: 12px;
+      cursor: pointer;
+    }
+  }
+
+  .create-hide {
+    visibility: hidden;
+    height: 0;
+    opacity: 0;
+    padding: 0;
+  }
+
+  .create-show {
+    visibility: visible;
+    opacity: 1;
+    height: auto;
+    transition: opacity 1s linear, height 1s linear;
+  }
+
+  .body-text-action {
+    padding-top: 48px;
+    margin: 0;
+    font-size: 1rem;
+    color: #000000 !important;
+    text-align: center;
+    grid-column: 1/13;
+    opacity: 0.8;
+
+    @media only screen and (min-width: $MD-screen) {
+      max-width: 360px;
+    }
+
+    button {
+      cursor: pointer;
+      font-weight: 700;
+    }
+
+    a {
+      color: #000000 !important;
+      font-weight: 700;
+    }
+
+    &--info {
+      padding-top: 32px;
+      .contact-text {
+        padding-top: 32px;
+        margin: 0;
+      }
+    }
+
+    &--check-email {
+      padding-top: 36px;
+    }
+
+    .contact-text {
+      font-size: 0.875rem;
+      font-weight: 400;
+      color: #000000;
+    }
+  }
+}
+
+.mzp-c-call-out-desc {
+  display: none;
+}
+
+.mzp-c-call-out {
+  backface-visibility: hidden;
+  background-color: transparent;
+  min-height: calc(100vh - 2.5rem);
+  padding: 0;
+
+  .mzp-l-content {
+    padding-left: 0;
+    padding-right: 0;
+    /* this is Main + required padding to meet 120px */
+    padding-top: 8rem;
+
+    .mzp-c-call-out-title {
+      display: flex;
+      justify-content: center;
+      animation: moveInLeft 1s ease-out;
+      margin-bottom: 1.2rem;
+    }
+  }
+}
+
+@keyframes moveInLeft {
+  0% {
+    opacity: 0;
+    transform: translateX(-100px);
+  }
+
+  80% {
+    transform: translateX(10px);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translate(0);
+  }
+}
+
+@-webkit-keyframes rotator {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(270deg);
+  }
+}
+
+@keyframes rotator {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(270deg);
+  }
+}
+
+@-webkit-keyframes colors {
+  0% {
+    stroke: #4285f4;
+  }
+  25% {
+    stroke: #de3e35;
+  }
+  50% {
+    stroke: #f7c223;
+  }
+  75% {
+    stroke: #1b9a59;
+  }
+  100% {
+    stroke: #4285f4;
+  }
+}
+
+@keyframes colors {
+  0% {
+    stroke: #4285f4;
+  }
+  25% {
+    stroke: #de3e35;
+  }
+  50% {
+    stroke: #f7c223;
+  }
+  75% {
+    stroke: #1b9a59;
+  }
+  100% {
+    stroke: #4285f4;
+  }
+}
+@-webkit-keyframes dash {
+  0% {
+    stroke-dashoffset: 187;
+  }
+  50% {
+    stroke-dashoffset: 46.75;
+    transform: rotate(135deg);
+  }
+  100% {
+    stroke-dashoffset: 187;
+    transform: rotate(450deg);
+  }
+}
+@keyframes dash {
+  0% {
+    stroke-dashoffset: 187;
+  }
+  50% {
+    stroke-dashoffset: 46.75;
+    transform: rotate(135deg);
+  }
+  100% {
+    stroke-dashoffset: 187;
+    transform: rotate(450deg);
+  }
+}
+
+/* form styles start */
+
+.label-wrapper {
+  display: flex;
+  justify-content: space-between;
+}
+
+.mzp-c-field-label {
+  font-weight: 600;
+  color: $color-marketing-gray-99;
+  // set the rem
+  font-size: 1rem;
+}
+
+.error-msg-active,
+.info-msg-active {
+  text-align: left;
+  font-size: 0.75rem;
+  color: gray;
+  padding: 0;
+}
+
+.error-msg {
+  position: inherit;
+  color: $color-red-70;
+  padding: 4px 0px 0px;
+  top: 0;
+  margin: 0;
+  font-size: 0.875rem;
+  grid-column: 1/3;
+}
+
+.valid {
+  text-decoration: line-through !important;
+  color: rgba(21, 20, 26, 0.4);
+}
+
+.rules-error {
+  color: $color-red-70;
+}
+
+.hide-error-msg {
+  display: none;
+}
+
+.body-text-privacy {
+  font-size: 0.875rem;
+  margin: auto;
+  text-align: center;
+  color: #5e5e72;
+
+  a {
+    color: #5e5e72 !important;
+  }
+}
+
+.password-requirements {
+  list-style: disc;
+  font-size: 0.875rem;
+  color: $color-helper-gray;
+  font-weight: 400;
+  line-height: 20px;
+  padding: 14px 24px 0px;
+  text-align: left;
+  margin: 0;
+}
+
+/* storybook styles */
+.sign-in-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  p {
+    margin: auto;
+  }
+
+  p a {
+    color: #000000;
+  }
+}

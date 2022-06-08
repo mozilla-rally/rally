@@ -1,0 +1,7 @@
+.call-flow {
+  grid-template-columns: max-content max-content auto 0;
+
+  @media only screen and (max-width: 436px) {
+    grid-template-columns: auto;
+  }
+}

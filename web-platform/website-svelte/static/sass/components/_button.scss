@@ -1,0 +1,114 @@
+.rwp-secondary {
+  background: #fff;
+  border: 2px solid $color-marketing-gray-30;
+  color: $color-marketing-gray-70;
+  border-color: $color-marketing-gray-30 !important;
+  &:hover{ 
+    background-color: $color-marketing-gray-20;
+  }
+  &:active {
+    background-color: $color-marketing-gray-100;
+  }
+}
+
+.rwp-link{
+  @extend %content-body-MD;
+  border: none;
+  background-color: transparent;
+  text-decoration: underline;
+  cursor: pointer; 
+  &:hover{ 
+    text-decoration: none;
+  }
+  &:active {
+    text-decoration: none;
+    background-color: $color-marketing-gray-100;
+  }
+}
+
+.rwp-nav-link{
+  text-decoration: none;
+
+  &:hover{ 
+    text-decoration: underline;
+  }
+  &:active {
+    text-decoration: underline;
+    font-weight: bolder;
+  }
+}
+
+.mzp-c-button.mzp-t-md {
+  font-size: 14px;
+}
+/* extended button states */
+.mzp-c-button.mzp-t-compact {
+  padding: 1px 10px;
+}
+
+.mzp-c-button.mzp-t-error {
+  background-color: $color-red-80;
+  border-color: $color-red-80;
+  color: $color-white;
+}
+
+.mzp-c-button.mzp-t-error:hover {
+  background-color: $color-red-90;
+  border-color: $color-red-90;
+  color: $color-white;
+}
+
+.mzp-c-button.mzp-t-icon {
+  border-radius: 50%;
+  width: max-content;
+  height: max-content;
+  padding: 1em;
+  display: grid;
+  place-items: center;
+}
+
+.mzp-c-button.mzp-t-secondary.mzp-t-text {
+  background-color: transparent;
+  border-color: transparent;
+  color: black;
+}
+
+.mzp-c-button.mzp-t-secondary.mzp-t-text:hover {
+  background-color: #ededf0;
+  border-color: #ededf0;
+  color: black;
+}
+
+.mzp-t-leave {
+  background-color: $color-marketing-gray-20;
+  color: $color-red-60;
+  border-color: $color-marketing-gray-20;
+}
+
+.mzp-t-leave:hover {
+  border-color: $color-red-60;
+  color: white;
+  background-color: $color-red-60;
+}
+
+.mzp-t-leave.mzp-t-product {
+  background-color: transparent;
+  border: 2px solid $color-red-60;
+  color: $color-red-60;
+}
+
+.mzp-t-leave.mzp-t-product:hover {
+  background-color: $color-red-60;
+  color: white;
+}
+
+.mzp-c-button.mzp-t-product.mzp-t-neutral {
+  background-color: $color-light-gray-30;
+  border-color: $color-light-gray-30;
+}
+
+.mzp-c-button.mzp-t-product.mzp-t-neutral:hover {
+  color: $color-dark-gray-70;
+  background-color: $color-light-gray-50;
+  border-color: $color-light-gray-50;
+}

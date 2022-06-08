@@ -1,0 +1,9 @@
+{
+  "apiKey": "AIzaSyAj3z6_cRdiBzwTuVzey6sJm0hVDVBSrDg",
+  "authDomain": "members.rally.allizom.org",
+  "projectId": "moz-fx-data-rall-nonprod-ac2a",
+  "storageBucket": "moz-fx-data-rall-nonprod-ac2a.appspot.com",
+  "messagingSenderId": "451372671583",
+  "appId": "1:451372671583:web:eeb61e7d7c8ec898f5b1ea",
+  "functionsHost": "https://us-central1-moz-fx-data-rall-nonprod-ac2a.cloudfunctions.net"
+}

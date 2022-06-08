@@ -1,0 +1,24 @@
+{
+  "description": "A Mozilla Rally extension for testing the Rally Web Platform.",
+  "author": "Mozilla Rally",
+  "manifest_version": 2,
+  "name": "Rally Web Platform Test",
+  "version": "0.0.1",
+  "homepage_url": "https://github.com/mozilla-rally/rally-web-platform",
+  "permissions": ["tabs", "idle", "webNavigation", "storage"],
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "rally-web-platform-test@rally.mozilla.org",
+      "strict_min_version": "87.0"
+    }
+  },
+  "background": {
+    "scripts": ["dist/browser-polyfill.js", "dist/background.js"]
+  },
+  "content_scripts": [
+    {
+      "matches": ["*://localhost/*"],
+      "js": ["dist/content-script.js"]
+    }
+  ]
+}

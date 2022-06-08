@@ -1,0 +1,351 @@
+.header {
+  background-color: #fff;
+  box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.1);
+  padding: 1.625rem 2.5rem;
+  border: none;
+
+  @media (max-width: $SM-screen) {
+    padding: 1.125rem 1.0625rem;
+  }
+
+  @media (min-width: $LG-screen) {
+    border: 1px solid #cdcdd4;
+    padding: 1.62rem 2.5rem;
+  }
+
+  &__container {
+    height: 100%;
+    max-height: 32px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: relative;
+    margin-left: auto;
+    margin-right: auto;
+    max-width: 77.25rem;
+    z-index: 901;
+  }
+
+  &__logo {
+    float: left;
+    width: 100%;
+    height: 100%;
+    max-width: 200px;
+    min-height: 28px;
+    padding: 0;
+    margin: 0;
+
+    @media (max-width: $SM-screen) {
+      max-width: 146px;
+    }
+
+    &-link {
+      display: block;
+      margin: 0 auto;
+      height: 28px;
+
+      img {
+        display: block;
+      }
+    }
+  }
+
+  &__primary-nav {
+    margin-left: 66px;
+    width: 100%;
+    max-height: 27px;
+    padding: 0;
+    display: none;
+
+    @media (min-width: $LG-screen) {
+      display: block;
+    }
+
+    .primary-nav {
+      padding: 0;
+      margin: 0;
+
+      &__item {
+        margin-right: 40px;
+      }
+      .nav-link {
+        font-family: "Inter";
+        font-style: normal;
+        font-weight: 700;
+        font-size: 18px;
+        line-height: 27px;
+        text-decoration: none;
+        color: #000;
+        svg {
+          margin-left: 2px;
+          margin-left: 3px;
+        }
+      }
+    }
+  }
+
+  &__mobile-menu {
+    background-color: #fff;
+    border-radius: 0 0 4px 4px;
+    left: 0;
+    overflow: hidden;
+    position: absolute;
+    visibility: hidden;
+    width: 100%;
+    z-index: 900;
+    &[aria-hidden="true"] {
+      transition: max-height 0.4s cubic-bezier(0.215, 0.61, 0.355, 1),
+        visibility 0s linear 0.4s;
+      max-height: 0 !important;
+      @media (min-width: $LG-screen) {
+        max-height: unset;
+      }
+    }
+    &[aria-hidden="false"] {
+      transition: max-height 0.4s cubic-bezier(0.215, 0.61, 0.355, 1),
+        visibility 0s linear 0s;
+      visibility: visible;
+      box-shadow: 0 8px 12px 1px rgb(29 17 51 / 4%),
+        0 20px 16px 2px rgb(9 32 77 / 12%), 0 5px 10px -3px rgb(29 17 51 / 12%);
+    }
+    @media (min-width: $LG-screen) {
+      display: none;
+    }
+
+    .nav-mobile {
+      display: block;
+      float: unset;
+      max-width: 1440px;
+
+      @media (min-width: $LG-screen) {
+        display: none;
+      }
+      .dropdown-list {
+        margin-top: 15px;
+      }
+    }
+  }
+
+  .dropdown-wrapper {
+    &--show {
+      animation: fade-in 500ms forwards;
+      display: block;
+    }
+
+    &--hide {
+      animation: fade-out 500ms forwards;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    &--none {
+      display: none;
+    }
+
+    &[aria-label="open"] {
+      animation: fade-in 500ms forwards;
+    }
+
+    &[aria-label="close"] {
+      animation: fade-out 500ms forwards;
+    }
+
+    @keyframes fade-out {
+      0% {
+        opacity: 1;
+      }
+
+      100% {
+        opacity: 0;
+      }
+    }
+
+    @keyframes fade-in {
+      0% {
+        opacity: 0;
+      }
+
+      100% {
+        opacity: 1;
+      }
+    }
+  }
+
+  // DESKTOP Dropdown
+  .dropdown-list {
+    border: 1px solid #cdcdd4;
+    border-radius: 4px;
+    box-shadow: 0px 0px 1px rgba(0, 0, 0, 0.25),
+      0px 8px 48px rgba(34, 0, 51, 0.04), 0px 4px 8px rgba(15, 13, 26, 0.13);
+    max-width: 265px;
+    width: 100%;
+    position: absolute;
+    right: 0;
+    left: auto;
+    z-index: 999;
+    background-color: white;
+    margin-top: 5px;
+
+    &--mobile {
+      border: unset;
+      border-radius: unset;
+      box-shadow: unset;
+      position: unset;
+      width: 100%;
+      max-width: 100%;
+    }
+
+    // top: calc(100% + 8px);
+
+    &__item {
+      &:hover {
+        background-color: $color-light-gray-20;
+      }
+    }
+
+    &__item--top,
+    &__item--title {
+      &:hover {
+        background-color: transparent;
+      }
+    }
+
+    .list-item {
+      @extend %nav-list-item;
+
+      padding: 12px 12px 12px 20px;
+
+      &--top {
+        padding: 20px 20px;
+
+        p {
+          color: #000;
+          padding: 0;
+          margin: 0;
+        }
+      }
+
+      &--mobile-top {
+        padding: 11px 28px;
+        justify-content: center;
+        color: #000;
+      }
+
+      &--title {
+        padding: 12px 10px 4px 20px;
+        color: $color-marketing-gray-70;
+      }
+
+      &--bottom {
+        padding: 12px 28px;
+        font-size: 12px;
+        line-height: 18px;
+        color: $color-marketing-gray-70;
+      }
+    }
+
+    hr {
+      border: 1px solid #cdcdd4;
+      margin: 0;
+    }
+
+    .list-item--quit {
+      @extend %list-item-quit;
+    }
+
+    &:hover {
+      .dropdown__list {
+        display: block;
+      }
+    }
+  }
+
+  &__nav-toggle {
+    display: block;
+    background-image: none;
+    border: 0;
+    cursor: pointer;
+    flex-shrink: 0;
+    font-weight: 400;
+    height: 1.5rem;
+    letter-spacing: 0;
+    line-height: normal;
+    margin: 0 0 0 auto;
+    padding: 0.5rem;
+    text-align: left;
+    text-shadow: none;
+    text-transform: none;
+    width: 1.875rem;
+
+    &[aria-expanded="true"] {
+      background-color: transparent;
+    }
+
+    &-icon {
+      @extend %toggle-nav;
+      display: inline-block;
+      margin-bottom: 10px;
+      margin-top: 10px;
+      position: relative;
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      user-select: none;
+      vertical-align: middle;
+
+      &::before,
+      &::after {
+        @extend %toggle-nav;
+        left: 0;
+        content: "";
+        position: absolute;
+      }
+
+      &::before {
+        top: -10px;
+      }
+      &::after {
+        top: 10px;
+      }
+    }
+
+    &[aria-expanded="true"] &-icon::before {
+      @include transform-before;
+    }
+
+    &[aria-expanded="true"] &-icon::after {
+      @include transform-after;
+    }
+
+    @media (min-width: $LG-screen) {
+      display: none;
+    }
+  }
+
+  &__nav-toggle[aria-expanded="true"] &__nav-toggle {
+    background-color: transparent;
+  }
+
+  &__nav-toggle[aria-expanded="true"] &__nav-toggle-icon {
+    background-color: transparent;
+  }
+
+  &__dropdown {
+    display: none;
+    @media (min-width: $LG-screen) {
+      display: block;
+    }
+
+    float: right;
+    cursor: pointer;
+    overflow: hidden;
+
+    .dropdown__user-icon {
+      background-color: white;
+      margin: 0;
+      padding: 0;
+      width: 32px;
+      height: 32px;
+    }
+  }
+}

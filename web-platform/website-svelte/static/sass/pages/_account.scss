@@ -1,0 +1,202 @@
+.account-settings-container {
+  backface-visibility: hidden;
+  padding: 0;
+
+  .row {
+    margin: 0;
+    padding: 0;
+  }
+
+  .account-settings {
+    min-width: unset;
+    padding: 0;
+    margin: auto;
+
+    @media (min-width: $LG-screen) {
+      margin-left: 44px;
+    }
+
+    @media (min-width: 1313px) {
+      min-width: 660px;
+    }
+  }
+
+  .mzp-c-field-control--error {
+    border: 2px solid #c50042;
+  }
+}
+
+.settings-readonly {
+  .card {
+    padding: 12px;
+    justify-content: start;
+
+    @media (min-width: $MD-screen) {
+      padding: 24px;
+    }
+
+    .content-box {
+      font-family: "Inter";
+      font-style: normal;
+      &__title {
+        font-weight: 700;
+        font-size: 16px;
+        line-height: 18px;
+        color: $color-marketing-gray-99;
+        margin-bottom: 12px;
+      }
+
+      &__warning{
+        @extend %content-body-MD;
+        display: flex;
+        align-items: center; 
+        background: $color-marketing-gray-20;
+        padding: 16px; 
+        border-radius: 2px;
+        margin-bottom: 12px; 
+      
+        img{
+          padding-right: 12px; 
+        }
+
+        .warning-action{
+          margin-left: 2px; 
+        }
+      }
+
+      &__text {
+        @extend %content-body-MD;
+      }
+
+      &__info {
+        display: flex;
+        justify-content: space-between;
+        align-items: start;
+
+        &--google {
+          @extend %card-border;
+          align-items: center;
+          padding: 12px;
+
+          @media (max-width: $SM-screen) {
+            flex-direction: column;
+          }
+        }
+
+        .content-user-email {
+          color: $color-helper-gray;
+        }
+      }
+
+      &__description {
+        @extend %content-body-MD;
+        color: $color-helper-gray;
+
+        &--google {
+          display: flex;
+          align-items: center;
+          flex-direction: row;
+          @media (max-width: $SM-screen) {
+            margin-bottom: 10px;
+          }
+
+          .google-text {
+            @extend %content-body-XS;
+            max-width: 265px;
+            color: $color-marketing-gray-70;
+            margin-left: 8px;
+            @media (max-width: $MD-screen2) {
+              word-break: break-word;
+            }
+          }
+        }
+      }
+
+      &__link {
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        color: #000000;
+        text-decoration: underline;
+
+        img {
+          margin-left: 6px;
+        }
+
+        @media (max-width: $MD-screen) {
+          justify-content: end;
+          width: 100%;
+          font-size: 14px;
+        }
+
+        @media (max-width: $SM-screen) {
+          justify-content: start;
+
+          img {
+            width: unset;
+          }
+        }
+      }
+
+      .password-dots {
+        color: $color-marketing-gray-50;
+      }
+
+      .edit-btn {
+        cursor: pointer;
+      }
+    }
+
+    hr {
+      margin: 24px 0;
+      border: 1px solid $color-marketing-gray-30;
+    }
+  }
+}
+
+.settings-wrapper {
+  .card-bottom {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 24px;
+  }
+
+  .forgot-pw {
+    button {
+      border-color: transparent;
+      background: transparent;
+      cursor: pointer;
+      color: $color-blue-50;
+      font-weight: 600;
+      font-size: 14px;
+    }
+  }
+
+  .btn-group {
+    display: flex;
+    justify-content: space-between;
+    width: 272px;
+    float: right;
+
+    &--password {
+      width: auto;
+      .cancel {
+        margin-right: 8px;
+      }
+    }
+
+    &--delete {
+      width: auto;
+      float: left;
+      .cancel {
+        margin-right: 12px;
+      }
+    }
+
+    .card-button {
+      width: auto;
+      padding: 8px 21.82px;
+    }
+  }
+}

@@ -1,0 +1,65 @@
+%card-border {
+  border: 1px solid #cdcdd4;
+  border-radius: 4px;
+}
+
+%content-body-XS {
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 18px;
+}
+
+%content-body-MD {
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 24px;
+
+  @media (min-width: $MD-screen) {
+    font-size: 16px;
+  }
+}
+
+%XL-12-Col-account-creation {
+  display: grid;
+  justify-content: center;
+  grid-template-columns:
+    [gutter1-start] minmax(min-content, 58px) [gutter1-end center-start] repeat(
+      10,
+      minmax(min-content, 58px)
+    )
+    [center-end gutter2-start] minmax(min-content, 58px) [gutter2-end];
+  grid-template-rows: 95px 1fr 80px;
+}
+
+%toggle-nav {
+  border-radius: 10px;
+  background-color: $color-ink-80;
+  height: 4px;
+  transition: 0.2s;
+  transition-property: background-color, transform;
+  width: 100%;
+}
+
+%nav-list-item {
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 20px;
+  display: flex;
+  align-items: center;
+  float: none;
+  color: $color-ink-80;
+  text-decoration: none;
+  text-align: left;
+}
+
+%list-item-quit {
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+}

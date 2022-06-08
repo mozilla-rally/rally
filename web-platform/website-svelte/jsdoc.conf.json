@@ -1,0 +1,31 @@
+{
+  "tags": {
+    "allowUnknownTags": true,
+    "dictionaries": ["jsdoc", "closure"]
+  },
+  "source": {
+    "include": ["src"],
+    "includePattern": ".+\\.js(doc|x)?$",
+    "excludePattern": "(^|\\/|\\\\)_"
+  },
+  "plugins": ["plugins/markdown"],
+  "templates": {
+    "cleverLinks": true,
+    "monospaceLinks": true
+  },
+  "opts": {
+    "template": "./node_modules/tidy-jsdoc",
+    "destination": "docs",
+    "recurse": true,
+    "readme": "README.md"
+  },
+  "styles": {
+    "nav-title-size": "2rem",
+    "nav-title-font-weight": "900",
+    "nav-title-color": "#303030"
+  },
+  "metadata": {
+    "title": "Rally Study 01",
+    "logo": "images/rally-logo.png"
+  }
+}

@@ -1,0 +1,102 @@
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: initial;
+}
+
+html {
+  background-color: $bg-default;
+  box-sizing: border-box;
+  color: $c-default;
+  height: 100%;
+  overflow: visible;
+  scroll-behavior: smooth;
+  font-size: 100%; 
+}
+
+body {
+  overflow-x: hidden;
+  line-height: 1.6;
+  height: 100%;
+  font-size: 1rem; 
+}
+
+header {
+  flex-shrink: 0;
+}
+
+footer {
+  flex-shrink: 0;
+}
+
+main {
+  h2 {
+    font-size: 2.375rem;
+  }
+
+  h3 {
+    font-size: 1.25rem;
+    margin-bottom: 2em;
+    margin-top: 2em;
+  }
+
+  h4 {
+    font-size: 1rem;
+    margin-bottom: 0;
+    margin-top: 2em;
+  }
+
+  h3,
+  h4 {
+    font-family: "Metropolis", -apple-system, BlinkMacSystemFont, "Segoe UI",
+      Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji",
+      "Segoe UI Emoji", "Segoe UI Symbol";
+  }
+
+  hr {
+    border-top: 1px dashed $color-black;
+    margin: 22px 0;
+    margin-bottom: 2rem;
+  }
+
+  .section-header {
+    margin-bottom: 12px;
+  }
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  color: $color-ink-50;
+  margin: 0;
+}
+
+p,
+ul,
+ol {
+  color: $color-marketing-gray-70;
+}
+
+// Bootstrap CSS
+
+// 1. Include functions first (so you can manipulate colors, SVGs, calc, etc)
+@import "../bootstrap/functions";
+
+// 2. Include any default variable overrides here
+
+// 3. Include remainder of required Bootstrap stylesheets
+@import "../bootstrap/variables";
+@import "../bootstrap/mixins";
+@import "../bootstrap/utilities";
+@import "../bootstrap/utilities/api";
+@import "../bootstrap/root";
+@import "../bootstrap/buttons";
+@import "../bootstrap/dropdown";
+@import "../bootstrap/popover";
+@import "../bootstrap/grid";
+@import "../bootstrap/bootstrap-grid.scss"

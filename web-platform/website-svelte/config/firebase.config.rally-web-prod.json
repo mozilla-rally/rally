@@ -1,0 +1,9 @@
+{
+  "apiKey": "AIzaSyAv_gSjNRMbEq3BFCNHPn0soXMCx2IxLeM",
+  "authDomain": "members.rally.mozilla.org",
+  "projectId": "moz-fx-data-rally-w-prod-dfa4",
+  "storageBucket": "moz-fx-data-rally-w-prod-dfa4.appspot.com",
+  "messagingSenderId": "982322764946",
+  "appId": "1:982322764946:web:f9b6aea488cebde47ada4b",
+  "functionsHost": "https://us-central1-moz-fx-data-rally-w-prod-dfa4.cloudfunctions.net"
+}

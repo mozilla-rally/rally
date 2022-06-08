@@ -1,0 +1,319 @@
+/* vendored font faces not included in Protocol */
+/* Inter SemiBold 3.15 (https://github.com/rsms/inter/releases/download/v3.15/Inter-3.15.zip) */
+
+@font-face {
+  font-display: swap;
+  font-family: Inter;
+  font-style: normal;
+  font-weight: 600;
+  src: url("./fonts/inter/inter-600.woff") format("woff")
+}
+
+:root {
+  --content-width: 700px;
+  --onboarding-cta-height: 434px;
+  --onboarding-cta-offset: calc(var(--onboarding-cta-height) - 230px);
+
+  --main-sidebar-width: 15rem;
+  --main-notification-offset: calc(
+    var(--main-sidebar-width) * 0.5 + var(--content-width) * 0.5
+  );
+  /* --------- shared component variables ---------- */
+  /* study card variables */
+  --study-card-image-size: 60px;
+  --study-card-header-columns: var(--study-card-image-size) auto max-content;
+  --study-card-header-areas: "image title cta";
+}
+
+.gafc {
+  display: grid;
+  align-items: center;
+  grid-auto-flow: column;
+}
+
+.shortcut-callout {
+  font-size: 14px;
+  justify-self: end;
+  font-style: italic;
+  color: var(--color-blue-50);
+}
+
+
+h2.section-header {
+  margin-bottom: 12px;
+}
+
+main h3 {
+  font-size: 20px;
+  margin-bottom: 2em;
+  margin-top: 2em;
+}
+
+main h4 {
+  font-size: 16px;
+  margin-bottom: 0;
+  margin-top: 2em;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  color: var(--color-ink-50);
+  margin: 0;
+}
+
+p,
+ul,
+ol {
+  color: var(--color-marketing-gray-70);
+}
+
+main h3,
+main h4 {
+  font-family: "Metropolis", -apple-system, BlinkMacSystemFont, "Segoe UI",
+    Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji",
+    "Segoe UI Symbol";
+}
+
+main hr {
+  border-top: 1px dashed var(--color-black);
+  margin-bottom: 2rem;
+}
+
+.noise-background {
+  background: url("img/noise-texture-top.png"), url("img/noise-texture.png");
+  background-blend-mode: screen;
+}
+
+/* place the styling in src/routes/current-studies/Background.svelte in the stylesheet
+to ensure access to the background images. */
+.study-background {
+  background-image: linear-gradient(
+      to left,
+      rgba(248, 248, 250, var(--o1, 1)),
+      rgba(248, 248, 250, var(--o1, 1))
+    ),
+    url("img/data1-bg.png"), url("img/data2-bg.png"), url("img/cards1-bg.png"),
+    url("img/cards2-bg.png");
+  background-size: auto 900px;
+  background-repeat: no-repeat;
+  background-position: left top,
+    calc(15rem + var(--content-width) * 0.85) var(--data1, 0),
+    calc(15rem + var(--content-width) * 0.85) var(--data2, 0),
+    calc(15rem + var(--content-width) * 0.85) var(--card1, 0),
+    calc(15rem + var(--content-width) * 0.85) var(--card2, 0);
+  background-attachment: fixed; 
+}
+
+.radius-sm {
+  border-radius: 4px;
+}
+
+.body-copy {
+  color: var(--color-marketing-gray-70);
+}
+
+.text-head-sm {
+  font-size: 20px;
+  line-height: 24px;
+  letter-spacing: -1%;
+  font-weight: 700;
+}
+
+.text-body-xs {
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 18px;
+  color: var(--color-marketing-gray-60);
+}
+
+.text-body-sm {
+  font-size: 0.875rem;
+  line-height: 1.5;
+  font-weight: 400;
+}
+
+.text-body-md {
+  font-size: 1rem;
+  line-height: 1.5;
+  font-weight: 400;
+}
+
+.text-body-lg {
+  font-size: 1.125rem;
+  line-height: 1.5;
+  font-weight: 400;
+}
+
+.text-display-xxs {
+  font-size: 1rem;
+  line-height: 1.1;
+}
+
+.text-display-xs {
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+.text-display-sm {
+  font-size: 2rem;
+  font-weight: 700;
+}
+
+.text-display-md {
+  font-size: 2.5rem;
+  font-weight: 700;
+}
+
+.text-display-lg {
+  font-size: 3rem;
+  font-weight: 700;
+}
+
+.text-display-xl {
+  font-size: 3.5rem;
+  font-weight: 700;
+}
+
+.text-display-xxl {
+  font-size: 4rem;
+  font-weight: 700;
+}
+
+/* extended button states */
+
+.mzp-c-button.mzp-t-compact {
+  padding: 1px 10px;
+}
+
+.mzp-c-button.mzp-t-error {
+  background-color: var(--color-red-80);
+  border-color: var(--color-red-80);
+  color: var(--color-white);
+}
+
+.mzp-c-button.mzp-t-error:hover {
+  background-color: var(--color-red-90);
+  border-color: var(--color-red-90);
+  color: var(--color-white);
+}
+
+.mzp-c-button.mzp-t-icon {
+  border-radius: 50%;
+  width: max-content;
+  height: max-content;
+  padding: 1em;
+  display: grid;
+  place-items: center;
+}
+
+.mzp-c-button.mzp-t-secondary.mzp-t-text {
+  background-color: transparent;
+  border-color: transparent;
+  color: black;
+}
+
+.mzp-c-button.mzp-t-secondary.mzp-t-text:hover {
+  background-color: #ededf0;
+  border-color: #ededf0;
+  color: black;
+}
+
+.mzp-t-leave {
+  background-color: var(--color-marketing-gray-20);
+  color: var(--color-red-60);
+  border-color: var(--color-marketing-gray-20);
+}
+
+.mzp-t-leave:hover {
+  border-color: var(--color-red-60);
+  color: white;
+  background-color: var(--color-red-60);
+}
+
+.mzp-t-leave.mzp-t-product {
+  background-color: var(--color-red-60);
+  color: white;
+  border-color: var(--color-red-60);
+}
+
+.mzp-t-leave.mzp-t-product:hover {
+  background-color: var(--color-red-70);
+  border-color: var(--color-red-70);
+}
+
+.mzp-c-button.mzp-t-product.mzp-t-neutral {
+  background-color: var(--color-light-gray-30);
+  border-color: var(--color-light-gray-30);
+}
+
+.mzp-c-button.mzp-t-product.mzp-t-neutral:hover {
+  color: var(--color-dark-gray-70);
+  background-color: var(--color-light-gray-50);
+  border-color: var(--color-light-gray-50);
+}
+
+/* other design system tweaks */
+
+ul.mzp-u-list-styled {
+  margin-left: 1rem;
+}
+
+ul.mzp-u-list-styled.bigger-gap {
+  margin-bottom: 0;
+}
+
+ul.mzp-u-list-styled.bigger-gap > li + li {
+  margin-top: 16px;
+}
+
+/* special global component styles
+
+We'll use these global styles until we can assure use of :global in Svelte components again.
+
+See #141: https://github.com/mozilla-rally/core-addon/issues/141
+
+*/
+
+/*  use this class when you are putting a link with the ExternalLink icon at
+src/libs/components/icons/ExternalLink.svelte:
+
+<a class="external-link" href="https://example.com">See More <ExternalLink /></a>
+*/
+
+
+/* study card: make all anchor tags a marketing gray color */
+.study-card-container a,
+.study-card-container a:hover {
+  color: var(--color-marketing-gray-90);
+}
+
+/* study card: fix the padding on md buttons in the study join cta */
+.study-card-cta .mzp-c-button.mzp-t-md.mzp-t-product,
+.study-card-cta .mzp-c-button.mzp-t-md.mzp-t-leave {
+  padding: 4px 16px;
+}
+
+/* some modals have text on the left, image on the right (e.g. leaving study, leaving Rally). Use this class. */
+.split-content-modal {
+  display: grid;
+  grid-template-columns: auto auto;
+}
+
+.content-width {
+  width: var(--content-width);
+}
+
+.modal-call-flow {
+  display: grid;
+  grid-auto-flow: column;
+  grid-column-gap: var(--gap, 12px);
+}
+
+/* hide the google sign-in widget */
+.social_signin {
+  display: none;
+}

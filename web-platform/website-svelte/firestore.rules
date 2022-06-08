@@ -1,0 +1,30 @@
+rules_version = '2';
+service cloud.firestore {
+    match /databases/{database}/documents {
+        // FIXME site should not require read before user is authenticated.
+        // List of available studies is public.
+        match /studies/{studyId} {
+            allow read;
+        }
+
+        // All web users have read/write access to their own user document.
+        // Study extension users do not have access to this document.
+        match /users/{userId} {
+            allow read, update: if request.auth != null && request.auth.uid == userId && request.auth.token.email_verified == true;
+        }
+
+        // All web users have read/write/create access to all of their own enrolled studies.
+        // Study extension users have read-only access to their specific study document only.
+        match /users/{userId}/studies/{studyId} {
+            allow create, read, update: if request.auth != null && request.auth.uid == userId && request.auth.token.email_verified == true;
+            allow read: if request.auth != null && request.auth.token.firebaseUid == userId && request.auth.token.studyId == studyId;
+        }
+
+        // Study extension users have read-write access to their study document.
+        // This is so they can record their Rally ID and any other metadata.
+        // NOTE: Neither web users nor anyone else should have read access!
+        match /extensionUsers/{userId} {
+            allow read, update: if request.auth != null && request.auth.token.firebaseUid == userId;
+        }
+     }
+}

@@ -1,0 +1,29 @@
+
+.gafc {
+  display: grid;
+  align-items: center;
+  grid-auto-flow: column;
+}
+
+.shortcut-callout {
+  font-size: 14px;
+  justify-self: end;
+  font-style: italic;
+  color: $color-blue-50;
+}
+
+.call-flow {
+  display: grid;
+  grid-gap: 1.6rem;
+  align-items: center;
+  justify-content: center;
+}
+
+.cta-wrapper{
+  display: flex;
+  justify-content: center;
+
+  button{
+    margin-left: 20px; 
+  }
+}

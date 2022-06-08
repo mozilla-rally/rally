@@ -1,0 +1,85 @@
+
+
+.settings-container {
+  backface-visibility: hidden;
+  padding-left: 0;
+  padding-right: 0;
+  padding-top: 40px;
+  width: 800px;
+  max-width: 800px;
+  padding-bottom: 48px;
+  transform: translate(-50%, -50%);
+  position: absolute;
+  top: 50%;
+  left: 50%;
+}
+
+.settings-page-container {
+  display: grid;
+  justify-items: center;
+  width: 100%;
+  height: auto;
+ 
+}
+
+.content-container.account-settings {
+  margin: auto;
+  margin-right: 0;  
+  width: auto; 
+  grid-template-rows: auto;
+  grid-template-columns: 214px 30px auto !important;
+  grid-template-areas: "sider . main";
+}
+
+.settings-sider {
+  grid-area: sider;
+}
+
+.settings-main {
+  grid-area: main;
+}
+
+.card-container {
+  margin: auto;
+}
+
+.extra-padding{
+  padding: 20px; 
+}
+
+.sider-container {
+  margin: auto;
+}
+
+.settings {
+  width: 100%;
+}
+
+.settings.large-w {
+  width: 80%;
+}
+
+.settings.medium-w {
+  width: 65%;
+}
+
+.settings-title {
+  font-size: 24px;
+  text-align: center;
+}
+
+.btn-settings,
+.field-set-settings {
+  width: 80%;
+  margin: auto;
+}
+
+
+.inactive .twoFA {
+  background-color: var(--color-red-60);
+  border-color: var(--color-red-60);
+}
+
+footer{
+  bottom: auto;
+}

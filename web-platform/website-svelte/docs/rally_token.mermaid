@@ -1,0 +1,8 @@
+sequenceDiagram
+    Rally Website->>Firebase: User credentials
+    Firebase-->>Rally Website: IDToken (web)
+    Rally Website->>Rally Function: IDToken (web)
+    Rally Function-->>Rally Website: Custom Token
+    Rally Website->>Rally Extension: Custom Token
+    Rally Extension-->>Firebase: Custom Token
+    Firebase-)Rally Extension: IDToken (extension)
