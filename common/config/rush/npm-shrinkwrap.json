@@ -3337,7 +3337,7 @@
     },
     "@rush-temp/website-svelte": {
       "version": "file:projects/website-svelte.tgz",
-      "integrity": "sha512-k/DP0lK6+NfxKDWDqXz27xuVkfP0efJ4cVmjdcrV7nkqW8117LcLKp0BKjIAqj/wUHizDvhni3SstbRZP0Gx3g==",
+      "integrity": "sha512-PZ8aPFX8A3R3LspGfRzOM/EGOeZAualBJ3kawa3apdn84T0feP+eU5jtSD4EupZRmQ9WG/EnniuCA4SBBzcv6Q==",
       "requires": {
         "@babel/core": "^7.11.6",
         "@babel/plugin-transform-runtime": "^7.18.2",
