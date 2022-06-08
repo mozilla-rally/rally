@@ -137,6 +137,8 @@ static/firebase.config.json
 *.swo
 *~
 #Local Netlify folder
-.netlify 
+.netlify
 # Local Netlify folder
 .netlify
+
+functions
