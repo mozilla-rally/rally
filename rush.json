@@ -395,10 +395,10 @@
       "versionPolicyName": "RallyVersionPolicy"
     },
     {
-      "packageName": "functions",
+      "packageName": "@mozilla/rally-functions",
       "projectFolder": "web-platform/functions",
       "versionPolicyName": "RallyVersionPolicy",
-      "shouldPublish": false
+      "shouldPublish": true
     },
     {
       "packageName": "jest-webextension-mock",
@@ -413,7 +413,6 @@
     {
       "packageName": "website",
       "projectFolder": "web-platform/website",
-      "versionPolicyName": "RallyVersionPolicy",
       "shouldPublish": false
     }
     // {

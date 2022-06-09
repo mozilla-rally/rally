@@ -7,7 +7,7 @@
     "noImplicitReturns": true,
     "noUnusedLocals": true,
     "resolveJsonModule": true,
-    "outDir": "lib",
+    "outDir": "dist",
     "sourceMap": true,
     "strict": true,
     "target": "es2017",
@@ -19,7 +19,7 @@
         "afterDeclarations": true,
         "type": "config",
         "rootDir": "./src",
-        "outDir": "./lib",
+        "outDir": "./dist",
         "resolvers": [{ "dir": "./src" }]
       }
     ]

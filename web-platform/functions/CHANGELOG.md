@@ -1,4 +1,4 @@
-# Change Log - @mozilla/rally-sdk
+# Change Log - @mozilla/rally-functions
 
 This log was last generated on Fri, 10 Jun 2022 04:28:17 GMT and should not be manually modified.
 
