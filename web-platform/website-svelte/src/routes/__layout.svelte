@@ -7,7 +7,11 @@
   import Navbar from "./_Navbar.svelte";
   import ContentContainer from "$lib/layouts/main/ContentContainer.svelte";
   import NotificationCenter from "$lib/components/notifications/NotificationCenter.svelte";
-  import { store, isAuthenticated, isExtensionConnected } from "$lib/stores/app-store";
+  import {
+    store,
+    isAuthenticated,
+    isExtensionConnected,
+  } from "$lib/stores/app-store";
   import isMounted from "$lib/is-mounted";
   import profileCompletionStatus from "../lib/stores/profile-completion-status";
   import notifications from "../lib/components/notifications";
@@ -23,7 +27,7 @@
 
   let leaveModal = false;
   let Dialog;
-  let clazz = ""
+  let clazz = "";
 
   onMount(async () => {
     Dialog = (await import("../lib/components/Dialog.svelte")).default;
@@ -31,7 +35,7 @@
 
   const mounted = isMounted();
 
-  $: clazz = $page.path === "/account-settings" ? "account-settings": ""
+  $: clazz = $page.path === "/account-settings" ? "account-settings" : "";
 </script>
 
 <svelte:head>
@@ -61,7 +65,8 @@
 {/if}
 
 {#if leaveModal && $mounted && Dialog}
-  <Dialog
+  <svelte:component
+    this={Dialog}
     width="var(--content-width)"
     on:dismiss={() => {
       leaveModal = false;
@@ -133,7 +138,7 @@
         Cancel
       </Button>
     </div>
-  </Dialog>
+  </svelte:component>
 {/if}
 
 <NotificationCenter sidebarOffset />

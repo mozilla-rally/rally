@@ -66,7 +66,7 @@
                   <a
                     class="dropdown-item text-body-sm"
                     on:click={() => dispatch("leave")}
-                    href="#"
+                    href="/"
                     >{connected ? "Leave study" : "Don't join this study"}</a
                   >
                 </li>
@@ -150,7 +150,7 @@
                 color: ${
                   (studyCategories[tag] && studyCategories[tag].color) ||
                   "var(--color-marketing-gray-100)"
-                }; 
+                };
                 background: ${
                   (studyCategories[tag] && studyCategories[tag].background) ||
                   "white"

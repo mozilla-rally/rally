@@ -4,8 +4,6 @@
    * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
   import { onMount } from "svelte";
-  export let step = 1;
-  export let totalSteps = 3;
   export let transparent = false;
 
   let scrollY = 0;
@@ -46,7 +44,7 @@
 </div>
 
 <style>
-  .onboarding-cta-container{
+  .onboarding-cta-container {
     margin-bottom: 40px;
   }
 </style>

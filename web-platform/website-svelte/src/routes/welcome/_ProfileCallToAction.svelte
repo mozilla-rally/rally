@@ -1,6 +1,4 @@
 <script lang="ts">
-  import OnboardingCallToActionContainer from "$lib/layouts/onboarding/CallToActionContainer.svelte";
-
   import { createEventDispatcher } from "svelte";
   import { fade, fly } from "svelte/transition";
   import Arrow02 from "$lib/components/Arrow02.svelte";
@@ -23,10 +21,16 @@
 <svelte:window bind:scrollY />
 
 <div class="cta-wrapper">
-  <Button btnID= "save" size="xl" product on:click={() => dispatch("save")}>
+  <Button btnID="save" size="xl" product on:click={() => dispatch("save")}>
     Save & Continue
   </Button>
-  <Button btnID= "skip"  size="xl" product secondary on:click={() => dispatch("skip")}>
+  <Button
+    btnID="skip"
+    size="xl"
+    product
+    secondary
+    on:click={() => dispatch("skip")}
+  >
     Skip for Now
   </Button>
   {#if showArrow && intro}

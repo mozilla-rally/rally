@@ -82,16 +82,16 @@
     <div class="content-box">
       <div class="content-box__title">Email</div>
       {#if showWarning}
-      <div class="content-box__warning">
-        <img src="img/icon-info-warning.svg" alt="warning icon" />
-        <div>
-          Email not verified. <button
-            on:click={resendVerificationEmail}
-            class="warning-action rwp-link"
-            >Resend verification email
-          </button>
+        <div class="content-box__warning">
+          <img src="img/icon-info-warning.svg" alt="warning icon" />
+          <div>
+            Email not verified. <button
+              on:click={resendVerificationEmail}
+              class="warning-action rwp-link"
+              >Resend verification email
+            </button>
+          </div>
         </div>
-      </div>
       {/if}
       <div class="content-box__info">
         <div class="content-user-email">
@@ -153,14 +153,3 @@
     </div>
   </div></Card
 >
-
-<style>
-  .not-verified-warning {
-    color: red;
-  }
-
-  .not-verified-warning--action {
-    text-decoration: underline;
-    cursor: pointer;
-  }
-</style>

@@ -3,7 +3,7 @@
    * License, v. 2.0. If a copy of the MPL was not distributed with this
    * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-  /* 
+  /*
     NOTE: this is a full pattern integration of the study card. It uses the StudyCard, StudyCardHeader,
     and dialog components. This is the component to use _in practice_.
 
@@ -79,7 +79,8 @@
 </StudyCard>
 
 {#if leaveModal && Dialog}
-  <Dialog
+  <svelte:component
+    this={Dialog}
     width={"482px"}
     showCloseButton={false}
     on:dismiss={() => {
@@ -120,11 +121,12 @@
         Don't join this study
       </Button>
     </div>
-  </Dialog>
+  </svelte:component>
 {/if}
 
 {#if joinModal && mounted && Dialog}
-  <Dialog
+  <svelte:component
+    this={Dialog}
     height={joined ? undefined : "auto"}
     topPadding={joined ? undefined : "calc(10vh - 20px)"}
     width={joined ? "673px" : undefined}
@@ -219,7 +221,7 @@
         {#if joined}Leave Study{:else}Add study extension{/if}
       </Button>
     </div>
-  </Dialog>
+  </svelte:component>
 {/if}
 
 <style>
