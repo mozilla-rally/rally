@@ -9,7 +9,7 @@
     "config:web:demo": "cp config/firebase.config.demo-rally.json static/firebase.config.json",
     "config:web:staging": "cp config/firebase.config.rally-web-stage.json static/firebase.config.json",
     "dev:web": "npm run pre-build && npm run config:web:demo && svelte-kit dev",
-    "build": "rm -rf .svelte-kit && npm run pre-build && svelte-kit build && npm run compile:sass",
+    "build": "npm run pre-build && svelte-kit build && npm run compile:sass",
     "build:functions": "cd functions && npm install && npm run build && cd ..",
     "build:web:emulator": "npm run pre-build && npm run config:web:demo && svelte-kit build -- --config-emulator-mode",
     "watch:functions": "watch 'npm run build:functions && sleep 1 && npm run load:data' ./functions/src --ignoreDirectoryPattern='/generated/g' > /dev/null",
