@@ -1,0 +1,29 @@
+{
+  "name": "@mozilla/rally-functions",
+  "entries": [
+    {
+      "version": "0.9.17",
+      "tag": "@mozilla/rally-functions_v0.9.17",
+      "date": "Thu, 09 Jun 2022 20:59:37 GMT",
+      "comments": {}
+    },
+    {
+      "version": "0.9.16",
+      "tag": "@mozilla/rally-functions_v0.9.16",
+      "date": "Thu, 09 Jun 2022 19:17:54 GMT",
+      "comments": {}
+    },
+    {
+      "version": "0.9.15",
+      "tag": "@mozilla/rally-functions_v0.9.15",
+      "date": "Thu, 09 Jun 2022 19:16:47 GMT",
+      "comments": {}
+    },
+    {
+      "version": "0.9.14",
+      "tag": "@mozilla/rally-functions_v0.9.14",
+      "date": "Thu, 09 Jun 2022 19:04:11 GMT",
+      "comments": {}
+    }
+  ]
+}
