@@ -37,7 +37,7 @@ function createStaticAdapter() {
   return {
     name: adapterObj.name,
     async adapt(builder) {
-      const patchedBuilder = { ...{ log: { warn: console.warn } }, ...builder };
+      const patchedBuilder = { ...{ log: { warn: console.log } }, ...builder };
       return adapterObj.adapt(patchedBuilder);
     }
   }
