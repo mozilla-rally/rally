@@ -15,7 +15,11 @@ const config = {
   kit: {
     // hydrate the <div id="svelte"> element in src/app.html
     target: "#rally",
-    adapter: adapter(),
+    adapter: adapter({
+      env: {
+        log: { warn }
+      }
+    }),
     ssr: false,
     vite: {
       plugins: [
