@@ -15,11 +15,7 @@ const config = {
   kit: {
     // hydrate the <div id="svelte"> element in src/app.html
     target: "#rally",
-    adapter: adapter({
-      env: {
-        log: { warn: console.warn }
-      }
-    }),
+    adapter: createStaticAdapter(),
     ssr: false,
     vite: {
       plugins: [
@@ -34,5 +30,17 @@ const config = {
     },
   },
 };
+
+function createStaticAdapter() {
+  const adapterObj = adapter();
+
+  return {
+    name: adapterObj.name,
+    async adapt(builder) {
+      const patchedBuilder = { ...{ log: { warn: console.warn } }, ...builder };
+      return adapterObj.adapt(patchedBuilder);
+    }
+  }
+}
 
 export default config;
