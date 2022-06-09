@@ -26425,20 +26425,16 @@
       "dependencies": {
         "@colors/colors": {
           "version": "1.5.0",
-          "bundled": true,
           "optional": true
         },
         "@gar/promisify": {
-          "version": "1.1.3",
-          "bundled": true
+          "version": "1.1.3"
         },
         "@isaacs/string-locale-compare": {
-          "version": "1.1.0",
-          "bundled": true
+          "version": "1.1.0"
         },
         "@npmcli/arborist": {
           "version": "5.2.1",
-          "bundled": true,
           "requires": {
             "@isaacs/string-locale-compare": "^1.1.0",
             "@npmcli/installed-package-contents": "^1.0.7",
@@ -26477,12 +26473,10 @@
           }
         },
         "@npmcli/ci-detect": {
-          "version": "2.0.0",
-          "bundled": true
+          "version": "2.0.0"
         },
         "@npmcli/config": {
           "version": "4.1.0",
-          "bundled": true,
           "requires": {
             "@npmcli/map-workspaces": "^2.0.2",
             "ini": "^3.0.0",
@@ -26496,14 +26490,12 @@
         },
         "@npmcli/disparity-colors": {
           "version": "2.0.0",
-          "bundled": true,
           "requires": {
             "ansi-styles": "^4.3.0"
           }
         },
         "@npmcli/fs": {
           "version": "2.1.0",
-          "bundled": true,
           "requires": {
             "@gar/promisify": "^1.1.3",
             "semver": "^7.3.5"
@@ -26511,7 +26503,6 @@
         },
         "@npmcli/git": {
           "version": "3.0.1",
-          "bundled": true,
           "requires": {
             "@npmcli/promise-spawn": "^3.0.0",
             "lru-cache": "^7.4.4",
@@ -26526,7 +26517,6 @@
         },
         "@npmcli/installed-package-contents": {
           "version": "1.0.7",
-          "bundled": true,
           "requires": {
             "npm-bundled": "^1.1.1",
             "npm-normalize-package-bin": "^1.0.1"
@@ -26534,7 +26524,6 @@
         },
         "@npmcli/map-workspaces": {
           "version": "2.0.3",
-          "bundled": true,
           "requires": {
             "@npmcli/name-from-folder": "^1.0.1",
             "glob": "^8.0.1",
@@ -26544,7 +26533,6 @@
         },
         "@npmcli/metavuln-calculator": {
           "version": "3.1.0",
-          "bundled": true,
           "requires": {
             "cacache": "^16.0.0",
             "json-parse-even-better-errors": "^2.3.1",
@@ -26554,37 +26542,31 @@
         },
         "@npmcli/move-file": {
           "version": "2.0.0",
-          "bundled": true,
           "requires": {
             "mkdirp": "^1.0.4",
             "rimraf": "^3.0.2"
           }
         },
         "@npmcli/name-from-folder": {
-          "version": "1.0.1",
-          "bundled": true
+          "version": "1.0.1"
         },
         "@npmcli/node-gyp": {
-          "version": "2.0.0",
-          "bundled": true
+          "version": "2.0.0"
         },
         "@npmcli/package-json": {
           "version": "2.0.0",
-          "bundled": true,
           "requires": {
             "json-parse-even-better-errors": "^2.3.1"
           }
         },
         "@npmcli/promise-spawn": {
           "version": "3.0.0",
-          "bundled": true,
           "requires": {
             "infer-owner": "^1.0.4"
           }
         },
         "@npmcli/run-script": {
           "version": "3.0.2",
-          "bundled": true,
           "requires": {
             "@npmcli/node-gyp": "^2.0.0",
             "@npmcli/promise-spawn": "^3.0.0",
@@ -26593,23 +26575,19 @@
           }
         },
         "@tootallnate/once": {
-          "version": "2.0.0",
-          "bundled": true
+          "version": "2.0.0"
         },
         "abbrev": {
-          "version": "1.1.1",
-          "bundled": true
+          "version": "1.1.1"
         },
         "agent-base": {
           "version": "6.0.2",
-          "bundled": true,
           "requires": {
             "debug": "4"
           }
         },
         "agentkeepalive": {
           "version": "4.2.1",
-          "bundled": true,
           "requires": {
             "debug": "^4.1.0",
             "depd": "^1.1.2",
@@ -26618,50 +26596,41 @@
         },
         "aggregate-error": {
           "version": "3.1.0",
-          "bundled": true,
           "requires": {
             "clean-stack": "^2.0.0",
             "indent-string": "^4.0.0"
           }
         },
         "ansi-regex": {
-          "version": "5.0.1",
-          "bundled": true
+          "version": "5.0.1"
         },
         "ansi-styles": {
           "version": "4.3.0",
-          "bundled": true,
           "requires": {
             "color-convert": "^2.0.1"
           }
         },
         "aproba": {
-          "version": "2.0.0",
-          "bundled": true
+          "version": "2.0.0"
         },
         "archy": {
-          "version": "1.0.0",
-          "bundled": true
+          "version": "1.0.0"
         },
         "are-we-there-yet": {
           "version": "3.0.0",
-          "bundled": true,
           "requires": {
             "delegates": "^1.0.0",
             "readable-stream": "^3.6.0"
           }
         },
         "asap": {
-          "version": "2.0.6",
-          "bundled": true
+          "version": "2.0.6"
         },
         "balanced-match": {
-          "version": "1.0.2",
-          "bundled": true
+          "version": "1.0.2"
         },
         "bin-links": {
           "version": "3.0.1",
-          "bundled": true,
           "requires": {
             "cmd-shim": "^5.0.0",
             "mkdirp-infer-owner": "^2.0.0",
@@ -26672,26 +26641,22 @@
           }
         },
         "binary-extensions": {
-          "version": "2.2.0",
-          "bundled": true
+          "version": "2.2.0"
         },
         "brace-expansion": {
           "version": "2.0.1",
-          "bundled": true,
           "requires": {
             "balanced-match": "^1.0.0"
           }
         },
         "builtins": {
           "version": "5.0.1",
-          "bundled": true,
           "requires": {
             "semver": "^7.0.0"
           }
         },
         "cacache": {
           "version": "16.1.0",
-          "bundled": true,
           "requires": {
             "@npmcli/fs": "^2.1.0",
             "@npmcli/move-file": "^2.0.0",
@@ -26715,30 +26680,25 @@
         },
         "chalk": {
           "version": "4.1.2",
-          "bundled": true,
           "requires": {
             "ansi-styles": "^4.1.0",
             "supports-color": "^7.1.0"
           }
         },
         "chownr": {
-          "version": "2.0.0",
-          "bundled": true
+          "version": "2.0.0"
         },
         "cidr-regex": {
           "version": "3.1.1",
-          "bundled": true,
           "requires": {
             "ip-regex": "^4.1.0"
           }
         },
         "clean-stack": {
-          "version": "2.2.0",
-          "bundled": true
+          "version": "2.2.0"
         },
         "cli-columns": {
           "version": "4.0.0",
-          "bundled": true,
           "requires": {
             "string-width": "^4.2.3",
             "strip-ansi": "^6.0.1"
@@ -26746,144 +26706,117 @@
         },
         "cli-table3": {
           "version": "0.6.2",
-          "bundled": true,
           "requires": {
             "@colors/colors": "1.5.0",
             "string-width": "^4.2.0"
           }
         },
         "clone": {
-          "version": "1.0.4",
-          "bundled": true
+          "version": "1.0.4"
         },
         "cmd-shim": {
           "version": "5.0.0",
-          "bundled": true,
           "requires": {
             "mkdirp-infer-owner": "^2.0.0"
           }
         },
         "color-convert": {
           "version": "2.0.1",
-          "bundled": true,
           "requires": {
             "color-name": "~1.1.4"
           }
         },
         "color-name": {
-          "version": "1.1.4",
-          "bundled": true
+          "version": "1.1.4"
         },
         "color-support": {
-          "version": "1.1.3",
-          "bundled": true
+          "version": "1.1.3"
         },
         "columnify": {
           "version": "1.6.0",
-          "bundled": true,
           "requires": {
             "strip-ansi": "^6.0.1",
             "wcwidth": "^1.0.0"
           }
         },
         "common-ancestor-path": {
-          "version": "1.0.1",
-          "bundled": true
+          "version": "1.0.1"
         },
         "concat-map": {
-          "version": "0.0.1",
-          "bundled": true
+          "version": "0.0.1"
         },
         "console-control-strings": {
-          "version": "1.1.0",
-          "bundled": true
+          "version": "1.1.0"
         },
         "debug": {
           "version": "4.3.4",
-          "bundled": true,
           "requires": {
             "ms": "2.1.2"
           },
           "dependencies": {
             "ms": {
-              "version": "2.1.2",
-              "bundled": true
+              "version": "2.1.2"
             }
           }
         },
         "debuglog": {
-          "version": "1.0.1",
-          "bundled": true
+          "version": "1.0.1"
         },
         "defaults": {
           "version": "1.0.3",
-          "bundled": true,
           "requires": {
             "clone": "^1.0.2"
           }
         },
         "delegates": {
-          "version": "1.0.0",
-          "bundled": true
+          "version": "1.0.0"
         },
         "depd": {
-          "version": "1.1.2",
-          "bundled": true
+          "version": "1.1.2"
         },
         "dezalgo": {
           "version": "1.0.4",
-          "bundled": true,
           "requires": {
             "asap": "^2.0.0",
             "wrappy": "1"
           }
         },
         "diff": {
-          "version": "5.0.0",
-          "bundled": true
+          "version": "5.0.0"
         },
         "emoji-regex": {
-          "version": "8.0.0",
-          "bundled": true
+          "version": "8.0.0"
         },
         "encoding": {
           "version": "0.1.13",
-          "bundled": true,
           "optional": true,
           "requires": {
             "iconv-lite": "^0.6.2"
           }
         },
         "env-paths": {
-          "version": "2.2.1",
-          "bundled": true
+          "version": "2.2.1"
         },
         "err-code": {
-          "version": "2.0.3",
-          "bundled": true
+          "version": "2.0.3"
         },
         "fastest-levenshtein": {
-          "version": "1.0.12",
-          "bundled": true
+          "version": "1.0.12"
         },
         "fs-minipass": {
           "version": "2.1.0",
-          "bundled": true,
           "requires": {
             "minipass": "^3.0.0"
           }
         },
         "fs.realpath": {
-          "version": "1.0.0",
-          "bundled": true
+          "version": "1.0.0"
         },
         "function-bind": {
-          "version": "1.1.1",
-          "bundled": true
+          "version": "1.1.1"
         },
         "gauge": {
           "version": "4.0.4",
-          "bundled": true,
           "requires": {
             "aproba": "^1.0.3 || ^2.0.0",
             "color-support": "^1.1.3",
@@ -26897,7 +26830,6 @@
         },
         "glob": {
           "version": "8.0.3",
-          "bundled": true,
           "requires": {
             "fs.realpath": "^1.0.0",
             "inflight": "^1.0.4",
@@ -26907,38 +26839,31 @@
           }
         },
         "graceful-fs": {
-          "version": "4.2.10",
-          "bundled": true
+          "version": "4.2.10"
         },
         "has": {
           "version": "1.0.3",
-          "bundled": true,
           "requires": {
             "function-bind": "^1.1.1"
           }
         },
         "has-flag": {
-          "version": "4.0.0",
-          "bundled": true
+          "version": "4.0.0"
         },
         "has-unicode": {
-          "version": "2.0.1",
-          "bundled": true
+          "version": "2.0.1"
         },
         "hosted-git-info": {
           "version": "5.0.0",
-          "bundled": true,
           "requires": {
             "lru-cache": "^7.5.1"
           }
         },
         "http-cache-semantics": {
-          "version": "4.1.0",
-          "bundled": true
+          "version": "4.1.0"
         },
         "http-proxy-agent": {
           "version": "5.0.0",
-          "bundled": true,
           "requires": {
             "@tootallnate/once": "2",
             "agent-base": "6",
@@ -26947,7 +26872,6 @@
         },
         "https-proxy-agent": {
           "version": "5.0.1",
-          "bundled": true,
           "requires": {
             "agent-base": "6",
             "debug": "4"
@@ -26955,14 +26879,12 @@
         },
         "humanize-ms": {
           "version": "1.2.1",
-          "bundled": true,
           "requires": {
             "ms": "^2.0.0"
           }
         },
         "iconv-lite": {
           "version": "0.6.3",
-          "bundled": true,
           "optional": true,
           "requires": {
             "safer-buffer": ">= 2.1.2 < 3.0.0"
@@ -26970,42 +26892,34 @@
         },
         "ignore-walk": {
           "version": "5.0.1",
-          "bundled": true,
           "requires": {
             "minimatch": "^5.0.1"
           }
         },
         "imurmurhash": {
-          "version": "0.1.4",
-          "bundled": true
+          "version": "0.1.4"
         },
         "indent-string": {
-          "version": "4.0.0",
-          "bundled": true
+          "version": "4.0.0"
         },
         "infer-owner": {
-          "version": "1.0.4",
-          "bundled": true
+          "version": "1.0.4"
         },
         "inflight": {
           "version": "1.0.6",
-          "bundled": true,
           "requires": {
             "once": "^1.3.0",
             "wrappy": "1"
           }
         },
         "inherits": {
-          "version": "2.0.4",
-          "bundled": true
+          "version": "2.0.4"
         },
         "ini": {
-          "version": "3.0.0",
-          "bundled": true
+          "version": "3.0.0"
         },
         "init-package-json": {
           "version": "3.0.2",
-          "bundled": true,
           "requires": {
             "npm-package-arg": "^9.0.1",
             "promzard": "^0.3.0",
@@ -27017,62 +26931,49 @@
           }
         },
         "ip": {
-          "version": "1.1.8",
-          "bundled": true
+          "version": "1.1.8"
         },
         "ip-regex": {
-          "version": "4.3.0",
-          "bundled": true
+          "version": "4.3.0"
         },
         "is-cidr": {
           "version": "4.0.2",
-          "bundled": true,
           "requires": {
             "cidr-regex": "^3.1.1"
           }
         },
         "is-core-module": {
           "version": "2.9.0",
-          "bundled": true,
           "requires": {
             "has": "^1.0.3"
           }
         },
         "is-fullwidth-code-point": {
-          "version": "3.0.0",
-          "bundled": true
+          "version": "3.0.0"
         },
         "is-lambda": {
-          "version": "1.0.1",
-          "bundled": true
+          "version": "1.0.1"
         },
         "isexe": {
-          "version": "2.0.0",
-          "bundled": true
+          "version": "2.0.0"
         },
         "json-parse-even-better-errors": {
-          "version": "2.3.1",
-          "bundled": true
+          "version": "2.3.1"
         },
         "json-stringify-nice": {
-          "version": "1.1.4",
-          "bundled": true
+          "version": "1.1.4"
         },
         "jsonparse": {
-          "version": "1.3.1",
-          "bundled": true
+          "version": "1.3.1"
         },
         "just-diff": {
-          "version": "5.0.2",
-          "bundled": true
+          "version": "5.0.2"
         },
         "just-diff-apply": {
-          "version": "5.2.0",
-          "bundled": true
+          "version": "5.2.0"
         },
         "libnpmaccess": {
           "version": "6.0.3",
-          "bundled": true,
           "requires": {
             "aproba": "^2.0.0",
             "minipass": "^3.1.1",
@@ -27082,7 +26983,6 @@
         },
         "libnpmdiff": {
           "version": "4.0.3",
-          "bundled": true,
           "requires": {
             "@npmcli/disparity-colors": "^2.0.0",
             "@npmcli/installed-package-contents": "^1.0.7",
@@ -27096,7 +26996,6 @@
         },
         "libnpmexec": {
           "version": "4.0.6",
-          "bundled": true,
           "requires": {
             "@npmcli/arborist": "^5.0.0",
             "@npmcli/ci-detect": "^2.0.0",
@@ -27114,14 +27013,12 @@
         },
         "libnpmfund": {
           "version": "3.0.2",
-          "bundled": true,
           "requires": {
             "@npmcli/arborist": "^5.0.0"
           }
         },
         "libnpmhook": {
           "version": "8.0.3",
-          "bundled": true,
           "requires": {
             "aproba": "^2.0.0",
             "npm-registry-fetch": "^13.0.0"
@@ -27129,7 +27026,6 @@
         },
         "libnpmorg": {
           "version": "4.0.3",
-          "bundled": true,
           "requires": {
             "aproba": "^2.0.0",
             "npm-registry-fetch": "^13.0.0"
@@ -27137,7 +27033,6 @@
         },
         "libnpmpack": {
           "version": "4.1.0",
-          "bundled": true,
           "requires": {
             "@npmcli/run-script": "^3.0.0",
             "npm-package-arg": "^9.0.1",
@@ -27146,7 +27041,6 @@
         },
         "libnpmpublish": {
           "version": "6.0.4",
-          "bundled": true,
           "requires": {
             "normalize-package-data": "^4.0.0",
             "npm-package-arg": "^9.0.1",
@@ -27157,14 +27051,12 @@
         },
         "libnpmsearch": {
           "version": "5.0.3",
-          "bundled": true,
           "requires": {
             "npm-registry-fetch": "^13.0.0"
           }
         },
         "libnpmteam": {
           "version": "4.0.3",
-          "bundled": true,
           "requires": {
             "aproba": "^2.0.0",
             "npm-registry-fetch": "^13.0.0"
@@ -27172,7 +27064,6 @@
         },
         "libnpmversion": {
           "version": "3.0.4",
-          "bundled": true,
           "requires": {
             "@npmcli/git": "^3.0.0",
             "@npmcli/run-script": "^3.0.0",
@@ -27182,12 +27073,10 @@
           }
         },
         "lru-cache": {
-          "version": "7.9.0",
-          "bundled": true
+          "version": "7.9.0"
         },
         "make-fetch-happen": {
           "version": "10.1.6",
-          "bundled": true,
           "requires": {
             "agentkeepalive": "^4.2.1",
             "cacache": "^16.1.0",
@@ -27209,28 +27098,24 @@
         },
         "minimatch": {
           "version": "5.1.0",
-          "bundled": true,
           "requires": {
             "brace-expansion": "^2.0.1"
           }
         },
         "minipass": {
           "version": "3.1.6",
-          "bundled": true,
           "requires": {
             "yallist": "^4.0.0"
           }
         },
         "minipass-collect": {
           "version": "1.0.2",
-          "bundled": true,
           "requires": {
             "minipass": "^3.0.0"
           }
         },
         "minipass-fetch": {
           "version": "2.1.0",
-          "bundled": true,
           "requires": {
             "encoding": "^0.1.13",
             "minipass": "^3.1.6",
@@ -27240,14 +27125,12 @@
         },
         "minipass-flush": {
           "version": "1.0.5",
-          "bundled": true,
           "requires": {
             "minipass": "^3.0.0"
           }
         },
         "minipass-json-stream": {
           "version": "1.0.1",
-          "bundled": true,
           "requires": {
             "jsonparse": "^1.3.1",
             "minipass": "^3.0.0"
@@ -27255,33 +27138,28 @@
         },
         "minipass-pipeline": {
           "version": "1.2.4",
-          "bundled": true,
           "requires": {
             "minipass": "^3.0.0"
           }
         },
         "minipass-sized": {
           "version": "1.0.3",
-          "bundled": true,
           "requires": {
             "minipass": "^3.0.0"
           }
         },
         "minizlib": {
           "version": "2.1.2",
-          "bundled": true,
           "requires": {
             "minipass": "^3.0.0",
             "yallist": "^4.0.0"
           }
         },
         "mkdirp": {
-          "version": "1.0.4",
-          "bundled": true
+          "version": "1.0.4"
         },
         "mkdirp-infer-owner": {
           "version": "2.0.0",
-          "bundled": true,
           "requires": {
             "chownr": "^2.0.0",
             "infer-owner": "^1.0.4",
@@ -27289,20 +27167,16 @@
           }
         },
         "ms": {
-          "version": "2.1.3",
-          "bundled": true
+          "version": "2.1.3"
         },
         "mute-stream": {
-          "version": "0.0.8",
-          "bundled": true
+          "version": "0.0.8"
         },
         "negotiator": {
-          "version": "0.6.3",
-          "bundled": true
+          "version": "0.6.3"
         },
         "node-gyp": {
           "version": "9.0.0",
-          "bundled": true,
           "requires": {
             "env-paths": "^2.2.0",
             "glob": "^7.1.4",
@@ -27318,7 +27192,6 @@
           "dependencies": {
             "brace-expansion": {
               "version": "1.1.11",
-              "bundled": true,
               "requires": {
                 "balanced-match": "^1.0.0",
                 "concat-map": "0.0.1"
@@ -27326,7 +27199,6 @@
             },
             "glob": {
               "version": "7.2.3",
-              "bundled": true,
               "requires": {
                 "fs.realpath": "^1.0.0",
                 "inflight": "^1.0.4",
@@ -27338,7 +27210,6 @@
             },
             "minimatch": {
               "version": "3.1.2",
-              "bundled": true,
               "requires": {
                 "brace-expansion": "^1.1.7"
               }
@@ -27347,14 +27218,12 @@
         },
         "nopt": {
           "version": "5.0.0",
-          "bundled": true,
           "requires": {
             "abbrev": "1"
           }
         },
         "normalize-package-data": {
           "version": "4.0.0",
-          "bundled": true,
           "requires": {
             "hosted-git-info": "^5.0.0",
             "is-core-module": "^2.8.1",
@@ -27364,32 +27233,27 @@
         },
         "npm-audit-report": {
           "version": "3.0.0",
-          "bundled": true,
           "requires": {
             "chalk": "^4.0.0"
           }
         },
         "npm-bundled": {
           "version": "1.1.2",
-          "bundled": true,
           "requires": {
             "npm-normalize-package-bin": "^1.0.1"
           }
         },
         "npm-install-checks": {
           "version": "5.0.0",
-          "bundled": true,
           "requires": {
             "semver": "^7.1.1"
           }
         },
         "npm-normalize-package-bin": {
-          "version": "1.0.1",
-          "bundled": true
+          "version": "1.0.1"
         },
         "npm-package-arg": {
           "version": "9.0.2",
-          "bundled": true,
           "requires": {
             "hosted-git-info": "^5.0.0",
             "semver": "^7.3.5",
@@ -27398,7 +27262,6 @@
         },
         "npm-packlist": {
           "version": "5.1.0",
-          "bundled": true,
           "requires": {
             "glob": "^8.0.1",
             "ignore-walk": "^5.0.1",
@@ -27408,7 +27271,6 @@
         },
         "npm-pick-manifest": {
           "version": "7.0.1",
-          "bundled": true,
           "requires": {
             "npm-install-checks": "^5.0.0",
             "npm-normalize-package-bin": "^1.0.1",
@@ -27418,7 +27280,6 @@
         },
         "npm-profile": {
           "version": "6.0.3",
-          "bundled": true,
           "requires": {
             "npm-registry-fetch": "^13.0.1",
             "proc-log": "^2.0.0"
@@ -27426,7 +27287,6 @@
         },
         "npm-registry-fetch": {
           "version": "13.1.1",
-          "bundled": true,
           "requires": {
             "make-fetch-happen": "^10.0.6",
             "minipass": "^3.1.6",
@@ -27438,12 +27298,10 @@
           }
         },
         "npm-user-validate": {
-          "version": "1.0.1",
-          "bundled": true
+          "version": "1.0.1"
         },
         "npmlog": {
           "version": "6.0.2",
-          "bundled": true,
           "requires": {
             "are-we-there-yet": "^3.0.0",
             "console-control-strings": "^1.1.0",
@@ -27453,25 +27311,21 @@
         },
         "once": {
           "version": "1.4.0",
-          "bundled": true,
           "requires": {
             "wrappy": "1"
           }
         },
         "opener": {
-          "version": "1.5.2",
-          "bundled": true
+          "version": "1.5.2"
         },
         "p-map": {
           "version": "4.0.0",
-          "bundled": true,
           "requires": {
             "aggregate-error": "^3.0.0"
           }
         },
         "pacote": {
           "version": "13.6.0",
-          "bundled": true,
           "requires": {
             "@npmcli/git": "^3.0.0",
             "@npmcli/installed-package-contents": "^1.0.7",
@@ -27498,7 +27352,6 @@
         },
         "parse-conflict-json": {
           "version": "2.0.2",
-          "bundled": true,
           "requires": {
             "json-parse-even-better-errors": "^2.3.1",
             "just-diff": "^5.0.1",
@@ -27506,28 +27359,22 @@
           }
         },
         "path-is-absolute": {
-          "version": "1.0.1",
-          "bundled": true
+          "version": "1.0.1"
         },
         "proc-log": {
-          "version": "2.0.1",
-          "bundled": true
+          "version": "2.0.1"
         },
         "promise-all-reject-late": {
-          "version": "1.0.1",
-          "bundled": true
+          "version": "1.0.1"
         },
         "promise-call-limit": {
-          "version": "1.0.1",
-          "bundled": true
+          "version": "1.0.1"
         },
         "promise-inflight": {
-          "version": "1.0.1",
-          "bundled": true
+          "version": "1.0.1"
         },
         "promise-retry": {
           "version": "2.0.1",
-          "bundled": true,
           "requires": {
             "err-code": "^2.0.2",
             "retry": "^0.12.0"
@@ -27535,29 +27382,24 @@
         },
         "promzard": {
           "version": "0.3.0",
-          "bundled": true,
           "requires": {
             "read": "1"
           }
         },
         "qrcode-terminal": {
-          "version": "0.12.0",
-          "bundled": true
+          "version": "0.12.0"
         },
         "read": {
           "version": "1.0.7",
-          "bundled": true,
           "requires": {
             "mute-stream": "~0.0.4"
           }
         },
         "read-cmd-shim": {
-          "version": "3.0.0",
-          "bundled": true
+          "version": "3.0.0"
         },
         "read-package-json": {
           "version": "5.0.1",
-          "bundled": true,
           "requires": {
             "glob": "^8.0.1",
             "json-parse-even-better-errors": "^2.3.1",
@@ -27567,7 +27409,6 @@
         },
         "read-package-json-fast": {
           "version": "2.0.3",
-          "bundled": true,
           "requires": {
             "json-parse-even-better-errors": "^2.3.0",
             "npm-normalize-package-bin": "^1.0.1"
@@ -27575,7 +27416,6 @@
         },
         "readable-stream": {
           "version": "3.6.0",
-          "bundled": true,
           "requires": {
             "inherits": "^2.0.3",
             "string_decoder": "^1.1.1",
@@ -27584,7 +27424,6 @@
         },
         "readdir-scoped-modules": {
           "version": "1.1.0",
-          "bundled": true,
           "requires": {
             "debuglog": "^1.0.1",
             "dezalgo": "^1.0.0",
@@ -27593,19 +27432,16 @@
           }
         },
         "retry": {
-          "version": "0.12.0",
-          "bundled": true
+          "version": "0.12.0"
         },
         "rimraf": {
           "version": "3.0.2",
-          "bundled": true,
           "requires": {
             "glob": "^7.1.3"
           },
           "dependencies": {
             "brace-expansion": {
               "version": "1.1.11",
-              "bundled": true,
               "requires": {
                 "balanced-match": "^1.0.0",
                 "concat-map": "0.0.1"
@@ -27613,7 +27449,6 @@
             },
             "glob": {
               "version": "7.2.3",
-              "bundled": true,
               "requires": {
                 "fs.realpath": "^1.0.0",
                 "inflight": "^1.0.4",
@@ -27625,7 +27460,6 @@
             },
             "minimatch": {
               "version": "3.1.2",
-              "bundled": true,
               "requires": {
                 "brace-expansion": "^1.1.7"
               }
@@ -27633,24 +27467,20 @@
           }
         },
         "safe-buffer": {
-          "version": "5.2.1",
-          "bundled": true
+          "version": "5.2.1"
         },
         "safer-buffer": {
           "version": "2.1.2",
-          "bundled": true,
           "optional": true
         },
         "semver": {
           "version": "7.3.7",
-          "bundled": true,
           "requires": {
             "lru-cache": "^6.0.0"
           },
           "dependencies": {
             "lru-cache": {
               "version": "6.0.0",
-              "bundled": true,
               "requires": {
                 "yallist": "^4.0.0"
               }
@@ -27658,20 +27488,16 @@
           }
         },
         "set-blocking": {
-          "version": "2.0.0",
-          "bundled": true
+          "version": "2.0.0"
         },
         "signal-exit": {
-          "version": "3.0.7",
-          "bundled": true
+          "version": "3.0.7"
         },
         "smart-buffer": {
-          "version": "4.2.0",
-          "bundled": true
+          "version": "4.2.0"
         },
         "socks": {
           "version": "2.6.2",
-          "bundled": true,
           "requires": {
             "ip": "^1.1.5",
             "smart-buffer": "^4.2.0"
@@ -27679,7 +27505,6 @@
         },
         "socks-proxy-agent": {
           "version": "6.2.0",
-          "bundled": true,
           "requires": {
             "agent-base": "^6.0.2",
             "debug": "^4.3.3",
@@ -27688,38 +27513,32 @@
         },
         "spdx-correct": {
           "version": "3.1.1",
-          "bundled": true,
           "requires": {
             "spdx-expression-parse": "^3.0.0",
             "spdx-license-ids": "^3.0.0"
           }
         },
         "spdx-exceptions": {
-          "version": "2.3.0",
-          "bundled": true
+          "version": "2.3.0"
         },
         "spdx-expression-parse": {
           "version": "3.0.1",
-          "bundled": true,
           "requires": {
             "spdx-exceptions": "^2.1.0",
             "spdx-license-ids": "^3.0.0"
           }
         },
         "spdx-license-ids": {
-          "version": "3.0.11",
-          "bundled": true
+          "version": "3.0.11"
         },
         "ssri": {
           "version": "9.0.1",
-          "bundled": true,
           "requires": {
             "minipass": "^3.1.1"
           }
         },
         "string-width": {
           "version": "4.2.3",
-          "bundled": true,
           "requires": {
             "emoji-regex": "^8.0.0",
             "is-fullwidth-code-point": "^3.0.0",
@@ -27728,28 +27547,24 @@
         },
         "string_decoder": {
           "version": "1.3.0",
-          "bundled": true,
           "requires": {
             "safe-buffer": "~5.2.0"
           }
         },
         "strip-ansi": {
           "version": "6.0.1",
-          "bundled": true,
           "requires": {
             "ansi-regex": "^5.0.1"
           }
         },
         "supports-color": {
           "version": "7.2.0",
-          "bundled": true,
           "requires": {
             "has-flag": "^4.0.0"
           }
         },
         "tar": {
           "version": "6.1.11",
-          "bundled": true,
           "requires": {
             "chownr": "^2.0.0",
             "fs-minipass": "^2.0.0",
@@ -27760,38 +27575,31 @@
           }
         },
         "text-table": {
-          "version": "0.2.0",
-          "bundled": true
+          "version": "0.2.0"
         },
         "tiny-relative-date": {
-          "version": "1.3.0",
-          "bundled": true
+          "version": "1.3.0"
         },
         "treeverse": {
-          "version": "2.0.0",
-          "bundled": true
+          "version": "2.0.0"
         },
         "unique-filename": {
           "version": "1.1.1",
-          "bundled": true,
           "requires": {
             "unique-slug": "^2.0.0"
           }
         },
         "unique-slug": {
           "version": "2.0.2",
-          "bundled": true,
           "requires": {
             "imurmurhash": "^0.1.4"
           }
         },
         "util-deprecate": {
-          "version": "1.0.2",
-          "bundled": true
+          "version": "1.0.2"
         },
         "validate-npm-package-license": {
           "version": "3.0.4",
-          "bundled": true,
           "requires": {
             "spdx-correct": "^3.0.0",
             "spdx-expression-parse": "^3.0.0"
@@ -27799,51 +27607,43 @@
         },
         "validate-npm-package-name": {
           "version": "4.0.0",
-          "bundled": true,
           "requires": {
             "builtins": "^5.0.0"
           }
         },
         "walk-up-path": {
-          "version": "1.0.0",
-          "bundled": true
+          "version": "1.0.0"
         },
         "wcwidth": {
           "version": "1.0.1",
-          "bundled": true,
           "requires": {
             "defaults": "^1.0.3"
           }
         },
         "which": {
           "version": "2.0.2",
-          "bundled": true,
           "requires": {
             "isexe": "^2.0.0"
           }
         },
         "wide-align": {
           "version": "1.1.5",
-          "bundled": true,
           "requires": {
             "string-width": "^1.0.2 || 2 || 3 || 4"
           }
         },
         "wrappy": {
-          "version": "1.0.2",
-          "bundled": true
+          "version": "1.0.2"
         },
         "write-file-atomic": {
           "version": "4.0.1",
-          "bundled": true,
           "requires": {
             "imurmurhash": "^0.1.4",
             "signal-exit": "^3.0.7"
           }
         },
         "yallist": {
-          "version": "4.0.0",
-          "bundled": true
+          "version": "4.0.0"
         }
       }
     },
