@@ -1,6 +1,7 @@
-import adapter from "@sveltejs/adapter-static";
-import preprocess from "svelte-preprocess";
 import replace from "@rollup/plugin-replace";
+import adapter from "@sveltejs/adapter-static";
+import rimraf from "rimraf";
+import preprocess from "svelte-preprocess";
 
 const emulatorMode = process.argv.includes("--config-emulator-mode");
 
@@ -37,7 +38,7 @@ function createStaticAdapter() {
   return {
     name: adapterObj.name,
     async adapt(builder) {
-      const patchedBuilder = { ...{ log: { warn: console.log } }, ...builder };
+      const patchedBuilder = { ...{ log: { warn: console.log } }, rimraf, ...builder };
       return adapterObj.adapt(patchedBuilder);
     }
   }

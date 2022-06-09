@@ -3337,7 +3337,7 @@
     },
     "@rush-temp/website-svelte": {
       "version": "file:projects/website-svelte.tgz",
-      "integrity": "sha512-DWkouZJ9UHKJ4WpUgFNVcQl4mI1nGLtTw0T7oc0geBhAdcg/4KhLc04gJwwk/sCpGPUTDdSptlNDsyXfO0zhhg==",
+      "integrity": "sha512-Jxy+4mWpW32wIMjgclbuINOJ38RLFtxugpJJd0Mg/nYd9o81mX5Fsw4k1Cd0r+17MYS83VNoj3EEenqRViRy+Q==",
       "requires": {
         "@babel/core": "^7.11.6",
         "@babel/plugin-transform-runtime": "^7.18.2",
@@ -3386,6 +3386,7 @@
         "npm": "^8.5.1",
         "prettier": "^2.1.2",
         "prettier-plugin-svelte": "^2.7.0",
+        "rimraf": "^3.0.2",
         "sal.js": "^0.8.5",
         "sass": "^1.51.0",
         "selenium-webdriver": "^4.1.2",
