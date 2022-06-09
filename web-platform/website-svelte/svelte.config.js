@@ -17,7 +17,7 @@ const config = {
     target: "#rally",
     adapter: adapter({
       env: {
-        log: { warn }
+        log: { warn: console.warn }
       }
     }),
     ssr: false,
