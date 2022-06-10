@@ -8,7 +8,7 @@
     "start": "next start",
     "lint": "next lint -c ../../tools/typescript/.eslintrc.js",
     "format": "prettier --write '**/*.ts[x]' --config ../../tools/typescript/.prettierrc",
-    "test": "jest --silent --verbose",
+    "test": "jest --verbose 2>&1",
     "test:watch": "jest --verbose --watchAll"
   },
   "dependencies": {
