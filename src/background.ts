@@ -24,10 +24,14 @@ import * as examplePings from "../src/generated/pings";
 
 import browser from "webextension-polyfill";
 
-
 import { Dexie } from "dexie";
 
 import * as webScience from "@mozilla/web-science";
+
+declare global {
+   const __ENABLE_DEVELOPER_MODE__: boolean;
+   const __ENABLE_EMULATOR_MODE__: boolean;
+}
 
 // Example: import a module.
 import {
@@ -151,18 +155,17 @@ async function stateChangeCallback(newState) {
 
       webScience.pageNavigation.onPageData.addListener(this.pageDataListener, { matchPatterns: ["<all_urls>"] });
 
-      // FIXME this is Firefox-only, until the new Chrome scripting API ships.
-      //
       // Example: register a content script for http://localhost/* pages
       // Note that the content script has the same relative path in dist/
       // that it has in src/. The content script can include module
       // dependencies (either your own modules or modules from npm), and
       // they will be automatically bundled into the content script by
       // the build system.
-      // this.contentScript = await browser.contentScripts.register({
-      //  js: [{ file: "dist/exampleContentScript.content.js" }],
-      //  matches: ["http://localhost/*"]
-      // });
+      this.contentScript = webScience.contentScripts.registerContentScript(
+        ["http://localhost/*"],
+        "dist/exampleContentScript.content.js"
+      );
+
       // Example: launch a Web Worker, which can handle tasks on another
       // thread. Note that the worker script has the same relative path in
       // dist/ that it has in src/. The worker script can include module
