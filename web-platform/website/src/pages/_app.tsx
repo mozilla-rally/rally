@@ -1,5 +1,6 @@
 import type { AppProps } from "next/app";
 import Head from "next/head";
+
 import { AuthenticationProvider } from "../services/AuthenticationService";
 import "../styles";
 

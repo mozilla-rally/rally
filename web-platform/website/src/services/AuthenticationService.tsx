@@ -1,14 +1,15 @@
 import { createContext, useContext, useEffect, useState } from "react";
+
 import { User } from "../models/User";
 
-export type UserContextData = {
+export type UserDataContext = {
   isLoaded: boolean;
   user?: User;
   isLoggingIn: boolean;
   logout: () => Promise<void>;
 };
 
-const AuthenticationContext = createContext<UserContextData>({
+const AuthenticationContext = createContext<UserDataContext>({
   isLoaded: true,
   user: undefined,
   isLoggingIn: false,

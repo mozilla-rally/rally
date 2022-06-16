@@ -8,7 +8,6 @@ cssRule("html, body", {
 
 cssRule("a, a:hover", {
   color: "inherit",
-  textDecoration: "none"
 });
 
 fontFace({

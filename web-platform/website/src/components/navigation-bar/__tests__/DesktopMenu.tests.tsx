@@ -1,10 +1,3 @@
-jest.mock("reactstrap", () => ({
-  DropdownItem: jest.fn(),
-  DropdownMenu: jest.fn(),
-  DropdownToggle: jest.fn(),
-  UncontrolledDropdown: jest.fn(),
-}));
-
 import { render } from "@testing-library/react";
 import { ReactElement } from "react";
 import {
@@ -13,8 +6,16 @@ import {
   DropdownToggle,
   UncontrolledDropdown,
 } from "reactstrap";
+
 import { Strings } from "../../../resources/Strings";
 import { DesktopMenu } from "../DesktopMenu";
+
+jest.mock("reactstrap", () => ({
+  DropdownItem: jest.fn(),
+  DropdownMenu: jest.fn(),
+  DropdownToggle: jest.fn(),
+  UncontrolledDropdown: jest.fn(),
+}));
 
 const strings = Strings.components.navigationBar;
 

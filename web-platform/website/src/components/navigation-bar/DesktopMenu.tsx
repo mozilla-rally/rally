@@ -5,6 +5,7 @@ import {
   UncontrolledDropdown,
 } from "reactstrap";
 import { style } from "typestyle";
+
 import { Strings } from "../../resources/Strings";
 import { Colors, Spacing } from "../../styles";
 

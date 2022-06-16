@@ -1,12 +1,13 @@
-jest.mock("../DesktopMenu");
-jest.mock("../MobileMenu");
-
 import { render } from "@testing-library/react";
 import React from "react";
+
 import { Strings } from "../../../resources/Strings";
 import { DesktopMenu } from "../DesktopMenu";
 import { MobileMenu } from "../MobileMenu";
 import { NavigationBar } from "../NavigationBar";
+
+jest.mock("../DesktopMenu");
+jest.mock("../MobileMenu");
 
 const strings = Strings.components.navigationBar;
 
