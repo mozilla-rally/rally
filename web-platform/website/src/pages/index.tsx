@@ -1,5 +1,6 @@
 import type { NextPage } from "next";
 import Head from "next/head";
+
 import { AuthenticatedPage } from "../components/AuthenticatedPage";
 import { Layout } from "../components/Layout";
 import { Strings } from "../resources/Strings";

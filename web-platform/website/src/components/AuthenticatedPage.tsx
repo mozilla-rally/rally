@@ -1,4 +1,5 @@
 import { useRouter } from "next/router";
+
 import { useAuthentication } from "../services/AuthenticationService";
 
 export function AuthenticatedPage(props: {

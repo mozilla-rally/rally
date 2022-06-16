@@ -64,6 +64,31 @@ export const Strings = {
         },
       ],
     },
+    pages: {
+      login: {
+        loginPageContainer: {
+          howDoesItWork: "Wait - how does it work again?",
+          title: "Sign Up | Mozilla Rally",
+        },
+        initialLoginView: {
+          accountExists: (
+            <span className="text-muted">Already have an account?</span>
+          ),
+          privacyNotice: (
+            <span className="text-muted">
+              By joining, you agree to our{" "}
+              <a href="https://rally.mozilla.org/how-rally-works/data-and-privacy/">
+                privacy notice.
+              </a>
+            </span>
+          ),
+          signIn: "Sign in",
+          signInWithEmail: "Sign up with Email",
+          signInWithGoogle: "Sign up with Google",
+          title: "Join Rally",
+        },
+      },
+    },
   },
   pages: {
     index: {

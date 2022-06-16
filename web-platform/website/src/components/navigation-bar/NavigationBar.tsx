@@ -1,12 +1,13 @@
 import Link from "next/link";
 import { Col, Container, Row } from "reactstrap";
 import { style } from "typestyle";
+
 import { Strings } from "../../resources/Strings";
 import {
   Colors,
-  createResponsiveStyle,
   ScreenSize,
   Spacing,
+  createResponsiveStyle,
 } from "../../styles";
 import { DesktopMenu } from "./DesktopMenu";
 import { MobileMenu } from "./MobileMenu";
@@ -88,6 +89,7 @@ const styles = {
         "> a": {
           fontWeight: 700,
           fontSize: 18,
+          textDecoration: "none",
         },
 
         "> a:hover": {
