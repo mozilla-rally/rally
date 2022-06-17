@@ -1,13 +1,13 @@
 {
-  "description": "A basic template for a Mozilla Rally study.",
+  "description": "The Mozilla Rally Attention Stream",
   "author": "Mozilla",
   "manifest_version": 2,
-  "name": "Rally Study Template",
-  "version": "0.5.0",
-  "homepage_url": "https://github.com/mozilla-rally/study-template",
+  "name": "Rally Attention Stream",
+  "version": "0.0.1",
+  "homepage_url": "https://github.com/mozilla/rally",
   "browser_specific_settings": {
     "gecko": {
-      "id": "rally-study-template@mozilla.org",
+      "id": "attention-stream@rally.mozilla.org",
       "strict_min_version": "87.0"
     }
   },
