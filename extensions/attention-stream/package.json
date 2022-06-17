@@ -1,6 +1,6 @@
 {
-  "name": "rally-study-template",
-  "version": "0.5.0",
+  "name": "rally-attention-stream",
+  "version": "0.0.1",
   "scripts": {
     "build": "cp manifest.prod.json manifest.json && npm run build:glean && rollup -c && npm run tailwind",
     "dev": "cp manifest.dev.json manifest.json && npm run build:glean && npm run clean && npm run tailwind && npm run dev:extension & (wait-on dist/exampleWorkerScript.worker.js && npm run dev:webext)",
@@ -62,17 +62,17 @@
   "engines": {
     "node": ">=14.0.0"
   },
-  "description": "This a basic template for a Rally study.",
+  "description": "This the Rally Attention Stream extension.",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/mozilla-rally/study-template.git"
+    "url": "git+https://github.com/mozilla-rally/rally"
   },
   "keywords": [],
   "author": "Mozilla",
   "license": "MPL-2.0",
   "private": true,
   "bugs": {
-    "url": "https://github.com/mozilla-rally/study-template/issues"
+    "url": "https://github.com/mozilla-rally/rally/issues"
   },
-  "homepage": "https://github.com/mozilla-rally/study-template#readme"
+  "homepage": "https://github.com/mozilla-rally/rally#readme"
 }
