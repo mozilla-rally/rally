@@ -2,7 +2,7 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-// This is the web-ext configuration for the study template. It is
+// This is the web-ext configuration for the Rally Attention Stream. It is
 // part of the build system, and you should not have to modify it.
 
 module.exports = {

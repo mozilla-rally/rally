@@ -80,7 +80,7 @@ async function waitForLogs(matches: RegExp[]) {
   await driver.switchTo().window(testWindow);
 }
 
-describe("Rally Study Template", function () {
+describe("Rally Attention Stream", function () {
   beforeAll(async () => {
     server = spawn("http-server", [PATH, "-p", PORT]);
     console.debug(`Test server running on port ${PORT}`);
@@ -115,7 +115,7 @@ describe("Rally Study Template", function () {
         }, WAIT_FOR_PROPERTY);
       }
       await driver.switchTo().window((await driver.getAllWindowHandles())[0])
-      await driver.wait(until.titleIs("Rally Study Template"), WAIT_FOR_PROPERTY);
+      await driver.wait(until.titleIs("Rally Attention Stream"), WAIT_FOR_PROPERTY);
     }
   });
 
@@ -191,7 +191,7 @@ describe("Rally Study Template", function () {
     await driver.close();
 
     await driver.switchTo().window(originalTab);
-    await driver.wait(until.titleIs("Rally Study Template"), WAIT_FOR_PROPERTY);
+    await driver.wait(until.titleIs("Rally Attention Stream"), WAIT_FOR_PROPERTY);
 
     // Start a page visit, then navigate to a new link without closing the tab.
     // This will end the page visit for the first page. Then navigate back, ending
@@ -207,7 +207,7 @@ describe("Rally Study Template", function () {
 
     // TODO add test for scrolling, attention, and audio.
     await driver.switchTo().window(originalTab);
-    await driver.wait(until.titleIs("Rally Study Template"), WAIT_FOR_PROPERTY);
+    await driver.wait(until.titleIs("Rally Attention Stream"), WAIT_FOR_PROPERTY);
 
     await findAndAct(driver, By.id("download"), e => e.click());
 

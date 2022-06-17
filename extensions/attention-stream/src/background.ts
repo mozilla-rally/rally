@@ -2,7 +2,7 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/. */
 
-// This is the main background script for the study template.
+// This is the main background script for the Rally Attention Stream.
 // The build system will bundle dependencies into this script
 // and output the bundled scripr to dist/background.js.
 
