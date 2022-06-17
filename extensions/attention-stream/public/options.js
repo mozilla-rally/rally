@@ -34,7 +34,7 @@ document.getElementById("toggleEnabled").addEventListener("click", async event =
 });
 
 document.getElementById("download").addEventListener("click", async () => {
-    const db = new Dexie("example");
+    const db = new Dexie("attention-stream");
     await db.open();
     // Sort using index, @see `src/background.ts`
     const journeys = await db.table("user-journey").orderBy("user_journey_page_visit_stop_date_time").toArray();
