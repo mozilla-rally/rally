@@ -20,7 +20,7 @@ import * as userJourney from "../src/generated/userJourney";
 import * as rallyManagementMetrics from "../src/generated/rally";
 
 // Import generated Glean pings.
-import * as examplePings from "../src/generated/pings";
+import * as attentionStreamPings from "../src/generated/pings";
 
 import browser from "webextension-polyfill";
 
@@ -33,12 +33,6 @@ declare global {
    const __ENABLE_EMULATOR_MODE__: boolean;
 }
 
-// Example: import a module.
-import {
-  initialize as exampleModuleInitialize,
-  uninitialize as exampleModuleUninitialize
-} from './exampleModule';
-
 // Developer mode runs locally and does not use the Firebase server.
 // Data is collected locally, and an options page is provided to export it.
 // eslint-disable-next-line no-undef
@@ -49,7 +43,7 @@ const enableDevMode = Boolean(__ENABLE_DEVELOPER_MODE__);
 const enableEmulatorMode = Boolean(__ENABLE_EMULATOR_MODE__);
 
 // The Rally-assigned Study ID.
-let studyId = "rally-study-template";
+let studyId = "attentionStream";
 
 // The website hosting the Rally UI.
 let rallySite = "https://members.rally.mozilla.org";
@@ -69,7 +63,7 @@ let firebaseConfig = {
 
 // Overrides for dev mode - use local emulators with "exampleStudy1" as study ID.
 if (enableEmulatorMode) {
-  studyId = "exampleStudy1";
+  studyId = "attentionStream";
   rallySite = "http://localhost:3000";
   firebaseConfig = {
     "apiKey": "abc123",
@@ -104,7 +98,7 @@ async function stateChangeCallback(newState) {
       if (storage.enrolled !== true) {
         console.info("Recording enrollment.");
         rallyManagementMetrics.id.set(rallyId);
-        examplePings.studyEnrollment.submit();
+        attentionStreamPings.studyEnrollment.submit();
 
         browser.storage.local.set({
           enrolled: true,
@@ -114,8 +108,6 @@ async function stateChangeCallback(newState) {
       // The Rally API has been initialized.
       // Initialize the study and start it.
 
-      // Example: initialize the example module.
-      exampleModuleInitialize();
       await browser.storage.local.set({ "state": RunStates.Running });
 
 
@@ -150,44 +142,17 @@ async function stateChangeCallback(newState) {
         userJourney.url.setUrl(pageData.url);
 
         // Submit the metrics constructed above.
-        examplePings.userJourney.submit();
+        attentionStreamPings.userJourney.submit();
       };
 
       webScience.pageNavigation.onPageData.addListener(this.pageDataListener, { matchPatterns: ["<all_urls>"] });
-
-      // Example: register a content script for http://localhost/* pages
-      // Note that the content script has the same relative path in dist/
-      // that it has in src/. The content script can include module
-      // dependencies (either your own modules or modules from npm), and
-      // they will be automatically bundled into the content script by
-      // the build system.
-      this.contentScript = webScience.contentScripts.registerContentScript(
-        ["http://localhost/*"],
-        "dist/exampleContentScript.content.js"
-      );
-
-      // Example: launch a Web Worker, which can handle tasks on another
-      // thread. Note that the worker script has the same relative path in
-      // dist/ that it has in src/. The worker script can include module
-      // dependencies (either your own modules or modules from npm), and
-      // they will be automatically bundled into the worker script by the
-      // build system.
-
-      // NOTE: this will be a worker of the background script in mv2, and
-      // a sub-worker of the background service worker in manifest v3.
-      this.worker = new Worker("/dist/exampleWorkerScript.worker.js");
 
       break;
     case (RunStates.Paused):
       console.log(`Study paused with Rally ID: ${rally.rallyId}`);
 
       // Take down all resources from run state.
-      exampleModuleUninitialize();
       webScience.pageNavigation.onPageData.removeListener(this.pageDataListener);
-      // this.contentScript.unregister();
-      if (this.worker) {
-        this.worker.terminate();
-      }
 
       await browser.storage.local.set({ "state": RunStates.Paused });
 
@@ -220,7 +185,7 @@ class GetPingsUploader extends Uploader {
     const documentId = url.split("/")[7];
     console.debug("tableName:", tableName);
 
-    const db = new Dexie("example");
+    const db = new Dexie("attention-stream");
 
     const columns = [];
     const entries = {};
@@ -267,7 +232,7 @@ if (enableDevMode) {
     }
   });
 
-  Glean.initialize("example-app-id", true, {
+  Glean.initialize("rally-attention-stream", true, {
     debug: { logPings: true },
     httpClient: new GetPingsUploader(),
   } as unknown as Configuration);
@@ -276,7 +241,7 @@ if (enableDevMode) {
     console.debug("dev mode received message:", message, "from sender:", sender);
   });
 } else {
-  Glean.initialize("example-app-id", true, {
+  Glean.initialize("rally-attention-stream", true, {
     debug: { logPings: false },
     plugins: [
       new PingEncryptionPlugin(publicKey)
