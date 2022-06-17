@@ -1,0 +1,58 @@
+{
+  "description": "A basic template for a Mozilla Rally study.",
+  "author": "Mozilla",
+  "manifest_version": 2,
+  "name": "Rally Study Template",
+  "version": "0.5.0",
+  "homepage_url": "https://github.com/mozilla-rally/study-template",
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "rally-study-template@mozilla.org",
+      "strict_min_version": "87.0"
+    }
+  },
+  "options_ui": {
+    "page": "public/options.html",
+    "open_in_tab": true
+  },
+  "browser_action": {
+    "default_title": "Options"
+  },
+  "permissions": [
+    "<all_urls>",
+    "idle",
+    "webNavigation",
+    "webRequest",
+    "storage",
+    "unlimitedStorage"
+  ],
+  "content_scripts": [
+    {
+      "matches": [
+        "http://localhost/*",
+        "https://members.rally.mozilla.org/*"
+      ],
+      "js": [
+        "dist/main.content.js"
+      ]
+    },
+    {
+      "matches": [
+        "<all_urls>"
+      ],
+      "js": [
+        "dist/browser-polyfill.min.js",
+        "dist/webScience/pageManager.content.js",
+        "dist/webScience/pageNavigation.content.js"
+      ]
+    }
+  ],
+  "browserAction": {},
+  "background": {
+    "scripts": [
+      "dist/browser-polyfill.min.js",
+      "dist/background.js"
+    ]
+  },
+  "incognito": "not_allowed"
+}
