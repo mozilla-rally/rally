@@ -61,7 +61,7 @@ let firebaseConfig = {
   "functionsHost": "https://us-central1-moz-fx-data-rally-w-prod-dfa4.cloudfunctions.net"
 };
 
-// Overrides for dev mode - use local emulators with "exampleStudy1" as study ID.
+// Overrides for dev mode - use local emulators with "attentionStream" as study ID.
 if (enableEmulatorMode) {
   studyId = "attentionStream";
   rallySite = "http://localhost:3000";
