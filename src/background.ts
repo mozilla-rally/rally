@@ -125,11 +125,16 @@ async function stateChangeCallback(newState) {
       // update the manifest permissions as needed for your study.
 
       this.pageDataListener = async (pageData) => {
-        console.log(`WebScience page navigation event fired with page data:`, pageData);
+        console.debug(`WebScience page navigation event fired with page data:`, pageData);
+
+        // This will be a unique ID matching this page for this browsing session.
         userJourney.pageId.set(pageData.pageId);
-        userJourney.attentionDuration.set(pageData.attentionDuration);
-        userJourney.audioDuration.set(pageData.audioDuration);
-        userJourney.attentionAndAudioDuration.set(pageData.attentionAndAudioDuration)
+
+        // WebScience returns a Number for these, but Glean is expecting an integer.
+        userJourney.attentionDuration.set(Math.floor(pageData.attentionDuration));
+        userJourney.audioDuration.set(Math.floor(pageData.audioDuration));
+        userJourney.attentionAndAudioDuration.set(Math.floor(pageData.attentionAndAudioDuration));
+
         // Max relative scroll depth is a percentage expressed as a decimal by WebScience,
         // but Glean is expecting an integer.
         userJourney.maxRelativeScrollDepth.set(Math.floor(pageData.maxRelativeScrollDepth * 100));
@@ -138,6 +143,7 @@ async function stateChangeCallback(newState) {
         const pageVisitStop = new Date(pageData.pageVisitStopTime);
         userJourney.pageVisitStartDateTime.set(pageVisitStart);
         userJourney.pageVisitStopDateTime.set(pageVisitStop);
+
         // Referrer is optional, and will be an empty string if unset.
         if (pageData.referrer) {
           userJourney.referrer.setUrl(pageData.referrer);
