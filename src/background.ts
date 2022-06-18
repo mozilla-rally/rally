@@ -127,14 +127,9 @@ async function stateChangeCallback(newState) {
       this.pageDataListener = async (pageData) => {
         console.log(`WebScience page navigation event fired with page data:`, pageData);
         userJourney.pageId.set(pageData.pageId);
-        // Round attention duration up to 1ms, Glean will balk if it is lower than this.
-        if (pageData.attentionDuration < 1) {
-          userJourney.attentionDuration.set(1);
-        } else {
-          userJourney.attentionDuration.set(pageData.attentionDuration);
-
-        }
+        userJourney.attentionDuration.set(pageData.attentionDuration);
         userJourney.audioDuration.set(pageData.audioDuration);
+        userJourney.attentionAndAudioDuration.set(pageData.attentionAndAudioDuration)
         // Max relative scroll depth is a percentage expressed as a decimal by WebScience,
         // but Glean is expecting an integer.
         userJourney.maxRelativeScrollDepth.set(Math.floor(pageData.maxRelativeScrollDepth * 100));
