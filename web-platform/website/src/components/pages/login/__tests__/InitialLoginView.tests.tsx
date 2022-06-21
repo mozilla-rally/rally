@@ -28,14 +28,14 @@ describe("InitialLoginView tests", () => {
     expect(root.getByText(strings.title)).toBeInTheDocument();
   }
 
-  function assertSignupWithGooglePresent(root: any) {
+  function assertSignupWithGooglePresent(root: RenderResult) {
     expect(root.getByText(strings.signInWithGoogle)).toBeInTheDocument();
     expect(
       document.querySelector(`img[src="/img/icon-logo-google.svg"]`)
     ).toBeInTheDocument();
   }
 
-  function assertSignupWithEmailPresent(root: any) {
+  function assertSignupWithEmailPresent(root: RenderResult) {
     expect(root.getByText(strings.signInWithEmail)).toBeInTheDocument();
     expect(
       document.querySelector(`img[src="/img/icon-email.svg"]`)

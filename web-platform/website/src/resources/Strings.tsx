@@ -9,6 +9,7 @@ export const Strings = {
         text: "Data & Privacy",
         link: "https://rally.mozilla.org/how-rally-works/data-and-privacy/",
       },
+      rallyWebsiteUrl: "https://rally.mozilla.org/",
       sections: [
         {
           heading: "Your Rally account",
@@ -66,11 +67,31 @@ export const Strings = {
     },
     pages: {
       login: {
+        emailSignupView: {
+          continue: "Continue",
+          email: "Email",
+          password: "Password",
+          title: "Create Account",
+        },
+        loginFormValidators: {
+          invalidFormat: "Invalid format",
+          required: "Required",
+          passwordRules: {
+            minLength: "Use at least 8 characters",
+            containsLowercase: "Use at least 1 lowercase letter",
+            containsUppercase: "Use at least 1 uppercase letter",
+            containsDigit: "Use at least 1 number",
+          },
+        },
         loginPageContainer: {
-          howDoesItWork: "Wait - how does it work again?",
           title: "Sign Up | Mozilla Rally",
         },
         initialLoginView: {
+          signInWithEmail: "Sign up with Email",
+          signInWithGoogle: "Sign up with Google",
+          title: "Join Rally",
+        },
+        privacyNoticeAndLoginLink: {
           accountExists: (
             <span className="text-muted">Already have an account?</span>
           ),
@@ -83,9 +104,6 @@ export const Strings = {
             </span>
           ),
           signIn: "Sign in",
-          signInWithEmail: "Sign up with Email",
-          signInWithGoogle: "Sign up with Google",
-          title: "Join Rally",
         },
       },
     },
