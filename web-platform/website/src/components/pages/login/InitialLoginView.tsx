@@ -1,19 +1,19 @@
-import { Button, ButtonProps, Col, Container, Row } from "reactstrap";
+import { Col, Container, Row } from "reactstrap";
 import { style } from "typestyle";
 
 import { Strings } from "../../../resources/Strings";
-import {
-  Colors,
-  ScreenSize,
-  Spacing,
-  createResponsiveStyle,
-} from "../../../styles";
+import { Colors } from "../../../styles";
 import { Fonts } from "../../../styles/Fonts";
 import { Highlighter } from "../../Highlighter";
+import { LoginButton } from "./LoginButton";
+import { LoginState, useLoginDataContext } from "./LoginDataContext";
+import { PrivacyNoticeAndLoginLink } from "./PrivacyNoticeAndLoginLink";
 
 const strings = Strings.components.pages.login.initialLoginView;
 
 export function InitialLoginView() {
+  const { setLoginState } = useLoginDataContext();
+
   return (
     <Container className={`${styles.container} p-0`}>
       <Row className="mb-4">
@@ -27,71 +27,38 @@ export function InitialLoginView() {
         <Col>
           <LoginButton
             icon="/img/icon-logo-google.svg"
-            title={strings.signInWithGoogle}
-          />
+            className="login-button"
+            outline
+          >
+            {strings.signInWithGoogle}
+          </LoginButton>
         </Col>
       </Row>
       <Row className="mb-4">
         <Col>
           <LoginButton
             icon="/img/icon-email.svg"
-            title={strings.signInWithEmail}
-          />
+            className="login-button"
+            onClick={() => setLoginState(LoginState.SignupWithEmail)}
+            outline
+          >
+            {strings.signInWithEmail}
+          </LoginButton>
         </Col>
       </Row>
-      <Row className="privacy-notice mb-5">
-        <Col className="d-flex justify-content-center">
-          {strings.privacyNotice}
-        </Col>
-      </Row>
-      <Row noGutters className="justify-content-center">
-        <Col className="d-flex justify-content-center col-auto me-1">
-          {strings.accountExists}
-        </Col>
-        <Col className="col-auto">
-          <a href="#" className="fw-bold">
-            {strings.signIn}
-          </a>
-        </Col>
+      <Row>
+        <PrivacyNoticeAndLoginLink />
       </Row>
     </Container>
-  );
-}
-
-function LoginButton(props: ButtonProps & { icon: string; title: string }) {
-  const { className, ...otherProps } = props;
-
-  return (
-    <Button
-      className={`login-button w-100 ps-5 pe-5 ${className || ""}`}
-      outline
-      {...otherProps}
-    >
-      <Container className="w-100">
-        <Row className="justify-content-center align-items-center">
-          <Col className="col-auto">
-            <img src={props.icon} width={20} height="auto" alt={props.title} />
-          </Col>
-          <Col className="text-nowrap">{props.title}</Col>
-        </Row>
-      </Container>
-    </Button>
   );
 }
 
 const styles = {
   container: style({
     $nest: {
-      ".privacy-notice": createResponsiveStyle(ScreenSize.ExtraSmall, {
-        marginBottom: `${Spacing.xLarge}px !important`,
-      }),
       ".login-button": {
-        fontWeight: 700,
         color: Colors.ColorMarketingGray70,
         borderColor: Colors.ColorMarketingGray30,
-        borderWidth: 2,
-        paddingTop: Spacing.Medium,
-        paddingBottom: Spacing.Medium,
         $nest: {
           "&:hover": {
             backgroundColor: Colors.ColorMarketingGray20,
