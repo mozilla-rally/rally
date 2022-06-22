@@ -1,6 +1,20 @@
 # Rally + WebScience Study Template
 This repository provides a template for building browser-based research studies with the [Rally](https://rally.mozilla.org/) platform and the [WebScience](https://github.com/mozilla-rally/web-science/) library.
 
+## Quickstart
+
+Run in dev mode with Chrome:
+
+```
+npm run dev
+```
+
+Run in dev mode, with Firefox:
+
+```
+TARGET=firefox-desktop npm run dev
+```
+
 ## Background Material
 
 Before working with this template, we recommend familiarizing yourself with the following concepts.
@@ -55,7 +69,7 @@ Prerequisites: current versions of [Firefox](https://www.mozilla.org/firefox/new
 This template comes with a set of predefined Node.js commands, which function similar to makefile targets. These commands should help you with study implementation, debugging, testing, and deployment. You run each command with `npm run <command>`.
 
 * `build` - Builds the study extension, by bundling JavaScript implementation in `src/` and copying non-JavaScript files. Output is in the `dist/` directory.
-* `dev` - Bundles the study extension (like `build`), but in _developer mode_, launch Firefox with the study extension installed, automatically rebuild the study if a file changes, and automatically reload the study in Firefox if the study is rebuilt. In developer mode, Rally SDK does not contact the website or the Firebase backend. Developer mode also provides a [source map](https://developer.mozilla.org/en-US/docs/Tools/Debugger/How_to/Use_a_source_map) for bundled JavaScript, so you can use the [Debugger](https://developer.mozilla.org/en-US/docs/Tools/Debugger) as if the JavaScript were not bundled. You should typically use developer mode when implementing and testing your study.
+* `dev` - Bundles the study extension (like `build`), but in _developer mode_, launch Chrome with the study extension installed, automatically rebuild the study if a file changes, and automatically reload the study in Chrome if the study is rebuilt. In developer mode, Rally SDK does not contact the website or the Firebase backend. Developer mode also provides a [source map](https://developer.mozilla.org/en-US/docs/Tools/Debugger/How_to/Use_a_source_map) for bundled JavaScript, so you can use the [Debugger](https://developer.mozilla.org/en-US/docs/Tools/Debugger) as if the JavaScript were not bundled. You should typically use developer mode when implementing and testing your study.
 * `dev:emulator` - Like `dev`, but run in _emulator mode_, which connects to a local Firebase emulator. See the [Rally Web Platform docs](https://github.com/mozilla-rally/rally-web-platform#quickstart) for information on running a local Firebase emulator.
 * `lint`: Run linting on the study extension.
 * `package`: Build the study extension (`build`), then package the built study into an archive for distribution. Output is in the `web-ext-artifacts/` directory.
