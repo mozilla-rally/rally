@@ -3,7 +3,9 @@
   "version": "0.5.0",
   "scripts": {
     "build": "cp manifest.prod.json manifest.json && npm run build:glean && rollup -c && npm run tailwind",
-    "dev": "cp manifest.dev.json manifest.json && npm run build:glean && npm run clean && npm run tailwind && npm run dev:extension & (wait-on dist/exampleWorkerScript.worker.js && npm run dev:webext)",
+    "dev": "cp manifest.dev.json manifest.json && npm run build:glean && npm run clean && npm run tailwind && npm run dev:extension",
+    "dev:extension": "rollup -c --config-enable-developer-mode -w --watch.onBundleEnd \"npm run dev:webext\"",
+    "dev:extension:emulator": "rollup -c --config-enable-emulator-mode -w --watch.onBundleEnd \"npm run dev:webext\"",
     "lint": "npm run build && eslint . && npm run lint:glean",
     "clean": "rimraf dist/*",
     "build:glean": "npm run build:glean:metrics && npm run build:glean:docs",
@@ -21,8 +23,6 @@
     "start": "npm run build && web-ext run",
     "test:integration": "./scripts/integration-test.sh",
     "test:integration:jest": "jest ./tests/integration/",
-    "dev:extension": "rollup -c --config-enable-developer-mode -w",
-    "dev:extension:emulator": "rollup -c --config-enable-emulator-mode -w",
     "dev:webext": "web-ext run -t ${TARGET=chromium} --start-url 'https://example.com' --watch-file dist/exampleWorkerScript.worker.js"
   },
   "devDependencies": {
