@@ -70,11 +70,11 @@ function DropdownMenus(props: { user?: User }) {
 
   return (
     <>
-      <Col className="d-flex me-0 justify-content-end d-lg-none d-xl-none d-xxl-none">
+      <Col className="d-flex d-lg-none me-0 justify-content-end">
         <MobileMenu />
       </Col>
 
-      <Col className="d-flex me-0 justify-content-end d-none d-lg-flex d-xl-flex d-xxl-flex">
+      <Col className="d-none d-lg-flex me-0 justify-content-end">
         <DesktopMenu />
       </Col>
     </>
