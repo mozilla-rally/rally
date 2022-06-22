@@ -162,10 +162,10 @@ async function stateChangeCallback(newState) {
       // dependencies (either your own modules or modules from npm), and
       // they will be automatically bundled into the content script by
       // the build system.
-      //this.contentScript = webScience.contentScripts.registerContentScript(
-      //  ["http://localhost/*"],
-      //  "dist/exampleContentScript.content.js"
-      //);
+      this.contentScript = webScience.contentScripts.registerContentScript(
+        ["http://localhost/*"],
+        "dist/exampleContentScript.content.js"
+      );
 
       // Example: launch a Web Worker, which can handle tasks on another
       // thread. Note that the worker script has the same relative path in
