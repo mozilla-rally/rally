@@ -49,6 +49,6 @@ document.getElementById("download").addEventListener("click", async () => {
     downloadLink.click();
 });
 
-document.getElementById("delete-database").addEventListener("click", async () => {
+document.getElementById("clear-database").addEventListener("click", async () => {
     Dexie.delete(DB_NAME);
 });

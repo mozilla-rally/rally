@@ -23,7 +23,7 @@
     "test:integration:jest": "jest ./tests/integration/",
     "dev:extension": "rollup -c --config-enable-developer-mode -w",
     "dev:extension:emulator": "rollup -c --config-enable-emulator-mode -w",
-    "dev:webext": "web-ext run -t chromium --start-url 'https://example.com' --watch-file dist/exampleWorkerScript.worker.js"
+    "dev:webext": "web-ext run -t ${TARGET=chromium} --start-url 'https://example.com' --watch-file dist/exampleWorkerScript.worker.js"
   },
   "devDependencies": {
     "@babel/preset-env": "^7.16.11",
