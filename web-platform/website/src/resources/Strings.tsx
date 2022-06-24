@@ -67,6 +67,20 @@ export const Strings = {
     },
     pages: {
       login: {
+        emailAccountCreatedView: {
+          backToSignIn: "Back to Sign In",
+          message:
+            "To finish creating your account with Rally, please check your email inbox and verify your email address.",
+          needHelp: (
+            <>
+              Need additional help?{" "}
+              <a href="https://members.rally.mozilla.org/" className="fw-bold">
+                Contact us
+              </a>
+            </>
+          ),
+          title: "Check Your Mail",
+        },
         emailSignupView: {
           continue: "Continue",
           email: "Email",
@@ -111,6 +125,16 @@ export const Strings = {
   pages: {
     index: {
       title: "Studies | Mozilla Rally",
+    },
+  },
+  utils: {
+    firebaseError: {
+      errorMessages: {
+        "auth/email-already-in-use": "Account already exists. Please sign in.",
+        "auth/invalid-email": "Invalid email.",
+        "auth/network-request-failed": "Network connectivity failed.",
+        unknown: "An unknown error has occurred. Please try again.",
+      },
     },
   },
 };

@@ -21,7 +21,7 @@ export function DesktopMenu() {
           alt={strings.a11y.menuButton}
         />
       </DropdownToggle>
-      <DropdownMenu end>
+      <DropdownMenu end={+true}>
         <DropdownItem>
           <div className={"text-center text-nowrap"}>
             User Email Goes Here...
@@ -31,7 +31,7 @@ export function DesktopMenu() {
         {strings.sections.map((section) => (
           <div key={section.heading}>
             <hr />
-            <DropdownItem header>{section.heading}</DropdownItem>
+            <DropdownItem header={true}>{section.heading}</DropdownItem>
             {section.links.map((link, i) => (
               <DropdownItem
                 key={`${i}-link.href`}

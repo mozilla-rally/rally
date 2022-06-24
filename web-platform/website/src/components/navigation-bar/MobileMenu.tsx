@@ -26,7 +26,7 @@ export function MobileMenu() {
           {strings.sections.map((section) => (
             <div key={section.heading}>
               <hr />
-              <DropdownItem header>{section.heading}</DropdownItem>
+              <DropdownItem header={true}>{section.heading}</DropdownItem>
               {section.links.map((link, i) => (
                 <DropdownItem
                   key={`${i}link.href`}

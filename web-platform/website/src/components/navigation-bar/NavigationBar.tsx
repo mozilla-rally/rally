@@ -2,7 +2,6 @@ import Link from "next/link";
 import { Col, Container, Row } from "reactstrap";
 import { style } from "typestyle";
 
-import { User } from "../../models/User";
 import { Strings } from "../../resources/Strings";
 import { useAuthentication } from "../../services/AuthenticationService";
 import {
@@ -17,13 +16,15 @@ import { MobileMenu } from "./MobileMenu";
 const strings = Strings.components.navigationBar;
 
 export function NavigationBar() {
-  const { user } = useAuthentication();
+  const { isUserVerified } = useAuthentication();
 
   return (
-    <Container className={`${styles.nav} ${user ? "" : "border-0"} ms-0 me-0`}>
+    <Container
+      className={`${styles.nav} ${isUserVerified ? "" : "border-0"} ms-0 me-0`}
+    >
       <Row className={"align-items-center gx-0 gy-0"}>
         <Col className="col-md-auto logo-col">
-          <a href={user ? "/" : strings.rallyWebsiteUrl}>
+          <a href={isUserVerified ? "/" : strings.rallyWebsiteUrl}>
             <img
               src="/img/moz-rally-logo.svg"
               className="logo-large"
@@ -32,19 +33,18 @@ export function NavigationBar() {
           </a>
         </Col>
 
-        <TopLinks user={user} />
-
-        <DropdownMenus user={user} />
+        {isUserVerified && (
+          <>
+            <TopLinks />
+            <DropdownMenus />
+          </>
+        )}
       </Row>
     </Container>
   );
 }
 
-function TopLinks(props: { user?: User }) {
-  if (!props.user) {
-    return null;
-  }
-
+function TopLinks() {
   return (
     <>
       {strings.topLinks.map((topLink, i) => (
@@ -63,11 +63,7 @@ function TopLinks(props: { user?: User }) {
   );
 }
 
-function DropdownMenus(props: { user?: User }) {
-  if (!props.user) {
-    return null;
-  }
-
+function DropdownMenus() {
   return (
     <>
       <Col className="d-flex d-lg-none me-0 justify-content-end">

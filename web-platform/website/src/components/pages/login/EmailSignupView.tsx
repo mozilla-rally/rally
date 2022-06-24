@@ -1,3 +1,4 @@
+import { FirebaseError } from "@firebase/util";
 import { useRef, useState } from "react";
 import {
   Col,
@@ -9,13 +10,15 @@ import {
   Label,
   Row,
 } from "reactstrap";
-import { style } from "typestyle";
 
 import { Strings } from "../../../resources/Strings";
-import { Colors } from "../../../styles";
+import { useAuthentication } from "../../../services/AuthenticationService";
+import { PrimaryButton } from "../../../styles/Buttons";
 import { Fonts } from "../../../styles/Fonts";
+import { getFirebaseErrorMessage } from "../../../utils/FirebaseErrors";
 import { Highlighter } from "../../Highlighter";
 import { LoginButton } from "./LoginButton";
+import { LoginState, useLoginDataContext } from "./LoginDataContext";
 import {
   LoginFormValidationResult,
   validateLoginForm,
@@ -49,7 +52,10 @@ export function EmailSignupView() {
   const passwordRef = useRef(password);
   passwordRef.current = password;
 
-  function validateAndSignup() {
+  const { signupWithEmail } = useAuthentication();
+  const { setLoginState } = useLoginDataContext();
+
+  async function validateAndSignup() {
     setValidationResult(undefined);
 
     const validationResult = validateLoginForm(
@@ -63,11 +69,21 @@ export function EmailSignupView() {
       return;
     }
 
-    // TODO: Place authentication call here...
+    try {
+      await signupWithEmail(emailRef.current, passwordRef.current);
+      setLoginState(LoginState.EmailAccountCreated);
+    } catch (e) {
+      setValidationResult({
+        email: { error: getFirebaseErrorMessage(e as FirebaseError) },
+        password: {},
+        passwordRules: [],
+        valid: false,
+      });
+    }
   }
 
   return (
-    <Container className={`${styles.container} p-0`}>
+    <Container className={`p-0`}>
       <Row className="mb-4">
         <Col className="d-flex justify-content-center">
           <Highlighter>
@@ -125,7 +141,7 @@ export function EmailSignupView() {
       <Row className="mb-3">
         <Col>
           <LoginButton
-            className="login-button"
+            className={PrimaryButton}
             onClick={() => validateAndSignup()}
           >
             {strings.continue}
@@ -138,20 +154,3 @@ export function EmailSignupView() {
     </Container>
   );
 }
-
-const styles = {
-  container: style({
-    $nest: {
-      ".login-button": {
-        color: Colors.ColorWhite,
-        backgroundColor: Colors.ColorBlack,
-        $nest: {
-          "&:hover": {
-            color: Colors.ColorBlack,
-            backgroundColor: Colors.ColorMarketingGray20,
-          },
-        },
-      },
-    },
-  }),
-};
