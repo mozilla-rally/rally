@@ -3,9 +3,12 @@ import userEvent from "@testing-library/user-event";
 import { UserEvent } from "@testing-library/user-event/dist/types/setup";
 
 import { Strings } from "../../../../resources/Strings";
+import { useAuthentication } from "../../../../services/AuthenticationService";
+import { getFirebaseErrorMessage } from "../../../../utils/FirebaseErrors";
 import { Highlighter } from "../../../Highlighter";
 import { EmailSignupView } from "../EmailSignupView";
 import { LoginButton } from "../LoginButton";
+import { LoginState, useLoginDataContext } from "../LoginDataContext";
 import {
   LoginFormValidationResult,
   validateLoginForm,
@@ -13,8 +16,11 @@ import {
 import { PasswordRuleViolations } from "../PasswordRuleViolations";
 import { PrivacyNoticeAndLoginLink } from "../PrivacyNoticeAndLoginLink";
 
+jest.mock("../../../../services/AuthenticationService");
+jest.mock("../../../../utils/FirebaseErrors");
 jest.mock("../../../Highlighter");
 jest.mock("../LoginButton");
+jest.mock("../LoginDataContext");
 jest.mock("../LoginFormValidator");
 jest.mock("../PasswordRuleViolations");
 jest.mock("../PrivacyNoticeAndLoginLink");
@@ -22,11 +28,24 @@ jest.mock("../PrivacyNoticeAndLoginLink");
 const strings = Strings.components.pages.login.emailSignupView;
 
 describe("EmailSignupView tests", () => {
+  const signupWithEmail = jest.fn();
+  const setLoginState = jest.fn();
+
   beforeEach(() => {
+    jest.resetAllMocks();
+
     (Highlighter as jest.Mock).mockImplementation(({ children }) => children);
     (LoginButton as jest.Mock).mockImplementation(() => null);
     (PasswordRuleViolations as jest.Mock).mockImplementation(() => null);
     (PrivacyNoticeAndLoginLink as jest.Mock).mockImplementation(() => null);
+
+    (useAuthentication as jest.Mock).mockReturnValue({
+      signupWithEmail,
+    });
+
+    (useLoginDataContext as jest.Mock).mockReturnValue({
+      setLoginState,
+    });
   });
 
   it("zero state", () => {
@@ -58,6 +77,9 @@ describe("EmailSignupView tests", () => {
 
     assertEmailError(undefined);
     assertPasswordError(undefined);
+
+    expect(signupWithEmail).not.toHaveBeenCalled();
+    expect(setLoginState).not.toHaveBeenCalled();
   });
 
   it("displays error for email and password when validation fails", async () => {
@@ -80,7 +102,7 @@ describe("EmailSignupView tests", () => {
       valid: false,
     };
 
-    (validateLoginForm as jest.Mock).mockImplementation(() => validationResult);
+    (validateLoginForm as jest.Mock).mockReturnValue(validationResult);
 
     const user = userEvent.setup();
 
@@ -89,7 +111,7 @@ describe("EmailSignupView tests", () => {
     await setEmail(user, "email");
     await setPassword(user, "password");
 
-    login();
+    await login();
 
     expect(validateLoginForm).toHaveBeenCalledWith("email", "password");
 
@@ -105,6 +127,88 @@ describe("EmailSignupView tests", () => {
     );
 
     expect(PrivacyNoticeAndLoginLink).toHaveBeenCalled();
+
+    expect(signupWithEmail).not.toHaveBeenCalled();
+    expect(setLoginState).not.toHaveBeenCalled();
+  });
+
+  it("displays firebase error when signup fails", async () => {
+    const firebaseErrorStr = "Some firebase error.";
+
+    (getFirebaseErrorMessage as jest.Mock).mockReturnValue(firebaseErrorStr);
+
+    const thrownError = new Error("Any error would do.");
+
+    (signupWithEmail as jest.Mock).mockImplementation(() => {
+      throw thrownError;
+    });
+
+    const validationResult: LoginFormValidationResult = {
+      email: {},
+      password: {},
+      passwordRules: [],
+      valid: true,
+    };
+
+    (validateLoginForm as jest.Mock).mockReturnValue(validationResult);
+
+    const user = userEvent.setup();
+
+    render(<EmailSignupView />);
+
+    await setEmail(user, "email");
+    await setPassword(user, "password");
+
+    await login();
+
+    expect(validateLoginForm).toHaveBeenCalledWith("email", "password");
+
+    expect(signupWithEmail).toHaveBeenCalledWith("email", "password");
+
+    expect(setLoginState).not.toHaveBeenCalled();
+
+    expect(getFirebaseErrorMessage).toHaveBeenCalledWith(thrownError);
+
+    assertEmailError(firebaseErrorStr);
+  });
+
+  it("successfully invokes signup with email and sets the login state to email account created", async () => {
+    const validationResult: LoginFormValidationResult = {
+      email: {},
+      password: {},
+      passwordRules: [],
+      valid: true,
+    };
+
+    (validateLoginForm as jest.Mock).mockImplementation(() => validationResult);
+
+    const user = userEvent.setup();
+
+    render(<EmailSignupView />);
+
+    await setEmail(user, "email");
+    await setPassword(user, "password");
+
+    await login();
+
+    expect(validateLoginForm).toHaveBeenCalledWith("email", "password");
+
+    expect(signupWithEmail).toHaveBeenCalledWith("email", "password");
+
+    assertEmailError(undefined);
+    assertPasswordError(undefined);
+
+    expect(PasswordRuleViolations).toHaveBeenCalledWith(
+      {
+        className: "mt-3",
+        validationResult,
+      },
+      {}
+    );
+
+    expect(PrivacyNoticeAndLoginLink).toHaveBeenCalled();
+
+    expect(setLoginState).toHaveBeenCalledWith(LoginState.EmailAccountCreated);
   });
 
   async function setEmail(userEvent: UserEvent, email: string) {

@@ -4,6 +4,7 @@ export enum LoginState {
   Initial = "Initial",
   SignupWithGoogle = "SignupWithGoogle",
   SignupWithEmail = "SignupWithEmail",
+  EmailAccountCreated = "EmailAccountCreated",
 }
 
 export interface LoginDataContext {

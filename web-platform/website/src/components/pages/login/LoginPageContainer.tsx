@@ -5,6 +5,7 @@ import { cssRule, style } from "typestyle";
 import { Strings } from "../../../resources/Strings";
 import { ScreenSize, Spacing, createResponsiveStyle } from "../../../styles";
 import { Layout } from "../../Layout";
+import { EmailAccountCreatedView } from "./EmailAccountCreatedView";
 import { EmailSignupView } from "./EmailSignupView";
 import { InitialLoginView } from "./InitialLoginView";
 import {
@@ -48,6 +49,9 @@ function LoginCardFactory() {
     case LoginState.SignupWithEmail:
       return <EmailSignupView />;
 
+    case LoginState.EmailAccountCreated:
+      return <EmailAccountCreatedView />;
+
     default:
       throw new Error("Invalid card type.");
   }
@@ -67,7 +71,7 @@ const styles = {
           height: "auto",
         },
         ".login-card": {
-          minWidth: 450,
+          width: 450,
         },
       },
     },

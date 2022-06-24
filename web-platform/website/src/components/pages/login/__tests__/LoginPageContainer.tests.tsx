@@ -47,6 +47,8 @@ describe("LoginPageContainer tests", () => {
       loginState: undefined,
     }));
 
+    jest.spyOn(console, "error").mockImplementation(() => {}); //eslint-disable-line @typescript-eslint/no-empty-function
+
     expect(() => render(<LoginPageContainer />)).toThrowError(
       "Invalid card type."
     );

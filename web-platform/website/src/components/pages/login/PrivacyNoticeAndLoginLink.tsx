@@ -16,7 +16,7 @@ export function PrivacyNoticeAndLoginLink() {
           {strings.privacyNotice}
         </Col>
       </Row>
-      <Row noGutters className="justify-content-center">
+      <Row className="justify-content-center gx-0 gy-0">
         <Col className="d-flex justify-content-center col-auto me-1">
           {strings.accountExists}
         </Col>
