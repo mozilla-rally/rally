@@ -4,8 +4,8 @@
   "scripts": {
     "build": "cp manifest.prod.json manifest.json && npm run build:glean && rollup -c && npm run tailwind",
     "dev": "cp manifest.dev.json manifest.json && npm run build:glean && npm run clean && npm run tailwind && npm run dev:extension",
-    "dev:extension": "rollup -c --config-enable-developer-mode -w --watch.onBundleEnd \"npm run dev:webext\"",
-    "dev:extension:emulator": "rollup -c --config-enable-emulator-mode -w --watch.onBundleEnd \"npm run dev:webext\"",
+    "dev:extension": "rollup -c --config-enable-developer-mode -w --watch.onEnd \"npm run dev:webext\"",
+    "dev:extension:emulator": "rollup -c --config-enable-emulator-mode -w --watch.onEnd \"npm run dev:webext\"",
     "lint": "npm run build && eslint . && npm run lint:glean",
     "clean": "rimraf dist/*",
     "build:glean": "npm run build:glean:metrics && npm run build:glean:docs",
