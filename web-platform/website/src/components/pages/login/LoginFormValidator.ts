@@ -41,7 +41,7 @@ export function validateLoginForm(
   return result;
 }
 
-function validatePasswordRules(password: string): PasswordRule[] {
+export function validatePasswordRules(password: string): PasswordRule[] {
   const normalizedPassword = (password || "").trim();
 
   let containsLowercase = false;

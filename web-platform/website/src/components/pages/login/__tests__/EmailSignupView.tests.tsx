@@ -12,8 +12,9 @@ import { LoginState, useLoginDataContext } from "../LoginDataContext";
 import {
   LoginFormValidationResult,
   validateLoginForm,
+  validatePasswordRules,
 } from "../LoginFormValidator";
-import { PasswordRuleViolations } from "../PasswordRuleViolations";
+import { PasswordRules } from "../PasswordRules";
 import { PrivacyNoticeAndLoginLink } from "../PrivacyNoticeAndLoginLink";
 
 jest.mock("../../../../services/AuthenticationService");
@@ -22,7 +23,7 @@ jest.mock("../../../Highlighter");
 jest.mock("../LoginButton");
 jest.mock("../LoginDataContext");
 jest.mock("../LoginFormValidator");
-jest.mock("../PasswordRuleViolations");
+jest.mock("../PasswordRules");
 jest.mock("../PrivacyNoticeAndLoginLink");
 
 const strings = Strings.components.pages.login.emailSignupView;
@@ -36,7 +37,7 @@ describe("EmailSignupView tests", () => {
 
     (Highlighter as jest.Mock).mockImplementation(({ children }) => children);
     (LoginButton as jest.Mock).mockImplementation(() => null);
-    (PasswordRuleViolations as jest.Mock).mockImplementation(() => null);
+    (PasswordRules as jest.Mock).mockImplementation(() => null);
     (PrivacyNoticeAndLoginLink as jest.Mock).mockImplementation(() => null);
 
     (useAuthentication as jest.Mock).mockReturnValue({
@@ -46,6 +47,8 @@ describe("EmailSignupView tests", () => {
     (useLoginDataContext as jest.Mock).mockReturnValue({
       setLoginState,
     });
+
+    (validatePasswordRules as jest.Mock).mockReturnValue([]);
   });
 
   it("zero state", () => {
@@ -62,10 +65,10 @@ describe("EmailSignupView tests", () => {
     expect(document.querySelector("input#password")).toBeInTheDocument();
     expect(document.querySelector(".password-error")).not.toBeInTheDocument();
 
-    expect(PasswordRuleViolations).toHaveBeenCalledWith(
+    expect(PasswordRules).toHaveBeenCalledWith(
       {
         className: "mt-3",
-        validationResult: undefined,
+        rules: [],
       },
       {}
     );
@@ -118,10 +121,10 @@ describe("EmailSignupView tests", () => {
     assertEmailError(validationResult.email.error);
     assertPasswordError(validationResult.password.error);
 
-    expect(PasswordRuleViolations).toHaveBeenCalledWith(
+    expect(PasswordRules).toHaveBeenCalledWith(
       {
         className: "mt-3",
-        validationResult,
+        rules: validationResult.passwordRules,
       },
       {}
     );
@@ -198,10 +201,10 @@ describe("EmailSignupView tests", () => {
     assertEmailError(undefined);
     assertPasswordError(undefined);
 
-    expect(PasswordRuleViolations).toHaveBeenCalledWith(
+    expect(PasswordRules).toHaveBeenCalledWith(
       {
         className: "mt-3",
-        validationResult,
+        rules: validationResult.passwordRules,
       },
       {}
     );
