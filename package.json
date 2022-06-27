@@ -37,7 +37,7 @@
     "@rollup/plugin-typescript": "^8.3.2",
     "@types/jest": "^27.5.2",
     "@types/selenium-webdriver": "^4.0.18",
-    "chromedriver": "^102.0.0",
+    "chromedriver": "^103.0.0",
     "dexie": "^3.2.2",
     "eslint": "^8.16.0",
     "eslint-plugin-import": "^2.26.0",
