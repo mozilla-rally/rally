@@ -1,5 +1,5 @@
 import { FirebaseError } from "@firebase/util";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   Col,
   Container,
@@ -22,8 +22,9 @@ import { LoginState, useLoginDataContext } from "./LoginDataContext";
 import {
   LoginFormValidationResult,
   validateLoginForm,
+  validatePasswordRules,
 } from "./LoginFormValidator";
-import { PasswordRuleViolations } from "./PasswordRuleViolations";
+import { PasswordRules } from "./PasswordRules";
 import { PrivacyNoticeAndLoginLink } from "./PrivacyNoticeAndLoginLink";
 
 const strings = Strings.components.pages.login.emailSignupView;
@@ -51,6 +52,19 @@ export function EmailSignupView() {
 
   const passwordRef = useRef(password);
   passwordRef.current = password;
+
+  useEffect(() => {
+    const rules = validatePasswordRules(password);
+    const isValid = !rules.find((rule) => !rule.valid);
+    setValidationResult({
+      ...(validationResult || {
+        email: { error: undefined },
+        password: { error: undefined },
+      }),
+      valid: isValid,
+      passwordRules: (passwordRef.current && rules) || [],
+    });
+  }, [password]);
 
   const { signupWithEmail } = useAuthentication();
   const { setLoginState } = useLoginDataContext();
@@ -130,8 +144,10 @@ export function EmailSignupView() {
                 </FormFeedback>
               )}
 
-              <PasswordRuleViolations
-                validationResult={validationResult}
+              <PasswordRules
+                rules={
+                  (validationResult && validationResult.passwordRules) || []
+                }
                 className="mt-3"
               />
             </FormGroup>
