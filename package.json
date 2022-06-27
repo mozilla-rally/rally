@@ -32,7 +32,7 @@
     "@mozilla/rally-sdk": "^0.9.14",
     "@mozilla/web-science": "^0.5.1",
     "@rollup/plugin-commonjs": "^21.0.0",
-    "@rollup/plugin-node-resolve": "^13.0.5",
+    "@rollup/plugin-node-resolve": "^13.0.6",
     "@rollup/plugin-replace": "^3.0.0",
     "@rollup/plugin-typescript": "^8.3.2",
     "@types/jest": "^27.5.2",
