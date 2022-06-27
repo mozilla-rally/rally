@@ -1,17 +1,22 @@
-import { onAuthStateChanged, signOut } from "firebase/auth";
+import { UserCredential, onAuthStateChanged } from "firebase/auth";
 import { createContext, useContext, useEffect, useState } from "react";
 
 import { User } from "../models/User";
 import { useFirebase } from "./FirebaseService";
-import { signupWithEmail as signupWithEmailFunction } from "./UserAccountService";
+import {
+  loginWithEmail as loginWithEmailFn,
+  logout as logoutFn,
+  signupWithEmail as signupWithEmailFn,
+} from "./UserAccountService";
 
 export interface UserDataContext {
   isLoaded: boolean;
   user?: User;
   isLoggingIn: boolean;
   isUserVerified: boolean;
+  loginWithEmail: (email: string, password: string) => Promise<UserCredential>;
   logout: () => Promise<void>;
-  signupWithEmail(email: string, password: string): Promise<void>;
+  signupWithEmail(email: string, password: string): Promise<UserCredential>;
 }
 
 const AuthenticationContext = createContext<UserDataContext>({
@@ -36,9 +41,8 @@ export function AuthenticationProvider(props: { children: React.ReactNode }) {
   useEffect(() => {
     onAuthStateChanged(auth, (firebaseUser) => {
       setUser(firebaseUser ? { firebaseUser } : undefined);
+      setIsLoaded(true);
     });
-
-    setIsLoaded(true);
   }, []);
 
   useEffect(() => {
@@ -54,22 +58,6 @@ export function AuthenticationProvider(props: { children: React.ReactNode }) {
     );
   }, [user]);
 
-  async function logout() {
-    signOut(auth);
-  }
-
-  async function signupWithEmail(
-    email: string,
-    password: string
-  ): Promise<void> {
-    try {
-      await signupWithEmailFunction(email, password);
-    } catch (e) {
-      console.error(`Failed to create account with email. Error: ${e}.`);
-      throw e;
-    }
-  }
-
   return (
     <AuthenticationContext.Provider
       value={{
@@ -77,8 +65,9 @@ export function AuthenticationProvider(props: { children: React.ReactNode }) {
         isLoaded,
         isLoggingIn,
         isUserVerified,
-        logout,
-        signupWithEmail,
+        loginWithEmail: loginWithEmailFn,
+        logout: logoutFn,
+        signupWithEmail: signupWithEmailFn,
       }}
     >
       {props.children}

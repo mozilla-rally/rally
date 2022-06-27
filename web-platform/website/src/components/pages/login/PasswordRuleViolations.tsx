@@ -1,5 +1,4 @@
 import { HTMLAttributes } from "react";
-import { style } from "typestyle";
 
 import { FontSize } from "../../../styles/Fonts";
 import { LoginFormValidationResult } from "./LoginFormValidator";
@@ -29,7 +28,10 @@ export function PasswordRuleViolations({
   }
 
   return (
-    <ul className={`${styles.container} ${className}`} {...otherProps}>
+    <ul
+      className={`${FontSize.Small} fw-weight-normal ${className}`}
+      {...otherProps}
+    >
       {validationResult.passwordRules.map((rule) => {
         return (
           <li key={rule.title}>
@@ -44,10 +46,3 @@ export function PasswordRuleViolations({
     </ul>
   );
 }
-
-const styles = {
-  container: style({
-    fontSize: FontSize.Small,
-    fontWeight: 400,
-  }),
-};
