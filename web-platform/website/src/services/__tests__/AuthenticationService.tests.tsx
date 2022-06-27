@@ -1,5 +1,5 @@
 import { act, render } from "@testing-library/react";
-import { onAuthStateChanged, signOut } from "firebase/auth";
+import { onAuthStateChanged } from "firebase/auth";
 import { useEffect } from "react";
 
 import {
@@ -7,17 +7,21 @@ import {
   useAuthentication,
 } from "../AuthenticationService";
 import { useFirebase } from "../FirebaseService";
-import { signupWithEmail as signupWithEmailFunction } from "../UserAccountService";
+import {
+  logout,
+  signupWithEmail as signupWithEmailFunction,
+} from "../UserAccountService";
+
+const auth = { auth: "test" };
 
 jest.mock("firebase/auth");
-jest.mock("../FirebaseService");
+jest.mock("../FirebaseService", () => ({
+  useFirebase: jest.fn().mockReturnValue(auth),
+}));
 jest.mock("../UserAccountService");
 
 describe("AuthenticationService tests", () => {
   it("zero state", () => {
-    const auth = { auth: "test" };
-    (useFirebase as jest.Mock).mockReturnValue(auth);
-
     let renderCount = 0;
 
     function Component() {
@@ -46,7 +50,7 @@ describe("AuthenticationService tests", () => {
       </AuthenticationProvider>
     );
 
-    expect(renderCount).toBe(2);
+    expect(renderCount).toBe(1);
 
     expect(onAuthStateChanged).toHaveBeenCalled();
 
@@ -54,7 +58,6 @@ describe("AuthenticationService tests", () => {
   });
 
   it("handles unverified email user", () => {
-    const auth = { auth: "test" };
     (useFirebase as jest.Mock).mockReturnValue(auth);
 
     let isAuthenticated = false;
@@ -102,7 +105,6 @@ describe("AuthenticationService tests", () => {
   });
 
   it("handles verified email user", () => {
-    const auth = { auth: "test" };
     (useFirebase as jest.Mock).mockReturnValue(auth);
 
     let isAuthenticated = false;
@@ -154,7 +156,6 @@ describe("AuthenticationService tests", () => {
   });
 
   it("google user is verified", () => {
-    const auth = { auth: "test" };
     (useFirebase as jest.Mock).mockReturnValue(auth);
 
     let isAuthenticated = false;
@@ -205,7 +206,6 @@ describe("AuthenticationService tests", () => {
   });
 
   it("logout logs the user out", () => {
-    const auth = { auth: "test" };
     (useFirebase as jest.Mock).mockReturnValue(auth);
 
     let isAuthenticated = false;
@@ -257,7 +257,7 @@ describe("AuthenticationService tests", () => {
 
     expect(isVerified).toBeTruthy();
 
-    expect(signOut).toHaveBeenCalledWith(auth.auth);
+    expect(logout).toHaveBeenCalled();
   });
 
   it("signupWithEmail calls firebase correctly", () => {
@@ -273,7 +273,6 @@ describe("AuthenticationService tests", () => {
       return null;
     }
 
-    const auth = { auth: "test" };
     (useFirebase as jest.Mock).mockReturnValue(auth);
 
     render(

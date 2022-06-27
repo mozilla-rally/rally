@@ -100,6 +100,17 @@ export const Strings = {
         loginPageContainer: {
           title: "Sign Up | Mozilla Rally",
         },
+        loginView: {
+          createAccount: "Create account",
+          dontHaveAnAccount: "Don't have an account?",
+          email: "Email",
+          forgotPassword: "Forgot Password",
+          or: "or",
+          password: "Password",
+          signIn: "Sign in",
+          signInWithGoogle: "Sign up with Google",
+          title: "Welcome Back",
+        },
         initialLoginView: {
           signInWithEmail: "Sign up with Email",
           signInWithGoogle: "Sign up with Google",
@@ -133,6 +144,8 @@ export const Strings = {
         "auth/email-already-in-use": "Account already exists. Please sign in.",
         "auth/invalid-email": "Invalid email.",
         "auth/network-request-failed": "Network connectivity failed.",
+        "auth/wrong-password": "Incorrect password.",
+        "auth/user-not-found": "User not found.",
         unknown: "An unknown error has occurred. Please try again.",
       },
     },

@@ -1,8 +1,7 @@
 import { Col, Container, Row } from "reactstrap";
-import { style } from "typestyle";
 
 import { Strings } from "../../../resources/Strings";
-import { Colors } from "../../../styles";
+import { SecondaryButton } from "../../../styles/Buttons";
 import { Fonts } from "../../../styles/Fonts";
 import { Highlighter } from "../../Highlighter";
 import { LoginButton } from "./LoginButton";
@@ -15,7 +14,7 @@ export function InitialLoginView() {
   const { setLoginState } = useLoginDataContext();
 
   return (
-    <Container className={`${styles.container} p-0`}>
+    <Container className={`p-0`}>
       <Row className="mb-4">
         <Col className="d-flex justify-content-center">
           <Highlighter>
@@ -27,7 +26,7 @@ export function InitialLoginView() {
         <Col>
           <LoginButton
             icon="/img/icon-logo-google.svg"
-            className="login-button"
+            className={SecondaryButton}
             outline
           >
             {strings.signInWithGoogle}
@@ -38,7 +37,7 @@ export function InitialLoginView() {
         <Col>
           <LoginButton
             icon="/img/icon-email.svg"
-            className="login-button"
+            className={SecondaryButton}
             onClick={() => setLoginState(LoginState.SignupWithEmail)}
             outline
           >
@@ -52,20 +51,3 @@ export function InitialLoginView() {
     </Container>
   );
 }
-
-const styles = {
-  container: style({
-    $nest: {
-      ".login-button": {
-        color: Colors.ColorMarketingGray70,
-        borderColor: Colors.ColorMarketingGray30,
-        $nest: {
-          "&:hover": {
-            backgroundColor: Colors.ColorMarketingGray20,
-            color: Colors.ColorBlack,
-          },
-        },
-      },
-    },
-  }),
-};

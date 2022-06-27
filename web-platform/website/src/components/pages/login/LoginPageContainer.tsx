@@ -3,6 +3,7 @@ import { Card, Col, Container, Row } from "reactstrap";
 import { cssRule, style } from "typestyle";
 
 import { Strings } from "../../../resources/Strings";
+import { useAuthentication } from "../../../services/AuthenticationService";
 import { ScreenSize, Spacing, createResponsiveStyle } from "../../../styles";
 import { Layout } from "../../Layout";
 import { EmailAccountCreatedView } from "./EmailAccountCreatedView";
@@ -13,10 +14,17 @@ import {
   LoginStateProvider,
   useLoginDataContext,
 } from "./LoginDataContext";
+import { LoginView } from "./LoginView";
 
 const strings = Strings.components.pages.login.loginPageContainer;
 
 export function LoginPageContainer() {
+  const { user } = useAuthentication();
+
+  if (user) {
+    document.location = "/";
+  }
+
   return (
     <Layout>
       <>
@@ -51,6 +59,9 @@ function LoginCardFactory() {
 
     case LoginState.EmailAccountCreated:
       return <EmailAccountCreatedView />;
+
+    case LoginState.Login:
+      return <LoginView />;
 
     default:
       throw new Error("Invalid card type.");

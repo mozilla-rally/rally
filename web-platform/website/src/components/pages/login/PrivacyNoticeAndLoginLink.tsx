@@ -5,10 +5,13 @@ import { Strings } from "../../../resources/Strings";
 import { createResponsiveStyle } from "../../../styles/ResponsiveStyle";
 import { ScreenSize } from "../../../styles/ScreenSize";
 import { Spacing } from "../../../styles/Spacing";
+import { LoginState, useLoginDataContext } from "./LoginDataContext";
 
 const strings = Strings.components.pages.login.privacyNoticeAndLoginLink;
 
 export function PrivacyNoticeAndLoginLink() {
+  const { setLoginState } = useLoginDataContext();
+
   return (
     <Container className={`${styles.container} p-0`}>
       <Row className="privacy-notice mb-5">
@@ -21,7 +24,11 @@ export function PrivacyNoticeAndLoginLink() {
           {strings.accountExists}
         </Col>
         <Col className="col-auto">
-          <a href="#" className="fw-bold">
+          <a
+            href="#"
+            className="fw-bold"
+            onClick={() => setLoginState(LoginState.Login)}
+          >
             {strings.signIn}
           </a>
         </Col>

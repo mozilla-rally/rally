@@ -8,5 +8,7 @@ export const Fonts = {
 };
 
 export const FontSize = {
-  Small: `${14 / 16}rem`
+  Small: style({
+    fontSize: `${14 / 16}rem`
+  })
 };

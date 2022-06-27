@@ -11,3 +11,14 @@ export const PrimaryButton = style({
     },
   },
 });
+
+export const SecondaryButton = style({
+  color: Colors.ColorMarketingGray70,
+  borderColor: Colors.ColorMarketingGray30,
+  $nest: {
+    "&:hover": {
+      backgroundColor: Colors.ColorMarketingGray20,
+      color: Colors.ColorBlack,
+    },
+  },
+});
