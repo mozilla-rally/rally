@@ -16,47 +16,35 @@ npm install
 To run the extension in "playtest" aka "dev mode", which only collects data locally and provides a UI that allows
 downloading any data the extension has collected locally:
 
+## Quickstart
+
+Run in dev mode with Chrome:
+
 ```
 npm run dev
 ```
 
-This will use the `web-ext` tool to run the extension under Chrome (TODO add Firefox config instructions).
-
-Alternatively, you can just generate the build output using this command:
+Run in dev mode, with Firefox:
 
 ```
-npm run build:developer
+TARGET=firefox-desktop npm run dev
 ```
 
-Then use `chrome://extensions` in Developer Mode (for Chrome) or `about:debugging` (in Firefox) to load `extensions/attention-stream/`.
+## Getting Started
 
-### Production mode
-
-Production mode submits data to the Mozilla data pipeline, using the [Rally Web Platform](https://github.com/mozilla-rally/rally-web-platform) to control whether data collection is enabled (it is disabled by default).
-
-```
-npm run build
-```
-
-### Packaging for distribution
-
-To produce a .zip file suitable for uploading to the Chrome Web Store / Firefox Add-ons store, run:
-
-```
-npm run package
-```
-
-You may also produce a distributable playtest version with:
-
-```
-npm run package:developer
-```
+Prerequisites: current versions of [Firefox](https://www.mozilla.org/firefox/new/) and [Node.js](https://nodejs.org/). You might find it helpful to install Node.js with a [package manager](https://nodejs.org/en/download/package-manager/), such as [Scoop](https://scoop.sh/) on Windows, [Homebrew](https://brew.sh/) on macOS, or [`apt-get`](https://help.ubuntu.com/community/AptGet/Howto) on Ubuntu Linux.
+1. Either [fork this repository](https://docs.github.com/en/github/getting-started-with-github/fork-a-repo) or [create a new repository from this template](https://docs.github.com/en/github/creating-cloning-and-archiving-repositories/creating-a-repository-on-github/creating-a-repository-from-a-template).
+2. Update the [WebExtensions manifest](https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/manifest.json) ([`manifest.json`](./manifest.json)) for your study. You should update the [`description`](https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/manifest.json/description), [`author`](https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/manifest.json/author), [`name`](https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/manifest.json/name), [`version`](https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/manifest.json/version), and [`homepage_url`](https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/manifest.json/homepage_url) fields. The Rally team will provide a value for the [`browser_specific_settings.gecko.id`](https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/manifest.json/browser_specific_settings) field.
+3. Update the [Node.js package configuration](https://docs.npmjs.com/cli/v7/configuring-npm/package-json) ([`package.json`](./package.json)) for your study. You should update the `name`, `version`, `description`, `repository`, `keywords`, `author`, `license`, `bugs`, and `homepage` fields.
+4. In the forked repository, run [`npm install`](https://docs.npmjs.com/cli/v7/commands/npm-install) to install Node.js package dependencies. A new `node_modules/` directory will be automatically populated with these dependencies.
+5. Run `npm run dev`. The build system will build your study extension, launch Firefox with the study extension installed, and automatically open both the [Browser Console](https://developer.mozilla.org/en-US/docs/Tools/Browser_Console) and [Firefox Developer Tools](https://developer.mozilla.org/en-US/docs/Tools) for the background page.
+6. Commit your study extension to a repository! You now have a clean and functional starting point for implementing your study. If this template is updated in future, you can also easily merge those updates into your study.
 
 ## Build System Commands
 This template comes with a set of predefined Node.js commands, which function similar to makefile targets. These commands should help you with study implementation, debugging, testing, and deployment. You run each command with `npm run <command>`.
 
 * `build` - Builds the study extension, by bundling JavaScript implementation in `src/` and copying non-JavaScript files. Output is in the `dist/` directory.
-* `dev` - Bundles the study extension (like `build`), but in _developer mode_, launch Firefox with the study extension installed, automatically rebuild the study if a file changes, and automatically reload the study in Firefox if the study is rebuilt. In developer mode, Rally SDK does not contact the website or the Firebase backend. Developer mode also provides a [source map](https://developer.mozilla.org/en-US/docs/Tools/Debugger/How_to/Use_a_source_map) for bundled JavaScript, so you can use the [Debugger](https://developer.mozilla.org/en-US/docs/Tools/Debugger) as if the JavaScript were not bundled. You should typically use developer mode when implementing and testing your study.
+* `dev` - Bundles the study extension (like `build`), but in _developer mode_, launch Chrome with the study extension installed, automatically rebuild the study if a file changes, and automatically reload the study in Chrome if the study is rebuilt. In developer mode, Rally SDK does not contact the website or the Firebase backend. Developer mode also provides a [source map](https://developer.mozilla.org/en-US/docs/Tools/Debugger/How_to/Use_a_source_map) for bundled JavaScript, so you can use the [Debugger](https://developer.mozilla.org/en-US/docs/Tools/Debugger) as if the JavaScript were not bundled. You should typically use developer mode when implementing and testing your study.
 * `dev:emulator` - Like `dev`, but run in _emulator mode_, which connects to a local Firebase emulator. See the [Rally Web Platform docs](https://github.com/mozilla-rally/rally-web-platform#quickstart) for information on running a local Firebase emulator.
 * `lint`: Run linting on the study extension.
 * `package`: Build the study extension (`build`), then package the built study into an archive for distribution. Output is in the `web-ext-artifacts/` directory.

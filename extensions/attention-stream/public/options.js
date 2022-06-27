@@ -3,6 +3,8 @@
 const RUNNING = "Running";
 const PAUSED = "Paused";
 
+const DB_NAME = "example";
+
 function changeState(state) {
     if (state === RUNNING) {
         document.getElementById("status").textContent = "Running";
@@ -34,7 +36,11 @@ document.getElementById("toggleEnabled").addEventListener("click", async event =
 });
 
 document.getElementById("download").addEventListener("click", async () => {
+<<<<<<< HEAD
     const db = new Dexie("attention-stream");
+=======
+    const db = new Dexie(DB_NAME);
+>>>>>>> 0caddf32a888a9354156bf2515c8be356c44faed
     await db.open();
     // Sort using index, @see `src/background.ts`
     const journeys = await db.table("user-journey").orderBy("user_journey_page_visit_stop_date_time").toArray();
@@ -45,4 +51,8 @@ document.getElementById("download").addEventListener("click", async () => {
     downloadLink.setAttribute("href", dataUrl);
     downloadLink.setAttribute("download", "rally-study-template.json");
     downloadLink.click();
+});
+
+document.getElementById("clear-database").addEventListener("click", async () => {
+    Dexie.delete(DB_NAME);
 });
