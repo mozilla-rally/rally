@@ -1,9 +1,11 @@
 import {
+  GoogleAuthProvider,
   UserCredential,
   createUserWithEmailAndPassword,
   fetchSignInMethodsForEmail,
   sendEmailVerification,
   signInWithEmailAndPassword,
+  signInWithRedirect,
   signOut,
 } from "firebase/auth";
 
@@ -25,6 +27,14 @@ export async function loginWithEmail(
   }
 
   return await signInWithEmailAndPassword(auth, email, password);
+}
+
+export async function loginWithGoogle(): Promise<void> {
+  const provider = new GoogleAuthProvider();
+  provider.setCustomParameters({ prompt: "select_account" });
+
+  const { auth } = useFirebase();
+  await signInWithRedirect(auth, provider);
 }
 
 export async function logout() {

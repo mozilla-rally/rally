@@ -48,7 +48,7 @@ export function LoginView() {
   const passwordRef = useRef(password);
   passwordRef.current = password;
 
-  const { loginWithEmail } = useAuthentication();
+  const { loginWithEmail, loginWithGoogle } = useAuthentication();
 
   async function validateAndLogin() {
     setValidationResult(undefined);
@@ -97,6 +97,7 @@ export function LoginView() {
           <LoginButton
             icon="/img/icon-logo-google.svg"
             className={SecondaryButton}
+            onClick={() => loginWithGoogle()}
             outline
           >
             {strings.signInWithGoogle}

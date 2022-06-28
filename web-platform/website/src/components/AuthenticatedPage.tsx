@@ -14,8 +14,8 @@ export function AuthenticatedPage(props: {
   }
 
   if (!user) {
-    const thisUrl = router.asPath;
-    router.replace(`/login?returnUrl=${thisUrl}`);
+    router.replace(`/login`);
+    return null;
   }
 
   return <>{props.children}</>;

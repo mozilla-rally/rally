@@ -5,6 +5,7 @@ import { User } from "../models/User";
 import { useFirebase } from "./FirebaseService";
 import {
   loginWithEmail as loginWithEmailFn,
+  loginWithGoogle as loginWithGoogleFn,
   logout as logoutFn,
   signupWithEmail as signupWithEmailFn,
 } from "./UserAccountService";
@@ -15,6 +16,7 @@ export interface UserDataContext {
   isLoggingIn: boolean;
   isUserVerified: boolean;
   loginWithEmail: (email: string, password: string) => Promise<UserCredential>;
+  loginWithGoogle: () => Promise<void>;
   logout: () => Promise<void>;
   signupWithEmail(email: string, password: string): Promise<UserCredential>;
 }
@@ -53,7 +55,7 @@ export function AuthenticationProvider(props: { children: React.ReactNode }) {
           user.firebaseUser.providerData.length &&
           ((user.firebaseUser.providerData[0].providerId === "password" &&
             user.firebaseUser.emailVerified) ||
-            user.firebaseUser.providerData[0].providerId === "google")
+            user.firebaseUser.providerData[0].providerId === "google.com")
       )
     );
   }, [user]);
@@ -66,6 +68,7 @@ export function AuthenticationProvider(props: { children: React.ReactNode }) {
         isLoggingIn,
         isUserVerified,
         loginWithEmail: loginWithEmailFn,
+        loginWithGoogle: loginWithGoogleFn,
         logout: logoutFn,
         signupWithEmail: signupWithEmailFn,
       }}

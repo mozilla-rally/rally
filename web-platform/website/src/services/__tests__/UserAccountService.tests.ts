@@ -1,13 +1,20 @@
 import {
+  GoogleAuthProvider,
   createUserWithEmailAndPassword,
   fetchSignInMethodsForEmail,
   sendEmailVerification,
   signInWithEmailAndPassword,
+  signInWithRedirect,
   signOut,
 } from "firebase/auth";
 
 import { useFirebase } from "../FirebaseService";
-import { loginWithEmail, logout, signupWithEmail } from "../UserAccountService";
+import {
+  loginWithEmail,
+  loginWithGoogle,
+  logout,
+  signupWithEmail,
+} from "../UserAccountService";
 
 jest.mock("firebase/auth");
 jest.mock("../FirebaseService");
@@ -32,11 +39,14 @@ describe("UserAccountService tests", () => {
     );
 
     expect(sendEmailVerification).toHaveBeenCalledWith(userCredential.user);
+
+    expect(useFirebase).toHaveBeenCalled();
   });
 
   it("logout logs the user by invoking firebase method", async () => {
     await logout();
     expect(signOut).toHaveBeenCalledWith(auth);
+    expect(useFirebase).toHaveBeenCalled();
   });
 
   it("login with email throws when email is registered via google login", async () => {
@@ -52,6 +62,7 @@ describe("UserAccountService tests", () => {
 
     expect(fetchSignInMethodsForEmail).toHaveBeenCalledWith(auth, "email");
     expect(signInWithEmailAndPassword).not.toHaveBeenCalled();
+    expect(useFirebase).toHaveBeenCalled();
   });
 
   it("login works fine when email is registed by both google and password", async () => {
@@ -72,6 +83,8 @@ describe("UserAccountService tests", () => {
       "email",
       "password"
     );
+
+    expect(useFirebase).toHaveBeenCalled();
   });
 
   it("login works fine when email is registed only by password", async () => {
@@ -92,5 +105,26 @@ describe("UserAccountService tests", () => {
       "email",
       "password"
     );
+
+    expect(useFirebase).toHaveBeenCalled();
+  });
+
+  it("login with google invokes correct firebase functions", async () => {
+    const setCustomParameters = jest.fn();
+
+    GoogleAuthProvider.prototype.setCustomParameters = setCustomParameters;
+
+    await loginWithGoogle();
+
+    expect(setCustomParameters).toHaveBeenCalledWith({
+      prompt: "select_account",
+    });
+
+    const instance = (GoogleAuthProvider as unknown as jest.Mock).mock
+      .instances[0];
+
+    expect(signInWithRedirect).toHaveBeenCalledWith(auth, instance);
+
+    expect(useFirebase).toHaveBeenCalled();
   });
 });

@@ -25,12 +25,14 @@ const strings = Strings.components.pages.login.loginView;
 
 describe("LoginView tests", () => {
   const loginWithEmail = jest.fn();
+  const loginWithGoogle = jest.fn();
   const setLoginState = jest.fn();
 
   beforeEach(() => {
     jest.resetAllMocks();
     (useAuthentication as jest.Mock).mockReturnValue({
       loginWithEmail,
+      loginWithGoogle,
     });
     (Highlighter as jest.Mock).mockImplementation(({ children }) => children);
     (LoginButton as jest.Mock).mockImplementation(() => null);
@@ -59,6 +61,21 @@ describe("LoginView tests", () => {
     assertPasswordError(undefined);
 
     expect(loginWithEmail).not.toHaveBeenCalled();
+    expect(loginWithGoogle).not.toHaveBeenCalled();
+  });
+
+  it("invokes login by google when button is clicked", async () => {
+    userEvent.setup();
+
+    render(<LoginView />);
+
+    const onClick = (LoginButton as jest.Mock).mock.calls[0][0].onClick;
+
+    await act(() => {
+      onClick();
+    });
+
+    expect(loginWithGoogle).toHaveBeenCalled();
   });
 
   it("displays email and password validation errors", async () => {
