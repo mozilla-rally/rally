@@ -29,6 +29,8 @@ export const Strings = {
             {
               text: "Sign Out",
               href: "",
+              command: "logout",
+              external: false,
             },
           ],
         },
@@ -39,6 +41,7 @@ export const Strings = {
               text: "Support",
               href: "https://support.mozilla.org/en-US/kb/about-mozilla-rally",
               external: true,
+              command: undefined,
             },
             {
               text: "FAQ",

@@ -56,14 +56,14 @@ export function EmailSignupView() {
   useEffect(() => {
     const rules = validatePasswordRules(password);
     const isValid = !rules.find((rule) => !rule.valid);
-    setValidationResult({
+    setValidationResult((validationResult) => ({
       ...(validationResult || {
         email: { error: undefined },
         password: { error: undefined },
       }),
       valid: isValid,
       passwordRules: (passwordRef.current && rules) || [],
-    });
+    }));
   }, [password]);
 
   const { signupWithEmail } = useAuthentication();
@@ -97,7 +97,7 @@ export function EmailSignupView() {
   }
 
   return (
-    <Container className={`p-0`}>
+    <Container className="p-0">
       <Row className="mb-4">
         <Col className="d-flex justify-content-center">
           <Highlighter>
