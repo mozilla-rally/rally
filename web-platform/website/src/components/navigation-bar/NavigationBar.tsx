@@ -53,7 +53,10 @@ function TopLinks() {
           key={`${i}-topLink.href`}
         >
           <Link href={topLink.href}>
-            <a target={topLink.external ? "_blank" : "_self"}>
+            <a
+              target={topLink.external ? "_blank" : "_self"}
+              className="top-link"
+            >
               {topLink.title}
             </a>
           </Link>
@@ -115,14 +118,15 @@ const styles = {
           marginRight: Spacing.xxLarge,
         },
 
-        "> a": {
+        ".top-link": {
           fontWeight: 700,
           fontSize: 18,
           textDecoration: "none",
-        },
-
-        "> a:hover": {
-          textDecoration: "underline",
+          $nest: {
+            "&:hover": {
+              textDecoration: "underline",
+            },
+          },
         },
       },
     }
