@@ -8,8 +8,10 @@ import {
 } from "../AuthenticationService";
 import { useFirebase } from "../FirebaseService";
 import {
+  loginWithEmail as loginWithEmailFn,
+  loginWithGoogle as loginWithGoogleFn,
   logout,
-  signupWithEmail as signupWithEmailFunction,
+  signupWithEmail as signupWithEmailFn,
 } from "../UserAccountService";
 
 const auth = { auth: "test" };
@@ -164,7 +166,7 @@ describe("AuthenticationService tests", () => {
     const googleUser = {
       providerData: [
         {
-          providerId: "google",
+          providerId: "google.com",
         },
       ],
     };
@@ -214,7 +216,7 @@ describe("AuthenticationService tests", () => {
     const googleUser = {
       providerData: [
         {
-          providerId: "google",
+          providerId: "google.com",
         },
       ],
     };
@@ -281,6 +283,60 @@ describe("AuthenticationService tests", () => {
       </AuthenticationProvider>
     );
 
-    expect(signupWithEmailFunction).toHaveBeenCalledWith("email", "password");
+    expect(signupWithEmailFn).toHaveBeenCalledWith("email", "password");
+
+    expect(useFirebase).toHaveBeenCalled();
+  });
+
+  it("loginWithEmail calls firebase correctly", () => {
+    function Component() {
+      const { loginWithEmail } = useAuthentication();
+
+      useEffect(() => {
+        (async () => {
+          loginWithEmail("email", "password");
+        })();
+      }, []);
+
+      return null;
+    }
+
+    (useFirebase as jest.Mock).mockReturnValue(auth);
+
+    render(
+      <AuthenticationProvider>
+        <Component />
+      </AuthenticationProvider>
+    );
+
+    expect(loginWithEmailFn).toHaveBeenCalledWith("email", "password");
+
+    expect(useFirebase).toHaveBeenCalled();
+  });
+
+  it("loginWithGoogle calls firebase correctly", () => {
+    function Component() {
+      const { loginWithGoogle } = useAuthentication();
+
+      useEffect(() => {
+        (async () => {
+          loginWithGoogle();
+        })();
+      }, []);
+
+      return null;
+    }
+
+    (useFirebase as jest.Mock).mockReturnValue(auth);
+
+    render(
+      <AuthenticationProvider>
+        <Component />
+      </AuthenticationProvider>
+    );
+
+    expect(loginWithGoogleFn).toHaveBeenCalled();
+
+    expect(useFirebase).toHaveBeenCalled();
   });
 });

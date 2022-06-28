@@ -1,6 +1,7 @@
 import { Col, Container, Row } from "reactstrap";
 
 import { Strings } from "../../../resources/Strings";
+import { useAuthentication } from "../../../services/AuthenticationService";
 import { SecondaryButton } from "../../../styles/Buttons";
 import { Fonts } from "../../../styles/Fonts";
 import { Highlighter } from "../../Highlighter";
@@ -12,6 +13,7 @@ const strings = Strings.components.pages.login.initialLoginView;
 
 export function InitialLoginView() {
   const { setLoginState } = useLoginDataContext();
+  const { loginWithGoogle } = useAuthentication();
 
   return (
     <Container className={`p-0`}>
@@ -27,6 +29,7 @@ export function InitialLoginView() {
           <LoginButton
             icon="/img/icon-logo-google.svg"
             className={SecondaryButton}
+            onClick={() => loginWithGoogle()}
             outline
           >
             {strings.signInWithGoogle}
