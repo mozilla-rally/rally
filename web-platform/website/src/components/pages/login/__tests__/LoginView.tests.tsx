@@ -223,6 +223,20 @@ describe("LoginView tests", () => {
     expect(setLoginState).toHaveBeenCalledWith(LoginState.Initial);
   });
 
+  it("sets the login state to forget password correctly", async () => {
+    const user = userEvent.setup();
+
+    const root = render(<LoginView />);
+
+    const forgotPasswordLink = root.getByText(strings.forgotPassword);
+
+    await act(async () => {
+      await user.click(forgotPasswordLink);
+    });
+
+    expect(setLoginState).toHaveBeenCalledWith(LoginState.ResetPassword);
+  });
+
   async function login() {
     expect(LoginButton).toHaveBeenCalled();
 

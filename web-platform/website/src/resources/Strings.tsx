@@ -133,6 +133,34 @@ export const Strings = {
           ),
           signIn: "Sign in",
         },
+        resetPasswordView: {
+          preEmailSent: {
+            backTo: "Back to",
+            email: "Email",
+            message:
+              "Enter your email and we'll send you a link to reset your password.",
+            resetPassword: "Reset Password",
+            signIn: "sign in",
+            title: "Forgot Password?",
+          },
+          postEmailSent: {
+            backToSignIn: "Back to Sign In",
+            messageFormat:
+              "Instructions to reset your password have been sent to {email}",
+            needHelp: (
+              <>
+                Need additional help?{" "}
+                <a
+                  href="https://members.rally.mozilla.org/"
+                  className="fw-bold"
+                >
+                  Contact us
+                </a>
+              </>
+            ),
+            title: "Check Your Email",
+          },
+        },
       },
     },
   },

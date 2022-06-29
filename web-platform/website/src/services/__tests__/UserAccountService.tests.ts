@@ -3,6 +3,7 @@ import {
   createUserWithEmailAndPassword,
   fetchSignInMethodsForEmail,
   sendEmailVerification,
+  sendPasswordResetEmail as sendPasswordResetEmailFn,
   signInWithEmailAndPassword,
   signInWithRedirect,
   signOut,
@@ -13,6 +14,7 @@ import {
   loginWithEmail,
   loginWithGoogle,
   logout,
+  sendPasswordResetEmail,
   signupWithEmail,
 } from "../UserAccountService";
 
@@ -124,6 +126,14 @@ describe("UserAccountService tests", () => {
       .instances[0];
 
     expect(signInWithRedirect).toHaveBeenCalledWith(auth, instance);
+
+    expect(useFirebase).toHaveBeenCalled();
+  });
+
+  it("sendPasswordResetEmail invokes correct firebase functions", async () => {
+    await sendPasswordResetEmail("joe@doe.com");
+
+    expect(sendPasswordResetEmailFn).toHaveBeenCalledWith(auth, "joe@doe.com");
 
     expect(useFirebase).toHaveBeenCalled();
   });

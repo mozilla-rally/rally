@@ -7,6 +7,7 @@ import {
   loginWithEmail as loginWithEmailFn,
   loginWithGoogle as loginWithGoogleFn,
   logout as logoutFn,
+  sendPasswordResetEmail as sendPasswordResetEmailFn,
   signupWithEmail as signupWithEmailFn,
 } from "./UserAccountService";
 
@@ -19,6 +20,7 @@ export interface UserDataContext {
   loginWithGoogle: () => Promise<void>;
   logout: () => Promise<void>;
   signupWithEmail(email: string, password: string): Promise<UserCredential>;
+  sendPasswordResetEmail(email: string): Promise<void>;
 }
 
 const AuthenticationContext = createContext<UserDataContext>({
@@ -70,6 +72,7 @@ export function AuthenticationProvider(props: { children: React.ReactNode }) {
         loginWithEmail: loginWithEmailFn,
         loginWithGoogle: loginWithGoogleFn,
         logout: logoutFn,
+        sendPasswordResetEmail: sendPasswordResetEmailFn,
         signupWithEmail: signupWithEmailFn,
       }}
     >
