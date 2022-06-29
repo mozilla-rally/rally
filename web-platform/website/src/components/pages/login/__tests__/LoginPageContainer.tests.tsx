@@ -32,7 +32,10 @@ describe("LoginPageContainer tests", () => {
     }));
     (EmailSignupView as jest.Mock).mockImplementation(() => null);
     (InitialLoginView as jest.Mock).mockImplementation(() => null);
-    (useAuthentication as jest.Mock).mockReturnValue({ user: undefined });
+    (useAuthentication as jest.Mock).mockReturnValue({
+      isLoaded: true,
+      isUserVerified: false,
+    });
   });
 
   it("renders initial state correctly", () => {
@@ -40,6 +43,17 @@ describe("LoginPageContainer tests", () => {
 
     expect(useLoginDataContext).toHaveBeenCalled();
     expect(InitialLoginView).toHaveBeenCalled();
+  });
+
+  it("renders null when user is not loaded yet", () => {
+    (useAuthentication as jest.Mock).mockReturnValue({
+      isLoaded: false,
+      isUserVerified: false,
+    });
+
+    render(<LoginPageContainer />);
+
+    expect(useLoginDataContext).not.toHaveBeenCalled();
   });
 
   it("renders email signup view", () => {

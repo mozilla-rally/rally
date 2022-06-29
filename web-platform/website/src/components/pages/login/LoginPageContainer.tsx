@@ -20,7 +20,11 @@ import { ResetPasswordView } from "./ResetPasswordView";
 const strings = Strings.components.pages.login.loginPageContainer;
 
 export function LoginPageContainer() {
-  const { isUserVerified } = useAuthentication();
+  const { isLoaded, isUserVerified } = useAuthentication();
+
+  if (!isLoaded) {
+    return null;
+  }
 
   if (isUserVerified) {
     document.location = "/";
