@@ -28,7 +28,7 @@ export function DesktopMenu() {
           alt={strings.a11y.menuButton}
         />
       </DropdownToggle>
-      <DropdownMenu end={+true}>
+      <DropdownMenu>
         <DropdownItem>
           <div className={"text-center text-nowrap"}>
             {user && user.firebaseUser && user.firebaseUser.email}
