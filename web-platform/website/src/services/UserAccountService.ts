@@ -4,6 +4,7 @@ import {
   createUserWithEmailAndPassword,
   fetchSignInMethodsForEmail,
   sendEmailVerification,
+  sendPasswordResetEmail as sendPasswordResetEmailFn,
   signInWithEmailAndPassword,
   signInWithRedirect,
   signOut,
@@ -40,6 +41,11 @@ export async function loginWithGoogle(): Promise<void> {
 export async function logout() {
   const { auth } = useFirebase();
   await signOut(auth);
+}
+
+export async function sendPasswordResetEmail(email: string): Promise<void> {
+  const { auth } = useFirebase();
+  await sendPasswordResetEmailFn(auth, email);
 }
 
 export async function signupWithEmail(

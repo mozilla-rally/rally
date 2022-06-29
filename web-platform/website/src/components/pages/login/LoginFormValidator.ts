@@ -80,7 +80,7 @@ export function validatePasswordRules(password: string): PasswordRule[] {
   ];
 }
 
-function validateEmailAndReturnError(email: string) {
+export function validateEmailAndReturnError(email: string) {
   const emailPattern = // eslint-disable-next-line no-useless-escape
     /^[-!#$%&'*+\/0-9=?A-Z^_a-z`{|}~](\.?[-!#$%&'*+\/0-9=?A-Z^_a-z`{|}~])*@[a-zA-Z0-9](-*\.?[a-zA-Z0-9])*\.[a-zA-Z](-?[a-zA-Z0-9])+$/;
 

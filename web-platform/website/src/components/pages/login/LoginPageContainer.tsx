@@ -15,13 +15,14 @@ import {
   useLoginDataContext,
 } from "./LoginDataContext";
 import { LoginView } from "./LoginView";
+import { ResetPasswordView } from "./ResetPasswordView";
 
 const strings = Strings.components.pages.login.loginPageContainer;
 
 export function LoginPageContainer() {
-  const { user } = useAuthentication();
+  const { isUserVerified } = useAuthentication();
 
-  if (user) {
+  if (isUserVerified) {
     document.location = "/";
   }
 
@@ -54,14 +55,17 @@ function LoginCardFactory() {
     case LoginState.Initial:
       return <InitialLoginView />;
 
-    case LoginState.SignupWithEmail:
-      return <EmailSignupView />;
-
     case LoginState.EmailAccountCreated:
       return <EmailAccountCreatedView />;
 
     case LoginState.Login:
       return <LoginView />;
+
+    case LoginState.ResetPassword:
+      return <ResetPasswordView />;
+
+    case LoginState.SignupWithEmail:
+      return <EmailSignupView />;
 
     default:
       throw new Error("Invalid card type.");

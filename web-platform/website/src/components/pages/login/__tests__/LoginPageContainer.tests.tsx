@@ -11,6 +11,7 @@ import {
 } from "../LoginDataContext";
 import { LoginPageContainer } from "../LoginPageContainer";
 import { LoginView } from "../LoginView";
+import { ResetPasswordView } from "../ResetPasswordView";
 
 jest.mock("../../../../services/AuthenticationService");
 jest.mock("../EmailAccountCreatedView");
@@ -18,6 +19,7 @@ jest.mock("../EmailSignupView");
 jest.mock("../InitialLoginView");
 jest.mock("../LoginDataContext");
 jest.mock("../LoginView");
+jest.mock("../ResetPasswordView");
 
 describe("LoginPageContainer tests", () => {
   beforeEach(() => {
@@ -71,6 +73,16 @@ describe("LoginPageContainer tests", () => {
     expect(LoginView).toHaveBeenCalled();
   });
 
+  it("renders reset password view", () => {
+    (useLoginDataContext as jest.Mock).mockImplementation(() => ({
+      loginState: LoginState.ResetPassword,
+    }));
+
+    render(<LoginPageContainer />);
+
+    expect(ResetPasswordView).toHaveBeenCalled();
+  });
+
   it("throws when loginState is invalid", () => {
     (useLoginDataContext as jest.Mock).mockReset().mockImplementation(() => ({
       loginState: undefined,
@@ -83,8 +95,8 @@ describe("LoginPageContainer tests", () => {
     );
   });
 
-  it("redirects to homepage when user is already logged in", async () => {
-    (useAuthentication as jest.Mock).mockReturnValue({ user: {} });
+  it("redirects to homepage when user is not verified", async () => {
+    (useAuthentication as jest.Mock).mockReturnValue({ isUserVerified: false });
 
     const root = render(<LoginPageContainer />);
 

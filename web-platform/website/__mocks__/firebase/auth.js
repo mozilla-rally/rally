@@ -6,6 +6,7 @@ module.exports = {
   getAuth: jest.fn(),
   onAuthStateChanged: jest.fn(),
   sendEmailVerification: jest.fn(),
+  sendPasswordResetEmail: jest.fn(),
   signInWithEmailAndPassword: jest.fn(),
   signInWithRedirect: jest.fn(),
   signOut: jest.fn()

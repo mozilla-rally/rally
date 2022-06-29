@@ -1,11 +1,12 @@
 import { createContext, useContext, useState } from "react";
 
 export enum LoginState {
+  EmailAccountCreated = "EmailAccountCreated",
   Initial = "Initial",
+  Login = "Login",
+  ResetPassword = "ResetPassword",
   SignupWithGoogle = "SignupWithGoogle",
   SignupWithEmail = "SignupWithEmail",
-  EmailAccountCreated = "EmailAccountCreated",
-  Login = "Login",
 }
 
 export interface LoginDataContext {

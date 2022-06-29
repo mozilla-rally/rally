@@ -148,7 +148,12 @@ export function LoginView() {
                     </Label>
                   </Col>
                   <Col className={`col-auto ${FontSize.Small}`}>
-                    <a href="#">{strings.forgotPassword}</a>
+                    <a
+                      href="#"
+                      onClick={() => setLoginState(LoginState.ResetPassword)}
+                    >
+                      {strings.forgotPassword}
+                    </a>
                   </Col>
                 </Row>
               </Container>
