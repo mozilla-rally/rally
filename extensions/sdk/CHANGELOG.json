@@ -2,6 +2,12 @@
   "name": "@mozilla/rally-sdk",
   "entries": [
     {
+      "version": "0.9.21",
+      "tag": "@mozilla/rally-sdk_v0.9.21",
+      "date": "Thu, 30 Jun 2022 03:25:00 GMT",
+      "comments": {}
+    },
+    {
       "version": "0.9.20",
       "tag": "@mozilla/rally-sdk_v0.9.20",
       "date": "Fri, 10 Jun 2022 04:45:59 GMT",
