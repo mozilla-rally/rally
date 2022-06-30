@@ -14,7 +14,7 @@
     "lint:glean": "glean glinter ./metrics.yaml ./pings.yaml",
     "build:developer": "cp manifest.dev.json manifest.json && rollup -c --config-enable-developer-mode && npm run tailwind",
     "build:emulator": "cp manifest.prod.json manifest.json && rollup -c --config-enable-emulator-mode && npm run tailwind",
-    "tailwind": "tailwindcss -o dist/tailwind.css",
+    "tailwind": "tailwindcss -o dist/tailwind.css 2>&1",
     "dev:emulator": "npm-run-all --parallel dev:extension:emulator dev:webext",
     "package": "npm run build && npm run package:webext",
     "package:webext": "web-ext build",
