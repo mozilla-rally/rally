@@ -110,7 +110,7 @@ describe("ResetPasswordView tests", () => {
 
     (validateEmailAndReturnError as jest.Mock).mockReturnValue("");
 
-    const root = render(<ResetPasswordView />);
+    render(<ResetPasswordView />);
 
     const email = "joe@doe.com";
     await setEmail(userEvents, email);

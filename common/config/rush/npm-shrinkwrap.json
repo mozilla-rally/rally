@@ -3667,7 +3667,7 @@
     },
     "@rush-temp/website": {
       "version": "file:projects/website.tgz",
-      "integrity": "sha512-vc5xHjY5+QWVvBAcsHqnyKntof3MYjH8IUU6AeIocOxP1jFRxwVZVA3ANsROpMxo6MSm0hzKYKtPJQz3vR8pvQ==",
+      "integrity": "sha512-Ibi+bqz7fMb7A3RFjhgvB/za17XtrwhjwQRJvGmtlELoau4HDQC9MT2n4cV3sTtGt81ye5Agfo6M9WX4+Iexhw==",
       "requires": {
         "@babel/plugin-transform-runtime": "^7.18.2",
         "@babel/preset-env": "^7.11.5",

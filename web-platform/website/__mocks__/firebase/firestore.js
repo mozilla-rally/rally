@@ -1,4 +1,7 @@
 // Manual mock required as jest does not handle ESM modules.
 module.exports = {
-  getFirestore: jest.fn()
+  doc: jest.fn(),
+  getDoc: jest.fn(),
+  getFirestore: jest.fn(),
+  onSnapshot: jest.fn()
 };

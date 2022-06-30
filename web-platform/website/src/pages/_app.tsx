@@ -2,6 +2,7 @@ import type { AppProps } from "next/app";
 import Head from "next/head";
 
 import { AuthenticationProvider } from "../services/AuthenticationService";
+import { UserDocumentProvider } from "../services/UserDocumentService";
 import "../styles";
 
 function MyApp({ Component, pageProps }: AppProps) {
@@ -24,7 +25,9 @@ function MyApp({ Component, pageProps }: AppProps) {
         />
       </Head>
       <AuthenticationProvider>
-        <Component {...pageProps} />
+        <UserDocumentProvider>
+          <Component {...pageProps} />
+        </UserDocumentProvider>
       </AuthenticationProvider>
     </>
   );
