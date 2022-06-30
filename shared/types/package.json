@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "Shared types between Mozilla Rally extensions and web platform.",
   "main": "./dist",
+  "files": ["dist"],
   "scripts": {
     "clean": "rm -rf dist",
     "build": "npm run format && npm run lint && npm run clean && tsc",

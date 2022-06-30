@@ -405,7 +405,7 @@
       "packageName": "@mozilla/rally-shared-types",
       "projectFolder": "shared/types",
       "versionPolicyName": "RallyVersionPolicy",
-      "shouldPublish": false
+      "shouldPublish": true
     },
     {
       "packageName": "jest-webextension-mock",
