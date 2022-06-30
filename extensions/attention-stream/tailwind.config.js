@@ -1,5 +1,5 @@
 module.exports = {
-  purge: [
+  content: [
     "./**/*.svelte", // Look for .svelte files
     "./**/*.html" // Look for .html files
   ],
