@@ -3,15 +3,18 @@
   "version": "0.9.14",
   "private": true,
   "scripts": {
-    "dev": "next dev",
-    "build": "npm run format && npm run lint && next build",
+    "dev": "npm run setup-firebase-staging && next dev",
+    "build": "npm run format && npm run lint && npm run setup-firebase-prod && next build",
     "start": "next start",
     "lint": "next lint -c ../../tools/typescript/.eslintrc.js",
     "format": "prettier --write '**/*.ts[x]' --config ../../tools/typescript/.prettierrc",
+    "setup-firebase-staging": "ln -fs ../firebase/firebase.config.rally-web-stage.json ./firebase.config.json",
+    "setup-firebase-prod": "ln -fs ../firebase/firebase.config.rally-web-prod.json ./firebase.config.json",
     "test": "jest --verbose 2>&1",
     "test:watch": "jest --verbose --watchAll"
   },
   "dependencies": {
+    "firebase": "^9.8.3",
     "next": "12.1.6",
     "react": "18.1.0",
     "react-dom": "18.1.0",
@@ -24,6 +27,8 @@
     "@babel/preset-typescript": "^7.17.12",
     "@testing-library/jest-dom": "~5.16.4",
     "@testing-library/react": "~13.3.0",
+    "@testing-library/user-event": "~14.2.1",
+    "@trivago/prettier-plugin-sort-imports": "~3.2.0",
     "@types/jest": "^27.5.0",
     "@types/node": "^17.0.34",
     "@types/react": "18.0.9",
@@ -37,7 +42,6 @@
     "prettier": "^2.1.2",
     "ts-jest": "^28.0.2",
     "typescript": "^4.6.4",
-    "typestyle": "^2.3.0",
-    "@trivago/prettier-plugin-sort-imports": "~3.2.0"
+    "typestyle": "^2.3.0"
   }
 }

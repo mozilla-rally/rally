@@ -1,4 +1,5 @@
-import { render } from "@testing-library/react";
+import { act, render } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import { ReactElement } from "react";
 import {
   DropdownItem,
@@ -8,6 +9,7 @@ import {
 } from "reactstrap";
 
 import { Strings } from "../../../resources/Strings";
+import { useAuthentication } from "../../../services/AuthenticationService";
 import { MobileMenu } from "../MobileMenu";
 
 jest.mock("reactstrap", () => ({
@@ -16,11 +18,16 @@ jest.mock("reactstrap", () => ({
   DropdownToggle: jest.fn(),
   UncontrolledDropdown: jest.fn(),
 }));
+jest.mock("../../../services/AuthenticationService");
 
 const strings = Strings.components.navigationBar;
 
 describe("MobileMenu tests", () => {
+  const logout = jest.fn();
+
   beforeEach(() => {
+    jest.resetAllMocks();
+
     (UncontrolledDropdown as jest.Mock).mockImplementation((props) => (
       <div {...props} />
     ));
@@ -33,6 +40,11 @@ describe("MobileMenu tests", () => {
     (DropdownItem as jest.Mock).mockImplementation((props) => (
       <div {...props} />
     ));
+
+    (useAuthentication as jest.Mock).mockReturnValue({
+      user: { firebaseUser: { email: "joe@doe.com" } },
+      logout,
+    });
   });
 
   it("Renders menu icon correctly", () => {
@@ -62,7 +74,7 @@ describe("MobileMenu tests", () => {
       const element = call[0];
 
       if (i == 0) {
-        expect(element.children.props.children).toBe("User Email Goes Here...");
+        expect(element.children.props.children).toBe("joe@doe.com");
         isUserEmailDisplayed = true;
         return;
       }
@@ -85,11 +97,16 @@ describe("MobileMenu tests", () => {
         sectionCountDisplayed++;
       } else {
         const link = section.links[linkIndex++];
-        expect(element).toEqual({
-          href: link.href,
-          target: link.external ? "_blank" : "_self",
-          children: link.text,
-        });
+        expect(element).toEqual(
+          expect.objectContaining({
+            href: link.href,
+            target: link.external ? "_blank" : "_self",
+            children: link.text,
+          })
+        );
+
+        expect(!link.command || element.onClick).toBeTruthy();
+
         linkCountDisplayed++;
       }
     });
@@ -107,5 +124,17 @@ describe("MobileMenu tests", () => {
     expect(document.querySelectorAll("hr").length).toBe(
       strings.sections.length + 1
     );
+  });
+
+  it("logout works correctly", async () => {
+    userEvent.setup();
+
+    const root = render(<MobileMenu />);
+
+    await act(async () => {
+      await userEvent.click(root.getByText("Sign Out"));
+    });
+
+    expect(logout).toHaveBeenCalled();
   });
 });

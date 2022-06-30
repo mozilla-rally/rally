@@ -7,11 +7,18 @@ import {
 import { style } from "typestyle";
 
 import { Strings } from "../../resources/Strings";
+import { useAuthentication } from "../../services/AuthenticationService";
 import { Colors, Spacing } from "../../styles";
 
 const strings = Strings.components.navigationBar;
 
 export function DesktopMenu() {
+  const { user, logout } = useAuthentication();
+
+  const commands: { [key: string]: () => Promise<void> } = {
+    logout,
+  };
+
   return (
     <UncontrolledDropdown className={styles.menu}>
       <DropdownToggle className="menu-button">
@@ -21,22 +28,30 @@ export function DesktopMenu() {
           alt={strings.a11y.menuButton}
         />
       </DropdownToggle>
-      <DropdownMenu end>
+      <DropdownMenu>
         <DropdownItem>
           <div className={"text-center text-nowrap"}>
-            User Email Goes Here...
+            {user && user.firebaseUser && user.firebaseUser.email}
           </div>
         </DropdownItem>
 
         {strings.sections.map((section) => (
           <div key={section.heading}>
             <hr />
-            <DropdownItem header>{section.heading}</DropdownItem>
+            <DropdownItem header={true}>{section.heading}</DropdownItem>
             {section.links.map((link, i) => (
               <DropdownItem
                 key={`${i}-link.href`}
                 href={link.href}
                 target={link.external ? "_blank" : "_self"}
+                {...(link.command
+                  ? {
+                      onClick: () =>
+                        commands &&
+                        commands[link.command] &&
+                        commands[link.command](),
+                    }
+                  : {})}
               >
                 {link.text}
               </DropdownItem>

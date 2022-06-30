@@ -5,6 +5,10 @@ const nextConfig = {
     locales: ["en"],
     defaultLocale: "en",
   },
+  eslint: {
+    // Since we run eslint separately, we need not run it from next
+    ignoreDuringBuilds: true,
+  }
 }
 
 module.exports = nextConfig

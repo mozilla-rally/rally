@@ -38,12 +38,12 @@ describe("LoginDataContext tests", () => {
 
       useEffect(() => {
         expect(loginState).toBe(LoginState.Initial);
-        setLoginState(LoginState.LoginWithEmail);
+        setLoginState(LoginState.SignupWithEmail);
         initialRender = true;
-      }, []);
+      }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
       useEffect(() => {
-        if (loginState === LoginState.LoginWithEmail) {
+        if (loginState === LoginState.SignupWithEmail) {
           nextRender = true;
         }
       }, [loginState]);

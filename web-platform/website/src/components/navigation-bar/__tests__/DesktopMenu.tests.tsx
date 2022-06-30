@@ -1,5 +1,7 @@
 import { render } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import { ReactElement } from "react";
+import { act } from "react-dom/test-utils";
 import {
   DropdownItem,
   DropdownMenu,
@@ -8,6 +10,7 @@ import {
 } from "reactstrap";
 
 import { Strings } from "../../../resources/Strings";
+import { useAuthentication } from "../../../services/AuthenticationService";
 import { DesktopMenu } from "../DesktopMenu";
 
 jest.mock("reactstrap", () => ({
@@ -16,11 +19,16 @@ jest.mock("reactstrap", () => ({
   DropdownToggle: jest.fn(),
   UncontrolledDropdown: jest.fn(),
 }));
+jest.mock("../../../services/AuthenticationService");
 
 const strings = Strings.components.navigationBar;
 
 describe("DesktopMenu tests", () => {
+  const logout = jest.fn();
+
   beforeEach(() => {
+    jest.resetAllMocks();
+
     (UncontrolledDropdown as jest.Mock).mockImplementation((props) => (
       <div {...props} />
     ));
@@ -33,6 +41,11 @@ describe("DesktopMenu tests", () => {
     (DropdownItem as jest.Mock).mockImplementation((props) => (
       <div {...props} />
     ));
+
+    (useAuthentication as jest.Mock).mockReturnValue({
+      user: { firebaseUser: { email: "joe@doe.com" } },
+      logout,
+    });
   });
 
   it("Renders menu icon correctly", () => {
@@ -67,7 +80,7 @@ describe("DesktopMenu tests", () => {
       const element = call[0];
 
       if (i == 0) {
-        expect(element.children.props.children).toBe("User Email Goes Here...");
+        expect(element.children.props.children).toBe("joe@doe.com");
         isUserEmailDisplayed = true;
         return;
       }
@@ -90,11 +103,17 @@ describe("DesktopMenu tests", () => {
         sectionCountDisplayed++;
       } else {
         const link = section.links[linkIndex++];
-        expect(element).toEqual({
-          href: link.href,
-          target: link.external ? "_blank" : "_self",
-          children: link.text,
-        });
+
+        expect(element).toEqual(
+          expect.objectContaining({
+            href: link.href,
+            target: link.external ? "_blank" : "_self",
+            children: link.text,
+          })
+        );
+
+        expect(!link.command || element.onClick).toBeTruthy();
+
         linkCountDisplayed++;
       }
     });
@@ -112,5 +131,17 @@ describe("DesktopMenu tests", () => {
     expect(document.querySelectorAll("hr").length).toBe(
       strings.sections.length + 1
     );
+  });
+
+  it("logout works correctly", async () => {
+    userEvent.setup();
+
+    const root = render(<DesktopMenu />);
+
+    await act(async () => {
+      await userEvent.click(root.getByText("Sign Out"));
+    });
+
+    expect(logout).toHaveBeenCalled();
   });
 });

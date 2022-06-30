@@ -6,3 +6,9 @@ export const Fonts = {
     fontWeight: 700
   })
 };
+
+export const FontSize = {
+  Small: style({
+    fontSize: `${14 / 16}rem`
+  })
+};

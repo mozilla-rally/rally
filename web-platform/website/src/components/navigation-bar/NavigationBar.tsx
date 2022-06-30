@@ -3,6 +3,7 @@ import { Col, Container, Row } from "reactstrap";
 import { style } from "typestyle";
 
 import { Strings } from "../../resources/Strings";
+import { useAuthentication } from "../../services/AuthenticationService";
 import {
   Colors,
   ScreenSize,
@@ -15,36 +16,67 @@ import { MobileMenu } from "./MobileMenu";
 const strings = Strings.components.navigationBar;
 
 export function NavigationBar() {
+  const { isUserVerified } = useAuthentication();
+
   return (
-    <Container className={`${styles.nav} ms-0 me-0`}>
+    <Container
+      className={`${styles.nav} ${isUserVerified ? "" : "border-0"} ms-0 me-0`}
+    >
       <Row className={"align-items-center gx-0 gy-0"}>
         <Col className="col-md-auto logo-col">
-          <img
-            src="/img/moz-rally-logo.svg"
-            className="logo-large"
-            alt={strings.a11y.logo}
-          />
+          <a href={isUserVerified ? "/" : strings.rallyWebsiteUrl}>
+            <img
+              src="/img/moz-rally-logo.svg"
+              className="logo-large"
+              alt={strings.a11y.logo}
+            />
+          </a>
         </Col>
-        {strings.topLinks.map((topLink, i) => (
-          <Col
-            className="col-md-auto d-none d-lg-block"
-            key={`${i}-topLink.href`}
-          >
-            <Link href={topLink.href}>
-              <a target={topLink.external ? "_blank" : "_self"}>
-                {topLink.title}
-              </a>
-            </Link>
-          </Col>
-        ))}
-        <Col className="d-flex me-0 justify-content-end d-lg-none d-xl-none d-xxl-none">
-          <MobileMenu />
-        </Col>
-        <Col className="d-flex me-0 justify-content-end d-none d-lg-flex d-xl-flex d-xxl-flex">
-          <DesktopMenu />
-        </Col>
+
+        {isUserVerified && (
+          <>
+            <TopLinks />
+            <DropdownMenus />
+          </>
+        )}
       </Row>
     </Container>
+  );
+}
+
+function TopLinks() {
+  return (
+    <>
+      {strings.topLinks.map((topLink, i) => (
+        <Col
+          className="col-md-auto d-none d-lg-block"
+          key={`${i}-topLink.href`}
+        >
+          <Link href={topLink.href}>
+            <a
+              target={topLink.external ? "_blank" : "_self"}
+              className="top-link"
+            >
+              {topLink.title}
+            </a>
+          </Link>
+        </Col>
+      ))}
+    </>
+  );
+}
+
+function DropdownMenus() {
+  return (
+    <>
+      <Col className="d-flex d-lg-none me-0 justify-content-end">
+        <MobileMenu />
+      </Col>
+
+      <Col className="d-none d-lg-flex me-0 justify-content-end">
+        <DesktopMenu />
+      </Col>
+    </>
   );
 }
 
@@ -86,14 +118,15 @@ const styles = {
           marginRight: Spacing.xxLarge,
         },
 
-        "> a": {
+        ".top-link": {
           fontWeight: 700,
           fontSize: 18,
           textDecoration: "none",
-        },
-
-        "> a:hover": {
-          textDecoration: "underline",
+          $nest: {
+            "&:hover": {
+              textDecoration: "underline",
+            },
+          },
         },
       },
     }
