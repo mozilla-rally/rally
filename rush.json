@@ -402,6 +402,12 @@
       "shouldPublish": true
     },
     {
+      "packageName": "@mozilla/rally-shared-types",
+      "projectFolder": "shared/types",
+      "versionPolicyName": "RallyVersionPolicy",
+      "shouldPublish": false
+    },
+    {
       "packageName": "jest-webextension-mock",
       "projectFolder": "external/lib/jest-webextension-mock",
       "shouldPublish": false
