@@ -23,7 +23,8 @@
     "start": "npm run build && web-ext run",
     "test:integration": "./scripts/integration-test.sh",
     "test:integration:jest": "jest ./tests/integration/",
-    "dev:webext": "web-ext run -t ${TARGET=chromium} --start-url 'https://example.com' --watch-file dist/backgrounnd.js"
+    "dev:webext": "web-ext run -t ${TARGET=chromium} --start-url 'https://example.com' --watch-file dist/backgrounnd.js",
+    "test": "npm run test:integration"
   },
   "devDependencies": {
     "@babel/preset-env": "^7.16.11",
