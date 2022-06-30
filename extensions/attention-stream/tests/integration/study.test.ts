@@ -217,7 +217,7 @@ describe("Rally Attention Stream", function () {
       WAIT_FOR_PROPERTY
     );
 
-    const reportFilename = `${tmpDir}/rally-study-template.json`;
+    const reportFilename = `${tmpDir}/rally-attention-stream-user-journey.json`;
     const report = JSON.parse(await fs.promises.readFile(reportFilename, "utf-8"));
 
     // Cleanup any downloaded files. We do this before running tests on the data, so if any

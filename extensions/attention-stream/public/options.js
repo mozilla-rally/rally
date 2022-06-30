@@ -45,7 +45,7 @@ document.getElementById("download").addEventListener("click", async () => {
 
     const downloadLink = document.getElementById("downloadLink");
     downloadLink.setAttribute("href", dataUrl);
-    downloadLink.setAttribute("download", "rally-study-template.json");
+    downloadLink.setAttribute("download", "rally-attention-stream-user-journey.json");
     downloadLink.click();
 });
 
