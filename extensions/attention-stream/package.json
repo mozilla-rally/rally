@@ -24,7 +24,7 @@
     "test:integration": "./scripts/integration-test.sh",
     "test:integration:jest": "jest ./tests/integration/",
     "dev:webext": "web-ext run -t ${TARGET=chromium} --start-url 'https://example.com' --watch-file dist/backgrounnd.js",
-    "test": "npm run test:integration"
+    "test": "npm run package:developer 2>&1 && npm run test:integration"
   },
   "devDependencies": {
     "@babel/preset-env": "^7.11.5",
