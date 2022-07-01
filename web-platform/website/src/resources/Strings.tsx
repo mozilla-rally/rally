@@ -100,9 +100,6 @@ export const Strings = {
             containsDigit: "Use at least 1 number",
           },
         },
-        loginPageContainer: {
-          title: "Sign Up | Mozilla Rally",
-        },
         loginView: {
           createAccount: "Create account",
           dontHaveAnAccount: "Don't have an account?",
@@ -486,6 +483,9 @@ export const Strings = {
   pages: {
     index: {
       title: "Studies | Mozilla Rally",
+    },
+    login: {
+      title: "Sign Up | Mozilla Rally",
     },
     privacyPolicy: {
       title: "Privacy Policy | Mozilla Rally",

@@ -1,6 +1,5 @@
 import { render } from "@testing-library/react";
 
-import { useAuthentication } from "../../../../services/AuthenticationService";
 import { EmailAccountCreatedView } from "../EmailAccountCreatedView";
 import { EmailSignupView } from "../EmailSignupView";
 import { InitialLoginView } from "../InitialLoginView";
@@ -13,7 +12,6 @@ import { LoginPageContainer } from "../LoginPageContainer";
 import { LoginView } from "../LoginView";
 import { ResetPasswordView } from "../ResetPasswordView";
 
-jest.mock("../../../../services/AuthenticationService");
 jest.mock("../EmailAccountCreatedView");
 jest.mock("../EmailSignupView");
 jest.mock("../InitialLoginView");
@@ -32,10 +30,6 @@ describe("LoginPageContainer tests", () => {
     }));
     (EmailSignupView as jest.Mock).mockImplementation(() => null);
     (InitialLoginView as jest.Mock).mockImplementation(() => null);
-    (useAuthentication as jest.Mock).mockReturnValue({
-      isLoaded: true,
-      isUserVerified: false,
-    });
   });
 
   it("renders initial state correctly", () => {
@@ -43,17 +37,6 @@ describe("LoginPageContainer tests", () => {
 
     expect(useLoginDataContext).toHaveBeenCalled();
     expect(InitialLoginView).toHaveBeenCalled();
-  });
-
-  it("renders null when user is not loaded yet", () => {
-    (useAuthentication as jest.Mock).mockReturnValue({
-      isLoaded: false,
-      isUserVerified: false,
-    });
-
-    render(<LoginPageContainer />);
-
-    expect(useLoginDataContext).not.toHaveBeenCalled();
   });
 
   it("renders email signup view", () => {
@@ -107,13 +90,5 @@ describe("LoginPageContainer tests", () => {
     expect(() => render(<LoginPageContainer />)).toThrowError(
       "Invalid card type."
     );
-  });
-
-  it("redirects to homepage when user is not verified", async () => {
-    (useAuthentication as jest.Mock).mockReturnValue({ isUserVerified: false });
-
-    const root = render(<LoginPageContainer />);
-
-    expect(document.location.href).toBe(root.container.baseURI);
   });
 });
