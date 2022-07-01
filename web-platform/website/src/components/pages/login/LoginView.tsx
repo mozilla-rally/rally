@@ -13,7 +13,7 @@ import {
 
 import { Strings } from "../../../resources/Strings";
 import { useAuthentication } from "../../../services/AuthenticationService";
-import { PrimaryButton, SecondaryButton } from "../../../styles/Buttons";
+import { PrimaryButton, TertiaryButton } from "../../../styles/Buttons";
 import { FontSize, Fonts } from "../../../styles/Fonts";
 import { getFirebaseErrorMessage } from "../../../utils/FirebaseErrors";
 import { Highlighter } from "../../Highlighter";
@@ -96,7 +96,7 @@ export function LoginView() {
         <Col>
           <LoginButton
             icon="/img/icon-logo-google.svg"
-            className={SecondaryButton}
+            className={TertiaryButton}
             onClick={() => loginWithGoogle()}
             outline
           >

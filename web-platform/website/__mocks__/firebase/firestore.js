@@ -3,5 +3,6 @@ module.exports = {
   doc: jest.fn(),
   getDoc: jest.fn(),
   getFirestore: jest.fn(),
-  onSnapshot: jest.fn()
+  onSnapshot: jest.fn(),
+  updateDoc: jest.fn()
 };

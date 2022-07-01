@@ -137,4 +137,5 @@ export enum Colors {
   ColorMozDarkGray = "#959595",
   ColorMozLightGray = "#e7e5e2",
   ColorHelperGray = "#42435A",
+  ColorTransparent = "transparent",
 }

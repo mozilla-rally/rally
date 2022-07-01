@@ -1,11 +1,16 @@
+import { UserDocument } from "@mozilla/rally-shared-types/dist";
 import { RenderResult, render } from "@testing-library/react";
-import { doc, getDoc, onSnapshot } from "firebase/firestore";
+import { doc, getDoc, onSnapshot, updateDoc } from "firebase/firestore";
 import React from "react";
 import { act } from "react-dom/test-utils";
 
 import { useAuthentication } from "../AuthenticationService";
 import { useFirebase } from "../FirebaseService";
-import { UserDocumentProvider, useUserDocument } from "../UserDocumentService";
+import {
+  UserDocumentDataContext,
+  UserDocumentProvider,
+  useUserDocument,
+} from "../UserDocumentService";
 
 jest.mock("firebase/firestore");
 jest.mock("../AuthenticationService");
@@ -42,11 +47,13 @@ describe("UserDocumentService tests", () => {
     (useAuthentication as jest.Mock).mockReturnValue({ user: undefined });
 
     let obtainedDoc = null;
-    let root: RenderResult | null = null;
+    let isDocumentLoaded = false;
 
     await renderComponent(
-      (doc) => (obtainedDoc = doc),
-      (result) => (root = result)
+      ({ userDocument, isDocumentLoaded: isLoaded }) => (
+        (obtainedDoc = userDocument), (isDocumentLoaded = isLoaded)
+      ),
+      () => {}
     );
 
     expect(useAuthentication).toHaveBeenCalled();
@@ -55,6 +62,7 @@ describe("UserDocumentService tests", () => {
     expect(doc).not.toHaveBeenCalled();
     expect(getDoc).not.toHaveBeenCalled();
     expect(obtainedDoc).toEqual(null);
+    expect(isDocumentLoaded).toBeFalsy();
 
     expect(unsubscribe).not.toHaveBeenCalled();
   });
@@ -63,8 +71,12 @@ describe("UserDocumentService tests", () => {
     let obtainedDoc = null;
     let root: RenderResult | null = null;
 
+    let isDocumentLoaded = false;
+
     await renderComponent(
-      (doc) => (obtainedDoc = doc),
+      ({ userDocument, isDocumentLoaded: isLoaded }) => (
+        (obtainedDoc = userDocument), (isDocumentLoaded = isLoaded)
+      ),
       (result) => (root = result)
     );
 
@@ -97,6 +109,8 @@ describe("UserDocumentService tests", () => {
       (root as unknown as RenderResult).unmount();
     });
 
+    expect(isDocumentLoaded).toBeTruthy();
+
     expect(unsubscribe).toHaveBeenCalled();
   });
 
@@ -106,7 +120,7 @@ describe("UserDocumentService tests", () => {
     let component: JSX.Element = {} as JSX.Element;
 
     await renderComponent(
-      (doc) => (obtainedDoc = doc),
+      ({ userDocument }) => (obtainedDoc = userDocument),
       (result, element) => ((root = result), (component = element))
     );
 
@@ -125,7 +139,7 @@ describe("UserDocumentService tests", () => {
     let obtainedDoc = null;
 
     await renderComponent(
-      (doc) => (obtainedDoc = doc),
+      ({ userDocument }) => (obtainedDoc = userDocument),
       () => {}
     );
 
@@ -141,13 +155,39 @@ describe("UserDocumentService tests", () => {
     expect(obtainedDoc).toBeNull();
   });
 
+  it("update user document invokes the correct firebase function", async () => {
+    let updateUserDoc: (
+      userDocument: UserDocument
+    ) => Promise<void> = async () => {};
+    let obtainedDoc = null;
+
+    await renderComponent(
+      ({ updateUserDocument, userDocument }) => (
+        (updateUserDoc = updateUserDocument), (obtainedDoc = userDocument)
+      ),
+      () => {}
+    );
+
+    const newDocData = { newDocId: "newDocId" };
+
+    await updateUserDoc({
+      ...(obtainedDoc || {}),
+      ...newDocData,
+    } as unknown as UserDocument);
+
+    expect(updateDoc).toHaveBeenCalledWith(docRef, {
+      ...newDocData,
+      ...userDoc.data(),
+    });
+  });
+
   async function renderComponent(
-    onDocumentChanged: (doc: any) => void,
+    onDocumentChanged: (dataContext: UserDocumentDataContext) => void,
     onComponentRendered: (root: RenderResult, component: JSX.Element) => void
   ) {
     function Component() {
-      const { userDocument } = useUserDocument();
-      onDocumentChanged(userDocument);
+      const dataContext = useUserDocument();
+      onDocumentChanged(dataContext);
       return null;
     }
 

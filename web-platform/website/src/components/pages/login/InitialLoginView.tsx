@@ -2,7 +2,7 @@ import { Col, Container, Row } from "reactstrap";
 
 import { Strings } from "../../../resources/Strings";
 import { useAuthentication } from "../../../services/AuthenticationService";
-import { SecondaryButton } from "../../../styles/Buttons";
+import { TertiaryButton } from "../../../styles/Buttons";
 import { Fonts } from "../../../styles/Fonts";
 import { Highlighter } from "../../Highlighter";
 import { LoginButton } from "./LoginButton";
@@ -28,7 +28,7 @@ export function InitialLoginView() {
         <Col>
           <LoginButton
             icon="/img/icon-logo-google.svg"
-            className={SecondaryButton}
+            className={TertiaryButton}
             onClick={() => loginWithGoogle()}
             outline
           >
@@ -40,7 +40,7 @@ export function InitialLoginView() {
         <Col>
           <LoginButton
             icon="/img/icon-email.svg"
-            className={SecondaryButton}
+            className={TertiaryButton}
             onClick={() => setLoginState(LoginState.SignupWithEmail)}
             outline
           >
