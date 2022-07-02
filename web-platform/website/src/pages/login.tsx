@@ -1,12 +1,12 @@
 import type { NextPage } from "next";
 import Head from "next/head";
 import { useRouter } from "next/router";
-import { cssRule } from "typestyle";
 
 import { Layout } from "../components/Layout";
 import { LoginPageContent } from "../components/pages/login/LoginPageContent";
 import { Strings } from "../resources/Strings";
 import { useAuthentication } from "../services/AuthenticationService";
+import { ApplyFullscapePageStyles } from "../styles";
 
 const strings = Strings.pages.login;
 
@@ -36,9 +36,6 @@ const LoginPage: NextPage = () => {
   );
 };
 
-cssRule("body", {
-  background: `url("/img/noise-texture-top.png"), url("/img/noise-texture.png")`,
-  backgroundBlendMode: "screen",
-});
+ApplyFullscapePageStyles();
 
 export default LoginPage;
