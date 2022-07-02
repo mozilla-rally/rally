@@ -3,7 +3,7 @@ import Head from "next/head";
 import { useRouter } from "next/router";
 
 import { Layout } from "../components/Layout";
-import { LoginPageContainer } from "../components/pages/login/LoginPageContainer";
+import { LoginPageContent } from "../components/pages/login/LoginPageContent";
 import { default as LoginPage } from "../pages/login";
 import { Strings } from "../resources/Strings";
 import { useAuthentication } from "../services/AuthenticationService";
@@ -12,7 +12,7 @@ jest.mock("next/head");
 jest.mock("next/router");
 jest.mock("../components/Layout");
 jest.mock("../services/AuthenticationService");
-jest.mock("../components/pages/login/LoginPageContainer");
+jest.mock("../components/pages/login/LoginPageContent");
 
 describe("login page tests", () => {
   beforeEach(() => {
@@ -33,7 +33,7 @@ describe("login page tests", () => {
 
     expect(root.container.firstChild).toBeNull();
 
-    expect(LoginPageContainer).not.toHaveBeenCalled();
+    expect(LoginPageContent).not.toHaveBeenCalled();
 
     expect(useAuthentication).toHaveBeenCalled();
     expect(useRouter).toHaveBeenCalled();
@@ -56,7 +56,7 @@ describe("login page tests", () => {
 
     expect(root.container.firstChild).toBeNull();
 
-    expect(LoginPageContainer).not.toHaveBeenCalled();
+    expect(LoginPageContent).not.toHaveBeenCalled();
 
     expect(useAuthentication).toHaveBeenCalled();
     expect(useRouter).toHaveBeenCalled();
@@ -81,7 +81,7 @@ describe("login page tests", () => {
 
     expect(root.container.firstChild).toBeNull();
 
-    expect(LoginPageContainer).not.toHaveBeenCalled();
+    expect(LoginPageContent).not.toHaveBeenCalled();
 
     expect(useAuthentication).toHaveBeenCalled();
     expect(useRouter).toHaveBeenCalled();
@@ -110,7 +110,7 @@ describe("login page tests", () => {
 
     expect(Head).toHaveBeenCalled();
 
-    expect(LoginPageContainer).toHaveBeenCalled();
+    expect(LoginPageContent).toHaveBeenCalled();
 
     expect(document.title).toBe(Strings.pages.login.title);
   });

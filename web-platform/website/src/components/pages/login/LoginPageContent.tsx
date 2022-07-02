@@ -1,5 +1,5 @@
 import { Card, Col, Container, Row } from "reactstrap";
-import { cssRule, style } from "typestyle";
+import { style } from "typestyle";
 
 import { ScreenSize, Spacing, createResponsiveStyle } from "../../../styles";
 import { EmailAccountCreatedView } from "./EmailAccountCreatedView";
@@ -13,7 +13,7 @@ import {
 import { LoginView } from "./LoginView";
 import { ResetPasswordView } from "./ResetPasswordView";
 
-export function LoginPageContainer() {
+export function LoginPageContent() {
   return (
     <Container className={`${styles.container} p-5`}>
       <Row className="content-row mb-5">
@@ -52,11 +52,6 @@ function LoginCardFactory() {
       throw new Error("Invalid card type.");
   }
 }
-
-cssRule("body", {
-  background: `url("/img/noise-texture-top.png"), url("/img/noise-texture.png")`,
-  backgroundBlendMode: "screen",
-});
 
 const styles = {
   container: style(

@@ -1,9 +1,10 @@
 import type { NextPage } from "next";
 import Head from "next/head";
 import { useRouter } from "next/router";
+import { cssRule } from "typestyle";
 
 import { Layout } from "../components/Layout";
-import { LoginPageContainer } from "../components/pages/login/LoginPageContainer";
+import { LoginPageContent } from "../components/pages/login/LoginPageContent";
 import { Strings } from "../resources/Strings";
 import { useAuthentication } from "../services/AuthenticationService";
 
@@ -29,10 +30,15 @@ const LoginPage: NextPage = () => {
         <Head>
           <title>{strings.title}</title>
         </Head>
-        <LoginPageContainer />
+        <LoginPageContent />
       </>
     </Layout>
   );
 };
+
+cssRule("body", {
+  background: `url("/img/noise-texture-top.png"), url("/img/noise-texture.png")`,
+  backgroundBlendMode: "screen",
+});
 
 export default LoginPage;

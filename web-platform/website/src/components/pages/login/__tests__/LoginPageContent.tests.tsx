@@ -8,7 +8,7 @@ import {
   LoginStateProvider,
   useLoginDataContext,
 } from "../LoginDataContext";
-import { LoginPageContainer } from "../LoginPageContainer";
+import { LoginPageContent } from "../LoginPageContent";
 import { LoginView } from "../LoginView";
 import { ResetPasswordView } from "../ResetPasswordView";
 
@@ -19,7 +19,7 @@ jest.mock("../LoginDataContext");
 jest.mock("../LoginView");
 jest.mock("../ResetPasswordView");
 
-describe("LoginPageContainer tests", () => {
+describe("LoginPageContent tests", () => {
   beforeEach(() => {
     jest.resetAllMocks();
     (LoginStateProvider as jest.Mock).mockImplementation(
@@ -33,7 +33,7 @@ describe("LoginPageContainer tests", () => {
   });
 
   it("renders initial state correctly", () => {
-    render(<LoginPageContainer />);
+    render(<LoginPageContent />);
 
     expect(useLoginDataContext).toHaveBeenCalled();
     expect(InitialLoginView).toHaveBeenCalled();
@@ -44,7 +44,7 @@ describe("LoginPageContainer tests", () => {
       loginState: LoginState.SignupWithEmail,
     }));
 
-    render(<LoginPageContainer />);
+    render(<LoginPageContent />);
 
     expect(useLoginDataContext).toHaveBeenCalled();
     expect(EmailSignupView).toHaveBeenCalled();
@@ -55,7 +55,7 @@ describe("LoginPageContainer tests", () => {
       loginState: LoginState.EmailAccountCreated,
     }));
 
-    render(<LoginPageContainer />);
+    render(<LoginPageContent />);
 
     expect(EmailAccountCreatedView).toHaveBeenCalled();
   });
@@ -65,7 +65,7 @@ describe("LoginPageContainer tests", () => {
       loginState: LoginState.Login,
     }));
 
-    render(<LoginPageContainer />);
+    render(<LoginPageContent />);
 
     expect(LoginView).toHaveBeenCalled();
   });
@@ -75,7 +75,7 @@ describe("LoginPageContainer tests", () => {
       loginState: LoginState.ResetPassword,
     }));
 
-    render(<LoginPageContainer />);
+    render(<LoginPageContent />);
 
     expect(ResetPasswordView).toHaveBeenCalled();
   });
@@ -87,7 +87,7 @@ describe("LoginPageContainer tests", () => {
 
     jest.spyOn(console, "error").mockImplementation(() => {}); //eslint-disable-line @typescript-eslint/no-empty-function
 
-    expect(() => render(<LoginPageContainer />)).toThrowError(
+    expect(() => render(<LoginPageContent />)).toThrowError(
       "Invalid card type."
     );
   });

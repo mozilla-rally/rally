@@ -1,9 +1,7 @@
-import { useRouter } from "next/router";
 import { Container } from "reactstrap";
-import { cssRule, style } from "typestyle";
+import { style } from "typestyle";
 import { NestedCSSProperties } from "typestyle/lib/types";
 
-import { useUserDocument } from "../../../services/UserDocumentService";
 import {
   Colors,
   ScreenSize,
@@ -18,19 +16,7 @@ import { PrivacyPolicyManageData } from "./PrivacyPolicyManageData";
 import { PrivacyPolicySharing } from "./PrivacyPolicySharing";
 import { PrivacyPolicyTitle } from "./PrivacyPolicyTitle";
 
-export function PrivacyPolicyPageContainer() {
-  const { userDocument } = useUserDocument();
-  const router = useRouter();
-
-  if (!router.isReady) {
-    return null;
-  }
-
-  if (userDocument && userDocument.enrolled) {
-    router.replace("/");
-    return null;
-  }
-
+export function PrivacyPolicyPageContent() {
   return (
     <Container className={`${styles.container} m-auto`}>
       <PrivacyPolicyTitle />
@@ -43,11 +29,6 @@ export function PrivacyPolicyPageContainer() {
     </Container>
   );
 }
-
-cssRule("body", {
-  background: `url("/img/noise-texture-top.png"), url("/img/noise-texture.png")`,
-  backgroundBlendMode: "screen",
-});
 
 const smallerStyle: NestedCSSProperties = {
   width: "100%",
