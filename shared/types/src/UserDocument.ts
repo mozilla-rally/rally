@@ -1,5 +1,6 @@
 import type { Timestamp } from "firebase/firestore";
 
+import type { UserDemographicsData } from "./UserDemographicsData";
 import type { UserStudyRecord } from "./UserStudyRecord";
 
 export interface UserDocument {
@@ -7,6 +8,6 @@ export interface UserDocument {
   enrolled: boolean;
   onboared: boolean;
   createdOn: Timestamp;
-  demographicsData: Record<string, string>;
+  demographicsData: UserDemographicsData;
   studies: Record<string, UserStudyRecord>;
 }
