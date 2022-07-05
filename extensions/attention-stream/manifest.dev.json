@@ -1,0 +1,58 @@
+{
+  "description": "The Mozilla Rally Attention Stream",
+  "author": "Mozilla",
+  "manifest_version": 2,
+  "name": "Rally Attention Stream",
+  "version": "0.4.1",
+  "homepage_url": "https://github.com/mozilla/rally",
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "attention-stream@rally.mozilla.org",
+      "strict_min_version": "87.0"
+    }
+  },
+  "options_ui": {
+    "page": "public/options.html",
+    "open_in_tab": true
+  },
+  "browser_action": {
+    "default_title": "Rally Attention Stream"
+  },
+  "permissions": [
+    "<all_urls>",
+    "idle",
+    "webNavigation",
+    "webRequest",
+    "storage",
+    "unlimitedStorage"
+  ],
+  "content_scripts": [
+    {
+      "matches": [
+        "http://localhost/*",
+        "https://members.rally.mozilla.org/*"
+      ],
+      "js": [
+        "dist/main.content.js"
+      ]
+    },
+    {
+      "matches": [
+        "<all_urls>"
+      ],
+      "js": [
+        "dist/browser-polyfill.min.js",
+        "dist/webScience/pageManager.content.js",
+        "dist/webScience/pageNavigation.content.js"
+      ]
+    }
+  ],
+  "browserAction": {},
+  "background": {
+    "scripts": [
+      "dist/browser-polyfill.min.js",
+      "dist/background.js"
+    ]
+  },
+  "incognito": "not_allowed"
+}

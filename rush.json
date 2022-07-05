@@ -421,6 +421,11 @@
       "packageName": "website",
       "projectFolder": "web-platform/website",
       "shouldPublish": false
+    },
+    {
+      "packageName": "rally-attention-stream",
+      "projectFolder": "extensions/attention-stream",
+      "shouldPublish": false
     }
     // {
     //   /**

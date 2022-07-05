@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta content="text/html;charset=utf-8" http-equiv="Content-Type">
+    <meta content="utf-8" http-equiv="encoding">
+    <link rel="stylesheet" href="/dist/tailwind.css">
+
+    <title>Rally Attention Stream</title>
+    <style>
+        input:checked~.dot {
+            transform: translateX(100%);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="my-12 flex">
+        <div class="flex-grow"></div>
+        <div class="w-40 flex-shrink">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 204.24 28.4" preserveAspectRatio="xMidYMid meet">
+                <path class="mozilla"
+                    d="M99.07.03v28.32H0V.03h99.07zM37 9.9a6.22 6.22 0 00-6.63 6.62c0 3.95 2.64 6.29 6.47 6.29 3.83 0 6.81-2.5 6.81-6.46A6.09 6.09 0 0037 9.9zm46 1.16l-.48 2.86 2.83.3.39-1.39a3.94 3.94 0 011.91-.4c1.867 0 1.991 1.315 2 2.515v.675a15.26 15.26 0 00-2-.11c-2.83 0-5.76.71-5.76 3.76a3.5 3.5 0 003.49 3.52h.32a4.47 4.47 0 004-2.48 2.54 2.54 0 002.59 2.48h.14a4.69 4.69 0 002.22-.59l-.04-1.84a1.76 1.76 0 01-.51.09c-.59 0-.86-.26-.86-1V14.1c0-2.83-2.25-4.2-4.92-4.2A11.84 11.84 0 0083 11.06zm-.76-7.43h-3.49l-5.37 18.9h3.51l5.35-18.9zm-7.2 0h-3.48l-5.38 18.9h3.51l5.35-18.9zM23.057 9.881l-.227.009a4.14 4.14 0 00-4 2.66 4 4 0 00-4-2.66A4.09 4.09 0 0011.07 12v-1.91H5.84v2.68h1.69v7H5.84v2.66h7.63v-2.69h-2.34v-4.31c0-1.77.63-2.93 2.34-2.93 1.4 0 2.11.86 2.11 3v7h5.24v-2.72h-1.65v-4.32c0-1.76.64-2.93 2.34-2.93 1.4 0 2.11.86 2.11 3v7h5.19v-2.69h-1.65l-.07.04v-5.71c.01-.18.01-.36 0-.54a4 4 0 00-4.26-3.74zM63.88 18.03h-3.7v4.45h3.7v-4.45zm-7.09-7.94H45.88l-.44 4.4 2.56.28.57-1.93h3.84l-6.81 7.83.4 1.81h10.81l.76-4.33-2.79-.28-.6 1.93h-4l6.87-7.8-.26-1.91zm31.1 7.05c.6.021 1.197.078 1.79.17a2.77 2.77 0 01-2.55 3l-.13-.02a1.3 1.3 0 01-1.45-1.44c0-1.34 1.1-1.71 2.34-1.71zM37 12.62c1.82 0 3 1.17 3 3.62s-1.23 3.85-3.07 3.85h-.02c-1.91 0-2.91-1.65-2.91-3.8 0-2.29 1.18-3.67 3-3.67zm26.88-2.53h-3.7v4.46h3.7v-4.46z">
+                </path>
+                <path class="rally"
+                    d="M161.31 7.92v3.15h-1.47l3 6.77h.16l2.21-6.77H164V7.92h6.71v3.15h-1.47l-4.71 11.52-1 2.55h1.92v3.26h-8.1v-3.26h2.34l.77-2.32-5.14-11.75h-1.5V7.92h7.49zM144.22 0v19.38h3.83V3.24h-2.13V0h6.35v19.38h2v3.17H138v-.03h-2.42c-1.926 0-2.97-.751-3.215-2.387l-.025-.193a5.36 5.36 0 01-4.75 2.94c-2.12 0-4.55-1.14-4.55-4.22 0-3.63 3.51-4.48 6.88-4.48a19 19 0 012.42.13v-.5c0-1.5 0-3.3-2.42-3.3a4.58 4.58 0 00-2.26.42l-.56 2.1-3.37-.36.66-3.83a14.12 14.12 0 016.35-1.34c3.18 0 5.86 1.63 5.86 5v5.85c0 .85.33 1 1 1h.63v.03H140V3.24h-2.13V0h6.35zm-30.64 3.6c4.69 0 7.31 1.93 7.31 5.75a5.32 5.32 0 01-3.61 5.16l2.56 4.72h2.28v3.32h-4.86l-3.76-7.23h-2.41v3.91H113v3.32h-8v-3.32h1.8V6.93H105V3.6h8.58zm16.67 12.54c-1.5 0-2.81.42-2.81 2a1.54 1.54 0 001.73 1.7c1.47 0 3-1 3.21-3.34v-.17a17 17 0 00-2.13-.19zm-17.39-9.21h-1.77v5.3h1.71c3 0 3.87-1 3.87-2.79s-.96-2.51-3.81-2.51z">
+                </path>
+                <path class="flag"
+                    d="M175.75 28.27a.16.16 0 01-.16.13h-2.29a.17.17 0 01-.16-.22l8-28.06a.16.16 0 01.16-.12h2.29a.17.17 0 01.091.03l.009-.03h8.66a1.39 1.39 0 011.29 1.42 1.84 1.84 0 01-.06.48L193 3.64h11.064a.21.21 0 01.176.23l-5.31 18.51a.22.22 0 01-.2.16h-13.07a1.43 1.43 0 01-1.42-1.08 1.24 1.24 0 010-.27 1.39 1.39 0 011.39-1.4h1.8a1.4 1.4 0 001.34-1.47 1.45 1.45 0 00-1.48-1.32h-8.328z">
+                </path>
+            </svg>
+        </div>
+        <div class="flex-grow"></div>
+    </div>
+    <div
+        class="p-12 max-w-xl mx-auto bg-white rounded-lg border border-gray-300 space-y-2 sm:py-4 sm:flex sm:align-middle sm:space-y-0 sm:space-x-6">
+
+        <div class="text-left p-8">
+            <div class="flex flex-wrap p-4">
+                <p class="text-lg text-left text-black font-semibold flex-grow">
+                    Rally Attention Stream
+                </p>
+                <p id="status" class="flex-grow-0 border border-black rounded-full p-1"></p>
+            </div>
+            <div class="rounded-lg flex flex-wrap border border-gray-500 space-y-2 p-8">
+                <p class="p-2.5 inline-flex flex-grow">Pause or resume data collection</p>
+                <p class="p-2.5 inline-flex flex-grow-0"></p>
+                <div class="flex-grow-0">
+                    <label for="toggleEnabled" class="flex-grow-0 items-center cursor-pointer">
+                        <div class="relative">
+                            <input type="checkbox" id="toggleEnabled" class="sr-only">
+                            <div class="block bg-gray-600 w-10 h-6 rounded-full"></div>
+                            <div class="dot absolute left-1 top-1 bg-white w-4 h-4 rounded-full transition">
+                            </div>
+                        </div>
+                    </label>
+                </div>
+                <p class="flex-grow p-2.5 text-left bg-white">Studies are paused by default. Data is not collected when
+                    studies are paused.</p>
+            </div>
+
+            <div class="text-justify space-y-1 py-12">
+                <div class="rounded-lg flex flex-wrap border border-gray-500 space-y-1 p-8">
+                    <p class="p-2.5 inline-flex flex-grow">Data Export</p>
+                    <p class="p-2.5 inline-flex flex-grow-0"></p>
+                    <button id="download"
+                        class="bg-blue-500 border hover:bg-blue-900 text-white font-bold p-2 h-10 w-30 rounded inline-flex">
+                        <svg class="fill-current w-4 h-4 mr-2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                            <path d="M13 8V2H7v6H2l8 8 8-8h-5zM0 18h20v2H0v-2z" />
+                        </svg>
+                        <span>Download</span>
+                    </button>
+                    <p class="flex-grow p-2.5 bg-white">Download an export of all of the data this study has
+                        collected locally.</p>
+                </div>
+            </div>
+
+            <div class="text-justify">
+                <div class="rounded-lg flex flex-wrap border border-gray-500 space-y-1 p-8">
+                    <p class="p-2.5 inline-flex flex-grow">Danger Zone</p>
+                    <p class="p-2.5 inline-flex flex-grow-0"></p>
+                    <button id="clear-database"
+                        class="bg-red-500 border hover:bg-red-900 text-white font-bold p-2 h-10 w-30 rounded inline-flex">
+                        <span>Clear Database</span>
+                    </button>
+                    <p class="flex-grow p-2.5 bg-white">Clear the local IndexedDB database.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <a id="downloadLink" style="display:none"></a>
+</body>
+
+<script src="/dist/dexie.min.js"></script>
+<script src="/dist/browser-polyfill.min.js"></script>
+<script src="options.js"></script>
+
+</html>
