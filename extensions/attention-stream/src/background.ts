@@ -48,7 +48,13 @@ let studyId = "attentionStream";
 // The website hosting the Rally UI.
 let rallySite = "https://members.rally.mozilla.org";
 
-const publicKey = {};
+const publicKey = {
+  "crv": "P-256",
+  "kid": "rally-attention-stream",
+  "kty": "EC",
+  "x": "NFFGDrJUoq-qUEW2JTjk5HJJvOMqZ4XnZGkwJEapDcM",
+  "y": "odcj1VLRkgkyhLapDVwzC9ai0ltVWYQ7u4kETcGoMoE"
+};
 
 // The current Firebase configuration.
 let firebaseConfig = {
