@@ -8,6 +8,7 @@ import { Spacing } from "./Spacing";
 
 cssRule("html, body", {
   fontFamily: "Inter, X-LocaleSpecific, sans-serif",
+  "-webkit-font-smoothing": "antialiased",
   margin: 0,
   padding: 0,
 });
@@ -73,12 +74,14 @@ export const FullscapePageContainer = style(
   createResponsiveStyle(ScreenSize.Small, fullscapePageSmallerSize),
   createResponsiveStyle(ScreenSize.Medium, fullscapePageSmallerSize),
   {
+    color: Colors.ColorMarketingGray70,
     paddingTop: Spacing.xxxLarge * 2,
     paddingBottom: 200,
     width: "688px",
     $nest: {
       "h1, h2, h3, h4": {
         marginBottom: Spacing.xxLarge,
+        color: Colors.ColorBlack,
       },
       h1: {
         fontSize: "2.375rem",
@@ -89,11 +92,6 @@ export const FullscapePageContainer = style(
       hr: {
         marginTop: Spacing.xLarge,
         marginBottom: Spacing.xLarge,
-      },
-      p: {
-        color: Colors.ColorMarketingGray70,
-        "-webkit-font-smoothing": "antialiased",
-        marginBottom: 0,
       },
     },
   }

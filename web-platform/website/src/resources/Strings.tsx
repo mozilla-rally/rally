@@ -478,6 +478,185 @@ export const Strings = {
           title: "Our Privacy Notice",
         },
       },
+      profile: {
+        age: {
+          options: [
+            {
+              title: "19-24 years old",
+              value: "19_24",
+            },
+            {
+              title: "25-34 years old",
+              value: "25_34",
+            },
+            {
+              title: "35-44 years old",
+              value: "35_44",
+            },
+            {
+              title: "45-54 years old",
+              value: "45_54",
+            },
+            {
+              title: "55-64 years old",
+              value: "55_64",
+            },
+            {
+              title: "65 years and older",
+              value: "over_65",
+            },
+          ],
+          title: "1. What is your age?",
+        },
+        buttons: {
+          saveChanges: "Save Changes",
+          cancel: "Cancel",
+        },
+        ethnicity: {
+          options: [
+            {
+              title: "American Indian or Alaska Native",
+              value: "american_indian_or_alaska_native",
+            },
+            {
+              title: "Asian Indian",
+              value: "asian_indian",
+            },
+            {
+              title: "Black or African American",
+              value: "black_or_african_american",
+            },
+            {
+              title: "Chamorro",
+              value: "chamorro",
+            },
+            {
+              title: "Chinese",
+              value: "chinese",
+            },
+            {
+              title: "Filipino",
+              value: "filipino",
+            },
+            {
+              title: "Japanese",
+              value: "japanese",
+            },
+            {
+              title: "Korean",
+              value: "korean",
+            },
+            {
+              title: "Native Hawaiian",
+              value: "native_hawaiian",
+            },
+            {
+              title: "Samoan",
+              value: "samoan",
+            },
+            {
+              title: "Vietnamese",
+              value: "vietnamese",
+            },
+            {
+              title: "White",
+              value: "white",
+            },
+            {
+              title: "Other Asian",
+              value: "other_asian",
+            },
+            {
+              title: "Other Pacific Islander",
+              value: "other_pacific_islander",
+            },
+            {
+              title: "Some other race",
+              value: "some_other_race",
+            },
+          ],
+          title: "4. What is your race / ethnicity",
+        },
+        gender: {
+          options: [
+            {
+              title: "Male",
+              value: "male",
+            },
+            {
+              title: "Female",
+              value: "female",
+            },
+            {
+              title: "Neither choice describes me",
+              value: "neither",
+            },
+            {
+              title: "Decline to identify",
+              value: "decline",
+            },
+          ],
+          title: "2. What is your gender?",
+        },
+        hispanic: {
+          options: [
+            {
+              title: "No, not of Hispanic, Latinx, or Spanish origin",
+              value: "other",
+            },
+            {
+              title: "Yes",
+              value: "hispanicLatinxSpanish",
+            },
+          ],
+          title: "3. Are you of Hispanic, Latinx, or Spanish origin?",
+        },
+        income: {
+          tagline: "Please provide an approximate estimate in US Dollars:",
+          title:
+            "6. What is your household's combined annual income during the past 12 months?",
+        },
+        school: {
+          options: [
+            { title: "Less than high school", value: "less_than_high_school" },
+            { title: "Some high school", value: "some_high_school" },
+            {
+              title: "High school graduate or equivalent (for example GED)",
+              value: "high_school_graduate_or_equivalent",
+            },
+            {
+              title: "Some college, but degree not received or in progress",
+              value: "some_college_but_no_degree_or_in_progress",
+            },
+            {
+              title: "Associate's degree (for example AA, AS)",
+              value: "associates_degree",
+            },
+            {
+              title: "Bachelor's degree (for example BA, BS, BB)",
+              value: "bachelors_degree",
+            },
+            {
+              title:
+                "Graduate degree (for example master's, professional, doctorate)",
+              value: "graduate_degree",
+            },
+          ],
+          title: "5. What is the highest level of school you have completed?",
+        },
+        standardProfileSection: {
+          clearResponse: "Clear this response",
+        },
+        title: {
+          tagline:
+            "Each question is completely optional, and can be updated at any time by clicking Manage Profile. The answers you give will help us understand the composition and representivity of the Rally community. Additionally, collaborators will combine your answers with the data collected in the studies you join to enrich their findings and answer research questions.",
+          title: "Tell Us About Yourself",
+        },
+        zipCode: {
+          invalidZipCode: "Zip code must be a five-digit number.",
+          title: "7. What is your zip code?",
+        },
+      },
     },
   },
   pages: {
@@ -489,6 +668,9 @@ export const Strings = {
     },
     privacyPolicy: {
       title: "Privacy Policy | Mozilla Rally",
+    },
+    profile: {
+      title: "Tell Us About Yourself | Mozilla Rally",
     },
   },
   utils: {

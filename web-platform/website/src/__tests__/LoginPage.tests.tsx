@@ -99,7 +99,7 @@ describe("login page tests", () => {
     const replace = jest.fn();
     (useRouter as jest.Mock).mockReturnValue({ isReady: true, replace });
 
-    const root = render(<LoginPage />);
+    render(<LoginPage />);
 
     expect(replace).not.toHaveBeenCalled();
 
