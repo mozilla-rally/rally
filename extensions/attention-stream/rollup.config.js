@@ -88,6 +88,56 @@ export default (cliArgs) => {
                     flatten: true,
                 }),
             ],
+        },
+        {
+            input: "src/background-loader.ts",
+            output: {
+                file: "dist/background-loader.js",
+                sourcemap: (isDevMode(cliArgs) || isEmulatorMode(cliArgs)) ? "inline" : false,
+            },
+            plugins: [
+                replace({
+                    preventAssignment: true,
+                    // In Developer Mode, the study does not submit data and
+                    // gracefully handles communication errors with the Core
+                    // Add-on.
+                    __ENABLE_DEVELOPER_MODE__: isDevMode(cliArgs),
+                    __ENABLE_EMULATOR_MODE__: isEmulatorMode(cliArgs),
+                }),
+                webScienceRollupPlugin(),
+                resolve({
+                    browser: true,
+                }),
+                commonjs(),
+                typescript(),
+                copy({
+                    targets: [{
+                        src: [
+                            "node_modules/webextension-polyfill/dist/browser-polyfill.min.js",
+                        ],
+                        dest: "dist/",
+                    }],
+                    flatten: true,
+                }),
+                copy({
+                    targets: [{
+                        src: [
+                            "node_modules/webextension-polyfill/dist/browser-polyfill.min.js.map",
+                        ],
+                        dest: "dist/",
+                    }],
+                    flatten: true,
+                }),
+                copy({
+                    targets: [{
+                        src: [
+                            "node_modules/dexie/dist/dexie.min.js",
+                        ],
+                        dest: "dist/",
+                    }],
+                    flatten: true,
+                }),
+            ],
         }
     ];
 

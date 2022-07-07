@@ -49,10 +49,7 @@
   ],
   "browserAction": {},
   "background": {
-    "scripts": [
-      "dist/browser-polyfill.min.js",
-      "dist/background.js"
-    ]
+    "service_worker": "dist/background-loader.js"
   },
   "incognito": "not_allowed"
 }
