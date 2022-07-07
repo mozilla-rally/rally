@@ -1,6 +1,11 @@
 # Change Log - @mozilla/rally-sdk
 
-This log was last generated on Sat, 02 Jul 2022 15:22:39 GMT and should not be manually modified.
+This log was last generated on Thu, 07 Jul 2022 06:45:08 GMT and should not be manually modified.
+
+## 0.9.23
+Thu, 07 Jul 2022 06:45:08 GMT
+
+_Version update only_
 
 ## 0.9.22
 Sat, 02 Jul 2022 15:22:39 GMT
