@@ -141,6 +141,30 @@ export default (cliArgs) => {
         }
     ];
 
+    rollupConfig.push({
+        input: ["src/background-loader.ts"],
+        output: {
+            file: "dist/background-loader.js",
+            sourcemap: (isDevMode(cliArgs) || isEmulatorMode(cliArgs)) ? "inline" : false,
+        },
+        plugins: [
+            replace({
+                preventAssignment: true,
+                // In Developer Mode, the study does not submit data and
+                // gracefully handles communication errors with the Core
+                // Add-on.
+                __ENABLE_DEVELOPER_MODE__: isDevMode(cliArgs),
+                __ENABLE_EMULATOR_MODE__: isEmulatorMode(cliArgs),
+            }),
+            webScienceRollupPlugin(),
+            resolve({
+                browser: true,
+            }),
+            commonjs(),
+            typescript()
+        ]
+    });
+
     // Configuration for content scripts (src/**/*.content.js) and
     // worker scripts (src/**/*.worker.js). These files will be
     // output to dist/ with the same relative path they have in

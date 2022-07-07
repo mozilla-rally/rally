@@ -226,7 +226,7 @@ class GetPingsUploader extends Uploader {
 
 if (enableDevMode) {
   // When in developer mode, open the options page with the playtest controls when the toolbar button is clicked.
-  browser.browserAction.onClicked.addListener(async () =>
+  browser.action.onClicked.addListener(async () =>
     await browser.runtime.openOptionsPage()
   );
 

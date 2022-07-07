@@ -19,12 +19,14 @@
     "default_title": "Rally Attention Stream"
   },
   "permissions": [
-    "<all_urls>",
     "idle",
     "webNavigation",
     "webRequest",
     "storage",
     "unlimitedStorage"
+  ],
+  "host_permissions:": [
+    "<all_urls>"
   ],
   "content_scripts": [
     {
@@ -47,7 +49,9 @@
       ]
     }
   ],
-  "browserAction": {},
+  "action": {
+    "default_title": "Rally Attention Stream"
+  },
   "background": {
     "service_worker": "dist/background-loader.js"
   },
