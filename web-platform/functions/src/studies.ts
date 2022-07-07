@@ -47,7 +47,7 @@ export const studies = {
     studyId: "attentionStream",
     schemaNamespace: "rally-attention-stream",
     downloadLink: "https://chrome.google.com/webstore/detail/attention-stream/bahhehaddofgkccippmjcecepdakppme",
-    endDate: "2022-07-13",
+    endDate: "Ongoing",
     studyEnded: false,
     studyPaused: false,
     description: "Join the Mozilla Rally community and help Rally and our partners build a user-centric understanding of what’s happening online! The Attention Stream provides a picture of how information spreads across the web and big tech platforms, where people spend their time, and how these platforms influence people. Rally and our partners will publicly share research findings and any discoveries that could enable more privacy and control in consumer products. We will always inform you of which partners have access to the Attention Stream and whenever new partners join. We also will always disclose if research partners compensate Mozilla for access to Attention Stream data. ",
