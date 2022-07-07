@@ -48,7 +48,13 @@ let studyId = "attentionStream";
 // The website hosting the Rally UI.
 let rallySite = "https://members.rally.mozilla.org";
 
-const publicKey = {};
+const publicKey = {
+  "crv": "P-256",
+  "kid": "rally-attention-stream",
+  "kty": "EC",
+  "x": "NFFGDrJUoq-qUEW2JTjk5HJJvOMqZ4XnZGkwJEapDcM",
+  "y": "odcj1VLRkgkyhLapDVwzC9ai0ltVWYQ7u4kETcGoMoE"
+};
 
 // The current Firebase configuration.
 let firebaseConfig = {
@@ -220,7 +226,7 @@ class GetPingsUploader extends Uploader {
 
 if (enableDevMode) {
   // When in developer mode, open the options page with the playtest controls when the toolbar button is clicked.
-  browser.browserAction.onClicked.addListener(async () =>
+  browser.action.onClicked.addListener(async () =>
     await browser.runtime.openOptionsPage()
   );
 
