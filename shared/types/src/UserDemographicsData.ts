@@ -5,7 +5,7 @@ export interface UserDemographicsData {
   hispanicLatinxSpanishOrigin: "hispanicLatinxSpanish" | "other";
   race: RaceType[];
   school: SchoolType;
-  zipcode: number;
+  zipcode: string;
 }
 
 export enum SchoolType {
