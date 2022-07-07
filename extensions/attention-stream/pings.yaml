@@ -13,12 +13,13 @@ study-enrollment:
   description: |
     This ping is sent when the user has consented to the study.
   include_client_id: false
-  bugs:
-    - TODO
-  data_reviews:
-    - TODO
-  notification_emails:
-    - TODO
+  bugs: &bugs
+    - https://bugzilla.mozilla.org/show_bug.cgi?id=1778196
+  data_reviews: &data_reviews
+    - https://bugzilla.mozilla.org/show_bug.cgi?id=1778367
+  notification_emails: &notification_emails
+    - than@mozilla.com
+    - rhelmer@mozilla.com
 
 user-journey:
   description: |
@@ -26,11 +27,11 @@ user-journey:
   include_client_id: false
   send_if_empty: false
   bugs:
-    - TODO
+    - *bugs
   data_reviews:
-    - TODO
+    - *data_reviews
   notification_emails:
-    - TODO
+    - *notification_emails
   reasons:
     page-navigation-observed: |
       Page navigation was observed.
