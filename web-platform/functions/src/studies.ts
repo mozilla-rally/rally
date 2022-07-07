@@ -31,4 +31,37 @@ export const studies = {
       "social media"
     ],
   },
+  attentionStream: {
+    name: "Attention Stream",
+    icons: {
+      "32": "",
+      "64": "",
+      "128": ""
+    },
+    authors: {
+      name: "Mozilla Rally",
+    },
+    version: "0.4.3",
+    firefoxAddonId: "attention-stream@rally.mozilla.org",
+    chromeExtensionId: "bahhehaddofgkccippmjcecepdakppme",
+    studyId: "attentionStream",
+    schemaNamespace: "rally-attention-stream",
+    downloadLink: "https://chrome.google.com/webstore/detail/attention-stream/bahhehaddofgkccippmjcecepdakppme",
+    endDate: "2022-07-13",
+    studyEnded: false,
+    studyPaused: false,
+    description: "Join the Mozilla Rally community and help Rally and our partners build a user-centric understanding of what’s happening online! The Attention Stream provides a picture of how information spreads across the web and big tech platforms, where people spend their time, and how these platforms influence people. Rally and our partners will publicly share research findings and any discoveries that could enable more privacy and control in consumer products. We will always inform you of which partners have access to the Attention Stream and whenever new partners join. We also will always disclose if research partners compensate Mozilla for access to Attention Stream data. ",
+    studyDetailsLink: "https://rally.mozilla.org/current-studies/attention-stream/index.html",
+    dataCollectionDetails: [
+      "Visits to web page URLs",
+      "Time spent on urls",
+      "Time spent playing media on each webpage",
+      "On certain news pages the full text of the article and the size of ads on the article’s webpage",
+      "Your Rally demographics"
+    ],
+    tags: [
+      "media monitoring", "social media", "transparency"
+    ],
+
+  }
 };
