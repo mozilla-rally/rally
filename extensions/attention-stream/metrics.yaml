@@ -27,13 +27,12 @@ rally:
       the Rally SDKs. A value of 00000000-0000-0000-0000-000000000000
       indicates a test payload. A value of 11111111-1111-1111-1111-111111111111
       indicates that the Rally id was not found or properly set.
-    bugs: &bugs
-      - https://bugzilla.mozilla.org/show_bug.cgi?id=1778196
-    data_reviews: &data_reviews
-      - https://bugzilla.mozilla.org/show_bug.cgi?id=1778367
-    notification_emails: &notification_emails
-      - than@mozilla.com
-      - rhelmer@mozilla.com
+    bugs:
+      - TODO
+    data_reviews:
+      - TODO
+    notification_emails:
+      - TODO
     expires: never
 
 user_journey:
@@ -48,11 +47,11 @@ user_journey:
     send_in_pings:
       - user-journey
     bugs:
-      - *bugs
+      - TODO
     data_reviews:
-      - *data_reviews
+      - TODO
     notification_emails:
-      - *notification_emails
+      - TODO
     expires: never
 
   url:
@@ -63,11 +62,11 @@ user_journey:
     send_in_pings:
       - user-journey
     bugs:
-      - *bugs
+      - TODO
     data_reviews:
-      - *data_reviews
+      - TODO
     notification_emails:
-      - *notification_emails
+      - TODO
     expires: never
 
   referrer:
@@ -78,11 +77,11 @@ user_journey:
     send_in_pings:
       - user-journey
     bugs:
-      - *bugs
+      - TODO
     data_reviews:
-      - *data_reviews
+      - TODO
     notification_emails:
-      - *notification_emails
+      - TODO
     expires: never
 
   page_visit_start_date_time:
@@ -94,11 +93,11 @@ user_journey:
     send_in_pings:
       - user-journey
     bugs:
-      - *bugs
+      - TODO
     data_reviews:
-      - *data_reviews
+      - TODO
     notification_emails:
-      - *notification_emails
+      - TODO
     expires: never
 
   page_visit_stop_date_time:
@@ -110,11 +109,11 @@ user_journey:
     send_in_pings:
       - user-journey
     bugs:
-      - *bugs
+      - TODO
     data_reviews:
-      - *data_reviews
+      - TODO
     notification_emails:
-      - *notification_emails
+      - TODO
     expires: never
 
   attention_duration:
@@ -127,11 +126,11 @@ user_journey:
     send_in_pings:
       - user-journey
     bugs:
-      - *bugs
+      - TODO
     data_reviews:
-      - *data_reviews
+      - TODO
     notification_emails:
-      - *notification_emails
+      - TODO
     expires: never
 
   audio_duration:
@@ -143,11 +142,11 @@ user_journey:
     send_in_pings:
       - user-journey
     bugs:
-      - *bugs
+      - TODO
     data_reviews:
-      - *data_reviews
+      - TODO
     notification_emails:
-      - *notification_emails
+      - TODO
     expires: never
 
   attention_and_audio_duration:
@@ -160,11 +159,11 @@ user_journey:
     send_in_pings:
       - user-journey
     bugs:
-      - *bugs
+      - TODO
     data_reviews:
-      - *data_reviews
+      - TODO
     notification_emails:
-      - *notification_emails
+      - TODO
     expires: never
 
   max_relative_scroll_depth:
@@ -177,9 +176,9 @@ user_journey:
     send_in_pings:
       - user-journey
     bugs:
-      - *bugs
+      - TODO
     data_reviews:
-      - *data_reviews
+      - TODO
     notification_emails:
-      - *notification_emails
+      - TODO
     expires: never
