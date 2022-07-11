@@ -10,7 +10,7 @@ export const studies = {
     authors: {
       name: "Mozilla Rally and the Markup",
     },
-    version: "0.2.0",
+    version: "0.2.6",
     firefoxAddonId: "facebook-pixel-hunt@rally.mozilla.org",
     chromeExtensionId: "pbeklachfkbjddmglcccopmknmpfchdm",
     studyId: "facebookPixelHunt",
