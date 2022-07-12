@@ -1,6 +1,6 @@
 import { UserDemographicsData } from "@mozilla/rally-shared-types";
 import { RaceType } from "@mozilla/rally-shared-types/dist";
-import { HTMLAttributes, useEffect } from "react";
+import { HTMLAttributes } from "react";
 import { Col, Row } from "reactstrap";
 
 import { Strings } from "../../../resources/Strings";
@@ -18,10 +18,6 @@ export function ProfileEthnicity({
 
   const race: RaceType[] =
     ((profileData && profileData.race) as RaceType[]) || [];
-
-  useEffect(() => {
-    setProfileData({ ...(profileData || {}), race: race });
-  }, [race]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <Row {...rest}>

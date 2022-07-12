@@ -88,7 +88,10 @@ describe("privacy policy page tests", () => {
 
     render(<PrivacyPolicyPage />);
 
-    expect(PrivacyPolicyPageContent).toHaveBeenCalled();
+    expect(PrivacyPolicyPageContent).toHaveBeenCalledWith(
+      { readOnly: false },
+      expect.anything()
+    );
 
     expect(replace).not.toHaveBeenCalled();
 

@@ -2,7 +2,7 @@ import type { NextPage } from "next";
 import Head from "next/head";
 
 import { AuthenticatedPage } from "../components/AuthenticatedPage";
-import { Layout } from "../components/Layout";
+import { StudiesPageContent } from "../components/pages/studies/StudiesPageContent";
 import { Strings } from "../resources/Strings";
 
 const strings = Strings.pages.index;
@@ -14,9 +14,7 @@ const Home: NextPage = () => {
         <title>{strings.title}</title>
       </Head>
 
-      <Layout>
-        <div>Main page</div>
-      </Layout>
+      <StudiesPageContent />
     </AuthenticatedPage>
   );
 };

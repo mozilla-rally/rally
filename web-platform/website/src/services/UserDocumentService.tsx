@@ -1,15 +1,23 @@
-import { UserDocument } from "@mozilla/rally-shared-types/dist";
-import assert from "assert";
 import {
+  UserDocument,
+  UserStudyRecord,
+} from "@mozilla/rally-shared-types/dist";
+import assert from "assert";
+import { Unsubscribe } from "firebase/auth";
+import {
+  CollectionReference,
+  DocumentData,
   DocumentReference,
-  Unsubscribe,
+  Firestore,
+  collection,
   doc,
-  getDoc,
   onSnapshot,
+  setDoc,
   updateDoc,
 } from "firebase/firestore";
-import { createContext, useContext, useEffect, useRef, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 
+import { User } from "../models/User";
 import { useAuthentication } from "./AuthenticationService";
 import { useFirebase } from "./FirebaseService";
 
@@ -27,33 +35,30 @@ export function useUserDocument() {
   return useContext(UserDocumentContext);
 }
 
+interface UserDocumentsRef {
+  userRef: DocumentReference<DocumentData>;
+  userStudiesRef: CollectionReference<DocumentData>;
+}
+
 export function UserDocumentProvider(props: { children: React.ReactNode }) {
   const [isDocumentLoaded, setIsDocumentLoaded] = useState(false);
-  const [docRef, setDocRef] = useState<DocumentReference>();
   const [userDocument, setUserDocument] = useState<UserDocument | null>(null);
 
   const { user } = useAuthentication();
   const { db } = useFirebase();
-  const unsubscribeRef = useRef<Unsubscribe>(() => {});
+
+  const [docRefs, setDocRefs] = useState<UserDocumentsRef | null>(null);
 
   useEffect(() => {
-    (async () => {
-      const newRef = user ? doc(db, "users", user.firebaseUser.uid) : undefined;
-      setDocRef(newRef);
-      setUserDocument(await getUserDocument(newRef));
-
-      unsubscribeRef.current();
-
-      unsubscribeRef.current = newRef
-        ? onSnapshot(newRef, (doc) => {
-            setUserDocument(doc ? (doc.data() as UserDocument) : null);
-            setIsDocumentLoaded(true);
-          })
-        : () => {};
-    })();
-
-    return () => unsubscribeRef.current();
+    setDocRefs(createUserRefs(db, user));
   }, [user]);
+
+  useEffect(() => {
+    return onUserDocumentChanges(docRefs, (userDoc) => {
+      setUserDocument(userDoc);
+      setIsDocumentLoaded(true);
+    });
+  }, [docRefs]);
 
   return (
     <UserDocumentContext.Provider
@@ -61,7 +66,7 @@ export function UserDocumentProvider(props: { children: React.ReactNode }) {
         isDocumentLoaded,
         userDocument,
         updateUserDocument: (userDoc) =>
-          updateUserDocument(docRef as DocumentReference, {
+          updateUserDocument(db, user?.firebaseUser.uid as string, {
             ...(userDocument as UserDocument),
             ...userDoc,
           }),
@@ -72,23 +77,71 @@ export function UserDocumentProvider(props: { children: React.ReactNode }) {
   );
 }
 
-async function getUserDocument(
-  docRef?: DocumentReference
-): Promise<UserDocument | null> {
-  if (!docRef) {
-    return null;
+function createUserRefs(db: Firestore, user?: User) {
+  return user
+    ? {
+        userRef: doc(db, "users", user.firebaseUser.uid),
+        userStudiesRef: collection(
+          db,
+          "users",
+          user.firebaseUser.uid,
+          "studies"
+        ),
+      }
+    : null;
+}
+
+function onUserDocumentChanges(
+  refs: UserDocumentsRef | null,
+  onDocumentUpdated: (userDoc: UserDocument) => void
+): Unsubscribe {
+  if (!refs) {
+    return () => {};
   }
 
-  const doc = await getDoc(docRef);
-  return doc.data() as UserDocument;
+  let userDoc = null as UserDocument | null;
+
+  const userUnsubscribe = onSnapshot(refs.userRef, (doc) => {
+    userDoc = doc && (doc.data() as UserDocument);
+  });
+
+  const studiesUnsubscribe = onSnapshot(refs.userStudiesRef, (studiesDocs) => {
+    if (!studiesDocs || !studiesDocs.docs) {
+      return;
+    }
+
+    userDoc = userDoc || ({} as UserDocument);
+    userDoc.studies = {};
+
+    for (let record of studiesDocs.docs) {
+      userDoc.studies[record.id] = record.data() as UserStudyRecord;
+    }
+
+    // Shallow spread is necessary so that React treats this as a new object
+    // since it does not detect mutations within the same object
+    onDocumentUpdated({ ...userDoc });
+  });
+
+  return () => {
+    userUnsubscribe && userUnsubscribe();
+    studiesUnsubscribe && studiesUnsubscribe();
+  };
 }
 
 async function updateUserDocument(
-  docRef: DocumentReference,
+  db: Firestore,
+  firebaseUid: string,
   userDocument: UserDocument
 ): Promise<void> {
-  assert(docRef, "Invalid document reference.");
   assert(userDocument, "Invalid user document.");
 
-  await updateDoc(docRef, userDocument as {});
+  if (userDocument.studies) {
+    for (const studyId in userDocument.studies) {
+      const studyRef = doc(db, "users", firebaseUid, "studies", studyId);
+      await setDoc(studyRef, userDocument.studies[studyId]);
+    }
+  }
+
+  const userDocRef = doc(db, "users", firebaseUid);
+  await updateDoc(userDocRef, userDocument as {});
 }

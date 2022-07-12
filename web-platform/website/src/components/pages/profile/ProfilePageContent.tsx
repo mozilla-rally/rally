@@ -1,7 +1,6 @@
 import { Container } from "reactstrap";
 import { style } from "typestyle";
 
-import { useUserDocument } from "../../../services/UserDocumentService";
 import { FullscapePageContainer } from "../../../styles";
 import { ProfileAge } from "./ProfileAge";
 import { ProfileButtons } from "./ProfileButtons";
@@ -15,17 +14,9 @@ import { ProfileTitle } from "./ProfileTitle";
 import { ProfileZipCode } from "./ProfileZipCode";
 
 export function ProfilePageContent() {
-  const { isDocumentLoaded, userDocument } = useUserDocument();
-
-  if (!isDocumentLoaded) {
-    return null;
-  }
-
   return (
     <Container className={`${styles.container} ${FullscapePageContainer}`}>
-      <ProfileDataProvider
-        initialProfileData={userDocument && userDocument.demographicsData}
-      >
+      <ProfileDataProvider>
         <ProfileTitle />
         <ProfileAge className="mb-5" />
         <ProfileGender className="mb-5" />

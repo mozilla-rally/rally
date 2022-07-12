@@ -10,6 +10,8 @@ import {
   Spacing,
   createResponsiveStyle,
 } from "../../styles";
+import { ContainerStyles } from "../../styles/ContainerStyles";
+import { LinkStyles } from "../../styles/LinkStyles";
 import { DesktopMenu } from "./DesktopMenu";
 import { MobileMenu } from "./MobileMenu";
 
@@ -20,7 +22,9 @@ export function NavigationBar() {
 
   return (
     <Container
-      className={`${styles.nav} ${isUserVerified ? "" : "border-0"} ms-0 me-0`}
+      className={`${ContainerStyles.TopLevelContainer} ${styles.nav} ${
+        isUserVerified ? "" : "border-0"
+      } border-lg-1 ms-0 me-0`}
     >
       <Row className={"align-items-center gx-0 gy-0"}>
         <Col className="col-md-auto logo-col">
@@ -55,7 +59,7 @@ function TopLinks() {
           <Link href={topLink.href}>
             <a
               target={topLink.external ? "_blank" : "_self"}
-              className="top-link"
+              className={`${LinkStyles.NoUnderline} top-link`}
             >
               {topLink.title}
             </a>
@@ -86,10 +90,6 @@ const styles = {
     createResponsiveStyle(ScreenSize.Small, { border: "none" }),
     createResponsiveStyle(ScreenSize.Medium, { border: "none" }),
     {
-      paddingLeft: Spacing.xxxLarge,
-      paddingRight: Spacing.xxxLarge,
-      paddingTop: Spacing.xLarge,
-      paddingBottom: Spacing.xLarge,
       borderStyle: "solid",
       borderWidth: "1px",
       borderColor: Colors.ColorMarketingGray30,
@@ -122,11 +122,6 @@ const styles = {
           fontWeight: 700,
           fontSize: 18,
           textDecoration: "none",
-          $nest: {
-            "&:hover": {
-              textDecoration: "underline",
-            },
-          },
         },
       },
     }

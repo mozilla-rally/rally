@@ -1,5 +1,126 @@
 export const Strings = {
   components: {
+    footer: {
+      bottomLinks: [
+        {
+          text: "Rally Privacy Policy",
+          link: "https://rally.mozilla.org/how-rally-works/data-and-privacy/",
+          external: true,
+        },
+        {
+          text: "Mozilla Privacy Policy",
+          link: "https://www.mozilla.org/en-US/privacy/websites/",
+          external: true,
+        },
+        {
+          text: "Legal",
+          link: "https://www.mozilla.org/en-US/about/legal/",
+          external: true,
+        },
+      ],
+      copyright: "© Mozilla 2022. We’re Building a Better Internet",
+      sections: [
+        {
+          heading: {
+            text: "How Rally Works",
+            link: "https://rally.mozilla.org/how-rally-works/",
+            external: true,
+          },
+          links: [
+            {
+              text: "Data & Privacy",
+              link: "/terms",
+              external: false,
+            },
+            {
+              text: "FAQs",
+              link: "https://rally.mozilla.org/how-rally-works/faqs/",
+              external: true,
+            },
+          ],
+        },
+        {
+          heading: {
+            text: "Current Studies",
+            link: "https://rally.mozilla.org/current-studies",
+            external: true,
+          },
+          links: [
+            {
+              text: "Beyond the Paywall",
+              link: "https://rally.mozilla.org/current-studies/beyond-the-paywall/",
+              external: true,
+            },
+            {
+              text: "Facebook Pixel Hunt",
+              link: "https://rally.mozilla.org/current-studies/facebook-pixel-hunt/",
+              external: true,
+            },
+            {
+              text: "Political and Covid-19 News",
+              link: "https://rally.mozilla.org/current-studies/political-and-covid-19-news-v3/",
+              external: true,
+            },
+            {
+              text: "Search Engine Usage and Result Quality",
+              link: "https://rally.mozilla.org/current-studies/search-engine-usage/",
+              external: true,
+            },
+          ],
+        },
+        {
+          heading: {
+            text: "Past Studies",
+            link: "https://rally.mozilla.org/past-studies/",
+            external: true,
+          },
+          links: [
+            {
+              text: `Your Time Online and "Doomscrolling"`,
+              link: "https://rally.mozilla.org/past-studies/your-time-online-and-doomscrolling/",
+              external: true,
+            },
+          ],
+        },
+        {
+          heading: {
+            text: "About Rally",
+            link: "https://rally.mozilla.org/about-rally/",
+            external: true,
+          },
+          links: [
+            {
+              text: "Subscribe to our newsletter",
+              link: "https://rally.mozilla.org/newsletter/index.html",
+              external: true,
+            },
+          ],
+        },
+        {
+          heading: {
+            text: "Careers",
+            link: "https://rally.mozilla.org/careers/",
+            external: true,
+          },
+          links: [],
+        },
+        {
+          heading: {
+            text: "Support",
+            link: "https://support.mozilla.org/en-US/kb/about-mozilla-rally",
+            external: true,
+          },
+          links: [
+            {
+              text: "Contact us",
+              link: "mailto:contact@rally.mozilla.org",
+              external: true,
+            },
+          ],
+        },
+      ],
+      twitterLink: "https://twitter.com/mozillarally",
+    },
     navigationBar: {
       a11y: {
         logo: "Rally Logo",
@@ -53,7 +174,7 @@ export const Strings = {
       topLinks: [
         {
           title: "Current Studies",
-          href: "/studies",
+          href: "/",
           external: false,
         },
         {
@@ -287,7 +408,7 @@ export const Strings = {
                 alt: "How We Use Your Information.",
               },
               text: (
-                <p>
+                <>
                   <ul>
                     <li className="mb-2">
                       Determining which Rally participants could be eligible to
@@ -303,7 +424,7 @@ export const Strings = {
                     </li>
                     <li>Creating and developing new products.</li>
                   </ul>
-                </p>
+                </>
               ),
             },
           ],
@@ -655,6 +776,64 @@ export const Strings = {
         zipCode: {
           invalidZipCode: "Zip code must be a five-digit number.",
           title: "7. What is your zip code?",
+        },
+      },
+      studies: {
+        studyCard: {
+          description: {
+            aboutThisStudy: "About this study",
+            keyDataCollected: "Key Data Collected",
+            viewFullStudyDetails: "View Full Study Details",
+          },
+          header: {
+            addExtension: "Add study extension from the Chrome Web Store.",
+            participating: "You're participating.",
+            notParticipatingYet: "You're not participating yet. ",
+            menus: {
+              addExtension: "Add study extension",
+              dontJoinStudy: "Don't join this study",
+              leaveStudy: "Leave study",
+            },
+          },
+          topDetails: {
+            ends: "Ends: {expiry}",
+            joinStudy: "Join Study",
+            taglineFormat: "{publisher} | {expiry}",
+          },
+        },
+        title: {
+          tagline:
+            "Browse available studies and find the choice (or choices) that feel right to you.",
+          title: "Current Studies",
+        },
+        tooltip: {
+          sections: [
+            {
+              title: "Read the study card",
+              text: "The card discloses the data we collect from you, who has access to the data, and how it will be used.",
+            },
+            {
+              title: "Join the Study",
+              text: (
+                <>
+                  Click the <b>Join Study</b> button. We'll ask you to confirm
+                  in a pop-up dialog by clicking the <b>Add Study Extension</b>{" "}
+                  button. This will open up the Chrome Web Store.
+                </>
+              ),
+            },
+            {
+              title: "Add study extension",
+              text: (
+                <>
+                  In the Chrome Web Store, click on the <b>Add to Chrome</b>{" "}
+                  button. This will add the study's extension to your browser.
+                  You are now participating!
+                </>
+              ),
+            },
+          ],
+          title: "How to join a study",
         },
       },
     },

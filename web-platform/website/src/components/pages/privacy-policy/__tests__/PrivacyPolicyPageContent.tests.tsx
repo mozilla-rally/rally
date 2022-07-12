@@ -18,17 +18,27 @@ jest.mock("../PrivacyPolicySharing");
 jest.mock("../PrivacyPolicyTitle");
 
 describe("PrivacyPolicyPageContent tests", () => {
-  it("renders content correctly", () => {
-    render(<PrivacyPolicyPageContent />);
-    assertRendersContent();
+  it("renders content correctly in read only mode", () => {
+    assertRendersContent(true);
   });
 
-  function assertRendersContent() {
-    const { container } = render(<PrivacyPolicyPageContent />);
+  it("renders content correctly non read only mode", () => {
+    assertRendersContent(false);
+  });
+
+  function assertRendersContent(readOnly: boolean) {
+    const { container } = render(
+      <PrivacyPolicyPageContent readOnly={readOnly} />
+    );
 
     expect(container.firstChild).not.toBeNull();
 
-    expect(PrivacyPolicyButtons).toHaveBeenCalled();
+    if (readOnly) {
+      expect(PrivacyPolicyButtons).not.toHaveBeenCalled();
+    } else {
+      expect(PrivacyPolicyButtons).toHaveBeenCalled();
+    }
+
     expect(PrivacyPolicyDataCollectionTypes).toHaveBeenCalled();
     expect(PrivacyPolicyInformationUse).toHaveBeenCalled();
     expect(PrivacyPolicyIntroduction).toHaveBeenCalled();

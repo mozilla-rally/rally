@@ -9,16 +9,18 @@ import { PrivacyPolicyManageData } from "./PrivacyPolicyManageData";
 import { PrivacyPolicySharing } from "./PrivacyPolicySharing";
 import { PrivacyPolicyTitle } from "./PrivacyPolicyTitle";
 
-export function PrivacyPolicyPageContent() {
+export function PrivacyPolicyPageContent(props: { readOnly: boolean }) {
   return (
-    <Container className={`${FullscapePageContainer}`}>
+    <Container
+      className={`${FullscapePageContainer} ${props.readOnly ? "pt-5" : ""}`}
+    >
       <PrivacyPolicyTitle />
       <PrivacyPolicyIntroduction />
       <PrivacyPolicyDataCollectionTypes />
       <PrivacyPolicyInformationUse />
       <PrivacyPolicySharing />
       <PrivacyPolicyManageData />
-      <PrivacyPolicyButtons />
+      {props.readOnly ? null : <PrivacyPolicyButtons />}
     </Container>
   );
 }

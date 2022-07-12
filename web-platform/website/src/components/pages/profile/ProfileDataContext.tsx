@@ -8,6 +8,8 @@ import {
   useState,
 } from "react";
 
+import { useUserDocument } from "../../../services/UserDocumentService";
+
 export interface ProfileDataContext {
   profileData: UserDemographicsData;
   setProfileData: (newProfileData: UserDemographicsData) => void;
@@ -23,17 +25,24 @@ export function useProfileData() {
   return useContext(ProfileContext);
 }
 
-export function ProfileDataProvider(props: {
-  children: React.ReactNode;
-  initialProfileData?: UserDemographicsData | null;
-}) {
-  const [profileData, setProfileData] = useState<UserDemographicsData>(
-    props.initialProfileData || ({} as UserDemographicsData)
+export function ProfileDataProvider(props: { children: React.ReactNode }) {
+  const { isDocumentLoaded, userDocument } = useUserDocument();
+
+  const [profileData, setProfileData] = useState(
+    (userDocument && userDocument.demographicsData) ||
+      ({} as UserDemographicsData)
   );
 
   const [isValid, setIsValid] = useState<boolean>(false);
 
   const [validators] = useState(new Set<() => boolean>());
+
+  useEffect(() => {
+    setProfileData(
+      (userDocument && userDocument.demographicsData) ||
+        ({} as UserDemographicsData)
+    );
+  }, [userDocument]);
 
   function addValidator(validator: () => boolean): () => void {
     assert(validator && typeof validator === "function", "Invalid validator");
@@ -74,7 +83,7 @@ export function ProfileDataProvider(props: {
         isValid,
       }}
     >
-      {props.children}
+      {isDocumentLoaded ? props.children : null}
     </ProfileContext.Provider>
   );
 }

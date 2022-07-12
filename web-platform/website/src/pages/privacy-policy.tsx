@@ -29,7 +29,7 @@ const PrivacyPolicyPage: NextPage = () => {
         <title>{strings.title}</title>
       </Head>
 
-      <PrivacyPolicyPageContent />
+      <PrivacyPolicyPageContent readOnly={false} />
     </AuthenticatedPage>
   );
 };
