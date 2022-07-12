@@ -1,6 +1,6 @@
 import { UserDocument } from "@mozilla/rally-shared-types/dist";
 import { RenderResult, render } from "@testing-library/react";
-import { doc, getDoc, onSnapshot, updateDoc } from "firebase/firestore";
+import { doc, getDoc, updateDoc } from "firebase/firestore";
 import React from "react";
 import { act } from "react-dom/test-utils";
 
@@ -18,16 +18,36 @@ jest.mock("../FirebaseService");
 
 describe("UserDocumentService tests", () => {
   const user = { firebaseUser: { uid: "userId" } };
+
   const db = { test: "db" };
+
   const docRef = { docId: "docId" };
+
+  const collRef = { collectionId: "studies" };
+
+  const userDocData = {
+    rawData: "some data",
+    studies: [
+      {
+        id: "study1",
+        data: () => ({
+          name: "study1",
+        }),
+      },
+      {
+        id: "study2",
+        data: () => ({
+          name: "study2",
+        }),
+      },
+    ],
+  };
+
   const userDoc = {
     docId: "docId",
     userId: "userId",
-    data: () => ({
-      rawData: "some data",
-    }),
+    data: () => userDocData,
   };
-  const unsubscribe = jest.fn();
 
   beforeEach(() => {
     jest.resetAllMocks();
@@ -39,8 +59,6 @@ describe("UserDocumentService tests", () => {
     (doc as jest.Mock).mockReturnValue(docRef);
 
     (getDoc as jest.Mock).mockImplementation(() => userDoc);
-
-    (onSnapshot as jest.Mock).mockReturnValue(unsubscribe);
   });
 
   it("zero state", async () => {
@@ -62,9 +80,7 @@ describe("UserDocumentService tests", () => {
     expect(doc).not.toHaveBeenCalled();
     expect(getDoc).not.toHaveBeenCalled();
     expect(obtainedDoc).toEqual(null);
-    expect(isDocumentLoaded).toBeFalsy();
-
-    expect(unsubscribe).not.toHaveBeenCalled();
+    expect(isDocumentLoaded).toBeTruthy();
   });
 
   it("authenticated state", async () => {
@@ -84,34 +100,23 @@ describe("UserDocumentService tests", () => {
     expect(useFirebase).toHaveBeenCalled();
 
     expect(doc).toHaveBeenCalledWith(db, "users", user.firebaseUser.uid);
-    expect(getDoc).toHaveBeenCalledWith(docRef);
-    expect(obtainedDoc).toEqual(userDoc.data());
 
-    expect(onSnapshot).toHaveBeenCalled();
-
-    const call = (onSnapshot as jest.Mock).mock.calls[0];
-    expect(call[0]).toBe(docRef);
-
-    const newDocData = { newDocId: "newDocId" };
-    const newDoc = {
-      data: () => newDocData,
-    };
-
-    await act(async () => {
-      await call[1](newDoc);
-    });
-
-    expect(obtainedDoc).toBe(newDocData);
-
-    expect(unsubscribe).not.toHaveBeenCalled();
-
-    await act(async () => {
-      (root as unknown as RenderResult).unmount();
-    });
+    expect(obtainedDoc).toEqual(userDocData);
 
     expect(isDocumentLoaded).toBeTruthy();
+  });
 
-    expect(unsubscribe).toHaveBeenCalled();
+  it("detection of null document (deletion case) sets the user document to null", async () => {
+    let obtainedDoc = null;
+
+    (getDoc as jest.Mock).mockImplementation(() => null);
+
+    await renderComponent(
+      ({ userDocument }) => (obtainedDoc = userDocument),
+      () => {}
+    );
+
+    expect(obtainedDoc).toBeNull();
   });
 
   it("transition from authenticated to logged out state", async () => {
@@ -124,32 +129,12 @@ describe("UserDocumentService tests", () => {
       (result, element) => ((root = result), (component = element))
     );
 
-    expect(obtainedDoc).toEqual(userDoc.data());
+    expect(obtainedDoc).toEqual(userDocData);
 
     (useAuthentication as jest.Mock).mockReturnValue({ user: undefined });
 
     await act(async () => {
       root.rerender(component);
-    });
-
-    expect(obtainedDoc).toBeNull();
-  });
-
-  it("detection of null document (deletion case) sets the user document to null", async () => {
-    let obtainedDoc = null;
-
-    await renderComponent(
-      ({ userDocument }) => (obtainedDoc = userDocument),
-      () => {}
-    );
-
-    expect(obtainedDoc).toEqual(userDoc.data());
-
-    const call = (onSnapshot as jest.Mock).mock.calls[0];
-    expect(call[0]).toBe(docRef);
-
-    await act(async () => {
-      await call[1](null);
     });
 
     expect(obtainedDoc).toBeNull();
@@ -177,7 +162,7 @@ describe("UserDocumentService tests", () => {
 
     expect(updateDoc).toHaveBeenCalledWith(docRef, {
       ...newDocData,
-      ...userDoc.data(),
+      ...userDocData,
     });
   });
 

@@ -657,6 +657,64 @@ export const Strings = {
           title: "7. What is your zip code?",
         },
       },
+      studies: {
+        studyCard: {
+          description: {
+            aboutThisStudy: "About this study",
+            keyDataCollected: "Key Data Collected",
+            viewFullStudyDetails: "View Full Study Details",
+          },
+          header: {
+            addExtension: "Add study extension from the Chrome Web Store.",
+            participating: "You're participating.",
+            notParticipatingYet: "You're not participating yet. ",
+            menus: {
+              addExtension: "Add study extension",
+              dontJoinStudy: "Don't join this study",
+              leaveStudy: "Leave study",
+            },
+          },
+          topDetails: {
+            ends: "Ends: {expiry}",
+            joinStudy: "Join Study",
+            taglineFormat: "{publisher} | {expiry}",
+          },
+        },
+        title: {
+          tagline:
+            "Browse available studies and find the choice (or choices) that feel right to you.",
+          title: "Current Studies",
+        },
+        tooltip: {
+          sections: [
+            {
+              title: "Read the study card",
+              text: "The card discloses the data we collect from you, who has access to the data, and how it will be used.",
+            },
+            {
+              title: "Join the Study",
+              text: (
+                <>
+                  Click the <b>Join Study</b> button. We'll ask you to confirm
+                  in a pop-up dialog by clicking the <b>Add Study Extension</b>{" "}
+                  button. This will open up the Chrome Web Store.
+                </>
+              ),
+            },
+            {
+              title: "Add study extension",
+              text: (
+                <>
+                  In the Chrome Web Store, click on the <b>Add to Chrome</b>{" "}
+                  button. This will add the study's extension to your browser.
+                  You are now participating!
+                </>
+              ),
+            },
+          ],
+          title: "How to join a study",
+        },
+      },
     },
   },
   pages: {

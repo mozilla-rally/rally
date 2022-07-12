@@ -30,7 +30,7 @@ export function DesktopMenu() {
       </DropdownToggle>
       <DropdownMenu>
         <DropdownItem>
-          <div className={"text-center text-nowrap"}>
+          <div className={"text-nowrap"}>
             {user && user.firebaseUser && user.firebaseUser.email}
           </div>
         </DropdownItem>

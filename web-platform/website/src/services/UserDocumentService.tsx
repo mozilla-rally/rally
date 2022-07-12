@@ -1,14 +1,7 @@
 import { UserDocument } from "@mozilla/rally-shared-types/dist";
 import assert from "assert";
-import {
-  DocumentReference,
-  Unsubscribe,
-  doc,
-  getDoc,
-  onSnapshot,
-  updateDoc,
-} from "firebase/firestore";
-import { createContext, useContext, useEffect, useRef, useState } from "react";
+import { Firestore, doc, getDoc, setDoc, updateDoc } from "firebase/firestore";
+import { createContext, useContext, useEffect, useState } from "react";
 
 import { useAuthentication } from "./AuthenticationService";
 import { useFirebase } from "./FirebaseService";
@@ -29,30 +22,18 @@ export function useUserDocument() {
 
 export function UserDocumentProvider(props: { children: React.ReactNode }) {
   const [isDocumentLoaded, setIsDocumentLoaded] = useState(false);
-  const [docRef, setDocRef] = useState<DocumentReference>();
   const [userDocument, setUserDocument] = useState<UserDocument | null>(null);
 
   const { user } = useAuthentication();
   const { db } = useFirebase();
-  const unsubscribeRef = useRef<Unsubscribe>(() => {});
 
   useEffect(() => {
     (async () => {
-      const newRef = user ? doc(db, "users", user.firebaseUser.uid) : undefined;
-      setDocRef(newRef);
-      setUserDocument(await getUserDocument(newRef));
-
-      unsubscribeRef.current();
-
-      unsubscribeRef.current = newRef
-        ? onSnapshot(newRef, (doc) => {
-            setUserDocument(doc ? (doc.data() as UserDocument) : null);
-            setIsDocumentLoaded(true);
-          })
-        : () => {};
+      setUserDocument(
+        await getUserDocument(db, user?.firebaseUser.uid as string)
+      );
+      setIsDocumentLoaded(true);
     })();
-
-    return () => unsubscribeRef.current();
   }, [user]);
 
   return (
@@ -61,7 +42,7 @@ export function UserDocumentProvider(props: { children: React.ReactNode }) {
         isDocumentLoaded,
         userDocument,
         updateUserDocument: (userDoc) =>
-          updateUserDocument(docRef as DocumentReference, {
+          updateUserDocument(db, user?.firebaseUser.uid as string, {
             ...(userDocument as UserDocument),
             ...userDoc,
           }),
@@ -73,22 +54,38 @@ export function UserDocumentProvider(props: { children: React.ReactNode }) {
 }
 
 async function getUserDocument(
-  docRef?: DocumentReference
+  db: Firestore,
+  firebaseUid: string
 ): Promise<UserDocument | null> {
-  if (!docRef) {
+  if (!firebaseUid) {
     return null;
   }
 
-  const doc = await getDoc(docRef);
-  return doc.data() as UserDocument;
+  const userDocRef = doc(db, "users", firebaseUid);
+
+  const rawUserDoc = await getDoc(userDocRef);
+
+  if (!rawUserDoc) {
+    return null;
+  }
+
+  return rawUserDoc.data() as UserDocument | null;
 }
 
 async function updateUserDocument(
-  docRef: DocumentReference,
+  db: Firestore,
+  firebaseUid: string,
   userDocument: UserDocument
 ): Promise<void> {
-  assert(docRef, "Invalid document reference.");
   assert(userDocument, "Invalid user document.");
 
-  await updateDoc(docRef, userDocument as {});
+  if (userDocument.studies) {
+    for (const studyId in userDocument.studies) {
+      const studyRef = doc(db, "users", firebaseUid, "studies", studyId);
+      await setDoc(studyRef, userDocument.studies[studyId]);
+    }
+  }
+
+  const userDocRef = doc(db, "users", firebaseUid);
+  await updateDoc(userDocRef, userDocument as {});
 }

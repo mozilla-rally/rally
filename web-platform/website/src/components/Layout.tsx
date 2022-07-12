@@ -1,3 +1,4 @@
+import { Footer } from "./Footer";
 import { NavigationBar } from "./navigation-bar";
 
 export function Layout(props: { children?: JSX.Element }) {
@@ -5,6 +6,7 @@ export function Layout(props: { children?: JSX.Element }) {
     <>
       <NavigationBar />
       {props.children}
+      <Footer />
     </>
   );
 }
