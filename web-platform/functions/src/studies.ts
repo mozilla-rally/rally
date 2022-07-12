@@ -50,7 +50,7 @@ export const studies = {
     schemaNamespace: "rally-attention-stream",
     downloadLink:
       "https://chrome.google.com/webstore/detail/attention-stream/bahhehaddofgkccippmjcecepdakppme",
-    endDate: "2022-07-13",
+    endDate: "Ongoing",
     studyEnded: false,
     studyPaused: false,
     description:
