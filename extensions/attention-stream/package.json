@@ -30,7 +30,7 @@
     "@babel/preset-env": "^7.11.5",
     "@babel/preset-typescript": "^7.17.12",
     "@mozilla/glean": "^1.0.0",
-    "@mozilla/rally-sdk": "^0.9.26",
+    "@mozilla/rally-sdk": "^0.9.27",
     "@mozilla/web-science": "^0.5.1",
     "@rollup/plugin-commonjs": "^21.0.0",
     "@rollup/plugin-node-resolve": "^13.0.6",
