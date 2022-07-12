@@ -18,8 +18,8 @@ export const studies = {
     downloadLink:
       "https://chrome.google.com/webstore/detail/facebook-pixel-hunt/pbeklachfkbjddmglcccopmknmpfchdm",
     endDate: "2022-07-13",
-    studyEnded: false,
-    studyPaused: false,
+    studyEnded: true,
+    studyPaused: true,
     description:
       "According to its own policy, Facebook may collect information about you across the web even if you don\u2019t have a Facebook account. One way Facebook performs this tracking is through a network of \u201Cpixels\u201D that may be installed on many of the sites you visit. By joining this study, you will help Rally and The Markup investigate and report on where Facebook is tracking you and what kind of information they are collecting.",
     studyDetailsLink:
