@@ -390,8 +390,16 @@ export class Rally {
         // could potentially pass us a working credential that is attacker-controlled, but this should not cause the
         // extension to send data anywhere attacker-controlled, since the data collection endpoint is hardcoded and signed
         // along with the extension.
-        await this.completeSignUp(message.data);
-
+        if (!this._signedIn) {
+          console.debug("not signed in, considering complete_signup response");
+          if (message.data.studyId && message.data.studyId != this._options.studyId) {
+            await this.completeSignUp(message.data);
+          } else {
+            console.debug("complete signup response for a different studyId, ignoring:", message.data.studyId);
+          }
+        } else {
+          console.debug("already signed in, not sending complete_signup request");
+        }
         break;
       case WebMessages.ChangeState:
         console.debug("Rally SDK - received rally-sdk.change-state in dev mode");
