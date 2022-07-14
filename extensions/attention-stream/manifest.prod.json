@@ -1,10 +1,10 @@
 {
   "description": "The Mozilla Rally Attention Stream",
   "author": "Mozilla",
-  "manifest_version": 3,
+  "manifest_version": 2,
   "name": "Rally Attention Stream",
-  "version": "0.4.3",
-  "homepage_url": "https://github.com/mozilla/rally",
+  "version": "0.4.4",
+  "homepage_url": "https://github.com/mozilla-rally/rally",
   "browser_specific_settings": {
     "gecko": {
       "id": "attention-stream@rally.mozilla.org",
@@ -20,9 +20,7 @@
     "webNavigation",
     "webRequest",
     "storage",
-    "unlimitedStorage"
-  ],
-  "host_permissions:": [
+    "unlimitedStorage",
     "<all_urls>"
   ],
   "content_scripts": [
@@ -47,7 +45,9 @@
     }
   ],
   "background": {
-    "service_worker": "dist/background-loader.js"
+    "scripts": [
+      "dist/background.js"
+    ]
   },
   "incognito": "not_allowed"
 }
