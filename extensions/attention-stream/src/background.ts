@@ -116,12 +116,6 @@ async function stateChangeCallback(newState) {
 
       await browser.storage.local.set({ "state": RunStates.Running });
 
-
-      // Example: set a listener for WebScience page navigation events on
-      // http://localhost/* pages. Note that the manifest origin
-      // permissions currently only include http://localhost/*. You should
-      // update the manifest permissions as needed for your study.
-
       this.pageDataListener = async (pageData) => {
         console.debug(`WebScience page navigation event fired with page data:`, pageData);
 
