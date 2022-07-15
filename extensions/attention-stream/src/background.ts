@@ -256,4 +256,4 @@ if (enableDevMode) {
   } as unknown as Configuration);
 }
 
-// Take no further action until the rallyStateChange callback is called.
+// Take no further action until the stateChangeCallback callback is called.
