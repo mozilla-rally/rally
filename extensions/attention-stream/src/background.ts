@@ -167,6 +167,9 @@ async function stateChangeCallback(newState) {
     case (RunStates.Ended):
       console.log(`Study ended with Rally ID: ${rally.rallyId}`);
 
+      // Take down all resources from run state.
+      webScience.pageNavigation.onPageData.removeListener(this.pageDataListener);
+
       await browser.storage.local.set({ "ended": true });
 
       break;
