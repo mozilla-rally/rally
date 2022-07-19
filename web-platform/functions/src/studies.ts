@@ -15,8 +15,10 @@ export const studies = {
     chromeExtensionId: "pbeklachfkbjddmglcccopmknmpfchdm",
     studyId: "facebookPixelHunt",
     schemaNamespace: "rally-markup-fb-pixel-hunt",
-    downloadLink:
-      "https://chrome.google.com/webstore/detail/facebook-pixel-hunt/pbeklachfkbjddmglcccopmknmpfchdm",
+    downloadLink: {
+      chrome: "https://chrome.google.com/webstore/detail/facebook-pixel-hunt/pbeklachfkbjddmglcccopmknmpfchdm",
+      firefox: "https://addons.mozilla.org/en-US/firefox/addon/facebook-pixel-hunt/",
+    },
     endDate: "2022-07-13",
     studyEnded: false,
     studyPaused: true,
@@ -48,8 +50,9 @@ export const studies = {
     chromeExtensionId: "bahhehaddofgkccippmjcecepdakppme",
     studyId: "attentionStream",
     schemaNamespace: "rally-attention-stream",
-    downloadLink:
-      "https://chrome.google.com/webstore/detail/attention-stream/bahhehaddofgkccippmjcecepdakppme",
+    downloadLink: {
+      chrome: "https://chrome.google.com/webstore/detail/attention-stream/bahhehaddofgkccippmjcecepdakppme",
+    },
     endDate: "Ongoing",
     studyEnded: false,
     studyPaused: false,
