@@ -102,7 +102,7 @@
   {
     "definitionName": "lockStepVersion",
     "policyName": "RallyVersionPolicy",
-    "version": "0.9.30",
+    "version": "0.9.31",
     "nextBump": "patch"
   }
 ]
