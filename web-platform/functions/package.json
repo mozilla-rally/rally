@@ -1,6 +1,6 @@
 {
   "name": "@mozilla/rally-functions",
-  "version": "0.9.29",
+  "version": "0.9.30",
   "type": "module",
   "scripts": {
     "lint": "npm run lint:glean && eslint --ext .js,.ts .",

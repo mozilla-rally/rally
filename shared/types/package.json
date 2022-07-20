@@ -1,6 +1,6 @@
 {
   "name": "@mozilla/rally-shared-types",
-  "version": "0.9.29",
+  "version": "0.9.30",
   "description": "Shared types between Mozilla Rally extensions and web platform.",
   "main": "./dist",
   "files": ["dist"],
