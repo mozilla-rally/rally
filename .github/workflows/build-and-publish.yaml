@@ -1,4 +1,4 @@
-name: Publish packages to npm
+name: Publish npm packages and Firebase functions
 on:
   release:
     types: [created]
