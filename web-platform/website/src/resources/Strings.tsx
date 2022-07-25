@@ -549,19 +549,26 @@ export const Strings = {
               image: {
                 url: "/img/our-research-collaborators.png",
                 width: 84,
-                alt: "Our Research Collaborators.",
+                alt: "Our Research Partners and Customers.",
               },
               text: (
                 <>
-                  <b>Our Research Collaborators</b>
+                  <b>Our Research Partners and Customers</b>
                   <p>
-                    Rally collaborates with trusted third parties to build and
-                    release studies. For any studies you join, we may ask you to
-                    share the data collected under <b>this Privacy Notice</b>{" "}
-                    with third party researcher(s) administering the study. Our
-                    research collaborators are under contracts with Mozilla to
-                    ensure that <b>your data is protected</b> and handled only
-                    in ways we've approved.
+                    Rally partners with trusted third parties to build and
+                    release studies. When you join a study, we may ask you to
+                    share the data we’ve collected under{" "}
+                    <b>this Privacy Notice</b> with the third party
+                    researcher(s) administering the study and/or other Mozilla
+                    research customers who we may share your data with. Our
+                    research partners and customers are under contracts with
+                    Mozilla to ensure that <b>your data is protected</b> and
+                    handled only in the ways we've approved.
+                  </p>
+                  <p>
+                    Research customers may compensate Mozilla for secure access
+                    to data collected in ongoing studies. We will always
+                    disclose when this is the case.
                   </p>
                 </>
               ),
