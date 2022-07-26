@@ -47,29 +47,39 @@ export function UserDocumentProvider(props: { children: React.ReactNode }) {
   const { user } = useAuthentication();
   const { db } = useFirebase();
 
-  const [docRefs, setDocRefs] = useState<UserDocumentsRef | null>(null);
-
   useEffect(() => {
-    setDocRefs(createUserRefs(db, user));
-  }, [user]);
+    if (!user) {
+      setIsDocumentLoaded(true);
+      return;
+    }
 
-  useEffect(() => {
-    return onUserDocumentChanges(docRefs, (userDoc) => {
+    const newDocRefs = createUserRefs(db, user);
+
+    return onUserDocumentChanges(newDocRefs, (userDoc) => {
       setUserDocument(userDoc);
       setIsDocumentLoaded(true);
     });
-  }, [docRefs]);
+  }, [user]);
 
   return (
     <UserDocumentContext.Provider
       value={{
         isDocumentLoaded,
         userDocument,
-        updateUserDocument: (userDoc) =>
-          updateUserDocument(db, user?.firebaseUser.uid as string, {
+        updateUserDocument: async (userDoc) => {
+          const newDoc = {
             ...(userDocument as UserDocument),
             ...userDoc,
-          }),
+          };
+
+          await updateUserDocument(
+            db,
+            user?.firebaseUser.uid as string,
+            newDoc
+          );
+
+          setUserDocument(newDoc);
+        },
       }}
     >
       {props.children}
@@ -77,28 +87,17 @@ export function UserDocumentProvider(props: { children: React.ReactNode }) {
   );
 }
 
-function createUserRefs(db: Firestore, user?: User) {
-  return user
-    ? {
-        userRef: doc(db, "users", user.firebaseUser.uid),
-        userStudiesRef: collection(
-          db,
-          "users",
-          user.firebaseUser.uid,
-          "studies"
-        ),
-      }
-    : null;
+function createUserRefs(db: Firestore, user: User) {
+  return {
+    userRef: doc(db, "users", user.firebaseUser.uid),
+    userStudiesRef: collection(db, "users", user.firebaseUser.uid, "studies"),
+  };
 }
 
 function onUserDocumentChanges(
-  refs: UserDocumentsRef | null,
+  refs: UserDocumentsRef,
   onDocumentUpdated: (userDoc: UserDocument) => void
 ): Unsubscribe {
-  if (!refs) {
-    return () => {};
-  }
-
   let userDoc = null as UserDocument | null;
 
   const userUnsubscribe = onSnapshot(refs.userRef, (doc) => {
