@@ -1,12 +1,6 @@
 import { UserDocument } from "@mozilla/rally-shared-types/dist";
 import { RenderResult, render } from "@testing-library/react";
-import {
-  collection,
-  doc,
-  getDoc,
-  onSnapshot,
-  updateDoc,
-} from "firebase/firestore";
+import { collection, doc, onSnapshot, updateDoc } from "firebase/firestore";
 import React from "react";
 import { act } from "react-dom/test-utils";
 
@@ -91,9 +85,9 @@ describe("UserDocumentService tests", () => {
     expect(useFirebase).toHaveBeenCalled();
 
     expect(doc).not.toHaveBeenCalled();
-    expect(getDoc).not.toHaveBeenCalled();
+
     expect(obtainedDoc).toEqual(null);
-    expect(isDocumentLoaded).toBeFalsy();
+    expect(isDocumentLoaded).toBeTruthy();
     expect(onSnapshotFn).not.toHaveBeenCalled();
   });
 
@@ -223,17 +217,29 @@ describe("UserDocumentService tests", () => {
 
     await invokeOnSnapshotInstances();
 
-    const newDocData = { newDocId: "newDocId" };
+    const newDocData = {
+      newDocId: "newDocId",
+      studies: {
+        studyA: { studyId: "A", key: "value" },
+      },
+    };
 
-    await updateUserDoc({
+    const newMergedDoc = {
       ...(obtainedDoc || {}),
       ...newDocData,
-    } as unknown as UserDocument);
+      studies: {
+        ...(obtainedDoc as unknown as UserDocument).studies,
+        ...newDocData.studies,
+      },
+    } as unknown as UserDocument;
 
-    expect(updateDoc).toHaveBeenCalledWith(docRef, {
-      ...newDocData,
-      ...userDocData,
+    await act(async () => {
+      await updateUserDoc(newMergedDoc);
     });
+
+    expect(obtainedDoc).toEqual(newMergedDoc);
+
+    expect(updateDoc).toHaveBeenCalledWith(docRef, newMergedDoc);
   });
 
   async function renderComponent(
