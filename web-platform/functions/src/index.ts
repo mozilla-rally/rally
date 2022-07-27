@@ -330,3 +330,57 @@ async function getSchemaNamespaceforStudy(studyID: string) {
 
   return (data && data.schemaNamespace) || null;
 }
+
+/**
+ * Lists users.
+ *
+ * @param {!express:Request} req HTTP request context.
+ * @param {!express:Response} res HTTP response context.
+ */
+export const countRallyUsers = functions.https.onRequest(async (req: any, res: any) => {
+  const userCounts = new Map();
+  const extensionCounts = new Map();
+  await listAllUsers(undefined, userCounts, extensionCounts);
+
+  console.log({ users: Array.from(userCounts), extensions: Array.from(extensionCounts) });
+  res.status(200).send("OK");
+});
+
+const listAllUsers = async (nextPageToken: string | undefined, userCounts: Map<string, any>, extensionCounts: Map<string, any>) => {
+  // List batch of users, 1000 at a time.
+  const listUsersResult = await admin.auth().listUsers(1000, nextPageToken);
+  listUsersResult.users.forEach((userRecord: any) => {
+    let providerId: string = userRecord.providerData[0]?.providerId;
+    let studyId;
+
+    if (providerId && userRecord.emailVerified === false) {
+      providerId += "-unverified";
+    }
+
+    if (userRecord?.uid?.includes(":")) {
+      studyId = userRecord.uid.split(":")[0];
+    }
+
+    if (providerId) {
+      if (userCounts.has(providerId)) {
+        const count = userCounts.get(providerId);
+        userCounts.set(providerId, count + 1);
+      } else {
+        userCounts.set(providerId, 1);
+      }
+    }
+    if (studyId) {
+      if (extensionCounts.has(studyId)) {
+        const count = extensionCounts.get(studyId);
+        extensionCounts.set(studyId, count + 1);
+      } else {
+        extensionCounts.set(studyId, 1);
+      }
+    }
+    // console.log('user', userRecord.toJSON());
+  });
+  if (listUsersResult.pageToken) {
+    // List next batch of users.
+    await listAllUsers(listUsersResult.pageToken, userCounts, extensionCounts);
+  }
+};
