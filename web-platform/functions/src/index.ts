@@ -362,20 +362,12 @@ const listAllUsers = async (nextPageToken: string | undefined, userCounts: Map<s
     }
 
     if (providerId) {
-      if (userCounts.has(providerId)) {
-        const count = userCounts.get(providerId) || 0;
-        userCounts.set(providerId, count + 1);
-      } else {
-        userCounts.set(providerId, 1);
-      }
+      const count = userCounts.get(providerId) || 0;
+      userCounts.set(providerId, count + 1);
     }
     if (studyId) {
-      if (extensionCounts.has(studyId)) {
-        const count = extensionCounts.get(studyId) || 0;
-        extensionCounts.set(studyId, count + 1);
-      } else {
-        extensionCounts.set(studyId, 1);
-      }
+      const count = extensionCounts.get(studyId) || 0;
+      extensionCounts.set(studyId, count + 1);
     }
     // console.log('user', userRecord.toJSON());
   });
