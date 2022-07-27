@@ -330,3 +330,49 @@ async function getSchemaNamespaceforStudy(studyID: string) {
 
   return (data && data.schemaNamespace) || null;
 }
+
+/**
+ * Lists users.
+ *
+ * @param {!express:Request} req HTTP request context.
+ * @param {!express:Response} res HTTP response context.
+ */
+export const countRallyUsers = functions.https.onRequest(async (req, res) => {
+  const userCounts = new Map();
+  const extensionCounts = new Map();
+  await listAllUsers(undefined, userCounts, extensionCounts);
+
+  console.log({ users: Array.from(userCounts), extensions: Array.from(extensionCounts) });
+  res.status(200).send("OK");
+});
+
+const listAllUsers = async (nextPageToken: string | undefined, userCounts: Map<string, number>, extensionCounts: Map<string, number>) => {
+  // List batch of users, 1000 at a time.
+  const listUsersResult = await admin.auth().listUsers(1000, nextPageToken);
+  listUsersResult.users.forEach((userRecord) => {
+    let providerId: string = userRecord.providerData[0]?.providerId;
+    let studyId;
+
+    if (providerId && userRecord.emailVerified === false) {
+      providerId += "-unverified";
+    }
+
+    if (userRecord?.uid?.includes(":")) {
+      studyId = userRecord.uid.split(":")[0];
+    }
+
+    if (providerId) {
+      const count = userCounts.get(providerId) || 0;
+      userCounts.set(providerId, count + 1);
+    }
+    if (studyId) {
+      const count = extensionCounts.get(studyId) || 0;
+      extensionCounts.set(studyId, count + 1);
+    }
+    // console.log('user', userRecord.toJSON());
+  });
+  if (listUsersResult.pageToken) {
+    // List next batch of users.
+    await listAllUsers(listUsersResult.pageToken, userCounts, extensionCounts);
+  }
+};
