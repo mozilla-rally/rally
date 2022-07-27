@@ -56,7 +56,7 @@
     "dexie": "^3.2.2",
     "pako": "^2.0.4",
     "@mozilla/glean": "^1.0.0",
-    "@mozilla/rally-sdk": "^0.9.31",
+    "@mozilla/rally-sdk": "^0.9.32",
     "@mozilla/web-science": "^0.5.1",
     "tailwindcss": "^3.0.24",
     "webextension-polyfill": "^0.8.0"

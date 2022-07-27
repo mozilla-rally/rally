@@ -1,6 +1,11 @@
 # Change Log - @mozilla/rally-functions
 
-This log was last generated on Wed, 20 Jul 2022 21:09:56 GMT and should not be manually modified.
+This log was last generated on Wed, 27 Jul 2022 23:29:19 GMT and should not be manually modified.
+
+## 0.9.32
+Wed, 27 Jul 2022 23:29:19 GMT
+
+_Version update only_
 
 ## 0.9.31
 Wed, 20 Jul 2022 21:09:56 GMT
