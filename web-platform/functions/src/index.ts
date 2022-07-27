@@ -337,7 +337,7 @@ async function getSchemaNamespaceforStudy(studyID: string) {
  * @param {!express:Request} req HTTP request context.
  * @param {!express:Response} res HTTP response context.
  */
-export const countRallyUsers = functions.https.onRequest(async (req: any, res: any) => {
+export const countRallyUsers = functions.https.onRequest(async (req, res) => {
   const userCounts = new Map();
   const extensionCounts = new Map();
   await listAllUsers(undefined, userCounts, extensionCounts);
@@ -346,10 +346,10 @@ export const countRallyUsers = functions.https.onRequest(async (req: any, res: a
   res.status(200).send("OK");
 });
 
-const listAllUsers = async (nextPageToken: string | undefined, userCounts: Map<string, any>, extensionCounts: Map<string, any>) => {
+const listAllUsers = async (nextPageToken: string | undefined, userCounts: Map<string, number>, extensionCounts: Map<string, number>) => {
   // List batch of users, 1000 at a time.
   const listUsersResult = await admin.auth().listUsers(1000, nextPageToken);
-  listUsersResult.users.forEach((userRecord: any) => {
+  listUsersResult.users.forEach((userRecord) => {
     let providerId: string = userRecord.providerData[0]?.providerId;
     let studyId;
 
@@ -363,7 +363,7 @@ const listAllUsers = async (nextPageToken: string | undefined, userCounts: Map<s
 
     if (providerId) {
       if (userCounts.has(providerId)) {
-        const count = userCounts.get(providerId);
+        const count = userCounts.get(providerId) || 0;
         userCounts.set(providerId, count + 1);
       } else {
         userCounts.set(providerId, 1);
@@ -371,7 +371,7 @@ const listAllUsers = async (nextPageToken: string | undefined, userCounts: Map<s
     }
     if (studyId) {
       if (extensionCounts.has(studyId)) {
-        const count = extensionCounts.get(studyId);
+        const count = extensionCounts.get(studyId) || 0;
         extensionCounts.set(studyId, count + 1);
       } else {
         extensionCounts.set(studyId, 1);
