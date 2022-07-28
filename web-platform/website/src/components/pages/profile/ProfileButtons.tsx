@@ -1,4 +1,3 @@
-import { UserDocument } from "@mozilla/rally-shared-types/dist";
 import { useRouter } from "next/router";
 import { Button, Col, Row } from "reactstrap";
 
@@ -10,7 +9,7 @@ import { useProfileData } from "./ProfileDataContext";
 const strings = Strings.components.pages.profile.buttons;
 
 export function ProfileButtons() {
-  const { updateUserDocument, userDocument } = useUserDocument();
+  const { updateUserDocument } = useUserDocument();
   const { profileData, isValid } = useProfileData();
   const router = useRouter();
 
@@ -25,7 +24,6 @@ export function ProfileButtons() {
           disabled={!isValid}
           onClick={() => {
             updateUserDocument({
-              ...((userDocument || {}) as UserDocument),
               demographicsData: profileData,
             });
 

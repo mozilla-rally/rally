@@ -7,5 +7,8 @@ module.exports = {
   getFirestore: jest.fn(),
   onSnapshot: jest.fn(),
   setDoc: jest.fn(),
-  updateDoc: jest.fn()
+  updateDoc: jest.fn(),
+  Timestamp: {
+    now: () => "Current Timestamp"
+  }
 };

@@ -792,6 +792,54 @@ export const Strings = {
             keyDataCollected: "Key Data Collected",
             viewFullStudyDetails: "View Full Study Details",
           },
+          addStudy: {
+            addExtension: "Add Study Extension",
+            cancel: "Cancel",
+            enrollText: (
+              <>
+                <h1>Rally Study Consent Notice</h1>
+                <p>
+                  Data will be collected through a custom browser web extension
+                  developed by the Rally team. We will install the web extension
+                  and data will be collected through browser data after you
+                  opt-in. Mozilla will store the data on Google Cloud where all
+                  analysis will be conducted. This server is restricted to the
+                  study researchers and is encrypted. Data will be transferred
+                  by TLS between the participant's browser and the Mozilla
+                  analysis database. TLS stands for "transport layer security"
+                  which encrypts browser data.
+                </p>
+                <h2>Leaving the Study</h2>
+                <p>
+                  You can leave the study at any time from the Mozilla Rally
+                  options page. To access the page, click on the Rally button
+                  rally icon{" "}
+                  <img
+                    src="/favicon.svg"
+                    height="16"
+                    width="16"
+                    alt="rally icon"
+                    style={{ margin: "0px 4px" }}
+                  />{" "}
+                  in your browser toolbar. The button is usually near the top
+                  right of the browser window. If you have removed the Rally
+                  button from your toolbar, you can also access the Rally
+                  options page from the browser’s Add-ons settings. The Rally
+                  options page will show you a list of studies that you are
+                  currently enrolled in. You can leave this study by clicking
+                  the “Leave Study” button on the associated study card. If you
+                  leave the study, the study’s browser extension will be
+                  automatically uninstalled, removing the study code and data
+                  from your browser. We will also automatically delete the data
+                  that your browser has submitted for the study, unless you
+                  allow us to retain that data. You may not be able to rejoin
+                  the study if you leave. If you leave Rally, you will also
+                  leave the studies that you are enrolled in, including this
+                  study.
+                </p>
+              </>
+            ),
+          },
           header: {
             addExtension: "Add study extension from the Chrome Web Store.",
             participating: "You're participating.",
@@ -802,10 +850,12 @@ export const Strings = {
               leaveStudy: "Leave study",
             },
           },
-          topDetails: {
+          title: {
             ends: "Ends: {expiry}",
-            joinStudy: "Join Study",
             taglineFormat: "{publisher} | {expiry}",
+          },
+          topDetails: {
+            joinStudy: "Join Study",
           },
         },
         title: {

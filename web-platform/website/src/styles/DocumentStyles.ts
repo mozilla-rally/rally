@@ -97,6 +97,10 @@ export const FullscapePageContainer = style(
   }
 );
 
+cssRule(".modal-backdrop.show", {
+  opacity: 0.8,
+});
+
 export function ApplyFullscapePageStyles() {
   cssRule("body", {
     background: `url("/img/noise-texture-top.png"), url("/img/noise-texture.png")`,

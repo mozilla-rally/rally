@@ -2,9 +2,11 @@ import { render } from "@testing-library/react";
 
 import { Strings } from "../../../../../resources/Strings";
 import { useStudy } from "../StudyDataContext";
+import { StudyTitle } from "../StudyTitle";
 import { StudyTopDetails } from "../StudyTopDetails";
 
 jest.mock("../StudyDataContext");
+jest.mock("../StudyTitle");
 
 const strings = Strings.components.pages.studies.studyCard.topDetails;
 
@@ -21,15 +23,9 @@ describe("StudyTopDetails tests", () => {
       },
     });
 
-    const root = render(<StudyTopDetails />);
+    render(<StudyTopDetails />);
 
-    expect(root.getByText("Study-1")).toBeInTheDocument();
-
-    expect(
-      document.querySelector(`img[src="img/default-study-icon.png"]`)
-    ).toBeInTheDocument();
-
-    expect(root.getByText("Test author | Ongoing")).toBeInTheDocument();
+    expect(StudyTitle).toHaveBeenCalled();
 
     const joinButton = document.querySelector(".join-button");
 
@@ -53,17 +49,9 @@ describe("StudyTopDetails tests", () => {
       },
     });
 
-    const root = render(<StudyTopDetails />);
+    render(<StudyTopDetails />);
 
-    expect(root.getByText("Study-1")).toBeInTheDocument();
-
-    expect(
-      document.querySelector(`img[src="img/custom-icon.png"]`)
-    ).toBeInTheDocument();
-
-    expect(
-      root.getByText("Test author | Ends: Mon Jan 06 2020")
-    ).toBeInTheDocument();
+    expect(StudyTitle).toHaveBeenCalled();
 
     const joinButton = document.querySelector(".join-button");
 
@@ -87,17 +75,9 @@ describe("StudyTopDetails tests", () => {
       },
     });
 
-    const root = render(<StudyTopDetails />);
+    render(<StudyTopDetails />);
 
-    expect(root.getByText("Study-1")).toBeInTheDocument();
-
-    expect(
-      document.querySelector(`img[src="img/custom-icon.png"]`)
-    ).toBeInTheDocument();
-
-    expect(
-      root.getByText("Test author | Ends: Mon Jan 06 2020")
-    ).toBeInTheDocument();
+    expect(StudyTitle).toHaveBeenCalled();
 
     expect(document.querySelector(".join-button")).not.toBeInTheDocument();
   });

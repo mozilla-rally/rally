@@ -24,7 +24,7 @@ import { useFirebase } from "./FirebaseService";
 export interface UserDocumentDataContext {
   isDocumentLoaded: boolean;
   userDocument: UserDocument | null;
-  updateUserDocument(userDocument: UserDocument): Promise<void>;
+  updateUserDocument(userDocument: Partial<UserDocument>): Promise<void>;
 }
 
 const UserDocumentContext = createContext<UserDocumentDataContext>(
@@ -67,18 +67,11 @@ export function UserDocumentProvider(props: { children: React.ReactNode }) {
         isDocumentLoaded,
         userDocument,
         updateUserDocument: async (userDoc) => {
-          const newDoc = {
-            ...(userDocument as UserDocument),
-            ...userDoc,
-          };
-
           await updateUserDocument(
             db,
             user?.firebaseUser.uid as string,
-            newDoc
+            userDoc
           );
-
-          setUserDocument(newDoc);
         },
       }}
     >
@@ -96,12 +89,16 @@ function createUserRefs(db: Firestore, user: User) {
 
 function onUserDocumentChanges(
   refs: UserDocumentsRef,
-  onDocumentUpdated: (userDoc: UserDocument) => void
+  onDocumentUpdated: (userDoc: UserDocument | null) => void
 ): Unsubscribe {
   let userDoc = null as UserDocument | null;
 
   const userUnsubscribe = onSnapshot(refs.userRef, (doc) => {
     userDoc = doc && (doc.data() as UserDocument);
+
+    // Shallow spread is necessary so that React treats this as a new object
+    // since it does not detect mutations within the same object
+    onDocumentUpdated(userDoc ? { ...userDoc } : null);
   });
 
   const studiesUnsubscribe = onSnapshot(refs.userStudiesRef, (studiesDocs) => {
@@ -130,17 +127,17 @@ function onUserDocumentChanges(
 async function updateUserDocument(
   db: Firestore,
   firebaseUid: string,
-  userDocument: UserDocument
+  partialDocument: Partial<UserDocument>
 ): Promise<void> {
-  assert(userDocument, "Invalid user document.");
+  assert(partialDocument, "Invalid user document.");
 
-  if (userDocument.studies) {
-    for (const studyId in userDocument.studies) {
+  if (partialDocument.studies) {
+    for (const studyId in partialDocument.studies) {
       const studyRef = doc(db, "users", firebaseUid, "studies", studyId);
-      await setDoc(studyRef, userDocument.studies[studyId]);
+      await setDoc(studyRef, partialDocument.studies[studyId], { merge: true });
     }
   }
 
   const userDocRef = doc(db, "users", firebaseUid);
-  await updateDoc(userDocRef, userDocument as {});
+  await setDoc(userDocRef, partialDocument as {}, { merge: true });
 }

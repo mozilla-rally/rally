@@ -11,7 +11,10 @@ export interface Study {
   firefoxAddonId: string;
   chromeExtensionId: string;
   schemaNamespace: string;
-  downloadLink: string;
+  downloadLink: {
+    chrome: string;
+    firefox: string;
+  };
   endDate: string | "Ongoing";
   studyEnded: boolean;
   studyPaused: boolean;
