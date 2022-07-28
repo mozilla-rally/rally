@@ -346,7 +346,7 @@ export const countRallyUsers = functions.pubsub.schedule('every hour').onRun(asy
 const listAllUsers = async (nextPageToken: string | undefined, userCounts: Map<string, number>, extensionCounts: Map<string, number>) => {
   // List batch of users, 1000 at a time.
   const listUsersResult = await admin.auth().listUsers(1000, nextPageToken);
-  listUsersResult.users.forEach((userRecord) => {
+  listUsersResult.users.forEach((userRecord: admin.auth.UserRecord) => {
     let providerId: string = userRecord.providerData[0]?.providerId;
     let studyId;
 
