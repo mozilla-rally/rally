@@ -334,7 +334,7 @@ async function getSchemaNamespaceforStudy(studyID: string) {
 /**
  * Counts Rally users and stores aggregates in cloud logs. Runs on a schedule.
  */
-exports.scheduledFunction = functions.pubsub.schedule('every 1 hour').onRun(async (_context: EventContext) => {
+export const scheduledFunction = functions.pubsub.schedule('every 1 hour').onRun(async (_context: EventContext) => {
   const userCounts = new Map();
   const extensionCounts = new Map();
   await listAllUsers(undefined, userCounts, extensionCounts);
