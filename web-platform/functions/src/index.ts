@@ -332,18 +332,15 @@ async function getSchemaNamespaceforStudy(studyID: string) {
 }
 
 /**
- * Lists users.
- *
- * @param {!express:Request} req HTTP request context.
- * @param {!express:Response} res HTTP response context.
+ * Counts Rally users and stores aggregates in cloud logs. Runs on a schedule.
  */
-export const countRallyUsers = functions.https.onRequest(async (req, res) => {
+exports.scheduledFunction = functions.pubsub.schedule('every 1 hour').onRun(async (_context: EventContext) => {
   const userCounts = new Map();
   const extensionCounts = new Map();
   await listAllUsers(undefined, userCounts, extensionCounts);
 
+  // TODO store this in BQ or a storage bucket.
   console.log({ users: Array.from(userCounts), extensions: Array.from(extensionCounts) });
-  res.status(200).send("OK");
 });
 
 const listAllUsers = async (nextPageToken: string | undefined, userCounts: Map<string, number>, extensionCounts: Map<string, number>) => {
