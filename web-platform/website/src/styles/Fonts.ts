@@ -1,23 +1,34 @@
 import { style } from "typestyle";
 
-export const Fonts = {
-  Headline: style({
+export const FontsRaw = {
+  Headline: {
     fontFamily: `"Zilla Slab", Inter, X-LocaleSpecific, sans-serif`,
     fontWeight: 700,
-  }),
+  },
+};
+
+export const Fonts = {
+  Headline: style(FontsRaw.Headline),
+};
+
+export const FontSizeRaw = {
+  xSmall: {
+    fontSize: `${12 / 16}rem`,
+  },
+  Small: {
+    fontSize: `${14 / 16}rem`,
+  },
+  Normal: {
+    fontSize: "1rem",
+  },
+  Large: {
+    fontSize: `${18 / 16}rem`,
+  },
 };
 
 export const FontSize = {
-  xSmall: style({
-    fontSize: `${12 / 16}rem`,
-  }),
-  Small: style({
-    fontSize: `${14 / 16}rem`,
-  }),
-  Normal: style({
-    fontSize: "1rem",
-  }),
-  Large: style({
-    fontSize: `${18 / 16}rem`,
-  }),
+  xSmall: style(FontSizeRaw.xSmall),
+  Small: style(FontSizeRaw.Small),
+  Normal: style(FontSizeRaw.Normal),
+  Large: style(FontSizeRaw.Large),
 };

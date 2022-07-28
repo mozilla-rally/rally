@@ -3,6 +3,7 @@ import { style } from "typestyle";
 
 import { Colors, Spacing } from "../../../../styles";
 import { FontSize } from "../../../../styles/Fonts";
+import { AddStudyView } from "./AddStudyView";
 import { StudyCardHeader } from "./StudyCardHeader";
 import { StudyDetails } from "./StudyDetails";
 
@@ -11,6 +12,7 @@ export function StudyCard() {
     <Container className={`${styles.container} ${FontSize.Small} p-0 mb-5`}>
       <StudyCardHeader />
       <StudyDetails />
+      <AddStudyView />
     </Container>
   );
 }

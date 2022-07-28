@@ -21,7 +21,7 @@ describe("StudyDataContext tests", () => {
     (useStudies as jest.Mock).mockReturnValue({ installedStudyIds: [] });
     (useUserDocument as jest.Mock).mockReturnValue({ userDocument: null });
 
-    let studyContext: StudyDataContext | null = null;
+    let studyContext: StudyDataContext = null as unknown as StudyDataContext;
 
     await renderStudyContext((context) => (studyContext = context));
 
@@ -29,6 +29,9 @@ describe("StudyDataContext tests", () => {
       study,
       isInstalledLocally: false,
       isUserEnrolled: false,
+      isStudyEnrollmentInProgress: false,
+      startStudyEnrollmentToggle: expect.anything(),
+      endStudyEnrollmentToggle: expect.anything(),
     });
   });
 
@@ -38,7 +41,7 @@ describe("StudyDataContext tests", () => {
     });
     (useUserDocument as jest.Mock).mockReturnValue({ userDocument: null });
 
-    let studyContext: StudyDataContext | null = null;
+    let studyContext: StudyDataContext = null as unknown as StudyDataContext;
 
     await renderStudyContext((context) => (studyContext = context));
 
@@ -46,6 +49,9 @@ describe("StudyDataContext tests", () => {
       study,
       isInstalledLocally: false,
       isUserEnrolled: false,
+      isStudyEnrollmentInProgress: false,
+      startStudyEnrollmentToggle: expect.anything(),
+      endStudyEnrollmentToggle: expect.anything(),
     });
   });
 
@@ -57,7 +63,7 @@ describe("StudyDataContext tests", () => {
       userDocument: { studies: [] },
     });
 
-    let studyContext: StudyDataContext | null = null;
+    let studyContext: StudyDataContext = null as unknown as StudyDataContext;
 
     await renderStudyContext((context) => (studyContext = context));
 
@@ -65,6 +71,9 @@ describe("StudyDataContext tests", () => {
       study,
       isInstalledLocally: true,
       isUserEnrolled: false,
+      isStudyEnrollmentInProgress: false,
+      startStudyEnrollmentToggle: expect.anything(),
+      endStudyEnrollmentToggle: expect.anything(),
     });
   });
 
@@ -77,7 +86,7 @@ describe("StudyDataContext tests", () => {
       userDocument: { studies: { [study.studyId]: { enrolled: true } } },
     });
 
-    let studyContext: StudyDataContext | null = null;
+    let studyContext: StudyDataContext = null as unknown as StudyDataContext;
 
     await renderStudyContext((context) => (studyContext = context));
 
@@ -85,6 +94,9 @@ describe("StudyDataContext tests", () => {
       study,
       isInstalledLocally: false,
       isUserEnrolled: true,
+      isStudyEnrollmentInProgress: false,
+      startStudyEnrollmentToggle: expect.anything(),
+      endStudyEnrollmentToggle: expect.anything(),
     });
   });
 
@@ -97,7 +109,7 @@ describe("StudyDataContext tests", () => {
       userDocument: { studies: { [study.studyId]: { enrolled: true } } },
     });
 
-    let studyContext: StudyDataContext | null = null;
+    let studyContext: StudyDataContext = null as unknown as StudyDataContext;
 
     await renderStudyContext((context) => (studyContext = context));
 
@@ -105,6 +117,58 @@ describe("StudyDataContext tests", () => {
       study,
       isInstalledLocally: true,
       isUserEnrolled: true,
+      isStudyEnrollmentInProgress: false,
+      startStudyEnrollmentToggle: expect.anything(),
+      endStudyEnrollmentToggle: expect.anything(),
+    });
+  });
+
+  it("enrollment workflow", async () => {
+    (useStudies as jest.Mock).mockReturnValue({
+      installedStudyIds: [study.studyId],
+    });
+
+    (useUserDocument as jest.Mock).mockReturnValue({
+      userDocument: { studies: { [study.studyId]: { enrolled: true } } },
+    });
+
+    let studyContext: StudyDataContext = null as unknown as StudyDataContext;
+
+    await renderStudyContext((context) => (studyContext = context));
+
+    expect(studyContext).toEqual({
+      study,
+      isInstalledLocally: true,
+      isUserEnrolled: true,
+      isStudyEnrollmentInProgress: false,
+      startStudyEnrollmentToggle: expect.anything(),
+      endStudyEnrollmentToggle: expect.anything(),
+    });
+
+    await act(async () => {
+      studyContext.startStudyEnrollmentToggle();
+    });
+
+    expect(studyContext).toEqual({
+      study,
+      isInstalledLocally: true,
+      isUserEnrolled: true,
+      isStudyEnrollmentInProgress: true,
+      startStudyEnrollmentToggle: expect.anything(),
+      endStudyEnrollmentToggle: expect.anything(),
+    });
+
+    await act(async () => {
+      studyContext.endStudyEnrollmentToggle();
+    });
+
+    expect(studyContext).toEqual({
+      study,
+      isInstalledLocally: true,
+      isUserEnrolled: true,
+      isStudyEnrollmentInProgress: false,
+      startStudyEnrollmentToggle: expect.anything(),
+      endStudyEnrollmentToggle: expect.anything(),
     });
   });
 

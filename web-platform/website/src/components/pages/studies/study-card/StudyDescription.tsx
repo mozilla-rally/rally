@@ -12,6 +12,8 @@ import {
 import { Strings } from "../../../../resources/Strings";
 import { StandardAccordion } from "../../../../styles/Accordions";
 import { FontSize } from "../../../../styles/Fonts";
+import { detectBrowser } from "../../../../utils/BrowserDetector";
+import { BrowserType } from "../../../../utils/BrowserType";
 import { useStudy } from "./StudyDataContext";
 import { StudyTag } from "./StudyTag";
 
@@ -20,6 +22,8 @@ const strings = Strings.components.pages.studies.studyCard.description;
 export function StudyDescription() {
   const { study, isUserEnrolled } = useStudy();
   const [isExpanded, setIsExpanded] = useState(!isUserEnrolled);
+
+  const [browserType] = useState(detectBrowser());
 
   useEffect(() => {
     setIsExpanded(!isUserEnrolled);
@@ -65,7 +69,11 @@ export function StudyDescription() {
               <Col className="d-flex justify-content-sm-left justify-content-md-end col-sm-12 col-md-auto flex-grow-1">
                 <a
                   className={`${FontSize.Small} p-1`}
-                  href={study.studyDetailsLink}
+                  href={
+                    browserType === BrowserType.Chrome
+                      ? study.downloadLink.chrome
+                      : study.downloadLink.firefox
+                  }
                   target="_blank"
                   rel="noreferrer"
                 >

@@ -1,6 +1,13 @@
 import { UserDocument } from "@mozilla/rally-shared-types/dist";
 import { RenderResult, render } from "@testing-library/react";
-import { collection, doc, onSnapshot, updateDoc } from "firebase/firestore";
+import {
+  Timestamp,
+  collection,
+  doc,
+  onSnapshot,
+  setDoc,
+  updateDoc,
+} from "firebase/firestore";
 import React from "react";
 import { act } from "react-dom/test-utils";
 
@@ -204,42 +211,37 @@ describe("UserDocumentService tests", () => {
 
   it("update user document invokes the correct firebase function", async () => {
     let updateUserDoc: (
-      userDocument: UserDocument
+      userDocument: Partial<UserDocument>
     ) => Promise<void> = async () => {};
-    let obtainedDoc = null;
 
     await renderComponent(
-      ({ updateUserDocument, userDocument }) => (
-        (updateUserDoc = updateUserDocument), (obtainedDoc = userDocument)
-      ),
+      ({ updateUserDocument }) => (updateUserDoc = updateUserDocument),
       () => {}
     );
 
     await invokeOnSnapshotInstances();
 
-    const newDocData = {
-      newDocId: "newDocId",
+    const updateData = {
       studies: {
-        studyA: { studyId: "A", key: "value" },
+        studyA: {
+          studyId: "study-A",
+          attached: false,
+          enrolled: false,
+          joinedOn: "Fake" as unknown as Timestamp,
+        },
       },
-    };
-
-    const newMergedDoc = {
-      ...(obtainedDoc || {}),
-      ...newDocData,
-      studies: {
-        ...(obtainedDoc as unknown as UserDocument).studies,
-        ...newDocData.studies,
-      },
-    } as unknown as UserDocument;
+    } as Partial<UserDocument>;
 
     await act(async () => {
-      await updateUserDoc(newMergedDoc);
+      await updateUserDoc(updateData);
     });
 
-    expect(obtainedDoc).toEqual(newMergedDoc);
-
-    expect(updateDoc).toHaveBeenCalledWith(docRef, newMergedDoc);
+    expect(setDoc).toHaveBeenCalledWith(
+      expect.anything(),
+      updateData?.studies?.studyA,
+      { merge: true }
+    );
+    expect(setDoc).toHaveBeenCalledWith(docRef, updateData, { merge: true });
   });
 
   async function renderComponent(

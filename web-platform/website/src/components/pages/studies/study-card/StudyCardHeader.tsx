@@ -1,3 +1,4 @@
+import { useState } from "react";
 import {
   Col,
   Container,
@@ -12,12 +13,15 @@ import { style } from "typestyle";
 import { Strings } from "../../../../resources/Strings";
 import { Colors, Spacing } from "../../../../styles";
 import { FontSize } from "../../../../styles/Fonts";
+import { detectBrowser } from "../../../../utils/BrowserDetector";
+import { BrowserType } from "../../../../utils/BrowserType";
 import { useStudy } from "./StudyDataContext";
 
 const strings = Strings.components.pages.studies.studyCard.header;
 
 export function StudyCardHeader() {
   const { isInstalledLocally, isUserEnrolled, study } = useStudy();
+  const [browserType] = useState(detectBrowser());
 
   if (!isUserEnrolled && !isInstalledLocally) {
     return null;
@@ -53,7 +57,11 @@ export function StudyCardHeader() {
             {message}
             {!isInstalledLocally ? (
               <a
-                href={study.downloadLink}
+                href={
+                  browserType === BrowserType.Chrome
+                    ? study.downloadLink.chrome
+                    : study.downloadLink.firefox
+                }
                 target="_blank"
                 rel="noreferrer"
                 className="fw-bold"
@@ -65,36 +73,42 @@ export function StudyCardHeader() {
               <></>
             )}
           </Col>
-          <Col className="col-auto">
-            <UncontrolledDropdown>
-              <DropdownToggle>
-                <img src="/img/overflow-ellipsis.svg" alt="" />
-              </DropdownToggle>
-              <DropdownMenu>
-                {!isInstalledLocally ? (
-                  <DropdownItem className={FontSize.Small}>
-                    <a
-                      href={study.downloadLink}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="text-decoration-none"
-                    >
-                      {strings.menus.addExtension}
-                    </a>
-                  </DropdownItem>
-                ) : null}
-                {isInstalledAndConnected ? (
-                  <DropdownItem className={FontSize.Small}>
-                    {strings.menus.leaveStudy}
-                  </DropdownItem>
-                ) : (
-                  <DropdownItem className={FontSize.Small}>
-                    {strings.menus.dontJoinStudy}
-                  </DropdownItem>
-                )}
-              </DropdownMenu>
-            </UncontrolledDropdown>
-          </Col>
+          {(!isInstalledLocally || isUserEnrolled) && (
+            <Col className="col-auto">
+              <UncontrolledDropdown>
+                <DropdownToggle>
+                  <img src="/img/overflow-ellipsis.svg" alt="" />
+                </DropdownToggle>
+                <DropdownMenu>
+                  {!isInstalledLocally ? (
+                    <DropdownItem className={FontSize.Small}>
+                      <a
+                        href={
+                          browserType === BrowserType.Chrome
+                            ? study.downloadLink.chrome
+                            : study.downloadLink.firefox
+                        }
+                        target="_blank"
+                        rel="noreferrer"
+                        className="text-decoration-none"
+                      >
+                        {strings.menus.addExtension}
+                      </a>
+                    </DropdownItem>
+                  ) : null}
+                  {isInstalledAndConnected ? (
+                    <DropdownItem className={FontSize.Small}>
+                      {strings.menus.leaveStudy}
+                    </DropdownItem>
+                  ) : (
+                    <DropdownItem className={FontSize.Small}>
+                      {strings.menus.dontJoinStudy}
+                    </DropdownItem>
+                  )}
+                </DropdownMenu>
+              </UncontrolledDropdown>
+            </Col>
+          )}
         </Row>
       </Container>
       <hr className="m-0" />

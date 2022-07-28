@@ -1,14 +1,21 @@
 import { render } from "@testing-library/react";
 
 import { Strings } from "../../../../../resources/Strings";
+import { detectBrowser } from "../../../../../utils/BrowserDetector";
+import { BrowserType } from "../../../../../utils/BrowserType";
 import { StudyCardHeader } from "../StudyCardHeader";
 import { useStudy } from "../StudyDataContext";
 
+jest.mock("../../../../../utils/BrowserDetector");
 jest.mock("../StudyDataContext");
 
 const strings = Strings.components.pages.studies.studyCard.header;
 
 describe("StudyCardHeader tests", () => {
+  beforeEach(() => {
+    (detectBrowser as jest.Mock).mockReturnValue(BrowserType.Chrome);
+  });
+
   it("returns null when user hasn't enrolled in the study and has no extension installed", () => {
     (useStudy as jest.Mock).mockReturnValue({
       isInstalledLocally: false,
@@ -25,7 +32,7 @@ describe("StudyCardHeader tests", () => {
     (useStudy as jest.Mock).mockReturnValue({
       isInstalledLocally: false,
       isUserEnrolled: true,
-      study: { studyId: "studyId-1", downloadLink: "download.com" },
+      study: { studyId: "studyId-1", downloadLink: { chrome: "download.com" } },
     });
 
     const root = render(<StudyCardHeader />);
@@ -51,7 +58,7 @@ describe("StudyCardHeader tests", () => {
     (useStudy as jest.Mock).mockReturnValue({
       isInstalledLocally: true,
       isUserEnrolled: false,
-      study: { studyId: "studyId-1", downloadLink: "download.com" },
+      study: { studyId: "studyId-1", downloadLink: { chrome: "download.com" } },
     });
 
     const root = render(<StudyCardHeader />);
@@ -64,7 +71,9 @@ describe("StudyCardHeader tests", () => {
 
     expect(root.queryByText(strings.addExtension)).not.toBeInTheDocument();
 
-    expect(root.getByText(strings.menus.dontJoinStudy)).toBeInTheDocument();
+    expect(
+      root.queryByText(strings.menus.dontJoinStudy)
+    ).not.toBeInTheDocument();
 
     expect(root.queryByText(strings.menus.leaveStudy)).not.toBeInTheDocument();
   });
@@ -73,7 +82,7 @@ describe("StudyCardHeader tests", () => {
     (useStudy as jest.Mock).mockReturnValue({
       isInstalledLocally: true,
       isUserEnrolled: true,
-      study: { studyId: "studyId-1", downloadLink: "download.com" },
+      study: { studyId: "studyId-1", downloadLink: { chrome: "download.com" } },
     });
 
     const root = render(<StudyCardHeader />);
