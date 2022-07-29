@@ -70,6 +70,8 @@ export function AddStudyView() {
             <Button
               className={`d-flex fw-bold ps-4 pe-4 pt-2 pb-2 ${SecondaryButton}`}
               onClick={async () => {
+                endStudyEnrollmentToggle();
+
                 await updateUserDocument({
                   studies: {
                     [study.studyId]: {
@@ -86,8 +88,6 @@ export function AddStudyView() {
                     : study.downloadLink.firefox,
                   "_blank"
                 );
-
-                endStudyEnrollmentToggle();
               }}
             >
               {strings.addExtension}
@@ -117,7 +117,7 @@ const styles = {
       width: "unset",
     }),
     {
-      width: "660px",
+      width: 660,
       boxSizing: "content-box",
       maxWidth: "unset",
       padding: Spacing.xxLarge,

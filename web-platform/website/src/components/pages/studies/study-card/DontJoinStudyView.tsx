@@ -1,32 +1,39 @@
 import { UserDocument } from "@mozilla/rally-shared-types";
+import { useState } from "react";
 import { Button, Col, Container, Modal, Row } from "reactstrap";
 import { style } from "typestyle";
 import { NestedCSSProperties } from "typestyle/lib/types";
 
 import { Strings } from "../../../../resources/Strings";
 import { useUserDocument } from "../../../../services/UserDocumentService";
-import { AccentButton, TertiaryButton } from "../../../../styles/Buttons";
-import { Colors } from "../../../../styles/Colors";
-import { FontsRaw } from "../../../../styles/Fonts";
-import { createResponsiveStyle } from "../../../../styles/ResponsiveStyle";
-import { ScreenSize } from "../../../../styles/ScreenSize";
-import { Spacing } from "../../../../styles/Spacing";
+import {
+  Colors,
+  ScreenSize,
+  Spacing,
+  createResponsiveStyle,
+} from "../../../../styles";
+import { SecondaryButton, TertiaryButton } from "../../../../styles/Buttons";
+import { FontSizeRaw, FontsRaw } from "../../../../styles/Fonts";
+import { detectBrowser } from "../../../../utils/BrowserDetector";
+import { BrowserType } from "../../../../utils/BrowserType";
 import { useStudy } from "./StudyDataContext";
 
-const strings = Strings.components.pages.studies.studyCard.leaveStudy;
+const strings = Strings.components.pages.studies.studyCard.dontJoinStudy;
 
-export function LeaveStudyView() {
+export function DontJoinStudyView() {
   const {
     endStudyEnrollmentToggle,
+    isInstalledLocally,
     isStudyEnrollmentInProgress,
     isUserEnrolled,
-    isInstalledLocally,
     study,
   } = useStudy();
 
+  const [browserType] = useState(detectBrowser());
+
   const { updateUserDocument } = useUserDocument();
 
-  if (!(isStudyEnrollmentInProgress && isUserEnrolled && isInstalledLocally)) {
+  if (!(isStudyEnrollmentInProgress && isUserEnrolled && !isInstalledLocally)) {
     return null;
   }
 
@@ -49,24 +56,29 @@ export function LeaveStudyView() {
           </Col>
         </Row>
         <Row>
-          <Col>{strings.text}</Col>
-          <Col>
-            <img src="/img/leave-this-study.png" className="leave-study" />
-          </Col>
-        </Row>
-        <Row>
           <Col className="me-3 col-auto">
-            <Button
-              className={`d-flex fw-bold ps-4 pe-4 pt-2 pb-2 ${TertiaryButton}`}
-              outline
-              onClick={() => endStudyEnrollmentToggle()}
+            <a
+              href={
+                browserType === BrowserType.Chrome
+                  ? study.downloadLink.chrome
+                  : study.downloadLink.firefox
+              }
+              className="text-decoration-none"
+              rel="noreferrer"
+              target="_blank"
             >
-              {strings.cancel}
-            </Button>
+              <Button
+                className={`d-flex fw-bold ps-4 pe-4 pt-2 pb-2 ${TertiaryButton}`}
+                outline
+                onClick={() => endStudyEnrollmentToggle()}
+              >
+                {strings.addStudyExtension}
+              </Button>
+            </a>
           </Col>
           <Col className="col-auto">
             <Button
-              className={`d-flex fw-bold ps-4 pe-4 pt-2 pb-2 ${AccentButton}`}
+              className={`d-flex fw-bold ps-4 pe-4 pt-2 pb-2 ${SecondaryButton}`}
               onClick={async () => {
                 endStudyEnrollmentToggle();
 
@@ -79,9 +91,8 @@ export function LeaveStudyView() {
                   },
                 } as Partial<UserDocument>);
               }}
-              outline
             >
-              {strings.leaveStudy}
+              {strings.dontJoinStudy}
             </Button>
           </Col>
         </Row>
@@ -107,11 +118,8 @@ const styles = {
     createResponsiveStyle(ScreenSize.Small, {
       width: "unset",
     }),
-    createResponsiveStyle(ScreenSize.ExtraSmall, {
-      width: "unset",
-    }),
     {
-      width: 700,
+      width: 442,
       boxSizing: "content-box",
       maxWidth: "unset",
       padding: Spacing.xxLarge,
@@ -119,15 +127,25 @@ const styles = {
       marginRight: "auto",
     }
   ),
+  modalText: style({}),
   container: style({
     maxWidth: "unset",
-    color: Colors.ColorMarketingGray70,
 
+    color: Colors.ColorMarketingGray70,
+    padding: Spacing.Large,
+    marginBottom: Spacing.xLarge,
     $nest: {
       h1: {
         ...FontsRaw.Headline,
-        color: Colors.ColorBlack,
         fontSize: Spacing.xxxLarge,
+        marginBottom: Spacing.xLarge,
+        color: Colors.ColorBlack,
+      },
+      p: {
+        ...FontSizeRaw.Small,
+        marginLeft: 0,
+        marginBottom: Spacing.Large,
+        lineHeight: `${Spacing.xLarge}px`,
       },
 
       ".row": {
@@ -136,19 +154,6 @@ const styles = {
 
       ".col": {
         padding: 0,
-      },
-
-      p: {
-        marginLeft: 0,
-      },
-
-      li: {
-        marginBottom: Spacing.Large,
-      },
-
-      ".leave-study": {
-        paddingTop: Spacing.Large,
-        width: 316,
       },
     },
   }),
