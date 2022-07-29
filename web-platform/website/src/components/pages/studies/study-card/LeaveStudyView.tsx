@@ -1,40 +1,33 @@
 import { UserDocument } from "@mozilla/rally-shared-types";
 import { Timestamp } from "firebase/firestore";
-import { useState } from "react";
 import { Button, Col, Container, Modal, Row } from "reactstrap";
 import { style } from "typestyle";
 import { NestedCSSProperties } from "typestyle/lib/types";
 
 import { Strings } from "../../../../resources/Strings";
 import { useUserDocument } from "../../../../services/UserDocumentService";
-import {
-  Colors,
-  ScreenSize,
-  Spacing,
-  createResponsiveStyle,
-} from "../../../../styles";
-import { SecondaryButton, TertiaryButton } from "../../../../styles/Buttons";
-import { FontSizeRaw, FontsRaw } from "../../../../styles/Fonts";
-import { detectBrowser } from "../../../../utils/BrowserDetector";
-import { BrowserType } from "../../../../utils/BrowserType";
+import { AccentButton, TertiaryButton } from "../../../../styles/Buttons";
+import { Colors } from "../../../../styles/Colors";
+import { FontsRaw } from "../../../../styles/Fonts";
+import { createResponsiveStyle } from "../../../../styles/ResponsiveStyle";
+import { ScreenSize } from "../../../../styles/ScreenSize";
+import { Spacing } from "../../../../styles/Spacing";
 import { useStudy } from "./StudyDataContext";
-import { StudyTitle } from "./StudyTitle";
 
-const strings = Strings.components.pages.studies.studyCard.addStudy;
+const strings = Strings.components.pages.studies.studyCard.leaveStudy;
 
-export function AddStudyView() {
+export function LeaveStudyView() {
   const {
     endStudyEnrollmentToggle,
     isStudyEnrollmentInProgress,
     isUserEnrolled,
+    isInstalledLocally,
     study,
   } = useStudy();
 
-  const [browserType] = useState(detectBrowser());
-
   const { updateUserDocument } = useUserDocument();
 
-  if (!isStudyEnrollmentInProgress || isUserEnrolled) {
+  if (!(isStudyEnrollmentInProgress && isUserEnrolled && isInstalledLocally)) {
     return null;
   }
 
@@ -46,14 +39,20 @@ export function AddStudyView() {
       className={styles.modal}
     >
       <Container className={`p-0 g-0 m-0 ${styles.container}`}>
-        <Row className="mb-4 m-0">
+        <Row>
           <Col>
-            <StudyTitle />
+            <h1>{strings.title}</h1>
           </Col>
         </Row>
         <Row>
           <Col>
-            <div className={styles.modalText}>{strings.enrollText}</div>
+            <p>{strings.tagline}</p>
+          </Col>
+        </Row>
+        <Row>
+          <Col>{strings.text}</Col>
+          <Col>
+            <img src="/img/leave-this-study.png" className="leave-study" />
           </Col>
         </Row>
         <Row>
@@ -68,29 +67,22 @@ export function AddStudyView() {
           </Col>
           <Col className="col-auto">
             <Button
-              className={`d-flex fw-bold ps-4 pe-4 pt-2 pb-2 ${SecondaryButton}`}
+              className={`d-flex fw-bold ps-4 pe-4 pt-2 pb-2 ${AccentButton}`}
               onClick={async () => {
                 await updateUserDocument({
                   studies: {
                     [study.studyId]: {
                       studyId: study.studyId,
-                      enrolled: true,
-                      joinedOn: Timestamp.now(),
+                      enrolled: false,
                     },
                   },
                 } as Partial<UserDocument>);
 
-                window.open(
-                  browserType === BrowserType.Chrome
-                    ? study.downloadLink.chrome
-                    : study.downloadLink.firefox,
-                  "_blank"
-                );
-
                 endStudyEnrollmentToggle();
               }}
+              outline
             >
-              {strings.addExtension}
+              {strings.leaveStudy}
             </Button>
           </Col>
         </Row>
@@ -116,8 +108,11 @@ const styles = {
     createResponsiveStyle(ScreenSize.Small, {
       width: "unset",
     }),
+    createResponsiveStyle(ScreenSize.ExtraSmall, {
+      width: "unset",
+    }),
     {
-      width: "660px",
+      width: "700px",
       boxSizing: "content-box",
       maxWidth: "unset",
       padding: Spacing.xxLarge,
@@ -125,41 +120,36 @@ const styles = {
       marginRight: "auto",
     }
   ),
-  modalText: style({
-    color: Colors.ColorMarketingGray70,
-    backgroundColor: Colors.ColorLightGray20,
-    padding: Spacing.Large,
-    marginBottom: Spacing.xLarge,
-    $nest: {
-      "h1, h2": {
-        color: Colors.ColorMarketingGray70,
-      },
-      h1: {
-        ...FontsRaw.Headline,
-        fontSize: Spacing.xLarge,
-        marginBottom: Spacing.xLarge,
-      },
-      h2: {
-        fontSize: "1rem",
-        fontWeight: 700,
-        marginBottom: Spacing.Large,
-      },
-      p: {
-        marginBottom: Spacing.Large,
-        ...FontSizeRaw.Small,
-      },
-    },
-  }),
   container: style({
     maxWidth: "unset",
+    color: Colors.ColorMarketingGray70,
 
     $nest: {
+      h1: {
+        ...FontsRaw.Headline,
+        color: Colors.ColorBlack,
+        fontSize: Spacing.xxxLarge,
+      },
+
       ".row": {
         margin: 0,
       },
 
       ".col": {
         padding: 0,
+      },
+
+      p: {
+        marginLeft: 0,
+      },
+
+      li: {
+        marginBottom: Spacing.Large,
+      },
+
+      ".leave-study": {
+        paddingTop: Spacing.Large,
+        width: 316,
       },
     },
   }),

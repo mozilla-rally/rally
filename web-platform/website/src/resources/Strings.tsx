@@ -850,6 +850,35 @@ export const Strings = {
               leaveStudy: "Leave study",
             },
           },
+          leaveStudy: {
+            cancel: "Cancel",
+            leaveStudy: "Leave Study",
+            tagline: "You’re free to come and go as you please.",
+            text: (
+              <>
+                <p>
+                  <b>Leaving a study means:</b>
+                </p>
+                <ul>
+                  <li>
+                    <b>You will only be leaving this specific study</b>. You
+                    will continue contributing your browsing data to any other
+                    studies you've joined.
+                  </li>
+                  <li>
+                    <b>
+                      You will stop contributing browsing data to this study
+                    </b>{" "}
+                    and the researchers leading this study.
+                  </li>
+                  <li>
+                    <b>Rally will delete all your data from this study.</b>
+                  </li>
+                </ul>
+              </>
+            ),
+            title: "Leave this Study?",
+          },
           title: {
             ends: "Ends: {expiry}",
             taglineFormat: "{publisher} | {expiry}",

@@ -34,3 +34,14 @@ export const TertiaryButton = style({
     },
   },
 });
+
+export const AccentButton = style({
+  color: Colors.ColorRed60,
+  borderColor: Colors.ColorRed60,
+  $nest: {
+    "&:hover": {
+      backgroundColor: Colors.ColorRed60,
+      color: Colors.ColorWhite,
+    },
+  },
+});

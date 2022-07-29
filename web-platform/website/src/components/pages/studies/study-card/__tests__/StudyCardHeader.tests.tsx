@@ -1,4 +1,6 @@
 import { render } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
+import { act } from "react-dom/test-utils";
 
 import { Strings } from "../../../../../resources/Strings";
 import { detectBrowser } from "../../../../../utils/BrowserDetector";
@@ -94,5 +96,29 @@ describe("StudyCardHeader tests", () => {
     ).not.toBeInTheDocument();
 
     expect(root.getByText(strings.menus.leaveStudy)).toBeInTheDocument();
+  });
+
+  it("leave study triggers the study enrollment toggle", async () => {
+    const study = {
+      studyId: "studyId-1",
+    };
+
+    const startStudyEnrollmentToggle = jest.fn();
+
+    (useStudy as jest.Mock).mockReturnValue({
+      isInstalledLocally: true,
+      isUserEnrolled: true,
+      startStudyEnrollmentToggle,
+      study,
+    });
+
+    userEvent.setup();
+    const root = render(<StudyCardHeader />);
+
+    await act(async () => {
+      await userEvent.click(root.getByText(strings.menus.leaveStudy));
+    });
+
+    expect(startStudyEnrollmentToggle).toHaveBeenCalled();
   });
 });
