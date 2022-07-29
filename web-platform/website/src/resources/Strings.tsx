@@ -840,15 +840,12 @@ export const Strings = {
               </>
             ),
           },
-          header: {
-            addExtension: "Add study extension from the Chrome Web Store.",
-            participating: "You're participating.",
-            notParticipatingYet: "You're not participating yet. ",
-            menus: {
-              addExtension: "Add study extension",
-              dontJoinStudy: "Don't join this study",
-              leaveStudy: "Leave study",
-            },
+          dontJoinStudy: {
+            addStudyExtension: "Add study extension",
+            dontJoinStudy: "Don't join this study",
+            tagline:
+              "You previously started to join this study, but didn’t finish the process by installing the study extension from the Chrome Web Store.",
+            title: "Confirm if you want to join this study or not",
           },
           leaveStudy: {
             cancel: "Cancel",
@@ -878,6 +875,16 @@ export const Strings = {
               </>
             ),
             title: "Leave this Study?",
+          },
+          header: {
+            addExtension: "Add study extension from the Chrome Web Store.",
+            participating: "You're participating.",
+            notParticipatingYet: "You're not participating yet. ",
+            menus: {
+              addExtension: "Add study extension",
+              dontJoinStudy: "Don't join this study",
+              leaveStudy: "Leave study",
+            },
           },
           title: {
             ends: "Ends: {expiry}",

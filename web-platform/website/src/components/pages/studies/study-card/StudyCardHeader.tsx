@@ -101,18 +101,15 @@ export function StudyCardHeader() {
                       </a>
                     </DropdownItem>
                   ) : null}
-                  {isInstalledAndConnected ? (
-                    <DropdownItem
-                      className={FontSize.Small}
-                      onClick={() => startStudyEnrollmentToggle()}
-                    >
-                      {strings.menus.leaveStudy}
-                    </DropdownItem>
-                  ) : (
-                    <DropdownItem className={FontSize.Small}>
-                      {strings.menus.dontJoinStudy}
-                    </DropdownItem>
-                  )}
+
+                  <DropdownItem
+                    className={FontSize.Small}
+                    onClick={() => startStudyEnrollmentToggle()}
+                  >
+                    {isInstalledAndConnected
+                      ? strings.menus.leaveStudy
+                      : strings.menus.dontJoinStudy}
+                  </DropdownItem>
                 </DropdownMenu>
               </UncontrolledDropdown>
             </Col>
