@@ -4,6 +4,7 @@ import { style } from "typestyle";
 import { Colors, Spacing } from "../../../../styles";
 import { FontSize } from "../../../../styles/Fonts";
 import { AddStudyView } from "./AddStudyView";
+import { LeaveStudyView } from "./LeaveStudyView";
 import { StudyCardHeader } from "./StudyCardHeader";
 import { StudyDetails } from "./StudyDetails";
 
@@ -13,6 +14,7 @@ export function StudyCard() {
       <StudyCardHeader />
       <StudyDetails />
       <AddStudyView />
+      <LeaveStudyView />
     </Container>
   );
 }

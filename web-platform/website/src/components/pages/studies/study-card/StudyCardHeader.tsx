@@ -20,7 +20,12 @@ import { useStudy } from "./StudyDataContext";
 const strings = Strings.components.pages.studies.studyCard.header;
 
 export function StudyCardHeader() {
-  const { isInstalledLocally, isUserEnrolled, study } = useStudy();
+  const {
+    isInstalledLocally,
+    isUserEnrolled,
+    startStudyEnrollmentToggle,
+    study,
+  } = useStudy();
   const [browserType] = useState(detectBrowser());
 
   if (!isUserEnrolled && !isInstalledLocally) {
@@ -97,7 +102,10 @@ export function StudyCardHeader() {
                     </DropdownItem>
                   ) : null}
                   {isInstalledAndConnected ? (
-                    <DropdownItem className={FontSize.Small}>
+                    <DropdownItem
+                      className={FontSize.Small}
+                      onClick={() => startStudyEnrollmentToggle()}
+                    >
                       {strings.menus.leaveStudy}
                     </DropdownItem>
                   ) : (

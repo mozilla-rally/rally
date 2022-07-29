@@ -1,4 +1,5 @@
-import { render } from "@testing-library/react";
+import { act, render } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 
 import { Strings } from "../../../../../resources/Strings";
 import { useStudy } from "../StudyDataContext";
@@ -80,5 +81,24 @@ describe("StudyTopDetails tests", () => {
     expect(StudyTitle).toHaveBeenCalled();
 
     expect(document.querySelector(".join-button")).not.toBeInTheDocument();
+  });
+
+  it("clicking the join button triggers the study enrollment toggle", async () => {
+    const startStudyEnrollmentToggle = jest.fn();
+
+    (useStudy as jest.Mock).mockReturnValue({
+      isUserEnrolled: false,
+      startStudyEnrollmentToggle,
+    });
+
+    userEvent.setup();
+
+    const root = render(<StudyTopDetails />);
+
+    await act(async () => {
+      await userEvent.click(root.getByText(strings.joinStudy));
+    });
+
+    expect(startStudyEnrollmentToggle).toHaveBeenCalled();
   });
 });
