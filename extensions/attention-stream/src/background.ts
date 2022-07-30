@@ -179,7 +179,7 @@ async function stateChangeCallback(newState) {
         js: ["dist/browser-polyfill.min.js", "dist/page-ads.content.js"],
         matches: matchPatterns,
         persistAcrossSessions: false,
-        runAt: "document_start"
+        runAt: "document_idle"
       }]);
 
       this.advertisementListener = async (adInfo, sender) => {
