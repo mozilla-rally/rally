@@ -1,5 +1,6 @@
 import { style } from "typestyle";
 
+import { Colors } from "./Colors";
 import { Spacing } from "./Spacing";
 
 export const StandardAccordion = style({
@@ -13,6 +14,7 @@ export const StandardAccordion = style({
       padding: 0,
       boxShadow: "none",
       fontWeight: 700,
+      color: Colors.ColorBlack,
       $nest: {
         "&:after": {
           backgroundImage: `url("img/caret.svg")`,
@@ -21,7 +23,6 @@ export const StandardAccordion = style({
           width: Spacing.Large,
         },
         "&:not(.collapsed)": {
-          color: "unset",
           backgroundColor: "unset",
           $nest: {
             "&:after": {

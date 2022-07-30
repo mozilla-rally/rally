@@ -14,6 +14,7 @@ import {
   createResponsiveStyle,
 } from "../../../../styles";
 import { SecondaryButton, TertiaryButton } from "../../../../styles/Buttons";
+import { ContainerStyles } from "../../../../styles/ContainerStyles";
 import { FontSizeRaw, FontsRaw } from "../../../../styles/Fonts";
 import { detectBrowser } from "../../../../utils/BrowserDetector";
 import { BrowserType } from "../../../../utils/BrowserType";
@@ -45,7 +46,9 @@ export function AddStudyView() {
       contentClassName={styles.modalContent}
       className={styles.modal}
     >
-      <Container className={`p-0 g-0 m-0 ${styles.container}`}>
+      <Container
+        className={`p-0 g-0 m-0 ${styles.container} ${ContainerStyles.NoSpacing}`}
+      >
         <Row className="mb-4 m-0">
           <Col>
             <StudyTitle />
@@ -152,15 +155,5 @@ const styles = {
   }),
   container: style({
     maxWidth: "unset",
-
-    $nest: {
-      ".row": {
-        margin: 0,
-      },
-
-      ".col": {
-        padding: 0,
-      },
-    },
   }),
 };

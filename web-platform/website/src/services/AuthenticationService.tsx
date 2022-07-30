@@ -11,6 +11,11 @@ import {
   signupWithEmail as signupWithEmailFn,
 } from "./UserAccountService";
 
+export enum UserType {
+  Google = "google",
+  Email = "email",
+}
+
 export interface UserDataContext {
   isLoaded: boolean;
   user?: User;
@@ -21,6 +26,7 @@ export interface UserDataContext {
   logout: () => Promise<void>;
   signupWithEmail(email: string, password: string): Promise<UserCredential>;
   sendPasswordResetEmail(email: string): Promise<void>;
+  userType: UserType | null;
 }
 
 const AuthenticationContext = createContext<UserDataContext>({
@@ -74,6 +80,22 @@ export function AuthenticationProvider(props: { children: React.ReactNode }) {
         logout: logoutFn,
         sendPasswordResetEmail: sendPasswordResetEmailFn,
         signupWithEmail: signupWithEmailFn,
+        get userType() {
+          if (!user || !user.firebaseUser) {
+            return null;
+          }
+
+          const isGoogleAccount =
+            (user.firebaseUser.providerData &&
+              user.firebaseUser.providerData.length &&
+              user.firebaseUser.providerData[0].providerId &&
+              user.firebaseUser.providerData[0].providerId
+                .toLocaleLowerCase()
+                .includes("google")) ||
+            false;
+
+          return isGoogleAccount ? UserType.Google : UserType.Email;
+        },
       }}
     >
       {props.children}

@@ -21,4 +21,18 @@ export const ContainerStyles = {
     smallerStyle,
     createResponsiveStyle(ScreenSize.Large, largeStyle, true)
   ),
+  NoSpacing: style({
+    padding: 0,
+    $nest: {
+      ".row": {
+        margin: 0,
+
+        $nest: {
+          ".col": {
+            padding: 0,
+          },
+        },
+      },
+    },
+  }),
 };

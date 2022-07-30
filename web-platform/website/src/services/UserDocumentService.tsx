@@ -44,10 +44,14 @@ export function UserDocumentProvider(props: { children: React.ReactNode }) {
   const [isDocumentLoaded, setIsDocumentLoaded] = useState(false);
   const [userDocument, setUserDocument] = useState<UserDocument | null>(null);
 
-  const { user } = useAuthentication();
+  const { user, isLoaded } = useAuthentication();
   const { db } = useFirebase();
 
   useEffect(() => {
+    if (!isLoaded) {
+      return;
+    }
+
     if (!user) {
       setIsDocumentLoaded(true);
       return;
@@ -59,7 +63,7 @@ export function UserDocumentProvider(props: { children: React.ReactNode }) {
       setUserDocument(userDoc);
       setIsDocumentLoaded(true);
     });
-  }, [user]);
+  }, [user, isLoaded]);
 
   return (
     <UserDocumentContext.Provider
@@ -106,6 +110,9 @@ function onUserDocumentChanges(
       return;
     }
 
+    // Ensure that if studies are loaded before user document, then we don't invoke callback
+    const isUserDocLoaded = !!userDoc;
+
     userDoc = userDoc || ({} as UserDocument);
     userDoc.studies = {};
 
@@ -115,7 +122,7 @@ function onUserDocumentChanges(
 
     // Shallow spread is necessary so that React treats this as a new object
     // since it does not detect mutations within the same object
-    onDocumentUpdated({ ...userDoc });
+    isUserDocLoaded && onDocumentUpdated({ ...userDoc });
   });
 
   return () => {
