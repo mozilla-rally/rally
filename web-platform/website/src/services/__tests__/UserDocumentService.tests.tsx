@@ -66,7 +66,7 @@ describe("UserDocumentService tests", () => {
   beforeEach(() => {
     jest.resetAllMocks();
 
-    (useAuthentication as jest.Mock).mockReturnValue({ user });
+    (useAuthentication as jest.Mock).mockReturnValue({ user, isLoaded: true });
 
     (useFirebase as jest.Mock).mockReturnValue({ db });
 
@@ -76,7 +76,10 @@ describe("UserDocumentService tests", () => {
   });
 
   it("zero state", async () => {
-    (useAuthentication as jest.Mock).mockReturnValue({ user: undefined });
+    (useAuthentication as jest.Mock).mockReturnValue({
+      user: undefined,
+      isLoaded: false,
+    });
 
     let obtainedDoc = null;
     let isDocumentLoaded = false;
@@ -94,7 +97,7 @@ describe("UserDocumentService tests", () => {
     expect(doc).not.toHaveBeenCalled();
 
     expect(obtainedDoc).toEqual(null);
-    expect(isDocumentLoaded).toBeTruthy();
+    expect(isDocumentLoaded).toBeFalsy();
     expect(onSnapshotFn).not.toHaveBeenCalled();
   });
 
@@ -181,9 +184,7 @@ describe("UserDocumentService tests", () => {
       onSnapshotFn.mock.calls[1][1](studiesDocs);
     });
 
-    expect(obtainedDoc).toEqual({
-      studies: { study1: { name: "study1" }, study2: { name: "study2" } },
-    });
+    expect(obtainedDoc).toBeNull();
   });
 
   it("transition from authenticated to logged out state", async () => {
