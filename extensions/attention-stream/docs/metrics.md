@@ -36,7 +36,6 @@ In addition to those built-in metrics, the following metrics are added to the pi
 | advertisements.ads |[text](https://mozilla.github.io/glean/book/user/metrics/text.html) |Ads  |[Bug 1778367](https://bugzilla.mozilla.org/show_bug.cgi?id=1778367)||never | |
 | advertisements.body |[text](https://mozilla.github.io/glean/book/user/metrics/text.html) |Body of the current page  |[Bug 1778367](https://bugzilla.mozilla.org/show_bug.cgi?id=1778367)||never | |
 | advertisements.page_id |[uuid](https://mozilla.github.io/glean/book/user/metrics/uuid.html) |A unique ID for this visit  |[Bug 1778367](https://bugzilla.mozilla.org/show_bug.cgi?id=1778367)||never | |
-| advertisements.survey_id |[uuid](https://mozilla.github.io/glean/book/user/metrics/uuid.html) |A survey ID for this user  |[Bug 1778367](https://bugzilla.mozilla.org/show_bug.cgi?id=1778367)||never | |
 | advertisements.url |[url](https://mozilla.github.io/glean/book/user/metrics/url.html) |URL for the current page  |[Bug 1778367](https://bugzilla.mozilla.org/show_bug.cgi?id=1778367)||never | |
 
 ## article-contents
