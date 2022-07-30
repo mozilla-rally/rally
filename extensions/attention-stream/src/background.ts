@@ -160,14 +160,16 @@ async function stateChangeCallback(newState) {
       const matchPatterns = webScience.matching.domainsToMatchPatterns(destinationDomains, true);
 
       // Handle article content callbacks.
-      webScience.pageText.onTextParsed.addListener(async (pageData) => {
+      this.pageTextListener = async (pageData) => {
         articleContents.pageId.set(pageData.pageId);
         articleContents.url.setUrl(pageData.url);
         articleContents.title.set(pageData.title);
         articleContents.textContent.set(pageData.textContent);
 
         attentionStreamPings.articleContents.submit();
-      }, { matchPatterns });
+      };
+
+      webScience.pageText.onTextParsed.addListener(this.pageTextListener, { matchPatterns });
 
       // Register the content script for measuring advertisement info.
       // The CSS selectors file is needed to find ads on the page.
@@ -179,15 +181,17 @@ async function stateChangeCallback(newState) {
         persistAcrossSessions: false
       }]);
 
-      // Handle advertisement callbacks.
-      webScience.messaging.onMessage.addListener(async (adInfo, sender) => {
+      this.advertisementListener = async (adInfo, sender) => {
         advertisements.pageId.set(adInfo.pageId);
         advertisements.url.setUrl(webScience.matching.normalizeUrl(sender.url));
         advertisements.body.set(JSON.stringify(adInfo.body));
         advertisements.ads.set(JSON.stringify(adInfo.ads));
 
         attentionStreamPings.advertisements.submit();
-      }, {
+      }
+
+      // Handle advertisement callbacks.
+      webScience.messaging.onMessage.addListener(this.advertisementListener, {
         type: "WebScience.advertisements",
         schema: {
           pageId: "string",
@@ -204,8 +208,8 @@ async function stateChangeCallback(newState) {
 
       // Take down all resources from run state.
       webScience.pageNavigation.onPageData.removeListener(this.pageDataListener);
-      // TODO remove Advertisement and ArticleContents listeners
-      // TODO remove page-ads content script
+      webScience.pageText.onTextParsed.removeListener(this.pageTextListener);
+      webScience.messaging.onMessage.removeListener(this.advertisementListener);
 
       await browser.storage.local.set({ "state": RunStates.Paused });
 
@@ -215,8 +219,8 @@ async function stateChangeCallback(newState) {
 
       // Take down all resources from run state.
       webScience.pageNavigation.onPageData.removeListener(this.pageDataListener);
-      // TODO remove Advertisement and ArticleContents listeners
-      // TODO remove page-ads content script
+      webScience.pageText.onTextParsed.removeListener(this.pageTextListener);
+      webScience.messaging.onMessage.removeListener(this.advertisementListener);
 
       await browser.storage.local.set({ "ended": true });
 
