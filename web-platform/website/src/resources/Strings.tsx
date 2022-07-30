@@ -932,6 +932,9 @@ export const Strings = {
     },
   },
   pages: {
+    accountSettings: {
+      title: "Account Settings | Mozilla Rally",
+    },
     index: {
       title: "Studies | Mozilla Rally",
     },
