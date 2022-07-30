@@ -15,9 +15,13 @@ import { Rally, RunStates } from "@mozilla/rally-sdk";
 import PingEncryptionPlugin from "@mozilla/glean/plugins/encryption";
 import Glean, { Uploader, UploadResult, UploadResultStatus } from "@mozilla/glean/webext";
 
+import { destinationDomains } from "./domains";
+
 // Import generated Glean metrics.
 import * as userJourney from "../src/generated/userJourney";
 import * as rallyManagementMetrics from "../src/generated/rally";
+import * as advertisements from "../src/generated/advertisements";
+import * as articleContents from "../src/generated/articleContents";
 
 // Import generated Glean pings.
 import * as attentionStreamPings from "../src/generated/pings";
@@ -29,8 +33,8 @@ import { Dexie } from "dexie";
 import * as webScience from "@mozilla/web-science";
 
 declare global {
-   const __ENABLE_DEVELOPER_MODE__: boolean;
-   const __ENABLE_EMULATOR_MODE__: boolean;
+  const __ENABLE_DEVELOPER_MODE__: boolean;
+  const __ENABLE_EMULATOR_MODE__: boolean;
 }
 
 // Developer mode runs locally and does not use the Firebase server.
@@ -116,7 +120,6 @@ async function stateChangeCallback(newState) {
 
       await browser.storage.local.set({ "state": RunStates.Running });
 
-
       // Example: set a listener for WebScience page navigation events on
       // http://localhost/* pages. Note that the manifest origin
       // permissions currently only include http://localhost/*. You should
@@ -154,12 +157,55 @@ async function stateChangeCallback(newState) {
 
       webScience.pageNavigation.onPageData.addListener(this.pageDataListener, { matchPatterns: ["<all_urls>"] });
 
+      const matchPatterns = webScience.matching.domainsToMatchPatterns(destinationDomains, true);
+
+      // Handle article content callbacks.
+      webScience.pageText.onTextParsed.addListener(async (pageData) => {
+        articleContents.pageId.set(pageData.pageId);
+        articleContents.url.setUrl(pageData.url);
+        articleContents.title.set(pageData.title);
+        articleContents.textContent.set(pageData.textContent);
+
+        attentionStreamPings.articleContents.submit();
+      }, { matchPatterns });
+
+      // Register the content script for measuring advertisement info.
+      // The CSS selectors file is needed to find ads on the page.
+      // Load content script(s) required by this extension.
+      await browser.scripting.registerContentScripts([{
+        id: "page-ads",
+        js: ["dist/browser-polyfill.min.js", "dist/page-ads.content.js"],
+        matches: matchPatterns,
+        persistAcrossSessions: false
+      }]);
+
+      // Handle advertisement callbacks.
+      webScience.messaging.onMessage.addListener(async (adInfo, sender) => {
+        advertisements.pageId.set(adInfo.pageId);
+        advertisements.url.setUrl(webScience.matching.normalizeUrl(sender.url));
+        advertisements.body.set(JSON.stringify(adInfo.body));
+        advertisements.ads.set(JSON.stringify(adInfo.ads));
+
+        attentionStreamPings.advertisements.submit();
+      }, {
+        type: "WebScience.advertisements",
+        schema: {
+          pageId: "string",
+          type: "string",
+          url: "string",
+          ads: "object",
+          body: "object"
+        }
+      });
+
       break;
     case (RunStates.Paused):
       console.log(`Study paused with Rally ID: ${rally.rallyId}`);
 
       // Take down all resources from run state.
       webScience.pageNavigation.onPageData.removeListener(this.pageDataListener);
+      // TODO remove Advertisement and ArticleContents listeners
+      // TODO remove page-ads content script
 
       await browser.storage.local.set({ "state": RunStates.Paused });
 
@@ -169,6 +215,8 @@ async function stateChangeCallback(newState) {
 
       // Take down all resources from run state.
       webScience.pageNavigation.onPageData.removeListener(this.pageDataListener);
+      // TODO remove Advertisement and ArticleContents listeners
+      // TODO remove page-ads content script
 
       await browser.storage.local.set({ "ended": true });
 
@@ -208,7 +256,9 @@ class GetPingsUploader extends Uploader {
     }
 
     // create an index for the `user_journey_page_visit_stop_date_time` column, so it can be sorted in the UI (@see `public/options.js`)
-    db.version(1).stores({
+    db.version(2).stores({
+      "advertisements": "id",
+      "article-contents": "id",
       "user-journey": "id, rally_id, user_journey_page_visit_stop_date_time",
       "study-enrollment": "id, rally_id"
     });

@@ -23,9 +23,10 @@
     "webNavigation",
     "webRequest",
     "storage",
-    "unlimitedStorage"
+    "unlimitedStorage",
+    "scripting"
   ],
-  "host_permissions:": [
+  "host_permissions": [
     "<all_urls>"
   ],
   "content_scripts": [
@@ -36,16 +37,6 @@
       ],
       "js": [
         "dist/main.content.js"
-      ]
-    },
-    {
-      "matches": [
-        "<all_urls>"
-      ],
-      "js": [
-        "dist/browser-polyfill.min.js",
-        "dist/webScience/pageManager.content.js",
-        "dist/webScience/pageNavigation.content.js"
       ]
     }
   ],
