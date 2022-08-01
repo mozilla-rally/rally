@@ -1,6 +1,6 @@
 {
   "name": "rally-attention-stream",
-  "version": "0.4.3",
+  "version": "0.4.5",
   "scripts": {
     "build": "cp manifest.prod.json manifest.json && npm run build:glean && rollup -c 2>&1 && npm run tailwind",
     "dev": "cp manifest.dev.json manifest.json && npm run build:glean && npm run clean && npm run tailwind && npm run dev:extension",
