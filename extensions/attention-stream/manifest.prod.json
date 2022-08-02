@@ -3,7 +3,7 @@
   "author": "Mozilla",
   "manifest_version": 3,
   "name": "Rally Attention Stream",
-  "version": "0.4.3",
+  "version": "0.4.5",
   "homepage_url": "https://github.com/mozilla/rally",
   "browser_specific_settings": {
     "gecko": {
@@ -20,9 +20,10 @@
     "webNavigation",
     "webRequest",
     "storage",
-    "unlimitedStorage"
+    "unlimitedStorage",
+    "scripting"
   ],
-  "host_permissions:": [
+  "host_permissions": [
     "<all_urls>"
   ],
   "content_scripts": [
@@ -33,16 +34,6 @@
       ],
       "js": [
         "dist/main.content.js"
-      ]
-    },
-    {
-      "matches": [
-        "<all_urls>"
-      ],
-      "js": [
-        "dist/browser-polyfill.min.js",
-        "dist/webScience/pageManager.content.js",
-        "dist/webScience/pageNavigation.content.js"
       ]
     }
   ],
