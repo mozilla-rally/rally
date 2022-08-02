@@ -7,6 +7,7 @@ import { Strings } from "../../../../resources/Strings";
 import { useUserDocument } from "../../../../services/UserDocumentService";
 import { AccentButton, TertiaryButton } from "../../../../styles/Buttons";
 import { Colors } from "../../../../styles/Colors";
+import { ContainerStyles } from "../../../../styles/ContainerStyles";
 import { FontsRaw } from "../../../../styles/Fonts";
 import { createResponsiveStyle } from "../../../../styles/ResponsiveStyle";
 import { ScreenSize } from "../../../../styles/ScreenSize";
@@ -37,7 +38,9 @@ export function LeaveStudyView() {
       contentClassName={styles.modalContent}
       className={styles.modal}
     >
-      <Container className={`p-0 g-0 m-0 ${styles.container}`}>
+      <Container
+        className={`p-0 g-0 m-0 ${styles.container} ${ContainerStyles.NoSpacing}`}
+      >
         <Row>
           <Col>
             <h1>{strings.title}</h1>
@@ -51,7 +54,11 @@ export function LeaveStudyView() {
         <Row>
           <Col>{strings.text}</Col>
           <Col>
-            <img src="/img/leave-this-study.png" className="leave-study" />
+            <img
+              src="/img/leave-this-study.png"
+              className="leave-study"
+              alt=""
+            />
           </Col>
         </Row>
         <Row>
@@ -128,14 +135,6 @@ const styles = {
         ...FontsRaw.Headline,
         color: Colors.ColorBlack,
         fontSize: Spacing.xxxLarge,
-      },
-
-      ".row": {
-        margin: 0,
-      },
-
-      ".col": {
-        padding: 0,
       },
 
       p: {
