@@ -123,7 +123,7 @@ describe("UserDocumentService tests", () => {
     expect(doc).not.toHaveBeenCalled();
 
     expect(obtainedDoc).toEqual(null);
-    expect(isDocumentLoaded).toBeTruthy();
+    expect(isDocumentLoaded).toBeFalsy();
     expect(onSnapshotFn).not.toHaveBeenCalled();
   });
 
