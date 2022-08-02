@@ -63,7 +63,7 @@ export function UserDocumentProvider(props: { children: React.ReactNode }) {
       setUserDocument(userDoc);
       setIsDocumentLoaded(true);
     });
-  }, [user]);
+  }, [user, isLoaded]);
 
   return (
     <UserDocumentContext.Provider

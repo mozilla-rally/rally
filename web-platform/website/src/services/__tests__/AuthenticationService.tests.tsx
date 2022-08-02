@@ -4,6 +4,7 @@ import { useEffect } from "react";
 
 import {
   AuthenticationProvider,
+  UserType,
   useAuthentication,
 } from "../AuthenticationService";
 import { useFirebase } from "../FirebaseService";
@@ -27,7 +28,7 @@ describe("AuthenticationService tests", () => {
     let renderCount = 0;
 
     function Component() {
-      const { user, isLoaded, isLoggingIn, isUserVerified } =
+      const { user, isLoaded, isLoggingIn, isUserVerified, userType } =
         useAuthentication();
 
       expect(user).toBeUndefined();
@@ -40,6 +41,7 @@ describe("AuthenticationService tests", () => {
 
       expect(isLoggingIn).toBeFalsy();
       expect(isUserVerified).toBeFalsy();
+      expect(userType).toBeNull();
 
       renderCount++;
 
@@ -76,12 +78,13 @@ describe("AuthenticationService tests", () => {
     };
 
     function Component() {
-      const { user, isUserVerified } = useAuthentication();
+      const { user, isUserVerified, userType } = useAuthentication();
 
       if (!isAuthenticated) {
         expect(user).toBeUndefined();
       } else {
         expect(user).toEqual({ firebaseUser: unverifiedUser });
+        expect(userType).toBe(UserType.Email);
       }
 
       expect(isUserVerified).toBeFalsy();
@@ -115,20 +118,21 @@ describe("AuthenticationService tests", () => {
     const verifiedUser = {
       providerData: [
         {
-          providerId: "password",
+          providerId: "google.com",
         },
       ],
       emailVerified: true,
     };
 
     function Component() {
-      const { user, isUserVerified } = useAuthentication();
+      const { user, isUserVerified, userType } = useAuthentication();
 
       if (!isAuthenticated) {
         expect(user).toBeUndefined();
         expect(isUserVerified).toBeFalsy();
       } else {
         expect(user).toEqual({ firebaseUser: verifiedUser });
+        expect(userType).toBe(UserType.Google);
 
         // Because user and isUserVerified are updated in different batches
         // we cannot test isUserVerified here.

@@ -190,6 +190,44 @@ export const Strings = {
       ],
     },
     pages: {
+      accountSettings: {
+        accountSettings: {
+          tagline:
+            "Manage your info, privacy, and security to make Rally work better for you.",
+          title: "Account Settings",
+        },
+        navigationBar: {
+          sections: [
+            {
+              text: "Manage Profile",
+              icon: "/img/icon-profile.svg",
+              link: "/profile",
+              external: false,
+            },
+            {
+              text: "Account Settings",
+              icon: "/img/icon-gear.svg",
+              command: "AccountSettings",
+              links: [
+                {
+                  accountType: "email",
+                  text: "Edit Email",
+                  command: "EditEmail",
+                },
+                {
+                  accountType: "email",
+                  text: "Edit Password",
+                  command: "EditPassword",
+                },
+                {
+                  text: "Delete Account",
+                  command: "DeleteAccount",
+                },
+              ],
+            },
+          ],
+        },
+      },
       login: {
         emailAccountCreatedView: {
           backToSignIn: "Back to Sign In",
