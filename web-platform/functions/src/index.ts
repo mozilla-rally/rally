@@ -243,6 +243,13 @@ export async function handleUserStudyChangesImpl(
   change: Change<DocumentSnapshot>,
   context: EventContext
 ): Promise<boolean> {
+  // If the study is being deleted, it's safe to assume this is because the user is being deleted
+  // In this case, no pings need to be sent (user deletion ping will take care of everything)
+  // So it should be a no-op
+  if (!change.after.exists) {
+    return true;
+  }
+
   const userID = context.params.userID;
   const firebaseStudyID = context.params.studyID;
   const rallyID = await getRallyIdForUser(userID);
