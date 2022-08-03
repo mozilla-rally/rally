@@ -9,6 +9,8 @@ import {
 } from "../AuthenticationService";
 import { useFirebase } from "../FirebaseService";
 import {
+  deleteEmailUser as deleteEmailUserFn,
+  deleteGoogleUser as deleteGoogleUserFn,
   loginWithEmail as loginWithEmailFn,
   loginWithGoogle as loginWithGoogleFn,
   logout,
@@ -28,8 +30,14 @@ describe("AuthenticationService tests", () => {
     let renderCount = 0;
 
     function Component() {
-      const { user, isLoaded, isLoggingIn, isUserVerified, userType } =
-        useAuthentication();
+      const {
+        user,
+        isLoaded,
+        isLoggingIn,
+        isUserVerified,
+        userType,
+        deleteGoogleUser,
+      } = useAuthentication();
 
       expect(user).toBeUndefined();
 
@@ -42,6 +50,10 @@ describe("AuthenticationService tests", () => {
       expect(isLoggingIn).toBeFalsy();
       expect(isUserVerified).toBeFalsy();
       expect(userType).toBeNull();
+
+      deleteGoogleUser();
+
+      expect(deleteGoogleUserFn).toHaveBeenCalledWith(undefined);
 
       renderCount++;
 
@@ -342,5 +354,95 @@ describe("AuthenticationService tests", () => {
     expect(loginWithGoogleFn).toHaveBeenCalled();
 
     expect(useFirebase).toHaveBeenCalled();
+  });
+
+  it("deleteEmailUser correctly calls the firebase function", async () => {
+    (useFirebase as jest.Mock).mockReturnValue(auth);
+
+    const verifiedUser = {
+      providerData: [
+        {
+          providerId: "google.com",
+        },
+      ],
+      emailVerified: true,
+    };
+
+    const password = "abc123";
+
+    function Component() {
+      const { user, deleteEmailUser } = useAuthentication();
+
+      useEffect(() => {
+        (async () => {
+          await deleteEmailUser(password);
+        })();
+      }, [user]);
+
+      return null;
+    }
+
+    render(
+      <AuthenticationProvider>
+        <Component />
+      </AuthenticationProvider>
+    );
+
+    expect(onAuthStateChanged).toHaveBeenCalled();
+
+    expect((onAuthStateChanged as jest.Mock).mock.calls[0][0]).toBe(auth.auth);
+
+    expect(deleteEmailUserFn).toHaveBeenCalledWith(undefined, password);
+
+    // Invoke onAuthStateChanged callback
+    await act(async () => {
+      (onAuthStateChanged as jest.Mock).mock.calls[0][1](verifiedUser);
+    });
+
+    expect(deleteEmailUserFn).toHaveBeenCalledWith(verifiedUser, password);
+  });
+
+  it("deleteGoogleUser correctly calls the firebase function", async () => {
+    (useFirebase as jest.Mock).mockReturnValue(auth);
+
+    const verifiedUser = {
+      providerData: [
+        {
+          providerId: "google.com",
+        },
+      ],
+      emailVerified: true,
+    };
+
+    function Component() {
+      const { user, deleteGoogleUser } = useAuthentication();
+
+      useEffect(() => {
+        (async () => {
+          await deleteGoogleUser();
+        })();
+      }, [user]);
+
+      return null;
+    }
+
+    render(
+      <AuthenticationProvider>
+        <Component />
+      </AuthenticationProvider>
+    );
+
+    expect(onAuthStateChanged).toHaveBeenCalled();
+
+    expect((onAuthStateChanged as jest.Mock).mock.calls[0][0]).toBe(auth.auth);
+
+    expect(deleteGoogleUserFn).toHaveBeenCalledWith(undefined);
+
+    // Invoke onAuthStateChanged callback
+    await act(async () => {
+      (onAuthStateChanged as jest.Mock).mock.calls[0][1](verifiedUser);
+    });
+
+    expect(deleteGoogleUserFn).toHaveBeenCalledWith(verifiedUser);
   });
 });

@@ -4,6 +4,8 @@ import { createContext, useContext, useEffect, useState } from "react";
 import { User } from "../models/User";
 import { useFirebase } from "./FirebaseService";
 import {
+  deleteEmailUser,
+  deleteGoogleUser,
   loginWithEmail as loginWithEmailFn,
   loginWithGoogle as loginWithGoogleFn,
   logout as logoutFn,
@@ -17,8 +19,9 @@ export enum UserType {
 }
 
 export interface UserDataContext {
+  deleteGoogleUser: () => Promise<boolean>;
+  deleteEmailUser: (password: string) => Promise<boolean>;
   isLoaded: boolean;
-  user?: User;
   isLoggingIn: boolean;
   isUserVerified: boolean;
   loginWithEmail: (email: string, password: string) => Promise<UserCredential>;
@@ -26,6 +29,7 @@ export interface UserDataContext {
   logout: () => Promise<void>;
   signupWithEmail(email: string, password: string): Promise<UserCredential>;
   sendPasswordResetEmail(email: string): Promise<void>;
+  user?: User;
   userType: UserType | null;
 }
 
@@ -80,6 +84,12 @@ export function AuthenticationProvider(props: { children: React.ReactNode }) {
         logout: logoutFn,
         sendPasswordResetEmail: sendPasswordResetEmailFn,
         signupWithEmail: signupWithEmailFn,
+        deleteGoogleUser: async () => {
+          return await deleteGoogleUser(user && user.firebaseUser);
+        },
+        deleteEmailUser: async (password: string) => {
+          return await deleteEmailUser(user && user.firebaseUser, password);
+        },
         get userType() {
           if (!user || !user.firebaseUser) {
             return null;
