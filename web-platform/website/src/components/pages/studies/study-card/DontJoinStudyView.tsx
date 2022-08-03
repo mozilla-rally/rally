@@ -130,7 +130,6 @@ const styles = {
       marginRight: "auto",
     }
   ),
-  modalText: style({}),
   container: style({
     maxWidth: "unset",
 

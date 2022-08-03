@@ -1,7 +1,13 @@
+import { FirebaseError } from "@firebase/util";
 import {
+  EmailAuthProvider,
   GoogleAuthProvider,
+  User,
   createUserWithEmailAndPassword,
+  deleteUser,
   fetchSignInMethodsForEmail,
+  reauthenticateWithCredential,
+  reauthenticateWithPopup,
   sendEmailVerification,
   sendPasswordResetEmail as sendPasswordResetEmailFn,
   signInWithEmailAndPassword,
@@ -9,8 +15,11 @@ import {
   signOut,
 } from "firebase/auth";
 
+import { FirebaseErrorCode } from "../../utils/FirebaseErrors";
 import { useFirebase } from "../FirebaseService";
 import {
+  deleteEmailUser,
+  deleteGoogleUser,
   loginWithEmail,
   loginWithGoogle,
   logout,
@@ -136,5 +145,101 @@ describe("UserAccountService tests", () => {
     expect(sendPasswordResetEmailFn).toHaveBeenCalledWith(auth, "joe@doe.com");
 
     expect(useFirebase).toHaveBeenCalled();
+  });
+
+  it("deleteGoogleUser returns false when user is not logged in", async () => {
+    expect(await deleteGoogleUser(undefined)).toBeFalsy();
+  });
+
+  it("deleteGoogleUser returns false when reauthenticateWithPopup returns false", async () => {
+    (reauthenticateWithPopup as jest.Mock).mockImplementation(
+      async () => false
+    );
+
+    const user = {} as User;
+
+    expect(await deleteGoogleUser(user)).toBeFalsy();
+
+    const provider = (GoogleAuthProvider as unknown as jest.Mock).mock
+      .instances[0];
+
+    expect(reauthenticateWithPopup).toHaveBeenCalledWith(user, provider);
+  });
+
+  it("deleteGoogleUser successfully deletes the user", async () => {
+    (reauthenticateWithPopup as jest.Mock).mockImplementation(async () => true);
+
+    const user = {} as User;
+
+    expect(await deleteGoogleUser(user)).toBeTruthy();
+
+    const provider = (GoogleAuthProvider as unknown as jest.Mock).mock
+      .instances[0];
+
+    expect(reauthenticateWithPopup).toHaveBeenCalledWith(user, provider);
+
+    expect(deleteUser).toHaveBeenCalledWith(user);
+  });
+
+  it("deleteEmailUser returns false when user is not logged in", async () => {
+    expect(await deleteEmailUser(undefined, "password")).toBeFalsy();
+  });
+
+  it("deleteEmailUser returns false when user does not have an email", async () => {
+    expect(await deleteEmailUser({} as User, "password")).toBeFalsy();
+  });
+
+  it("deleteEmailUser throws wrong password error when reauthentication fails", async () => {
+    (reauthenticateWithCredential as jest.Mock).mockImplementation(async () => {
+      throw new Error();
+    });
+
+    (EmailAuthProvider.credential as jest.Mock).mockImplementation(
+      (email, password) => ({ email, password })
+    );
+
+    const email = "foo@doe.com";
+    const password = "password";
+    const user = { email } as User;
+
+    await expect(
+      async () => await deleteEmailUser(user, password)
+    ).rejects.toThrowError(
+      new FirebaseError(FirebaseErrorCode.WrongPassword, "")
+    );
+
+    expect(EmailAuthProvider.credential).toHaveBeenCalledWith(email, password);
+
+    expect(reauthenticateWithCredential).toHaveBeenCalledWith(user, {
+      email,
+      password,
+    });
+
+    expect(deleteUser).not.toHaveBeenCalled();
+  });
+
+  it("successfully deletes the email user", async () => {
+    (reauthenticateWithCredential as jest.Mock).mockImplementation(async () => {
+      return true;
+    });
+
+    (EmailAuthProvider.credential as jest.Mock).mockImplementation(
+      (email, password) => ({ email, password })
+    );
+
+    const email = "foo@doe.com";
+    const password = "password";
+    const user = { email } as User;
+
+    await expect(deleteEmailUser(user, password)).resolves.toBeTruthy();
+
+    expect(EmailAuthProvider.credential).toHaveBeenCalledWith(email, password);
+
+    expect(reauthenticateWithCredential).toHaveBeenCalledWith(user, {
+      email,
+      password,
+    });
+
+    expect(deleteUser).toHaveBeenCalledWith(user);
   });
 });
