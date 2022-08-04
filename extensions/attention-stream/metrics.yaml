@@ -293,7 +293,7 @@ advertisements:
   ads:
     type: text
     description: |
-      Ads
+      Metadata about any ads on this page
     lifetime: ping
     send_in_pings:
       - advertisements
