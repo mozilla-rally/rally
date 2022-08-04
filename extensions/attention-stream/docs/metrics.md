@@ -8,10 +8,58 @@ This means you might have to go searching through the dependency tree to get a f
 
 # Pings
 
+- [advertisements](#advertisements)
+- [article-contents](#article-contents)
 - [deletion-request](#deletion-request)
 - [events](#events)
 - [study-enrollment](#study-enrollment)
 - [user-journey](#user-journey)
+
+## advertisements
+
+Metadata about any detected advertisements
+
+**Data reviews for this ping:**
+
+- <https://bugzilla.mozilla.org/show_bug.cgi?id=1778367>
+
+**Bugs related to this ping:**
+
+- <https://bugzilla.mozilla.org/show_bug.cgi?id=1778196>
+
+All Glean pings contain built-in metrics in the [`ping_info`](https://mozilla.github.io/glean/book/user/pings/index.html#the-ping_info-section) and [`client_info`](https://mozilla.github.io/glean/book/user/pings/index.html#the-client_info-section) sections.
+
+In addition to those built-in metrics, the following metrics are added to the ping:
+
+| Name | Type | Description | Data reviews | Extras | Expiration | [Data Sensitivity](https://wiki.mozilla.org/Firefox/Data_Collection) |
+| --- | --- | --- | --- | --- | --- | --- |
+| advertisements.ads |[text](https://mozilla.github.io/glean/book/user/metrics/text.html) |Metadata about any ads on this page  |[Bug 1778367](https://bugzilla.mozilla.org/show_bug.cgi?id=1778367)||never | |
+| advertisements.body |[text](https://mozilla.github.io/glean/book/user/metrics/text.html) |Body of the current page  |[Bug 1778367](https://bugzilla.mozilla.org/show_bug.cgi?id=1778367)||never | |
+| advertisements.page_id |[uuid](https://mozilla.github.io/glean/book/user/metrics/uuid.html) |A unique ID for this visit  |[Bug 1778367](https://bugzilla.mozilla.org/show_bug.cgi?id=1778367)||never | |
+| advertisements.url |[url](https://mozilla.github.io/glean/book/user/metrics/url.html) |URL for the current page  |[Bug 1778367](https://bugzilla.mozilla.org/show_bug.cgi?id=1778367)||never | |
+
+## article-contents
+
+Article contents
+
+**Data reviews for this ping:**
+
+- <https://bugzilla.mozilla.org/show_bug.cgi?id=1778367>
+
+**Bugs related to this ping:**
+
+- <https://bugzilla.mozilla.org/show_bug.cgi?id=1778196>
+
+All Glean pings contain built-in metrics in the [`ping_info`](https://mozilla.github.io/glean/book/user/pings/index.html#the-ping_info-section) and [`client_info`](https://mozilla.github.io/glean/book/user/pings/index.html#the-client_info-section) sections.
+
+In addition to those built-in metrics, the following metrics are added to the ping:
+
+| Name | Type | Description | Data reviews | Extras | Expiration | [Data Sensitivity](https://wiki.mozilla.org/Firefox/Data_Collection) |
+| --- | --- | --- | --- | --- | --- | --- |
+| article_contents.page_id |[uuid](https://mozilla.github.io/glean/book/user/metrics/uuid.html) |A unique ID for this visit  |[Bug 1778367](https://bugzilla.mozilla.org/show_bug.cgi?id=1778367)||never | |
+| article_contents.text_content |[text](https://mozilla.github.io/glean/book/user/metrics/text.html) |Contents of current page  |[Bug 1778367](https://bugzilla.mozilla.org/show_bug.cgi?id=1778367)||never | |
+| article_contents.title |[string](https://mozilla.github.io/glean/book/user/metrics/string.html) |Title of the current page  |[Bug 1778367](https://bugzilla.mozilla.org/show_bug.cgi?id=1778367)||never | |
+| article_contents.url |[url](https://mozilla.github.io/glean/book/user/metrics/url.html) |URL for the current page  |[Bug 1778367](https://bugzilla.mozilla.org/show_bug.cgi?id=1778367)||never | |
 
 ## deletion-request
 

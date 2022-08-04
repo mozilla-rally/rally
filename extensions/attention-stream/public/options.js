@@ -38,15 +38,16 @@ document.getElementById("toggleEnabled").addEventListener("click", async event =
 document.getElementById("download").addEventListener("click", async () => {
     const db = new Dexie(DB_NAME);
     await db.open();
-    // Sort using index, @see `src/background.ts`
-    const journeys = await db.table("user-journey").orderBy("user_journey_page_visit_stop_date_time").toArray();
 
-    const dataUrl = (`data:application/json,${encodeURIComponent(JSON.stringify(journeys, null, 2))}`);
+    for (const tableName of ["user-journey", "advertisements", "article-contents"]) {
+        const tableContents = await db.table(tableName).toArray();
+        const dataUrl = (`data:application/json,${encodeURIComponent(JSON.stringify(tableContents, null, 2))}`);
 
-    const downloadLink = document.getElementById("downloadLink");
-    downloadLink.setAttribute("href", dataUrl);
-    downloadLink.setAttribute("download", "rally-attention-stream-user-journey.json");
-    downloadLink.click();
+        const downloadLink = document.getElementById("downloadLink");
+        downloadLink.setAttribute("href", dataUrl);
+        downloadLink.setAttribute("download", `rally-attention-stream-${tableName}.json`);
+        downloadLink.click();
+    }
 });
 
 document.getElementById("clear-database").addEventListener("click", async () => {

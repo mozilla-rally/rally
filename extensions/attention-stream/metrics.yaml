@@ -182,3 +182,125 @@ user_journey:
     notification_emails:
       - than@mozilla.com
     expires: never
+
+article_contents:
+  page_id:
+    type: uuid
+    description: |
+      A unique ID for this visit
+    lifetime: ping
+    send_in_pings:
+      - article-contents
+    bugs:
+      - https://bugzilla.mozilla.org/show_bug.cgi?id=1778196
+    data_reviews:
+      - https://bugzilla.mozilla.org/show_bug.cgi?id=1778367
+    notification_emails:
+      - than@mozilla.com
+    expires: never
+
+  url:
+    type: url
+    description: |
+      URL for the current page
+    lifetime: ping
+    send_in_pings:
+      - article-contents
+    bugs:
+      - https://bugzilla.mozilla.org/show_bug.cgi?id=1778196
+    data_reviews:
+      - https://bugzilla.mozilla.org/show_bug.cgi?id=1778367
+    notification_emails:
+      - than@mozilla.com
+    expires: never
+
+  title:
+    type: string
+    description: |
+      Title of the current page
+    lifetime: ping
+    send_in_pings:
+      - article-contents
+    bugs:
+      - https://bugzilla.mozilla.org/show_bug.cgi?id=1778196
+    data_reviews:
+      - https://bugzilla.mozilla.org/show_bug.cgi?id=1778367
+    notification_emails:
+      - than@mozilla.com
+    expires: never
+
+  text_content:
+    type: text
+    description: |
+      Contents of current page
+    lifetime: ping
+    send_in_pings:
+      - article-contents
+    bugs:
+      - https://bugzilla.mozilla.org/show_bug.cgi?id=1778196
+    data_reviews:
+      - https://bugzilla.mozilla.org/show_bug.cgi?id=1778367
+    notification_emails:
+      - than@mozilla.com
+    expires: never
+
+advertisements:
+  page_id:
+    type: uuid
+    description: |
+      A unique ID for this visit
+    lifetime: ping
+    send_in_pings:
+      - advertisements
+    bugs:
+      - https://bugzilla.mozilla.org/show_bug.cgi?id=1778196
+    data_reviews:
+      - https://bugzilla.mozilla.org/show_bug.cgi?id=1778367
+    notification_emails:
+      - than@mozilla.com
+    expires: never
+
+  url:
+    type: url
+    description: |
+      URL for the current page
+    lifetime: ping
+    send_in_pings:
+      - advertisements
+    bugs:
+      - https://bugzilla.mozilla.org/show_bug.cgi?id=1778196
+    data_reviews:
+      - https://bugzilla.mozilla.org/show_bug.cgi?id=1778367
+    notification_emails:
+      - than@mozilla.com
+    expires: never
+
+  body:
+    type: text
+    description: |
+      Body of the current page
+    lifetime: ping
+    send_in_pings:
+      - advertisements
+    bugs:
+      - https://bugzilla.mozilla.org/show_bug.cgi?id=1778196
+    data_reviews:
+      - https://bugzilla.mozilla.org/show_bug.cgi?id=1778367
+    notification_emails:
+      - than@mozilla.com
+    expires: never
+
+  ads:
+    type: text
+    description: |
+      Metadata about any ads on this page
+    lifetime: ping
+    send_in_pings:
+      - advertisements
+    bugs:
+      - https://bugzilla.mozilla.org/show_bug.cgi?id=1778196
+    data_reviews:
+      - https://bugzilla.mozilla.org/show_bug.cgi?id=1778367
+    notification_emails:
+      - than@mozilla.com
+    expires: never
