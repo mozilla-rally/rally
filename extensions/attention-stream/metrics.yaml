@@ -199,21 +199,6 @@ article_contents:
       - than@mozilla.com
     expires: never
 
-  survey_id:
-    type: uuid
-    description: |
-      A survey ID for this user
-    lifetime: ping
-    send_in_pings:
-      - article-contents
-    bugs:
-      - https://bugzilla.mozilla.org/show_bug.cgi?id=1778196
-    data_reviews:
-      - https://bugzilla.mozilla.org/show_bug.cgi?id=1778367
-    notification_emails:
-      - than@mozilla.com
-    expires: never
-
   url:
     type: url
     description: |
