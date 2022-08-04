@@ -101,6 +101,32 @@ describe("UserDocumentService tests", () => {
     expect(onSnapshotFn).not.toHaveBeenCalled();
   });
 
+  it("handles null user state", async () => {
+    (useAuthentication as jest.Mock).mockReturnValue({
+      user: null,
+      isLoaded: true,
+    });
+
+    let obtainedDoc = null;
+    let isDocumentLoaded = false;
+
+    await renderComponent(
+      ({ userDocument, isDocumentLoaded: isLoaded }) => (
+        (obtainedDoc = userDocument), (isDocumentLoaded = isLoaded)
+      ),
+      () => {}
+    );
+
+    expect(useAuthentication).toHaveBeenCalled();
+    expect(useFirebase).toHaveBeenCalled();
+
+    expect(doc).not.toHaveBeenCalled();
+
+    expect(obtainedDoc).toEqual(null);
+    expect(isDocumentLoaded).toBeTruthy();
+    expect(onSnapshotFn).not.toHaveBeenCalled();
+  });
+
   it("authenticated state", async () => {
     let obtainedDoc = null;
 

@@ -190,6 +190,60 @@ export const Strings = {
       ],
     },
     pages: {
+      accountSettings: {
+        accountSettings: {
+          tagline:
+            "Manage your info, privacy, and security to make Rally work better for you.",
+          title: "Account Settings",
+        },
+        deleteAccountDisclaimer: {
+          delete: "Delete",
+          tagline:
+            "This account will no longer be available, and all your saved data will be permanently deleted.",
+          title: "Delete Account",
+        },
+        googleAccountSettings: {
+          changeSettings:
+            "You can change your Security or Privacy settings through your Google Account",
+          connectedWithGoogle: "Connected with Google",
+          connectedTimestampFormat: "Connected to {email} on {date}",
+          email: "Email",
+          googleAccountLink: "https://www.google.com/account",
+          manageAccount: "Manage Account",
+          title: "Sign In",
+        },
+        navigationBar: {
+          sections: [
+            {
+              text: "Manage Profile",
+              icon: "/img/icon-profile.svg",
+              link: "/profile",
+              external: false,
+            },
+            {
+              text: "Account Settings",
+              icon: "/img/icon-gear.svg",
+              command: "AccountSettings",
+              links: [
+                {
+                  accountType: "email",
+                  text: "Edit Email",
+                  command: "EditEmail",
+                },
+                {
+                  accountType: "email",
+                  text: "Edit Password",
+                  command: "EditPassword",
+                },
+                {
+                  text: "Delete Account",
+                  command: "DeleteAccount",
+                },
+              ],
+            },
+          ],
+        },
+      },
       login: {
         emailAccountCreatedView: {
           backToSignIn: "Back to Sign In",
