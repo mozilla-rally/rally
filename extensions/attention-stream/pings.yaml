@@ -36,7 +36,7 @@ user-journey:
       Page navigation was observed.
 
 advertisements:
-  description: Advertisements
+  description: Metadata about any detected advertisements
   include_client_id: false
   send_if_empty: false
   bugs:

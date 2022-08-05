@@ -29,7 +29,6 @@
   "devDependencies": {
     "@babel/preset-env": "^7.11.5",
     "@babel/preset-typescript": "^7.17.12",
-    "@mozilla/readability": "^0.4.2",
     "@rollup/plugin-commonjs": "^21.0.0",
     "@rollup/plugin-node-resolve": "^13.0.6",
     "@rollup/plugin-replace": "^3.0.0",
@@ -56,7 +55,7 @@
   "dependencies": {
     "@mozilla/glean": "^1.0.0",
     "@mozilla/rally-sdk": "^0.9.32",
-    "@mozilla/web-science": "^0.5.1",
+    "@mozilla/web-science": "^0.5.2",
     "dexie": "^3.2.2",
     "pako": "^2.0.4",
     "tailwindcss": "^3.0.24",
