@@ -156,14 +156,19 @@ describe("addRallyUserToFirestore and deleteRallyUserImpl", () => {
     await createAndValidateUserRecords();
   });
 
-  it("deletion deletes user and extensionUser", async () => {
+  it("deletion deletes user", async () => {
     await createAndValidateUserRecords();
     await createStudiesForUser();
-    await deleteRallyUserImpl(user);
+    await deleteRallyUserImpl({
+      ...user,
+      providerData: [{ uid: user.uid } as admin.auth.UserInfo],
+    });
 
     const userRecords = await getUserRecords();
 
     expect(userRecords.user.exists).toBeFalsy();
+
+    // TODO: test deletion of study-specific "rallytoken" accounts
   });
 });
 
@@ -190,6 +195,7 @@ describe("rallytoken tests", () => {
   const fakeAuth = {
     verifyIdToken: jest.fn(),
     createCustomToken: jest.fn(),
+    deleteUsers: jest.fn(),
   };
 
   Object.defineProperty(admin, "auth", {
