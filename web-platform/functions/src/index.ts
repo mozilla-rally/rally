@@ -111,6 +111,11 @@ export async function deleteRallyUserImpl(
 ): Promise<boolean> {
   functions.logger.info("deleteRallyUser fired for user:", user);
 
+  if (user.providerData.length === 0) {
+    // This is an extension user; we don't need to do anything
+    return true;
+  }
+
   // Delete the user studies subcollection.
   const collectionRef = admin
     .firestore()
@@ -122,8 +127,12 @@ export async function deleteRallyUserImpl(
   // Work in batches of 5: https://firebase.google.com/docs/firestore/manage-data/transactions#security_rules_limits
   let batch = admin.firestore().batch();
   const userStudyDocs = await collectionRef.get();
+  const studyExtensionUIDs = [];
   for (const [count, userStudyDoc] of userStudyDocs.docs.entries()) {
     batch.delete(userStudyDoc.ref);
+
+    // Collect the UIDs for the study-specific auth accounts associated with this user
+    studyExtensionUIDs.push(`${userStudyDoc.data().studyId}:${user.uid}`);
 
     // Count is 0-based, so commit on multiples of 4.
     if (count % 4 === 0) {
@@ -134,6 +143,10 @@ export async function deleteRallyUserImpl(
 
   // Do a final commit in case we ended on a partial batch.
   await batch.commit();
+
+  // Delete all the study-specific auth accounts associated with this user
+  // Limited to 1000, but it is safe to assume we will not have more than 1000 studies
+  await admin.auth().deleteUsers(studyExtensionUIDs);
 
   // Finally, delete the user document.
   await admin.firestore().collection("users").doc(user.uid).delete();
