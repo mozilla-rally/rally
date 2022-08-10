@@ -1,8 +1,14 @@
+import { FirebaseError } from "@firebase/util";
 import {
+  EmailAuthProvider,
   GoogleAuthProvider,
+  User,
   UserCredential,
   createUserWithEmailAndPassword,
+  deleteUser,
   fetchSignInMethodsForEmail,
+  reauthenticateWithCredential,
+  reauthenticateWithPopup,
   sendEmailVerification,
   sendPasswordResetEmail as sendPasswordResetEmailFn,
   signInWithEmailAndPassword,
@@ -10,6 +16,7 @@ import {
   signOut,
 } from "firebase/auth";
 
+import { FirebaseErrorCode } from "../utils/FirebaseErrors";
 import { useFirebase } from "./FirebaseService";
 
 export async function loginWithEmail(
@@ -63,4 +70,44 @@ export async function signupWithEmail(
   await sendEmailVerification(userCredential.user);
 
   return userCredential;
+}
+
+export async function deleteGoogleUser(user?: User): Promise<boolean> {
+  if (!user) {
+    return false;
+  }
+
+  const provider = new GoogleAuthProvider();
+
+  if (!(await reauthenticateWithPopup(user, provider))) {
+    return false;
+  }
+
+  await deleteUser(user);
+  return true;
+}
+
+export async function deleteEmailUser(
+  user: User | undefined,
+  password: string
+): Promise<boolean> {
+  if (!user || !user.email) {
+    return false;
+  }
+
+  try {
+    if (
+      !(await reauthenticateWithCredential(
+        user,
+        EmailAuthProvider.credential(user.email, password)
+      ))
+    ) {
+      return false;
+    }
+  } catch (e) {
+    throw new FirebaseError(FirebaseErrorCode.WrongPassword, "");
+  }
+
+  await deleteUser(user);
+  return true;
 }

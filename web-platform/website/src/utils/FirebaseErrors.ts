@@ -2,7 +2,7 @@ import { FirebaseError } from "@firebase/util";
 
 import { Strings } from "../resources/Strings";
 
-enum FirebaseErrorCode {
+export enum FirebaseErrorCode {
   EmailAlreadyInUse = "auth/email-already-in-use",
   InvalidEmail = "auth/invalid-email",
   NetworkFailure = "auth/network-request-failed",

@@ -196,6 +196,53 @@ export const Strings = {
             "Manage your info, privacy, and security to make Rally work better for you.",
           title: "Account Settings",
         },
+        deleteAccount: {
+          cancel: "Cancel",
+          deleteAccount: "Delete your Rally Account",
+          deleteLandingPageUrl:
+            "https://rally.mozilla.org/account-deleted/index.html",
+          text: (
+            <>
+              <p className="text-body">
+                <b>Deleting your Rally account means:</b>
+              </p>
+              <ul>
+                <li>
+                  <b>Rally will stop collecting all data.</b>
+                </li>
+                <li>
+                  <b>You will stop contributing browsing data to studies</b> you
+                  may have joined.
+                </li>
+                <li>
+                  <b>Rally will delete all your profile information.</b>
+                </li>
+                <li>
+                  <b>Rally will delete all your data from open studies</b> you
+                  had joined. Researchers may still have access to browsing data
+                  you contributed to <b>completed studies.</b>
+                </li>
+              </ul>
+            </>
+          ),
+          title: "Delete your Rally Account",
+        },
+        deleteAccountConfirmation: {
+          cancel: "Cancel",
+          deleteAccount: "Delete your Rally account",
+          emailText: "Enter your password below to confirm.",
+          googleText: (
+            <>
+              <p>This will permanently delete your account.</p>
+              <p>
+                <b>Note:</b> You may be asked to authenticate with Google to
+                complete the process.
+              </p>
+            </>
+          ),
+          password: "Password",
+          title: "Are you sure?",
+        },
         deleteAccountDisclaimer: {
           delete: "Delete",
           tagline:
