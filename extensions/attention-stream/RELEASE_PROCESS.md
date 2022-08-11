@@ -12,7 +12,7 @@ Modify these and push to a `release` branch on GitHub. Merge any changes from `m
 
 ## Create a Github release
 
-Create a new github release, prefixing the tag with `v` (`v1.2.3` for version `1.2.3`). Attach the unsigned release XPI that you
+Create a new github release, prefixing the tag with `v` (`v1.2.3-attention-stream` for version `1.2.3`). Attach the unsigned release XPI that you
 built in the previous step.
 
 ## Build extension
@@ -22,8 +22,8 @@ built in the previous step.
 
 Chrome (and manifest v3) are the default on the `release` branch:
 
-```
-% (npm i && npm run build && npm run package) 2>&1 | tee build-chrome.log
+```sh
+(npm i && npm run build && npm run package) 2>&1 | tee build-chrome.log
 ```
 
 The build output will be in `./web-ext-artifacts`. Rename to `rally_attention_stream-${version}-chrome.zip`.
@@ -32,15 +32,15 @@ The build output will be in `./web-ext-artifacts`. Rename to `rally_attention_st
 
 Firefox (and manifest v2) support is maintained on a separate branch:
 
-```
-% git checkout firefox-mv2-support
-% git merge --no-ff release
-% git tag v${version}-attention-stream-firefox
-% git push origin v${version}-attention-stream-firefox
+```sh
+git checkout firefox-mv2-support
+git merge --no-ff release
+git tag v${version}-attention-stream-firefox
+git push origin v${version}-attention-stream-firefox
 ```
 
-```
-% (npm i && npm run build && npm run package) 2>&1 | tee build-firefox.log
+```sh
+(npm i && npm run build && npm run package) 2>&1 | tee build-firefox.log
 ```
 
 The build output will be in `./web-ext-artifacts`. Rename to `rally_attention_stream-${version}-firefox.zip`.
