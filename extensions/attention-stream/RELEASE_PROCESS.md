@@ -68,9 +68,14 @@ Only expected changes should be present:
 
 Be sure to open a PR and merge the `release` branch back to `main`.
 
-## Submit to AMO and CWS
+## Submit to Addons.Mozilla.Org (AMO)
 
 Upload the unsigned extension to AMO https://addons.mozilla.org/en-US/developers/, using the extension and source code ZIP files from the github
 release in the previous step.
 
 If this is a new study, including an appropriate badge ("by Firefox", or "Verified").
+
+## Submit to Chrome Web Store (CWS)
+
+Upload the unsigned extension to CWS https://chrome.google.com/webstore/category/extensions, using the extension ZIP file from the github release
+in the previous step.
