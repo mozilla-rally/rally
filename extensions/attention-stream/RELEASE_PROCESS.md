@@ -36,6 +36,7 @@ Firefox (and manifest v2) support is maintained on a separate branch:
 % git checkout firefox-mv2-support
 % git merge --no-ff release
 % git tag v${version}-attention-stream-firefox
+% git push origin v${version}-attention-stream-firefox
 ```
 
 ```
