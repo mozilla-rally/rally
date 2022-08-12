@@ -169,29 +169,33 @@ export function EditAccountEmailView() {
                 <Label for="password" className="fw-bold">
                   {strings.password}
                 </Label>
-                <Input
-                  id="password"
-                  type={passwordVisible ? "text" : "password"}
-                  name="password"
-                  value={password}
-                  onChange={handleChange}
-                  invalid={isPasswordInvalid}
-                />
-                <img
-                  src={!passwordVisible
-                    ? "img/icon-password-show.svg"
-                    : "img/icon-password-hide.svg"}
-                  alt={passwordVisible ? "open eye" : "eye with slash"}
-                  id="show-eye"
-                  width="24px"
-                  height="24px"
-                  onClick={() => setPasswordVisbile(!passwordVisible)}
-                />
+                <div className="d-flex flex-row-reverse">
+                  <Input
+                    id="password"
+                    type={passwordVisible ? "text" : "password"}
+                    name="password"
+                    value={password}
+                    onChange={handleChange}
+                    invalid={isPasswordInvalid}
+                  />
+                  <img
+                    className="toggle-password align-self-center position-absolute m-1"
+                    src={!passwordVisible
+                      ? "img/icon-password-show.svg"
+                      : "img/icon-password-hide.svg"}
+                    alt={passwordVisible ? "open eye" : "eye with slash"}
+                    id="show-eye"
+                    width="24px"
+                    height="24px"
+                    onClick={() => setPasswordVisbile(!passwordVisible)}
+                  />
+                </div>
                 {isPasswordInvalid && (
                   <FormFeedback className="password-error">
                     {validationResult?.password.error}
                   </FormFeedback>
                 )}
+
               </FormGroup>
             </Form></Col>
         </Row>
@@ -251,4 +255,7 @@ const styles = {
       },
     },
   }),
+  passwordEye: style({
+
+  })
 };
