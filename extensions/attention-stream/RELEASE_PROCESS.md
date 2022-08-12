@@ -53,7 +53,7 @@ Upload the build logs and `.zip` artifacts to the GitHub releases page.
 
 If there is a previous version of this extension live on AMO, download it and compare to the current package:
 
-[https://addons.mozilla.org/en-US/firefox/addon/political-covid-19-news-study/versions/](https://addons.mozilla.org/en-US/firefox/addon/attention-stream/versions/)
+https://addons.mozilla.org/en-US/firefox/addon/attention-stream/versions/
 
 ### TODO add Chrome store link
 
