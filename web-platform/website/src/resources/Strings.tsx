@@ -196,6 +196,14 @@ export const Strings = {
             "Manage your info, privacy, and security to make Rally work better for you.",
           title: "Account Settings",
         },
+        editEmailAccount:{
+          cancel: "Cancel",
+          forgot: "Forgot password?",
+          newEmail: "New email address",
+          password: "Password",
+          title: "Change your email address",
+          update: "Update email"
+        },
         deleteAccount: {
           cancel: "Cancel",
           deleteAccount: "Delete your Rally Account",
