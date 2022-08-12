@@ -204,6 +204,10 @@ export const Strings = {
           title: "Change your email address",
           update: "Update email"
         },
+        emailChanged:{
+          title: "Check your email",
+          message: "Successfully sent email change request. To finish updating, please follow instructions sent to {email}."
+        },
         deleteAccount: {
           cancel: "Cancel",
           deleteAccount: "Delete your Rally Account",

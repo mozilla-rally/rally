@@ -18,6 +18,7 @@ import {
   LoginFormValidationResult,
   validateLoginForm,
 } from "../login/LoginFormValidator";
+import { EmailChangedView } from './EmailChangedView'
 import { Strings } from "../../../resources/Strings";
 import { useAuthentication } from "../../../services/AuthenticationService";
 import { Colors, Spacing } from "../../../styles";
@@ -35,13 +36,16 @@ const strings = Strings.components.pages.accountSettings.editEmailAccount;
 const firebaseStings = Strings.utils.firebaseError.errorMessages
 
 export function EditAccountEmailView() {
+  const [confirmationView, setConfirmationView] = useState(false)
   const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
   const [isDisabled, setDisabled] = useState(true);
+  const [password, setPassword] = useState("");
   const [passwordVisible, setPasswordVisbile] = useState(false);
-  const { setAccountSettingsState } = useAccountSettingsDataContext();
+  const [eyeIconVisible, setVisibility] = useState(false)
   const [validationResult, setValidationResult] =
     useState<LoginFormValidationResult>();
+  const { setAccountSettingsState } = useAccountSettingsDataContext();
+
 
   const isEmailInvalid = Boolean(
     validationResult && validationResult.email && validationResult.email.error
@@ -74,7 +78,6 @@ export function EditAccountEmailView() {
   const { changeUserEmail } = useAuthentication();
 
   const handleChange = (e: any) => {
-
     setValidationResult({
       email: {},
       password: {},
@@ -88,6 +91,7 @@ export function EditAccountEmailView() {
     }
     if (e.target.name === "password") {
       setPassword(e.target.value)
+      setVisibility(true)
       return
     }
     if (e.target.name === "email") {
@@ -98,7 +102,6 @@ export function EditAccountEmailView() {
 
 
   async function validateAndUpdate() {
-
     setValidationResult(undefined);
 
     const validationResult = validateLoginForm(
@@ -108,9 +111,9 @@ export function EditAccountEmailView() {
 
     setValidationResult(validationResult);
 
-
     try {
       await changeUserEmail(emailRef.current, passwordRef.current);
+      setConfirmationView(true)
     } catch (e) {
 
       let error = getFirebaseErrorMessage(e as FirebaseError)
@@ -121,116 +124,133 @@ export function EditAccountEmailView() {
 
       error.indexOf(firebaseStings["auth/wrong-password"]) > -1 ? passwordErr = error : passwordErr = passwordErr
 
-      debugger
-
       setValidationResult({
         email: { error: emailErr },
         password: { error: passwordErr },
         passwordRules: [],
         valid: false,
       });
+
+      setVisibility(false)
     }
   }
 
   return (
     <Card className="flex-nowrap p-4">
-      <Container
-        className={`${ContainerStyles.NoSpacing} ${styles.container} p-0`}
-      >
-        <Row className="mb-3">
-          <Col>
-            <h1 className={Fonts.Headline}>{strings.title}</h1>
-          </Col>
-        </Row>
-        <Row className="mb-3">
-          <Col>
-            <Form>
-              <FormGroup className="mb-4">
-                <Label for="email" className="fw-bold">
-                  {strings.newEmail}
-                </Label>
-                <Input
-                  id="email"
-                  type="email"
-                  name="email"
-                  autoFocus={true}
-                  value={email}
-                  onChange={handleChange}
-                  invalid={isEmailInvalid}
-                />
-                {isEmailInvalid && (
-                  <FormFeedback className="email-error">
-                    {validationResult?.email.error}
-                  </FormFeedback>
-                )}
-              </FormGroup>
+      {confirmationView ? (
+        <EmailChangedView email={emailRef.current} />
+      )
+        :
+        (
+          <Container
+            className={`${ContainerStyles.NoSpacing} ${styles.container} p-0`}
+          >
+            <Row className="mb-3">
+              <Col>
+                <h1 className={Fonts.Headline}>{strings.title}</h1>
+              </Col>
+            </Row>
+            <Row className="mb-3">
+              <Col>
+                <Form>
+                  <FormGroup className="mb-4">
+                    <Label for="email" className="fw-bold">
+                      {strings.newEmail}
+                    </Label>
+                    <Input
+                      id="email"
+                      type="email"
+                      name="email"
+                      autoFocus={true}
+                      value={email}
+                      onChange={handleChange}
+                      invalid={isEmailInvalid}
+                    />
+                    {isEmailInvalid && (
+                      <FormFeedback className="email-error">
+                        {validationResult?.email.error}
+                      </FormFeedback>
+                    )}
+                  </FormGroup>
 
-              <FormGroup>
-                <Label for="password" className="fw-bold">
-                  {strings.password}
-                </Label>
-                <div className="d-flex flex-row-reverse">
-                  <Input
-                    id="password"
-                    type={passwordVisible ? "text" : "password"}
-                    name="password"
-                    value={password}
-                    onChange={handleChange}
-                    invalid={isPasswordInvalid}
-                  />
-                  <img
-                    className="toggle-password align-self-center position-absolute m-1"
-                    src={!passwordVisible
-                      ? "img/icon-password-show.svg"
-                      : "img/icon-password-hide.svg"}
-                    alt={passwordVisible ? "open eye" : "eye with slash"}
-                    id="show-eye"
-                    width="24px"
-                    height="24px"
-                    onClick={() => setPasswordVisbile(!passwordVisible)}
-                  />
-                </div>
-                {isPasswordInvalid && (
-                  <FormFeedback className="password-error">
-                    {validationResult?.password.error}
-                  </FormFeedback>
-                )}
+                  <FormGroup>
+                    <Label for="password" className="fw-bold">
+                      {strings.password}
+                    </Label>
+                    <div className="d-flex flex-row-reverse">
+                      <div className="w-100">
+                        <Input
+                          id="password"
+                          type={passwordVisible ? "text" : "password"}
+                          name="password"
+                          value={password}
+                          onChange={handleChange}
+                          invalid={isPasswordInvalid}
+                        />
 
-              </FormGroup>
-            </Form></Col>
-        </Row>
-        <Row className="d-flex justify-content-between">
-          <Col className="me-3 col-auto">
-            <Button
-              className={`fw-bold p-0 ${TransparentButton}`}
-              outline
-            >
-              {strings.forgot}
-            </Button>
-          </Col>
-          <Col className="col-auto d-flex justify-content-between">
-            <Button
-              className={`d-flex fw-bold ps-4 pe-4 pt-2 pb-2 me-3 ${TertiaryButton}`}
-              outline
-              onClick={() =>
-                setAccountSettingsState(AccountSettingsState.AccountSettings)
-              }
-            >
-              {strings.cancel}
-            </Button>
+                        {isPasswordInvalid && (
+                          <FormFeedback className="password-error">
+                            {validationResult?.password.error}
+                          </FormFeedback>
+                        )}
+                      </div>
 
-            <Button
-              className={`d-flex fw-bold ps-4 pe-4 pt-2 pb-2 ${isDisabled ? DisabledProductButton : ProductButton}`}
-              outline
-              disabled={isDisabled}
-              onClick={validateAndUpdate}
-            >
-              {strings.update}
-            </Button>
-          </Col>
 
-        </Row>
-      </Container>
+                      {eyeIconVisible && (
+                        <img
+                          className="toggle-password align-self-center position-absolute m-1"
+                          src={!passwordVisible
+                            ? "img/icon-password-show.svg"
+                            : "img/icon-password-hide.svg"}
+                          alt={passwordVisible ? "open eye" : "eye with slash"}
+                          id="show-eye"
+                          width="24px"
+                          height="24px"
+                          onClick={() => setPasswordVisbile(!passwordVisible)}
+                        />
+                      )}
+                    </div>
+                  </FormGroup>
+                </Form></Col>
+            </Row>
+            <Row className="d-flex justify-content-between">
+              <Col className="me-3 col-auto">
+                <Button
+                  className={`fw-bold p-0 ${TransparentButton}`}
+                  outline
+                >
+                  {strings.forgot}
+                </Button>
+              </Col>
+              <Col className="col-auto d-flex justify-content-between">
+                <Button
+                  className={`d-flex fw-bold ps-4 pe-4 pt-2 pb-2 me-3 ${TertiaryButton}`}
+                  outline
+                  onClick={() =>
+                    setAccountSettingsState(AccountSettingsState.AccountSettings)
+                  }
+                >
+                  {strings.cancel}
+                </Button>
+
+                <Button
+                  className={`d-flex fw-bold ps-4 pe-4 pt-2 pb-2 ${isDisabled ? DisabledProductButton : ProductButton}`}
+                  outline
+                  disabled={isDisabled}
+                  onClick={validateAndUpdate}
+                >
+                  {strings.update}
+                </Button>
+              </Col>
+
+            </Row>
+          </Container>
+
+        )
+
+      }
+
+
     </Card>
   );
 }
@@ -254,8 +274,5 @@ const styles = {
         },
       },
     },
-  }),
-  passwordEye: style({
-
   })
 };
