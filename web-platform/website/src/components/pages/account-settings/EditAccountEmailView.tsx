@@ -116,13 +116,13 @@ export function EditAccountEmailView() {
       setConfirmationView(true)
     } catch (e) {
 
-      let error = getFirebaseErrorMessage(e as FirebaseError)
+      const error = getFirebaseErrorMessage(e as FirebaseError)
       let emailErr = ""
       let passwordErr = ""
 
-      error.indexOf(firebaseStings["auth/email-already-in-use"]) > -1 || error.indexOf(firebaseStings["auth/invalid-email"]) > -1 ? emailErr = error : emailErr = emailErr
+      error.indexOf(firebaseStings["auth/email-already-in-use"]) > -1 || error.indexOf(firebaseStings["auth/invalid-email"]) > -1 ? emailErr = error : emailErr = ""
 
-      error.indexOf(firebaseStings["auth/wrong-password"]) > -1 ? passwordErr = error : passwordErr = passwordErr
+      error.indexOf(firebaseStings["auth/wrong-password"]) > -1 ? passwordErr = error : passwordErr = ""
 
       setValidationResult({
         email: { error: emailErr },

@@ -6,7 +6,11 @@ import { Highlighter } from "../../Highlighter";
 
 const strings = Strings.components.pages.accountSettings.emailChanged
 
-export function EmailChangedView(props: any) {
+interface Email {
+  email:string
+}
+
+export function EmailChangedView(props:Email) {
 
   const { email } = props
 
