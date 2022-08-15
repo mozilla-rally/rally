@@ -1,21 +1,19 @@
 import { Col, Container, Row } from "reactstrap";
+
 import { Strings } from "../../../resources/Strings";
 import { Fonts } from "../../../styles/Fonts";
 import { Highlighter } from "../../Highlighter";
 
-
-const strings = Strings.components.pages.accountSettings.emailChanged
+const strings = Strings.components.pages.accountSettings.emailChanged;
 
 interface Email {
-  email:string
+  email: string;
 }
 
-export function EmailChangedView(props:Email) {
+export function EmailChangedView(props: Email) {
+  const { email } = props;
 
-  const { email } = props
-
-  const message = strings.message.replace("{email}", email)
-
+  const message = strings.message.replace("{email}", email);
 
   return (
     <Container className={`p-0`}>

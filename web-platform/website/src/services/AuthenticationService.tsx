@@ -20,7 +20,7 @@ export enum UserType {
 }
 
 export interface UserDataContext {
-  changeUserEmail: (email:string, password: string) => Promise<boolean>;
+  changeUserEmail: (email: string, password: string) => Promise<boolean>;
   deleteGoogleUser: () => Promise<boolean>;
   deleteEmailUser: (password: string) => Promise<boolean>;
   isLoaded: boolean;
@@ -86,8 +86,12 @@ export function AuthenticationProvider(props: { children: React.ReactNode }) {
         logout: logoutFn,
         sendPasswordResetEmail: sendPasswordResetEmailFn,
         signupWithEmail: signupWithEmailFn,
-        changeUserEmail: async (email: string, password:string) => {
-          return await changeUserEmail(user && user.firebaseUser, email, password);
+        changeUserEmail: async (email: string, password: string) => {
+          return await changeUserEmail(
+            user && user.firebaseUser,
+            email,
+            password
+          );
         },
         deleteGoogleUser: async () => {
           return await deleteGoogleUser(user && user.firebaseUser);

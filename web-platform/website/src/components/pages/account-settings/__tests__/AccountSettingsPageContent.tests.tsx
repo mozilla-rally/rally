@@ -9,11 +9,13 @@ import { AccountSettingsNavigationBar } from "../AccountSettingsNavigationBar";
 import { AccountSettingsPageContent } from "../AccountSettingsPageContent";
 import { AccountSettingsView } from "../AccountSettingsView";
 import { DeleteAccountView } from "../DeleteAccountView";
+import { EditAccountEmailView } from "../EditAccountEmailView";
 
 jest.mock("../AccountSettingsDataContext");
 jest.mock("../AccountSettingsNavigationBar");
 jest.mock("../AccountSettingsView");
 jest.mock("../DeleteAccountView");
+jest.mock("../EditAccountEmailView");
 
 describe("AccountSettingsPageContent tests", () => {
   beforeEach(() => {
@@ -42,6 +44,17 @@ describe("AccountSettingsPageContent tests", () => {
 
     expect(AccountSettingsNavigationBar).toHaveBeenCalled();
     expect(DeleteAccountView).toHaveBeenCalled();
+  });
+
+  it("renders edit email state", () => {
+    (useAccountSettingsDataContext as jest.Mock).mockReturnValue({
+      accountSettingsState: AccountSettingsState.EditEmail,
+    });
+
+    render(<AccountSettingsPageContent />);
+
+    expect(AccountSettingsNavigationBar).toHaveBeenCalled();
+    expect(EditAccountEmailView).toHaveBeenCalled();
   });
 
   it("throws when state is invalid", () => {
