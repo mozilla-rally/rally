@@ -1,5 +1,5 @@
 import { FirebaseError } from "@firebase/app";
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import {
   Button,
   Card,
@@ -42,10 +42,9 @@ const firebaseStings = Strings.utils.firebaseError.errorMessages;
 export function EditAccountEmailView() {
   const [confirmationView, setConfirmationView] = useState(false);
   const [email, setEmail] = useState("");
-  const [isDisabled, setDisabled] = useState(true);
   const [password, setPassword] = useState("");
-  const [passwordVisible, setPasswordVisbile] = useState(false);
-  const [eyeIconVisible, setVisibility] = useState(false);
+  const [passwordVisible, setPasswordVisible] = useState(false);
+  const [eyeIconVisible, setEyeIconVisible] = useState(false);
   const [validationResult, setValidationResult] =
     useState<LoginFormValidationResult>();
   const { setAccountSettingsState } = useAccountSettingsDataContext();
@@ -61,46 +60,14 @@ export function EditAccountEmailView() {
       validationResult.password.error
   );
 
+  const isDisabled = !email && !password;
+
   // Prevents closure in validateAndUpdate
   const emailRef = useRef(email);
   emailRef.current = email;
 
   const passwordRef = useRef(password);
   passwordRef.current = password;
-
-  useEffect(() => {
-    setValidationResult((validationResult) => ({
-      ...(validationResult || {
-        email: { error: undefined },
-        password: { error: undefined },
-      }),
-      valid: true,
-      passwordRules: [],
-    }));
-  }, []);
-
-  const handleChange = (e: any) => {
-    setValidationResult({
-      email: {},
-      password: {},
-      passwordRules: [],
-      valid: true,
-    });
-
-    setDisabled(false);
-    if (e.target.value === "") {
-      setDisabled(true);
-    }
-    if (e.target.name === "password") {
-      setPassword(e.target.value);
-      setVisibility(true);
-      return;
-    }
-    if (e.target.name === "email") {
-      setEmail(e.target.value);
-      return;
-    }
-  };
 
   async function validateAndUpdate() {
     const validationResult = validateLoginForm(
@@ -138,7 +105,7 @@ export function EditAccountEmailView() {
         valid: false,
       });
 
-      setVisibility(false);
+      setEyeIconVisible(false);
     }
   }
 
@@ -189,7 +156,10 @@ export function EditAccountEmailView() {
                         type={passwordVisible ? "text" : "password"}
                         name="password"
                         value={password}
-                        onChange={handleChange}
+                        onChange={(e) => {
+                          setPassword(e.target.value);
+                          setEyeIconVisible(true);
+                        }}
                         invalid={isPasswordInvalid}
                       />
 
@@ -212,7 +182,7 @@ export function EditAccountEmailView() {
                         id="show-eye"
                         width="24px"
                         height="24px"
-                        onClick={() => setPasswordVisbile(!passwordVisible)}
+                        onClick={() => setPasswordVisible(!passwordVisible)}
                       />
                     )}
                   </div>

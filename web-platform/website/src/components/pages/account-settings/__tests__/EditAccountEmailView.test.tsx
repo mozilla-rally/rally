@@ -64,7 +64,16 @@ describe("EditAccountEmailView tests", () => {
 
     await setEmail(invalidEmail);
 
-    updateEmail(root);
+    root.debug();
+
+    const button = root.getByText(strings.update) as HTMLElement;
+    expect(button).toBeInTheDocument();
+
+    await act(async () => {
+      await userEvent.click(getUpdateButton(root));
+    });
+
+    expect(changeUserEmail).not.toHaveBeenCalled();
   });
 
   function assertDefaultRender(root: RenderResult) {
@@ -80,12 +89,10 @@ describe("EditAccountEmailView tests", () => {
     await userEvent.type(txtEmail, email);
   }
 
-  async function updateEmail(root: RenderResult) {
+  function getUpdateButton(root: RenderResult) {
     const button = root.getByText(strings.update) as HTMLElement;
     expect(button).toBeInTheDocument();
 
-    await act(async () => {
-      await userEvent.click(root.getByText(strings.update));
-    });
+    return button;
   }
 });
