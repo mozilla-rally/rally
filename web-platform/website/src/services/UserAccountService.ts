@@ -113,13 +113,9 @@ export async function changeUserEmail(
   }
 
   await updateEmail(user, email);
-  console.info("email changed!");
   if (!user.emailVerified) {
-    console.info("user not verified!");
     await sendEmailVerification(user);
-  } else {
-    console.info("email verified!");
-  }
+  } 
   return true;
 }
 

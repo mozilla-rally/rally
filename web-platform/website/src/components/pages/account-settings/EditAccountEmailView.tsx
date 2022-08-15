@@ -78,6 +78,18 @@ export function EditAccountEmailView() {
     setValidationResult(validationResult);
 
     if (!validationResult || !validationResult.valid) {
+      setEyeIconVisible(false);
+      if (validationResult.password) {
+        if (!validationResult.password.error) {
+          const passwordErr = "Invalid password";
+
+          //when user enters passsword breaking password rules
+          setValidationResult({
+            ...validationResult,
+            password: { error: passwordErr },
+          });
+        }
+      }
       return;
     }
 
@@ -159,6 +171,7 @@ export function EditAccountEmailView() {
                         onChange={(e) => {
                           setPassword(e.target.value);
                           setEyeIconVisible(true);
+                          setValidationResult(undefined);
                         }}
                         invalid={isPasswordInvalid}
                       />
@@ -179,7 +192,6 @@ export function EditAccountEmailView() {
                             : "img/icon-password-hide.svg"
                         }
                         alt={passwordVisible ? "open eye" : "eye with slash"}
-                        id="show-eye"
                         width="24px"
                         height="24px"
                         onClick={() => setPasswordVisible(!passwordVisible)}
