@@ -12,6 +12,7 @@ import {
 import { AccountSettingsNavigationBar } from "./AccountSettingsNavigationBar";
 import { AccountSettingsView } from "./AccountSettingsView";
 import { DeleteAccountView } from "./DeleteAccountView";
+import { EditAccountEmailView } from "./EditAccountEmailView";
 
 export function AccountSettingsPageContent() {
   return (
@@ -43,6 +44,9 @@ export function AccountSettingsContentFactory() {
 
     case AccountSettingsState.DeleteAccount:
       return <DeleteAccountView />;
+
+    case AccountSettingsState.EditEmail:
+      return <EditAccountEmailView />;
 
     default:
       throw new Error("Invalid account settings state.");
