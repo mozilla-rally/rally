@@ -3,17 +3,9 @@ import userEvent from "@testing-library/user-event";
 
 import { Strings } from "../../../../resources/Strings";
 import { useAuthentication } from "../../../../services/AuthenticationService";
-import { getFirebaseErrorMessage } from "../../../../utils/FirebaseErrors";
-import {
-  LoginFormValidationResult,
-  validateLoginForm,
-} from "../../login/LoginFormValidator";
-import {
-  AccountSettingsState,
-  useAccountSettingsDataContext,
-} from "../AccountSettingsDataContext";
+import { validateLoginForm } from "../../login/LoginFormValidator";
+import { useAccountSettingsDataContext } from "../AccountSettingsDataContext";
 import { EditAccountEmailView } from "../EditAccountEmailView";
-import { EmailChangedView } from "../EmailChangedView";
 
 jest.mock("../../../../services/AuthenticationService");
 jest.mock("../../../../utils/FirebaseErrors");
