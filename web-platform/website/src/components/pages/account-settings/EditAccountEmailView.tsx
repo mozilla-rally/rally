@@ -48,7 +48,7 @@ export function EditAccountEmailView() {
   const [validationResult, setValidationResult] =
     useState<LoginFormValidationResult>();
   const { setAccountSettingsState } = useAccountSettingsDataContext();
-  const { changeUserEmail } = useAuthentication();
+  const { changeUserEmail, user } = useAuthentication();
 
   const isEmailInvalid = Boolean(
     validationResult && validationResult.email && validationResult.email.error
@@ -56,8 +56,8 @@ export function EditAccountEmailView() {
 
   const isPasswordInvalid = Boolean(
     validationResult &&
-      validationResult.password &&
-      validationResult.password.error
+    validationResult.password &&
+    validationResult.password.error
   );
 
   const isDisabled = !email && !password;
@@ -81,7 +81,8 @@ export function EditAccountEmailView() {
       setEyeIconVisible(false);
       if (validationResult.password) {
         if (!validationResult.password.error) {
-          const passwordErr = "Invalid password";
+          const passwordErr =
+            "Invalid password. Requires 1 lowercase, 1 uppercase, 1 number, at least 8 characters";
 
           //when user enters passsword breaking password rules
           setValidationResult({
@@ -93,6 +94,19 @@ export function EditAccountEmailView() {
       return;
     }
 
+    if (user && user.firebaseUser) {
+      if (email == user.firebaseUser.email) {
+        setEyeIconVisible(false);
+        const passwordErr = "Please enter a new email.";
+
+        setValidationResult({
+          ...validationResult,
+          email: { error: passwordErr },
+        });
+        return
+      }
+    }
+
     try {
       await changeUserEmail(emailRef.current, passwordRef.current);
       setConfirmationView(true);
@@ -102,7 +116,7 @@ export function EditAccountEmailView() {
       let passwordErr = "";
 
       error.indexOf(firebaseStings["auth/email-already-in-use"]) > -1 ||
-      error.indexOf(firebaseStings["auth/invalid-email"]) > -1
+        error.indexOf(firebaseStings["auth/invalid-email"]) > -1
         ? (emailErr = error)
         : (emailErr = "");
 
@@ -147,7 +161,14 @@ export function EditAccountEmailView() {
                     name="email"
                     autoFocus={true}
                     value={email}
-                    onChange={(e) => setEmail(e.target.value)}
+                    onChange={(e) => {
+                      setEmail(e.target.value)
+                      if (validationResult)
+                        setValidationResult({
+                          ...validationResult,
+                          email: {},
+                        });
+                    }}
                     invalid={isEmailInvalid}
                   />
                   {isEmailInvalid && (
@@ -171,7 +192,11 @@ export function EditAccountEmailView() {
                         onChange={(e) => {
                           setPassword(e.target.value);
                           setEyeIconVisible(true);
-                          setValidationResult(undefined);
+                          if (validationResult)
+                            setValidationResult({
+                              ...validationResult,
+                              password: {},
+                            });
                         }}
                         invalid={isPasswordInvalid}
                       />
@@ -220,9 +245,8 @@ export function EditAccountEmailView() {
               </Button>
 
               <Button
-                className={`d-flex fw-bold ps-4 pe-4 pt-2 pb-2 ${
-                  isDisabled ? DisabledProductButton : ProductButton
-                }`}
+                className={`d-flex fw-bold ps-4 pe-4 pt-2 pb-2 ${isDisabled ? DisabledProductButton : ProductButton
+                  }`}
                 outline
                 disabled={isDisabled}
                 onClick={() => validateAndUpdate()}

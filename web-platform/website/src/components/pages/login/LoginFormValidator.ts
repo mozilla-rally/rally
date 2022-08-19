@@ -13,6 +13,20 @@ export interface LoginFormValidationResult {
   valid: boolean;
 }
 
+export interface PasswordAccountValidationResult {
+  currentPassword: {
+    error?: string | null;
+  };
+  newPassword: {
+    error?: string | null;
+  };
+  confirmPassword: {
+    error?: string | null;
+  };
+  passwordRules: PasswordRule[];
+  valid: boolean;
+}
+
 export interface PasswordRule {
   title: string;
   valid: boolean;
@@ -36,6 +50,35 @@ export function validateLoginForm(
   result.valid =
     !result.email.error &&
     !result.password.error &&
+    !result.passwordRules.find((rule) => !rule.valid);
+
+  return result;
+}
+
+export function validatePasswordAccountForm(
+  currentPassword: string,
+  newPassword: string,
+  confirmPassword: string
+
+): PasswordAccountValidationResult {
+  const result: PasswordAccountValidationResult = {
+    currentPassword: {
+      error: validatePasswordAndReturnError(currentPassword),
+    },
+    newPassword: {
+      error: validatePasswordAndReturnError(newPassword),
+    },
+    confirmPassword: {
+      error: validatePasswordAndReturnError(confirmPassword),
+    },
+    passwordRules: validatePasswordRules(newPassword),
+    valid: false,
+  };
+
+  result.valid =
+    !result.currentPassword.error &&
+    !result.newPassword.error &&
+    !result.confirmPassword.error &&
     !result.passwordRules.find((rule) => !rule.valid);
 
   return result;
