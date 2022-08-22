@@ -40,7 +40,8 @@ import { PasswordRules } from "../login/PasswordRules";
 const strings = Strings.components.pages.accountSettings.editPasswordAccount;
 const firebaseStings = Strings.utils.firebaseError.errorMessages;
 
-export function EditAccountPasswordView() {
+export function EditAccountPasswordView(props:any) {
+  const {showToast} = props
   const [password, setPassword] = useState({
     current: "",
     new: "",
@@ -83,7 +84,6 @@ export function EditAccountPasswordView() {
 
   const isDisabled = !password.current || !password.new || !password.confirm;
 
-  // Prevents closure in validateAndUpdate
   const currentRef = useRef(password.current);
   currentRef.current = password.current;
 
@@ -135,7 +135,7 @@ export function EditAccountPasswordView() {
       }
       return;
     }
-    if (password.new !== password.confirm) {
+    if (password.new.trim() !== password.confirm.trim()) {
       setEyeIconVisible(hideEyeicon);
       const passwordErr = "Passwords do not match";
 
@@ -146,8 +146,9 @@ export function EditAccountPasswordView() {
       return
     }
     try {
-      await changeUserPassword(currentRef.current, newRef.current);
+      await changeUserPassword(currentRef.current.trim(), newRef.current.trim());
       setAccountSettingsState(AccountSettingsState.AccountSettings)
+      showToast(true)
     } catch (e) {
       const error = getFirebaseErrorMessage(e as FirebaseError);
       let passwordErr = "";
@@ -363,7 +364,6 @@ export function EditAccountPasswordView() {
           </Col>
         </Row>
       </Container>
-
     </Card>
   );
 }
