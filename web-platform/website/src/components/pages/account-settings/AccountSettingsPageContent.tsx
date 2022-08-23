@@ -1,7 +1,6 @@
-import { Col, Container, Row } from "reactstrap";
+import { Col, Container, Row, } from "reactstrap";
 import { style } from "typestyle";
-
-import { Spacing } from "../../../styles";
+import { Colors, Spacing } from "../../../styles";
 import { ContainerStyles } from "../../../styles/ContainerStyles";
 import { Layout } from "../../Layout";
 import {
@@ -13,6 +12,7 @@ import { AccountSettingsNavigationBar } from "./AccountSettingsNavigationBar";
 import { AccountSettingsView } from "./AccountSettingsView";
 import { DeleteAccountView } from "./DeleteAccountView";
 import { EditAccountEmailView } from "./EditAccountEmailView";
+import { EditAccountPasswordView } from "./EditAccountPasswordView";
 
 export function AccountSettingsPageContent() {
   return (
@@ -47,6 +47,9 @@ export function AccountSettingsContentFactory() {
 
     case AccountSettingsState.EditEmail:
       return <EditAccountEmailView />;
+
+    case AccountSettingsState.EditPassword:
+      return <EditAccountPasswordView />;
 
     default:
       throw new Error("Invalid account settings state.");

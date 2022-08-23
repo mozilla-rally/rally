@@ -79,7 +79,7 @@ export function EmailSignupView() {
 
     setValidationResult(validationResult);
 
-    if (!validationResult.valid) {
+    if (!validationResult.valid) {   
       return;
     }
 
