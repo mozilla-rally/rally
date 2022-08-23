@@ -1,5 +1,5 @@
 import { FirebaseError } from "@firebase/app";
-import { useRef, useState, useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   Button,
   Card,
@@ -11,9 +11,10 @@ import {
   Input,
   Label,
   Row,
+  Toast, ToastBody
 } from "reactstrap";
 import { style } from "typestyle";
-
+import { ToastStyle } from "../../../styles/Toasts"
 import { Strings } from "../../../resources/Strings";
 import { useAuthentication } from "../../../services/AuthenticationService";
 import { Colors, Spacing } from "../../../styles";
@@ -29,35 +30,38 @@ import { getFirebaseErrorMessage } from "../../../utils/FirebaseErrors";
 import {
   PasswordAccountValidationResult,
   validatePasswordAccountForm,
-  validatePasswordRules
+  validatePasswordRules,
 } from "../login/LoginFormValidator";
+import { PasswordRules } from "../login/PasswordRules";
 import {
   AccountSettingsState,
   useAccountSettingsDataContext,
 } from "./AccountSettingsDataContext";
-import { PasswordRules } from "../login/PasswordRules";
 
 const strings = Strings.components.pages.accountSettings.editPasswordAccount;
-const firebaseStings = Strings.utils.firebaseError.errorMessages;
+const passwordErrorStrings = Strings.utils.passwordErrorMessages;
 
-export function EditAccountPasswordView(props:any) {
-  const {showToast} = props
+const ToastStrings = Strings.utils.toastMessages
+
+export function EditAccountPasswordView() {
+  const [toastVisible, setVisibility] = useState(false);
+  const [opacity, setOpacity] = useState("");
   const [password, setPassword] = useState({
     current: "",
     new: "",
-    confirm: ""
+    confirm: "",
   });
 
   const [passwordVisible, setPasswordVisible] = useState({
     current: false,
     new: false,
-    confirm: false
+    confirm: false,
   });
 
   const [eyeIconVisible, setEyeIconVisible] = useState({
     current: false,
     new: false,
-    confirm: false
+    confirm: false,
   });
   const [validationResult, setValidationResult] =
     useState<PasswordAccountValidationResult>();
@@ -102,79 +106,96 @@ export function EditAccountPasswordView(props:any) {
         newPassword: { error: undefined },
         confirmPassword: { error: undefined },
       }),
-      valid: isValid,
+
       passwordRules: (newRef.current && rules) || [],
+      validRules: null,
+      valid: isValid,
     }));
+
   }, [password.new]);
 
-  async function validateAndUpdate() {
+  const showToast = (val: boolean) => {
+    setVisibility(val);
+    setTimeout(() => {
+      setOpacity(ToastStyle.opacityZero);
+    }, 3000);
+  };
 
-    const hideEyeicon = {
-      current: false,
-      new: false,
-      confirm: false
-    }
+  async function validateAndUpdate() {
     const validationResult = validatePasswordAccountForm(
       currentRef.current,
       newRef.current,
-      confirmRef.current,
+      confirmRef.current
     );
 
-    setValidationResult(validationResult);
-
-    if (!validationResult || !validationResult.valid) {
-      setEyeIconVisible(hideEyeicon);
-      //when user enters new passsword breaking password rules
-      if (!validationResult.newPassword.error) {
-        const passwordErr = "Invalid password. Requires 1 lowercase, 1 uppercase, 1 number, at least 8 characters";
-
-        setValidationResult({
-          ...validationResult,
-          newPassword: { error: passwordErr },
-        });
-      }
-      return;
-    }
-    if (password.new.trim() !== password.confirm.trim()) {
-      setEyeIconVisible(hideEyeicon);
-      const passwordErr = "Passwords do not match";
-
+    if (!validationResult.validRules) {
       setValidationResult({
         ...validationResult,
-        confirmPassword: { error: passwordErr },
+        newPassword: { error: passwordErrorStrings.invalidRules },
       });
+      return;
+    }
+
+    setValidationResult(validationResult);
+    if (!validationResult.valid) {
       return
     }
+
+    if (password.new.trim() !== password.confirm.trim()) {
+      setValidationResult({
+        ...validationResult,
+        confirmPassword: { error: passwordErrorStrings.mismatched },
+      });
+      return;
+    }
+
     try {
-      await changeUserPassword(currentRef.current.trim(), newRef.current.trim());
-      setAccountSettingsState(AccountSettingsState.AccountSettings)
-      showToast(true)
+      await changeUserPassword(
+        currentRef.current.trim(),
+        newRef.current.trim()
+      );
+      showToast(true);
+      setPassword({
+        current: "",
+        new: "",
+        confirm: "",
+      })
+
+      setTimeout(() => {
+        setAccountSettingsState(AccountSettingsState.AccountSettings);
+      }, 4000);
+
     } catch (e) {
       const error = getFirebaseErrorMessage(e as FirebaseError);
-      let passwordErr = "";
-
-      error.indexOf(firebaseStings["auth/wrong-password"]) > -1
-        ? (passwordErr = error)
-        : (passwordErr = "");
-
       setValidationResult({
-        currentPassword: { error: passwordErr },
-        newPassword: {},
-        confirmPassword: {},
-        passwordRules: [],
-        valid: false,
+        ...validationResult,
+        currentPassword: { error },
       });
-
-      setEyeIconVisible(hideEyeicon);
     }
   }
 
   return (
     <Card className="flex-nowrap p-4">
-
       <Container
         className={`${ContainerStyles.NoSpacing} ${styles.container} p-0`}
       >
+        <Toast
+          className={`${ToastStyle.accountToast} m-auto position-absolute d-flex justify-content-center ${toastVisible == true ? opacity : ""
+            }`}
+          fade={toastVisible == true}
+          isOpen={toastVisible}
+        >
+          <img
+            className="align-self-center"
+            src="img/check-circle.svg"
+            alt="checkmark icon"
+            width={Spacing.xLarge}
+            height={Spacing.xLarge}
+          />
+          <ToastBody className="text-center">
+            {ToastStrings.passwordUpdated}
+          </ToastBody>
+        </Toast>
         <Row className="mb-3">
           <Col>
             <h1 className={Fonts.Headline}>{strings.title}</h1>
@@ -183,6 +204,8 @@ export function EditAccountPasswordView(props:any) {
         <Row className="mb-3">
           <Col>
             <Form>
+
+              {/* *********** CURRENT PASSWORD ********** */}
               <FormGroup>
                 <Label for="currentPassword" className="fw-bold">
                   {strings.current}
@@ -213,7 +236,7 @@ export function EditAccountPasswordView(props:any) {
                     )}
                   </div>
 
-                  {eyeIconVisible.current && (
+                  {eyeIconVisible.current && !isCurrentInvalid && (
                     <img
                       className="toggle-password align-self-center position-absolute m-1"
                       src={
@@ -221,15 +244,23 @@ export function EditAccountPasswordView(props:any) {
                           ? "img/icon-password-show.svg"
                           : "img/icon-password-hide.svg"
                       }
-                      alt={passwordVisible.current ? "open eye" : "eye with slash"}
+                      alt={
+                        passwordVisible.current ? "open eye" : "eye with slash"
+                      }
                       width="24px"
                       height="24px"
-                      onClick={() => setPasswordVisible({ ...passwordVisible, current: !passwordVisible.current })}
+                      onClick={() =>
+                        setPasswordVisible({
+                          ...passwordVisible,
+                          current: !passwordVisible.current,
+                        })
+                      }
                     />
                   )}
                 </div>
               </FormGroup>
 
+              {/* ***********NEW PASSWORD ********** */}
               <FormGroup>
                 <Label for="newPassword" className="fw-bold">
                   {strings.new}
@@ -252,15 +283,9 @@ export function EditAccountPasswordView(props:any) {
                       }}
                       invalid={isNewInvalid}
                     />
-
-                    {isNewInvalid && (
-                      <FormFeedback className="password-error">
-                        {validationResult?.newPassword.error}
-                      </FormFeedback>
-                    )}
                   </div>
 
-                  {eyeIconVisible.new && (
+                  {eyeIconVisible.new && !isNewInvalid && (
                     <img
                       className="toggle-password align-self-center position-absolute m-1"
                       src={
@@ -269,9 +294,14 @@ export function EditAccountPasswordView(props:any) {
                           : "img/icon-password-hide.svg"
                       }
                       alt={passwordVisible.new ? "open eye" : "eye with slash"}
-                      width="24px"
-                      height="24px"
-                      onClick={() => setPasswordVisible({ ...passwordVisible, new: !passwordVisible.new })}
+                      width={Spacing.xLarge}
+                      height={Spacing.xLarge}
+                      onClick={() =>
+                        setPasswordVisible({
+                          ...passwordVisible,
+                          new: !passwordVisible.new,
+                        })
+                      }
                     />
                   )}
                 </div>
@@ -285,7 +315,7 @@ export function EditAccountPasswordView(props:any) {
                 )}
               </FormGroup>
 
-              {/* CONFIRM PASSWORD */}
+              {/* *********** CONFIRM PASSWORD ********** */}
               <FormGroup>
                 <Label for="confirmPassword" className="fw-bold">
                   {strings.confirm}
@@ -316,7 +346,7 @@ export function EditAccountPasswordView(props:any) {
                     )}
                   </div>
 
-                  {eyeIconVisible.confirm && (
+                  {eyeIconVisible.confirm && !isConfirmInvalid && (
                     <img
                       className="toggle-password align-self-center position-absolute m-1"
                       src={
@@ -324,10 +354,17 @@ export function EditAccountPasswordView(props:any) {
                           ? "img/icon-password-show.svg"
                           : "img/icon-password-hide.svg"
                       }
-                      alt={passwordVisible.confirm ? "open eye" : "eye with slash"}
+                      alt={
+                        passwordVisible.confirm ? "open eye" : "eye with slash"
+                      }
                       width="24px"
                       height="24px"
-                      onClick={() => setPasswordVisible({ ...passwordVisible, confirm: !passwordVisible.confirm })}
+                      onClick={() =>
+                        setPasswordVisible({
+                          ...passwordVisible,
+                          confirm: !passwordVisible.confirm,
+                        })
+                      }
                     />
                   )}
                 </div>

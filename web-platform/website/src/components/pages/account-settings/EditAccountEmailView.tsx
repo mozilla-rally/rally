@@ -38,6 +38,7 @@ import { EmailChangedView } from "./EmailChangedView";
 
 const strings = Strings.components.pages.accountSettings.editEmailAccount;
 const firebaseStings = Strings.utils.firebaseError.errorMessages;
+const emailErrorStrings = Strings.utils.emailErrorMessages;
 
 export function EditAccountEmailView() {
   const [confirmationView, setConfirmationView] = useState(false);
@@ -56,8 +57,8 @@ export function EditAccountEmailView() {
 
   const isPasswordInvalid = Boolean(
     validationResult &&
-    validationResult.password &&
-    validationResult.password.error
+      validationResult.password &&
+      validationResult.password.error
   );
 
   const isDisabled = !email && !password;
@@ -97,13 +98,13 @@ export function EditAccountEmailView() {
     if (user && user.firebaseUser) {
       if (email == user.firebaseUser.email) {
         setEyeIconVisible(false);
-        const passwordErr = "Please enter a new email.";
+        
 
         setValidationResult({
           ...validationResult,
-          email: { error: passwordErr },
+          email: { error: emailErrorStrings.newEmail},
         });
-        return
+        return;
       }
     }
 
@@ -116,7 +117,7 @@ export function EditAccountEmailView() {
       let passwordErr = "";
 
       error.indexOf(firebaseStings["auth/email-already-in-use"]) > -1 ||
-        error.indexOf(firebaseStings["auth/invalid-email"]) > -1
+      error.indexOf(firebaseStings["auth/invalid-email"]) > -1
         ? (emailErr = error)
         : (emailErr = "");
 
@@ -162,7 +163,7 @@ export function EditAccountEmailView() {
                     autoFocus={true}
                     value={email}
                     onChange={(e) => {
-                      setEmail(e.target.value)
+                      setEmail(e.target.value);
                       if (validationResult)
                         setValidationResult({
                           ...validationResult,
@@ -245,8 +246,9 @@ export function EditAccountEmailView() {
               </Button>
 
               <Button
-                className={`d-flex fw-bold ps-4 pe-4 pt-2 pb-2 ${isDisabled ? DisabledProductButton : ProductButton
-                  }`}
+                className={`d-flex fw-bold ps-4 pe-4 pt-2 pb-2 ${
+                  isDisabled ? DisabledProductButton : ProductButton
+                }`}
                 outline
                 disabled={isDisabled}
                 onClick={() => validateAndUpdate()}

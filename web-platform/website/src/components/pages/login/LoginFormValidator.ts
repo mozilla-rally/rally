@@ -18,12 +18,13 @@ export interface PasswordAccountValidationResult {
     error?: string | null;
   };
   newPassword: {
-    error?: string | null;
+    error?: string | null
   };
   confirmPassword: {
     error?: string | null;
   };
   passwordRules: PasswordRule[];
+  validRules: boolean | null;
   valid: boolean;
 }
 
@@ -72,8 +73,11 @@ export function validatePasswordAccountForm(
       error: validatePasswordAndReturnError(confirmPassword),
     },
     passwordRules: validatePasswordRules(newPassword),
+    validRules: null,
     valid: false,
   };
+
+  result.validRules = !result.passwordRules.find((rule) => !rule.valid);
 
   result.valid =
     !result.currentPassword.error &&
