@@ -1,12 +1,35 @@
+import { logEvent } from "firebase/analytics";
 import type { AppProps } from "next/app";
 import Head from "next/head";
+import { useRouter } from "next/router";
+import { useEffect } from "react";
 
 import { AuthenticationProvider } from "../services/AuthenticationService";
+import { useFirebase } from "../services/FirebaseService";
 import { StudiesProvider } from "../services/StudiesService";
 import { UserDocumentProvider } from "../services/UserDocumentService";
 import "../styles";
 
 function MyApp({ Component, pageProps }: AppProps) {
+  const router = useRouter();
+  const { analytics } = useFirebase();
+
+  useEffect(() => {
+    if (router.isReady) {
+      // Log landing page
+      logEvent(analytics, "page_view", {
+        page_path: router.pathname,
+      });
+
+      // Log all transitions
+      router.events.on("routeChangeComplete", () => {
+        logEvent(analytics, "page_view", {
+          page_path: router.pathname,
+        });
+      });
+    }
+  }, []);
+
   return (
     <>
       <Head>

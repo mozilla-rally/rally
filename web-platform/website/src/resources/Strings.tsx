@@ -141,7 +141,7 @@ export const Strings = {
             },
             {
               text: "Studies",
-              href: "/studies",
+              href: "/",
             },
             {
               text: "Account Settings",
@@ -358,7 +358,7 @@ export const Strings = {
           or: "or",
           password: "Password",
           signIn: "Sign in",
-          signInWithGoogle: "Sign up with Google",
+          signInWithGoogle: "Sign in with Google",
           title: "Welcome Back",
         },
         initialLoginView: {
