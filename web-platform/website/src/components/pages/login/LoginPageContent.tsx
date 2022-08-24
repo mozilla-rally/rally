@@ -56,6 +56,7 @@ function LoginCardFactory() {
 const styles = {
   container: style(
     {
+      flexGrow: 1,
       $nest: {
         "img.logo": {
           maxWidth: "100%",
