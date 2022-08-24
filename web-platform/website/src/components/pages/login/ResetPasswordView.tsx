@@ -23,7 +23,11 @@ import { validateEmailAndReturnError } from "./LoginFormValidator";
 
 const strings = Strings.components.pages.login.resetPasswordView;
 
-export function ResetPasswordView() {
+interface CardLocation {
+  isAccount?: boolean | null;
+}
+
+export function ResetPasswordView({ isAccount = null }: CardLocation) {
   const [email, setEmail] = useState("");
   const [emailSent, setEmailSent] = useState(false);
 
@@ -78,18 +82,21 @@ export function ResetPasswordView() {
       </Row>
       {emailSent ? (
         <>
-          <Row className="mb-5">
-            <Col>
-              <LoginButton
-                className={PrimaryButton}
-                onClick={() => {
-                  setLoginState(LoginState.Login);
-                }}
-              >
-                {strings.postEmailSent.backToSignIn}
-              </LoginButton>
-            </Col>
-          </Row>
+          {!isAccount && (
+            <Row className="mb-5">
+              <Col>
+                <LoginButton
+                  className={PrimaryButton}
+                  onClick={() => {
+                    setLoginState(LoginState.Login);
+                  }}
+                >
+                  {strings.postEmailSent.backToSignIn}
+                </LoginButton>
+              </Col>
+            </Row>
+          )}
+
           <Row>
             <Col className="d-flex justify-content-center">
               <span className={FontSize.Small}>
@@ -124,7 +131,7 @@ export function ResetPasswordView() {
               </Form>
             </Col>
           </Row>
-          <Row className="mb-5">
+          <Row className={`${!isAccount ? "mb-5" : ""}`}>
             <Col>
               <LoginButton
                 className={PrimaryButton}
@@ -134,19 +141,20 @@ export function ResetPasswordView() {
               </LoginButton>
             </Col>
           </Row>
-
-          <Row>
-            <Col className="text-center">
-              {strings.preEmailSent.backTo}{" "}
-              <a
-                className="fw-bold"
-                href="#"
-                onClick={() => setLoginState(LoginState.Login)}
-              >
-                {strings.preEmailSent.signIn}
-              </a>
-            </Col>
-          </Row>
+          {!isAccount && (
+            <Row>
+              <Col className="text-center">
+                {strings.preEmailSent.backTo}{" "}
+                <a
+                  className="fw-bold"
+                  href="#"
+                  onClick={() => setLoginState(LoginState.Login)}
+                >
+                  {strings.preEmailSent.signIn}
+                </a>
+              </Col>
+            </Row>
+          )}
         </>
       )}
     </Container>

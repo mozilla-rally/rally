@@ -1,6 +1,6 @@
 import { style } from "typestyle";
-
 import { Colors } from "./Colors";
+import { FontsRaw, FontSizeRaw } from "./Fonts";
 
 export const PrimaryButton = style({
   color: Colors.ColorWhite,
@@ -66,13 +66,15 @@ export const DisabledProductButton = style({
 });
 
 export const TransparentButton = style({
+  ...FontsRaw.MediumBodySM,
   color: Colors.ColorMarketingGray70,
-  borderColor: Colors.ColorTransparent,
+  border: "none",
+  fontSize: FontSizeRaw.Small.fontSize,
   $nest: {
     "&:hover": {
       backgroundColor: Colors.ColorTransparent,
-      borderColor: Colors.ColorTransparent,
       color: Colors.ColorMarketingGray70,
-    },
+      textDecoration: "underline"
+    }
   },
 });

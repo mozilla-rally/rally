@@ -3,6 +3,7 @@ import { Card, Col, Container, Row } from "reactstrap";
 import { User } from "../../../models/User";
 import { Strings } from "../../../resources/Strings";
 import { useAuthentication } from "../../../services/AuthenticationService";
+import { CardStyles } from "../../../styles/Cards";
 import { ContainerStyles } from "../../../styles/ContainerStyles";
 import { FontSize } from "../../../styles/Fonts";
 
@@ -24,7 +25,7 @@ export function GoogleAccountSettings() {
   ).toDateString();
 
   return (
-    <Card className="flex-nowrap p-4">
+    <Card className={`${CardStyles.account.default} flex-nowrap`}>
       <Container className={`${ContainerStyles.NoSpacing} p-0`}>
         <Row>
           <Col>
