@@ -1,5 +1,4 @@
 import { RenderResult, act, render } from "@testing-library/react";
-import { logEvent } from "firebase/analytics";
 import { collection, getDocs } from "firebase/firestore";
 
 import { dispose, initializeExtensionEvents } from "../ExtensionsEventService";
@@ -10,7 +9,6 @@ import {
   useStudies,
 } from "../StudiesService";
 
-jest.mock("firebase/analytics");
 jest.mock("firebase/firestore");
 jest.mock("../ExtensionsEventService");
 jest.mock("../FirebaseService");
@@ -31,9 +29,7 @@ const rawDocs = {
 describe("StudiesService tests", () => {
   it("loads the studies correctly", async () => {
     const db = { db: "db" };
-    const analytics = { analytics: "analytics" };
-
-    (useFirebase as jest.Mock).mockReturnValue({ analytics, db });
+    (useFirebase as jest.Mock).mockReturnValue({ db });
 
     const collectionResult = { collection: "studies" };
     (collection as jest.Mock).mockReturnValue(collectionResult);
@@ -71,55 +67,26 @@ describe("StudiesService tests", () => {
     const onStudyInstalled = (initializeExtensionEvents as jest.Mock).mock
       .calls[0][0].onStudyInstalled;
 
-    const attribution = {
-      source: "source",
-      medium: "medium",
-      campaign: "campaign",
-      term: "term",
-      content: "content",
-    };
-
     await act(async () => {
-      onStudyInstalled(studies[0].studyId, attribution);
+      onStudyInstalled(studies[0].studyId);
     });
 
     expect(studiesContext.installedStudyIds).toEqual([studies[0].studyId]);
 
-    expect(logEvent).toHaveBeenCalledWith(analytics, "activate_extension", {
-      ...attribution,
-      studyId: studies[0].studyId,
-    });
-
-    (logEvent as jest.Mock).mockReset();
-
     await act(async () => {
-      onStudyInstalled(studies[0].studyId, attribution);
+      onStudyInstalled(studies[0].studyId);
     });
 
     expect(studiesContext.installedStudyIds).toEqual([studies[0].studyId]);
 
-    expect(logEvent).toHaveBeenCalledWith(analytics, "activate_extension", {
-      ...attribution,
-      studyId: studies[0].studyId,
-    });
-
-    (logEvent as jest.Mock).mockReset();
-
     await act(async () => {
-      onStudyInstalled(studies[1].studyId, attribution);
+      onStudyInstalled(studies[1].studyId);
     });
 
     expect(studiesContext.installedStudyIds).toEqual([
       studies[0].studyId,
       studies[1].studyId,
     ]);
-
-    expect(logEvent).toHaveBeenCalledWith(analytics, "activate_extension", {
-      ...attribution,
-      studyId: studies[1].studyId,
-    });
-
-    (logEvent as jest.Mock).mockReset();
 
     expect(dispose).not.toHaveBeenCalled();
 

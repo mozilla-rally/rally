@@ -141,7 +141,7 @@ export const Strings = {
             },
             {
               text: "Studies",
-              href: "/",
+              href: "/studies",
             },
             {
               text: "Account Settings",
@@ -196,12 +196,6 @@ export const Strings = {
             "Manage your info, privacy, and security to make Rally work better for you.",
           title: "Account Settings",
         },
-        editAccountSettings: {
-          edit: "Edit",
-          title: "Sign in",
-          email: "Email",
-          password: "Password",
-        },
         editEmailAccount: {
           cancel: "Cancel",
           forgot: "Forgot password?",
@@ -210,19 +204,10 @@ export const Strings = {
           title: "Change your email address",
           update: "Update email",
         },
-        editPasswordAccount: {
-          cancel: "Cancel",
-          confirm: "Confirm new password",
-          current: "Current password",
-          forgot: "Forgot password?",
-          new: "New password",
-          title: "Change your password",
-          update: "Update password",
-        },
         emailChanged: {
           title: "Check your email",
           message:
-            "Successfully sent email change request. To finish updating, please sign out and follow instructions sent to {email}.",
+            "Successfully sent email change request. To finish updating, please follow instructions sent to {email}.",
         },
         deleteAccount: {
           cancel: "Cancel",
@@ -358,7 +343,7 @@ export const Strings = {
           or: "or",
           password: "Password",
           signIn: "Sign in",
-          signInWithGoogle: "Sign in with Google",
+          signInWithGoogle: "Sign up with Google",
           title: "Welcome Back",
         },
         initialLoginView: {
@@ -1087,16 +1072,6 @@ export const Strings = {
         "auth/user-not-found": "User not found.",
         unknown: "An unknown error has occurred. Please try again.",
       },
-    },
-    passwordErrorMessages: {
-      mismatched: "Passwords do not match",
-      invalidRules: "Invalid rules",
-    },
-    emailErrorMessages: {
-      newEmail: "Please enter a new email",
-    },
-    toastMessages: {
-      passwordUpdated: "Successfully changed password",
     },
   },
 };

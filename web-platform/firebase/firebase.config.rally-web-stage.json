@@ -5,6 +5,5 @@
   "storageBucket": "moz-fx-data-rall-nonprod-ac2a.appspot.com",
   "messagingSenderId": "451372671583",
   "appId": "1:451372671583:web:eeb61e7d7c8ec898f5b1ea",
-  "functionsHost": "https://us-central1-moz-fx-data-rall-nonprod-ac2a.cloudfunctions.net",
-  "measurementId": "G-LCB133PKPN"
+  "functionsHost": "https://us-central1-moz-fx-data-rall-nonprod-ac2a.cloudfunctions.net"
 }
