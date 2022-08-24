@@ -28,7 +28,7 @@ function MyApp({ Component, pageProps }: AppProps) {
         });
       });
     }
-  }, []);
+  }, [analytics, router]);
 
   return (
     <>

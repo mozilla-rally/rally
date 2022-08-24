@@ -1088,15 +1088,15 @@ export const Strings = {
         unknown: "An unknown error has occurred. Please try again.",
       },
     },
-    passwordErrorMessages:{
+    passwordErrorMessages: {
       mismatched: "Passwords do not match",
-      invalidRules:"Invalid rules",
+      invalidRules: "Invalid rules",
     },
     emailErrorMessages: {
-      newEmail: "Please enter a new email"
+      newEmail: "Please enter a new email",
     },
-    toastMessages:{
-      passwordUpdated: "Successfully changed password"
-    }
+    toastMessages: {
+      passwordUpdated: "Successfully changed password",
+    },
   },
 };

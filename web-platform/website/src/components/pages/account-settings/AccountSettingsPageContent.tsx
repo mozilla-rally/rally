@@ -1,6 +1,7 @@
-import { Col, Container, Row, } from "reactstrap";
+import { Col, Container, Row } from "reactstrap";
 import { style } from "typestyle";
-import { Colors, Spacing } from "../../../styles";
+
+import { Spacing } from "../../../styles";
 import { ContainerStyles } from "../../../styles/ContainerStyles";
 import { Layout } from "../../Layout";
 import {

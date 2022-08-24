@@ -98,11 +98,10 @@ export function EditAccountEmailView() {
     if (user && user.firebaseUser) {
       if (email == user.firebaseUser.email) {
         setEyeIconVisible(false);
-        
 
         setValidationResult({
           ...validationResult,
-          email: { error: emailErrorStrings.newEmail},
+          email: { error: emailErrorStrings.newEmail },
         });
         return;
       }

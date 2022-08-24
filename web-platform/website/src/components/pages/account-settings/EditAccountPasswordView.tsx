@@ -11,10 +11,11 @@ import {
   Input,
   Label,
   Row,
-  Toast, ToastBody
+  Toast,
+  ToastBody,
 } from "reactstrap";
 import { style } from "typestyle";
-import { ToastStyle } from "../../../styles/Toasts"
+
 import { Strings } from "../../../resources/Strings";
 import { useAuthentication } from "../../../services/AuthenticationService";
 import { Colors, Spacing } from "../../../styles";
@@ -26,6 +27,7 @@ import {
 } from "../../../styles/Buttons";
 import { ContainerStyles } from "../../../styles/ContainerStyles";
 import { FontSizeRaw, Fonts } from "../../../styles/Fonts";
+import { ToastStyle } from "../../../styles/Toasts";
 import { getFirebaseErrorMessage } from "../../../utils/FirebaseErrors";
 import {
   PasswordAccountValidationResult,
@@ -41,7 +43,7 @@ import {
 const strings = Strings.components.pages.accountSettings.editPasswordAccount;
 const passwordErrorStrings = Strings.utils.passwordErrorMessages;
 
-const ToastStrings = Strings.utils.toastMessages
+const ToastStrings = Strings.utils.toastMessages;
 
 export function EditAccountPasswordView() {
   const [toastVisible, setVisibility] = useState(false);
@@ -70,20 +72,20 @@ export function EditAccountPasswordView() {
 
   const isCurrentInvalid = Boolean(
     validationResult &&
-    validationResult.currentPassword &&
-    validationResult.currentPassword.error
+      validationResult.currentPassword &&
+      validationResult.currentPassword.error
   );
 
   const isNewInvalid = Boolean(
     validationResult &&
-    validationResult.newPassword &&
-    validationResult.newPassword.error
+      validationResult.newPassword &&
+      validationResult.newPassword.error
   );
 
   const isConfirmInvalid = Boolean(
     validationResult &&
-    validationResult.confirmPassword &&
-    validationResult.confirmPassword.error
+      validationResult.confirmPassword &&
+      validationResult.confirmPassword.error
   );
 
   const isDisabled = !password.current || !password.new || !password.confirm;
@@ -111,7 +113,6 @@ export function EditAccountPasswordView() {
       validRules: null,
       valid: isValid,
     }));
-
   }, [password.new]);
 
   const showToast = (val: boolean) => {
@@ -138,7 +139,7 @@ export function EditAccountPasswordView() {
 
     setValidationResult(validationResult);
     if (!validationResult.valid) {
-      return
+      return;
     }
 
     if (password.new.trim() !== password.confirm.trim()) {
@@ -159,12 +160,11 @@ export function EditAccountPasswordView() {
         current: "",
         new: "",
         confirm: "",
-      })
+      });
 
       setTimeout(() => {
         setAccountSettingsState(AccountSettingsState.AccountSettings);
       }, 4000);
-
     } catch (e) {
       const error = getFirebaseErrorMessage(e as FirebaseError);
       setValidationResult({
@@ -180,8 +180,11 @@ export function EditAccountPasswordView() {
         className={`${ContainerStyles.NoSpacing} ${styles.container} p-0`}
       >
         <Toast
-          className={`${ToastStyle.accountToast} m-auto position-absolute d-flex justify-content-center ${toastVisible == true ? opacity : ""
-            }`}
+          className={`${
+            ToastStyle.accountToast
+          } m-auto position-absolute d-flex justify-content-center ${
+            toastVisible == true ? opacity : ""
+          }`}
           fade={toastVisible == true}
           isOpen={toastVisible}
         >
@@ -204,7 +207,6 @@ export function EditAccountPasswordView() {
         <Row className="mb-3">
           <Col>
             <Form>
-
               {/* *********** CURRENT PASSWORD ********** */}
               <FormGroup>
                 <Label for="currentPassword" className="fw-bold">
@@ -390,8 +392,9 @@ export function EditAccountPasswordView() {
             </Button>
 
             <Button
-              className={`d-flex fw-bold ps-4 pe-4 pt-2 pb-2 ${isDisabled ? DisabledProductButton : ProductButton
-                }`}
+              className={`d-flex fw-bold ps-4 pe-4 pt-2 pb-2 ${
+                isDisabled ? DisabledProductButton : ProductButton
+              }`}
               outline
               disabled={isDisabled}
               onClick={() => validateAndUpdate()}
