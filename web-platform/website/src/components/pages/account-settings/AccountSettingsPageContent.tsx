@@ -2,14 +2,16 @@ import { Col, Container, Row } from "reactstrap";
 import { style } from "typestyle";
 
 import { Spacing } from "../../../styles";
-import { ContainerStyles } from "../../../styles/ContainerStyles";
+import { createResponsiveStyle } from "../../../styles";
+import { ScreenSize } from "../../../styles";
+import { ContainerAccountStyles } from "../../../styles/ContainerStyles";
 import { Layout } from "../../Layout";
 import {
   AccountSettingsDataContextProvider,
   AccountSettingsState,
   useAccountSettingsDataContext,
 } from "./AccountSettingsDataContext";
-import { AccountSettingsNavigationBar } from "./AccountSettingsNavigationBar";
+import { AccountSettingsNavigationBarWrapper } from "./AccountSettingsNavigationBarWrapper";
 import { AccountSettingsView } from "./AccountSettingsView";
 import { DeleteAccountView } from "./DeleteAccountView";
 import { EditAccountEmailView } from "./EditAccountEmailView";
@@ -20,11 +22,11 @@ export function AccountSettingsPageContent() {
     <Layout>
       <AccountSettingsDataContextProvider>
         <Container
-          className={`${ContainerStyles.TopLevelContainer} ${styles.container} m-0 pt-5 pb-5 g-0`}
+          className={`${ContainerAccountStyles.TopLevelContainer} m-0 pt-md-5 pt-0 pb-5 g-0`}
         >
-          <Row className="g-0">
-            <Col className="col-auto nav">
-              <AccountSettingsNavigationBar />
+          <Row className={`g-0 ${styles.row}`}>
+            <Col className={`col-auto ${styles.nav}`}>
+              <AccountSettingsNavigationBarWrapper />
             </Col>
             <Col>
               <AccountSettingsContentFactory />
@@ -58,11 +60,29 @@ export function AccountSettingsContentFactory() {
 }
 
 const styles = {
-  container: style({
-    $nest: {
-      ".nav": {
-        marginRight: Spacing.xxxLarge, // Aligns with top navigation logo column
-      },
+  row: style(
+    {
+      display: "block",
     },
-  }),
+    createResponsiveStyle(
+      ScreenSize.Medium,
+      {
+        display: "flex !important",
+      },
+      true
+    )
+  ),
+
+  nav: style(
+    {
+      marginRight: 0,
+    },
+    createResponsiveStyle(
+      ScreenSize.Medium,
+      {
+        marginRight: Spacing.xxxLarge,
+      },
+      true
+    )
+  ),
 };

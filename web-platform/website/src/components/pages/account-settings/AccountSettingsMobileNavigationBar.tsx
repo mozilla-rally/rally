@@ -22,17 +22,15 @@ import {
 
 const strings = Strings.components.pages.accountSettings.navigationBar;
 
-export function AccountSettingsNavigationBar() {
+export function AccountSettingsMobileNavigationBar() {
   return (
     <Container
-      className={`${styles.container} ${ContainerStyles.NoSpacing} g-0 d-none d-md-block`}
+      className={`${styles.container} ${ContainerStyles.NoSpacing} g-0 d-md-none`}
     >
       {strings.sections.map((section) => {
         if (section.links) {
           return <AccordionSection {...section} key={section.text} />;
         }
-
-        return <LinkSection {...section} key={section.text} />;
       })}
     </Container>
   );
@@ -123,19 +121,18 @@ function LinkSection(link: Link | Command) {
                 target: (link as Link).external ? "_blank" : "_self",
               })}
           className={`section text-decoration-none ${
-            isCommand && accountSettingsState === (link as Command).command
+            isCommand &&
+            link.subCommand &&
+            accountSettingsState === (link as Command).command
               ? "active-command"
               : "command"
           }`}
         >
           <Container className="p-0">
             <Row className="d-flex align-items-center">
-              <Col className="col-auto icon d-flex">
-                {link.icon && <img src={link.icon} alt={link.text} />}
-              </Col>
               <Col
-                className={`${FontSize.Small} ms-3 me-3 ${
-                  link.subCommand ? "" : "fw-bold"
+                className={`${FontSize.Small} ${
+                  link.subCommand ? "ms-3" : "titleStyle"
                 }`}
               >
                 {link.text}
@@ -150,8 +147,8 @@ function LinkSection(link: Link | Command) {
 
 const styles = {
   container: style({
-    ...FontSizeRaw.Small,
     minWidth: 200 + Spacing.xxLarge, // Aligns with top navigation logo column
+    marginBottom: Spacing.Large,
 
     $nest: {
       ".icon": {
@@ -161,9 +158,12 @@ const styles = {
 
       ".section": {
         padding: Spacing.Medium,
-        paddingLeft: Spacing.xLarge,
-        paddingRight: 0,
         display: "flex",
+      },
+
+      ".titleStyle": {
+        ...FontSizeRaw.Large,
+        fontWeight: "500",
       },
 
       ".active-command": {
