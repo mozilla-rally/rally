@@ -11,6 +11,14 @@ cssRule("html, body", {
   "-webkit-font-smoothing": "antialiased",
   margin: 0,
   padding: 0,
+
+  $nest: {
+    "#__next": {
+      display: "flex",
+      flexDirection: "column",
+      minHeight: "100vh",
+    },
+  },
 });
 
 cssRule("a, a:hover", {

@@ -14,6 +14,8 @@ import {
   signInWithEmailAndPassword,
   signInWithRedirect,
   signOut,
+  updateEmail,
+  updatePassword,
 } from "firebase/auth";
 
 import { FirebaseErrorCode } from "../utils/FirebaseErrors";
@@ -84,6 +86,61 @@ export async function deleteGoogleUser(user?: User): Promise<boolean> {
   }
 
   await deleteUser(user);
+  return true;
+}
+
+export async function changeUserEmail(
+  user: User | undefined,
+  email: string,
+  password: string,
+): Promise<boolean> {
+  if (!user || !user.email) {
+    return false;
+  }
+
+  try {
+    if (user.email === email) throw new Error("email-is-current-email");
+    if (
+      !(await reauthenticateWithCredential(
+        user,
+        EmailAuthProvider.credential(user.email, password)
+      ))
+    ) {
+      return false;
+    }
+  } catch (e) {
+    throw new FirebaseError(FirebaseErrorCode.WrongPassword, "");
+  }
+  await updateEmail(user, email);
+  if (!user.emailVerified) {
+    await sendEmailVerification(user);
+  } 
+  return true;
+}
+
+export async function changeUserPassword(
+  user: User | undefined,
+  oldPassword: string,
+  newPassword: string,
+): Promise<boolean> {
+  if (!user || !user.email) {
+    return false;
+  }
+
+  try {
+    if (
+      !(await reauthenticateWithCredential(
+        user,
+        EmailAuthProvider.credential(user.email, oldPassword)
+      ))
+    ) {
+      return false;
+    }
+  } catch (e) {
+    throw new FirebaseError(FirebaseErrorCode.WrongPassword, "");
+  }
+
+  await updatePassword(user, newPassword);
   return true;
 }
 
