@@ -408,6 +408,12 @@ export const Strings = {
             title: "Check Your Email",
           },
         },
+        unverifiedEmailError: {
+          activateEmail:
+            "Email account is not verified. Please check your inbox and activate your account.",
+          cantFindEmail: "Can't find the email?",
+          resendEmail: "Resend verification email.",
+        },
       },
       privacyPolicy: {
         buttons: {
