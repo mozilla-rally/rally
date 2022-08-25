@@ -2,7 +2,7 @@
   "name": "rally-attention-stream",
   "version": "0.4.5",
   "scripts": {
-    "build": "cp manifest.prod.json manifest.json && npm run build:glean && rollup -c 2>&1 && npm run tailwind",
+    "build": "cp manifest.prod.json manifest.json && npm run build:glean && rollup -c 2>&1 && npm run tailwind && npm run package:webext",
     "dev": "cp manifest.dev.json manifest.json && npm run build:glean && npm run clean && npm run tailwind && npm run dev:extension",
     "dev:extension": "rollup -c --config-enable-developer-mode -w --watch.onEnd \"npm run dev:webext\"",
     "dev:extension:emulator": "rollup -c --config-enable-emulator-mode -w --watch.onEnd \"npm run dev:webext\"",
@@ -16,7 +16,6 @@
     "build:emulator": "cp manifest.prod.json manifest.json && rollup -c --config-enable-emulator-mode && npm run tailwind",
     "tailwind": "tailwindcss -o dist/tailwind.css 2>&1",
     "dev:emulator": "npm-run-all --parallel dev:extension:emulator dev:webext",
-    "package": "npm run build && npm run package:webext",
     "package:webext": "web-ext build",
     "package:developer": "npm run build:developer && npm run package:webext -- -n developer.zip --overwrite-dest",
     "package:emulator": "npm run build:emulator && npm run package:webext -- -n emulator.zip --overwrite-dest",

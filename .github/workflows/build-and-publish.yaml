@@ -31,6 +31,13 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NODE_AUTH_TOKEN }}
 
+    - name: Archive Attention Stream zip
+      uses: actions/upload-artifact@v3
+      with:
+        name: attention-stream
+        path: |
+            extensions/attention-stream/web-ext-artifacts/
+
       - name: Commit changes
         uses: EndBug/add-and-commit@v9
         with:
