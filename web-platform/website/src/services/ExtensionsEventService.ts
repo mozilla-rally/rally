@@ -1,7 +1,7 @@
 import assert from "assert";
 
 export interface IExtensionEventHandler {
-  onStudyInstalled(studyId: string, attribution: string): void;
+  onStudyInstalled(studyId: string, attribution: Record<string, string>): void;
 }
 
 let _eventHandler: IExtensionEventHandler =
@@ -62,7 +62,7 @@ function onWebCheckResponse(e: CustomEvent) {
 
   const { studyId, attribution } = detail as {
     studyId: string;
-    attribution: string;
+    attribution: Record<string, string>;
   };
 
   _eventHandler.onStudyInstalled(studyId, attribution);

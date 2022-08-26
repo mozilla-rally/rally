@@ -1,6 +1,7 @@
 import { Card, Col, Container, Row } from "reactstrap";
 
 import { Strings } from "../../../resources/Strings";
+import { CardStyles } from "../../../styles/Cards";
 import { ContainerStyles } from "../../../styles/ContainerStyles";
 import {
   AccountSettingsState,
@@ -14,7 +15,7 @@ export function DeleteAccountDisclaimer() {
   const { setAccountSettingsState } = useAccountSettingsDataContext();
 
   return (
-    <Card className="flex-nowrap p-4">
+    <Card className={`${CardStyles.account.default} flex-nowrap p-4`}>
       <Container className={`${ContainerStyles.NoSpacing} p-0`}>
         <Row>
           <Col>

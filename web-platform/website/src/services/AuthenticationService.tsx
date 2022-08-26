@@ -4,6 +4,8 @@ import { createContext, useContext, useEffect, useState } from "react";
 import { User } from "../models/User";
 import { useFirebase } from "./FirebaseService";
 import {
+  changeUserEmail,
+  changeUserPassword,
   deleteEmailUser,
   deleteGoogleUser,
   loginWithEmail as loginWithEmailFn,
@@ -19,6 +21,11 @@ export enum UserType {
 }
 
 export interface UserDataContext {
+  changeUserEmail: (email: string, password: string) => Promise<boolean>;
+  changeUserPassword: (
+    oldPassword: string,
+    newPassword: string
+  ) => Promise<boolean>;
   deleteGoogleUser: () => Promise<boolean>;
   deleteEmailUser: (password: string) => Promise<boolean>;
   isLoaded: boolean;
@@ -84,6 +91,23 @@ export function AuthenticationProvider(props: { children: React.ReactNode }) {
         logout: logoutFn,
         sendPasswordResetEmail: sendPasswordResetEmailFn,
         signupWithEmail: signupWithEmailFn,
+        changeUserEmail: async (email: string, password: string) => {
+          return await changeUserEmail(
+            user && user.firebaseUser,
+            email,
+            password
+          );
+        },
+        changeUserPassword: async (
+          oldPassword: string,
+          newPassword: string
+        ) => {
+          return await changeUserPassword(
+            user && user.firebaseUser,
+            oldPassword,
+            newPassword
+          );
+        },
         deleteGoogleUser: async () => {
           return await deleteGoogleUser(user && user.firebaseUser);
         },

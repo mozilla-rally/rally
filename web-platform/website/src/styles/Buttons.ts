@@ -1,6 +1,6 @@
 import { style } from "typestyle";
-
 import { Colors } from "./Colors";
+import { FontsRaw, FontSizeRaw } from "./Fonts";
 
 export const PrimaryButton = style({
   color: Colors.ColorWhite,
@@ -43,5 +43,38 @@ export const AccentButton = style({
       backgroundColor: Colors.ColorRed60,
       color: Colors.ColorWhite,
     },
+  },
+});
+
+export const ProductButton = style({
+  color: Colors.ColorWhite,
+  borderColor: Colors.ColorBlue50,
+  backgroundColor: Colors.ColorBlue50,
+  $nest: {
+    "&:hover": {
+      backgroundColor: Colors.ColorBlue60,
+      color: Colors.ColorWhite,
+    },
+  },
+});
+
+export const DisabledProductButton = style({
+  color: `${Colors.ColorWhite} !important`,
+  borderColor: `${Colors.ColorBlue40} !important`,
+  backgroundColor: `${Colors.ColorBlue40} !important`,
+
+});
+
+export const TransparentButton = style({
+  ...FontsRaw.MediumBodySM,
+  color: Colors.ColorMarketingGray70,
+  border: "none",
+  fontSize: FontSizeRaw.Small.fontSize,
+  $nest: {
+    "&:hover": {
+      backgroundColor: Colors.ColorTransparent,
+      color: Colors.ColorMarketingGray70,
+      textDecoration: "underline"
+    }
   },
 });
