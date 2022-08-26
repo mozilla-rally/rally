@@ -12,8 +12,7 @@ const smallerStyle = {
 };
 
 const smallerAccountStyle = {
-  paddingTop: Spacing.xLarge,
-  paddingBottom: Spacing.xLarge,
+  ...smallerStyle,
   paddingLeft: Spacing.Medium,
   paddingRight: Spacing.Medium,
 };
@@ -44,12 +43,10 @@ export const ContainerStyles = {
   }),
 };
 
-
 export const ContainerAccountStyles = {
-  ...ContainerStyles,
   TopLevelContainer: style(
     smallerAccountStyle,
-    createResponsiveStyle(ScreenSize.Large, largeStyle, true)
+    createResponsiveStyle(ScreenSize.xLarge, largeStyle, true)
   ),
 };
 

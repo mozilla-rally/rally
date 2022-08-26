@@ -15,10 +15,10 @@ import {
   ToastBody,
 } from "reactstrap";
 import { style } from "typestyle";
-
+import { ColumnStyles } from "../../../styles/Columns";
 import { Strings } from "../../../resources/Strings";
 import { useAuthentication } from "../../../services/AuthenticationService";
-import { Colors, Spacing } from "../../../styles";
+import { Colors, Spacing, createResponsiveStyle, ScreenSize } from "../../../styles";
 import {
   DisabledProductButton,
   ProductButton,
@@ -72,20 +72,20 @@ export function EditAccountPasswordView() {
 
   const isCurrentInvalid = Boolean(
     validationResult &&
-      validationResult.currentPassword &&
-      validationResult.currentPassword.error
+    validationResult.currentPassword &&
+    validationResult.currentPassword.error
   );
 
   const isNewInvalid = Boolean(
     validationResult &&
-      validationResult.newPassword &&
-      validationResult.newPassword.error
+    validationResult.newPassword &&
+    validationResult.newPassword.error
   );
 
   const isConfirmInvalid = Boolean(
     validationResult &&
-      validationResult.confirmPassword &&
-      validationResult.confirmPassword.error
+    validationResult.confirmPassword &&
+    validationResult.confirmPassword.error
   );
 
   const isDisabled = !password.current || !password.new || !password.confirm;
@@ -175,16 +175,14 @@ export function EditAccountPasswordView() {
   }
 
   return (
-    <Card className="flex-nowrap p-4">
+    <Card className={`flex-nowrap p-4 ${styles.acctCard}`}>
       <Container
         className={`${ContainerStyles.NoSpacing} ${styles.container} p-0`}
       >
         <Toast
-          className={`${
-            ToastStyle.accountToast
-          } m-auto position-absolute d-flex justify-content-center ${
-            toastVisible == true ? opacity : ""
-          }`}
+          className={`${ToastStyle.accountToast
+            } m-auto position-absolute d-flex justify-content-center ${toastVisible == true ? opacity : ""
+            }`}
           fade={toastVisible == true}
           isOpen={toastVisible}
         >
@@ -374,15 +372,21 @@ export function EditAccountPasswordView() {
             </Form>
           </Col>
         </Row>
-        <Row className="d-flex justify-content-between">
-          <Col className="me-3 col-auto">
-            <Button className={`fw-bold p-0 ${TransparentButton}`} outline>
-              {strings.forgot}
-            </Button>
-          </Col>
-          <Col className="col-auto d-flex justify-content-between">
+
+        <Row className="d-flex justify-content-between align-items-center flex-row-reverse">
+          <Col className={`${ColumnStyles.account.buttonCol} col-auto`}>
             <Button
-              className={`d-flex fw-bold ps-4 pe-4 pt-2 pb-2 me-3 ${TertiaryButton}`}
+              className={`fw-bold ps-4 pe-4 pt-2 pb-2 ${isDisabled ? DisabledProductButton : ProductButton
+                }`}
+              outline
+              disabled={isDisabled}
+              onClick={() => validateAndUpdate()}
+            >
+              {strings.update}
+            </Button>
+
+            <Button
+              className={`fw-bold ps-4 pe-4 pt-2 pb-2 me-3 ${TertiaryButton}`}
               outline
               onClick={() =>
                 setAccountSettingsState(AccountSettingsState.AccountSettings)
@@ -390,16 +394,11 @@ export function EditAccountPasswordView() {
             >
               {strings.cancel}
             </Button>
+          </Col>
 
-            <Button
-              className={`d-flex fw-bold ps-4 pe-4 pt-2 pb-2 ${
-                isDisabled ? DisabledProductButton : ProductButton
-              }`}
-              outline
-              disabled={isDisabled}
-              onClick={() => validateAndUpdate()}
-            >
-              {strings.update}
+          <Col className={`col-auto ${ColumnStyles.account.forgotPWCol}`}>
+            <Button className={`fw-bold p-0 ${TransparentButton}`} outline>
+              {strings.forgot}
             </Button>
           </Col>
         </Row>
@@ -409,6 +408,13 @@ export function EditAccountPasswordView() {
 }
 
 const styles = {
+  acctCard: style(
+    createResponsiveStyle(
+      ScreenSize.ExtraSmall,
+      {
+        border: "none"
+      },
+    )),
   container: style({
     $nest: {
       ".text-content": {

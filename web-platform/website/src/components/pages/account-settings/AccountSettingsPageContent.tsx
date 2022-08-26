@@ -1,9 +1,7 @@
 import { Col, Container, Row } from "reactstrap";
 import { style } from "typestyle";
 
-import { Spacing } from "../../../styles";
-import { createResponsiveStyle } from "../../../styles";
-import { ScreenSize } from "../../../styles";
+import { Spacing, ScreenSize, createResponsiveStyle } from "../../../styles";
 import { ContainerAccountStyles } from "../../../styles/ContainerStyles";
 import { Layout } from "../../Layout";
 import {

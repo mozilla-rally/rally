@@ -13,10 +13,10 @@ import {
   Row,
 } from "reactstrap";
 import { style } from "typestyle";
-
 import { Strings } from "../../../resources/Strings";
 import { useAuthentication } from "../../../services/AuthenticationService";
-import { Colors, Spacing } from "../../../styles";
+import { Colors, Spacing, createResponsiveStyle, ScreenSize } from "../../../styles";
+import { ColumnStyles } from "../../../styles/Columns"
 import {
   DisabledProductButton,
   ProductButton,
@@ -57,8 +57,8 @@ export function EditAccountEmailView() {
 
   const isPasswordInvalid = Boolean(
     validationResult &&
-      validationResult.password &&
-      validationResult.password.error
+    validationResult.password &&
+    validationResult.password.error
   );
 
   const isDisabled = !email && !password;
@@ -116,7 +116,7 @@ export function EditAccountEmailView() {
       let passwordErr = "";
 
       error.indexOf(firebaseStings["auth/email-already-in-use"]) > -1 ||
-      error.indexOf(firebaseStings["auth/invalid-email"]) > -1
+        error.indexOf(firebaseStings["auth/invalid-email"]) > -1
         ? (emailErr = error)
         : (emailErr = "");
 
@@ -136,7 +136,7 @@ export function EditAccountEmailView() {
   }
 
   return (
-    <Card className="flex-nowrap p-4">
+    <Card className={`flex-nowrap p-4 ${styles.acctCard}`}>
       {confirmationView ? (
         <EmailChangedView email={emailRef.current} />
       ) : (
@@ -227,15 +227,21 @@ export function EditAccountEmailView() {
               </Form>
             </Col>
           </Row>
-          <Row className="d-flex justify-content-between">
-            <Col className="me-3 col-auto">
-              <Button className={`fw-bold p-0 ${TransparentButton}`} outline>
-                {strings.forgot}
-              </Button>
-            </Col>
-            <Col className="col-auto d-flex justify-content-between">
+          
+          <Row className="d-flex justify-content-between align-items-center flex-row-reverse">
+            <Col className={`${ColumnStyles.account.buttonCol} col-auto`}>
               <Button
-                className={`d-flex fw-bold ps-4 pe-4 pt-2 pb-2 me-3 ${TertiaryButton}`}
+                className={`fw-bold ps-4 pe-4 pt-2 pb-2 ${isDisabled ? DisabledProductButton : ProductButton
+                  }`}
+                outline
+                disabled={isDisabled}
+                onClick={() => validateAndUpdate()}
+              >
+                {strings.update}
+              </Button>
+
+              <Button
+                className={`fw-bold ps-4 pe-4 pt-2 pb-2 me-3 ${TertiaryButton}`}
                 outline
                 onClick={() =>
                   setAccountSettingsState(AccountSettingsState.AccountSettings)
@@ -243,16 +249,11 @@ export function EditAccountEmailView() {
               >
                 {strings.cancel}
               </Button>
+            </Col>
 
-              <Button
-                className={`d-flex fw-bold ps-4 pe-4 pt-2 pb-2 ${
-                  isDisabled ? DisabledProductButton : ProductButton
-                }`}
-                outline
-                disabled={isDisabled}
-                onClick={() => validateAndUpdate()}
-              >
-                {strings.update}
+            <Col className={`col-auto ${ColumnStyles.account.forgotPWCol}`}>
+              <Button className={`fw-bold p-0 ${TransparentButton}`} outline>
+                {strings.forgot}
               </Button>
             </Col>
           </Row>
@@ -263,6 +264,13 @@ export function EditAccountEmailView() {
 }
 
 const styles = {
+  acctCard: style(
+  createResponsiveStyle(
+    ScreenSize.ExtraSmall,
+    {
+      border: "none"
+    },
+  )),
   container: style({
     $nest: {
       ".text-content": {

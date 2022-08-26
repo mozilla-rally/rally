@@ -53,7 +53,7 @@ function TopLinks() {
     <>
       {strings.topLinks.map((topLink, i) => (
         <Col
-          className="col-md-auto d-none d-lg-block"
+          className="col-md-auto d-none d-lg-block col-links"
           key={`${i}-topLink.href`}
         >
           <Link href={topLink.href}>
@@ -103,6 +103,9 @@ const styles = {
           margin: 0,
 
           $nest: {
+            "col-links":{
+              marginRight: Spacing.xxxLarge
+            },
             ".logo-col": {
               height: Spacing.xxLarge,
             },
