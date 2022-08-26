@@ -4,6 +4,7 @@ import { style } from "typestyle";
 import { Spacing } from "../../../styles";
 import { ContainerStyles } from "../../../styles/ContainerStyles";
 import { Layout } from "../../Layout";
+import { AcccountResetPasswordView } from "./AccountResetPasswordView";
 import {
   AccountSettingsDataContextProvider,
   AccountSettingsState,
@@ -51,6 +52,9 @@ export function AccountSettingsContentFactory() {
 
     case AccountSettingsState.EditPassword:
       return <EditAccountPasswordView />;
+
+    case AccountSettingsState.ResetPassword:
+      return <AcccountResetPasswordView />;
 
     default:
       throw new Error("Invalid account settings state.");

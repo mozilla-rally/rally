@@ -25,6 +25,7 @@ import {
   TertiaryButton,
   TransparentButton,
 } from "../../../styles/Buttons";
+import { CardStyles } from "../../../styles/Cards";
 import { ContainerStyles } from "../../../styles/ContainerStyles";
 import { FontSizeRaw, Fonts } from "../../../styles/Fonts";
 import { ToastStyle } from "../../../styles/Toasts";
@@ -175,7 +176,7 @@ export function EditAccountPasswordView() {
   }
 
   return (
-    <Card className="flex-nowrap p-4">
+    <Card className={`${CardStyles.account.updates} flex-nowrap`}>
       <Container
         className={`${ContainerStyles.NoSpacing} ${styles.container} p-0`}
       >
@@ -209,7 +210,10 @@ export function EditAccountPasswordView() {
             <Form>
               {/* *********** CURRENT PASSWORD ********** */}
               <FormGroup>
-                <Label for="currentPassword" className="fw-bold">
+                <Label
+                  for="currentPassword"
+                  className={`fw-bold ${Fonts.Labels}`}
+                >
                   {strings.current}
                 </Label>
                 <div className="d-flex flex-row-reverse">
@@ -264,7 +268,7 @@ export function EditAccountPasswordView() {
 
               {/* ***********NEW PASSWORD ********** */}
               <FormGroup>
-                <Label for="newPassword" className="fw-bold">
+                <Label for="newPassword" className={`fw-bold ${Fonts.Labels}`}>
                   {strings.new}
                 </Label>
                 <div className="d-flex flex-row-reverse">
@@ -319,7 +323,10 @@ export function EditAccountPasswordView() {
 
               {/* *********** CONFIRM PASSWORD ********** */}
               <FormGroup>
-                <Label for="confirmPassword" className="fw-bold">
+                <Label
+                  for="confirmPassword"
+                  className={`fw-bold ${Fonts.Labels}`}
+                >
                   {strings.confirm}
                 </Label>
                 <div className="d-flex flex-row-reverse">
@@ -374,9 +381,15 @@ export function EditAccountPasswordView() {
             </Form>
           </Col>
         </Row>
-        <Row className="d-flex justify-content-between">
+        <Row className="d-flex justify-content-between align-items-center">
           <Col className="me-3 col-auto">
-            <Button className={`fw-bold p-0 ${TransparentButton}`} outline>
+            <Button
+              onClick={() =>
+                setAccountSettingsState(AccountSettingsState.ResetPassword)
+              }
+              className={`p-0 ${TransparentButton}`}
+              outline
+            >
               {strings.forgot}
             </Button>
           </Col>
