@@ -23,6 +23,7 @@ import {
   TertiaryButton,
   TransparentButton,
 } from "../../../styles/Buttons";
+import { CardStyles } from "../../../styles/Cards";
 import { ContainerStyles } from "../../../styles/ContainerStyles";
 import { FontSizeRaw, Fonts } from "../../../styles/Fonts";
 import { getFirebaseErrorMessage } from "../../../utils/FirebaseErrors";
@@ -79,7 +80,6 @@ export function EditAccountEmailView() {
     setValidationResult(validationResult);
 
     if (!validationResult || !validationResult.valid) {
-      setEyeIconVisible(false);
       if (validationResult.password) {
         if (!validationResult.password.error) {
           const passwordErr =
@@ -97,8 +97,6 @@ export function EditAccountEmailView() {
 
     if (user && user.firebaseUser) {
       if (email == user.firebaseUser.email) {
-        setEyeIconVisible(false);
-
         setValidationResult({
           ...validationResult,
           email: { error: emailErrorStrings.newEmail },
@@ -130,13 +128,11 @@ export function EditAccountEmailView() {
         passwordRules: [],
         valid: false,
       });
-
-      setEyeIconVisible(false);
     }
   }
 
   return (
-    <Card className={`flex-nowrap p-4 ${styles.acctCard}`}>
+    <Card className={`${CardStyles.account.updates} flex-nowrap`}>
       {confirmationView ? (
         <EmailChangedView email={emailRef.current} />
       ) : (
@@ -152,7 +148,7 @@ export function EditAccountEmailView() {
             <Col>
               <Form>
                 <FormGroup className="mb-4">
-                  <Label for="email" className="fw-bold">
+                  <Label for="email" className={`fw-bold ${Fonts.Labels}`}>
                     {strings.newEmail}
                   </Label>
                   <Input
@@ -179,7 +175,7 @@ export function EditAccountEmailView() {
                 </FormGroup>
 
                 <FormGroup>
-                  <Label for="password" className="fw-bold">
+                  <Label for="password" className={`fw-bold ${Fonts.Labels}`}>
                     {strings.password}
                   </Label>
                   <div className="d-flex flex-row-reverse">
@@ -208,20 +204,22 @@ export function EditAccountEmailView() {
                       )}
                     </div>
 
-                    {eyeIconVisible && (
-                      <img
-                        className="toggle-password align-self-center position-absolute m-1"
-                        src={
-                          !passwordVisible
-                            ? "img/icon-password-show.svg"
-                            : "img/icon-password-hide.svg"
-                        }
-                        alt={passwordVisible ? "open eye" : "eye with slash"}
-                        width="24px"
-                        height="24px"
-                        onClick={() => setPasswordVisible(!passwordVisible)}
-                      />
-                    )}
+                    {eyeIconVisible &&
+                      !isPasswordInvalid &&
+                      !isEmailInvalid && (
+                        <img
+                          className="toggle-password align-self-center position-absolute m-1"
+                          src={
+                            !passwordVisible
+                              ? "img/icon-password-show.svg"
+                              : "img/icon-password-hide.svg"
+                          }
+                          alt={passwordVisible ? "open eye" : "eye with slash"}
+                          width="24px"
+                          height="24px"
+                          onClick={() => setPasswordVisible(!passwordVisible)}
+                        />
+                      )}
                   </div>
                 </FormGroup>
               </Form>

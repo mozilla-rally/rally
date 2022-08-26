@@ -5,6 +5,7 @@ export enum AccountSettingsState {
   EditEmail = "EditEmail",
   EditPassword = "EditPassword",
   DeleteAccount = "DeleteAccount",
+  ResetPassword = "ResetPassword",
 }
 
 export interface AccountSettingsDataContext {
