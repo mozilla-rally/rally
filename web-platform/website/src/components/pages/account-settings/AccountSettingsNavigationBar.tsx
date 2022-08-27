@@ -75,7 +75,6 @@ function AccordionSection(section: {
             if (accountType && userType !== accountType) {
               return null;
             }
-
             return (
               <LinkSection
                 text={text}

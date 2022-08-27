@@ -10,7 +10,7 @@ import {
   Spacing,
   createResponsiveStyle,
 } from "../../styles";
-import { ContainerAccountStyles } from "../../styles/ContainerStyles";
+import { ContainerSmallerStyles } from "../../styles/ContainerStyles";
 import { LinkStyles } from "../../styles/LinkStyles";
 import { DesktopMenu } from "./DesktopMenu";
 import { MobileMenu } from "./MobileMenu";
@@ -22,7 +22,7 @@ export function NavigationBar() {
 
   return (
     <Container
-      className={`${ContainerAccountStyles.TopLevelContainer} ${styles.nav} ${
+      className={`${ContainerSmallerStyles.TopLevelContainer} ${styles.nav} ${
         isUserVerified ? "" : "border-0"
       } border-lg-1 ms-0 me-0`}
     >

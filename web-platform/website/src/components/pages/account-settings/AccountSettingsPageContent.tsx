@@ -2,7 +2,7 @@ import { Col, Container, Row } from "reactstrap";
 import { style } from "typestyle";
 
 import { Spacing, ScreenSize, createResponsiveStyle } from "../../../styles";
-import { ContainerAccountStyles } from "../../../styles/ContainerStyles";
+import { ContainerSmallerStyles } from "../../../styles/ContainerStyles";
 import { Layout } from "../../Layout";
 import { AcccountResetPasswordView } from "./AccountResetPasswordView";
 import {
@@ -21,7 +21,7 @@ export function AccountSettingsPageContent() {
     <Layout>
       <AccountSettingsDataContextProvider>
         <Container
-          className={`${ContainerAccountStyles.TopLevelContainer} m-0 pt-md-5 pt-0 pb-5 g-0`}
+          className={`${ContainerSmallerStyles.TopLevelContainer} ${styles.marginStyle} pt-md-5 pt-0 pb-5 g-0`}
         >
           <Row className={`g-0 ${styles.row}`}>
             <Col className={`col-auto ${styles.nav}`}>
@@ -62,6 +62,17 @@ export function AccountSettingsContentFactory() {
 }
 
 const styles = {
+  marginStyle: style(
+    {
+      margin: "auto",
+    },
+    createResponsiveStyle(
+      ScreenSize.Large,
+      {
+        margin: "0"
+      },
+      true
+    )),
   row: style(
     {
       display: "block",
