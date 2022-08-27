@@ -8,14 +8,14 @@ export function AuthenticatedPage(props: {
 }) {
   const router = useRouter();
 
-  const { isLoaded, user } = useAuthentication();
+  const { isLoaded, user, isUserVerified } = useAuthentication();
   const { isDocumentLoaded, userDocument } = useUserDocument();
 
   if (!router.isReady || !isLoaded || !isDocumentLoaded) {
     return null;
   }
 
-  if (!user) {
+  if (!user || !isUserVerified) {
     router.replace(`/login`);
     return null;
   }

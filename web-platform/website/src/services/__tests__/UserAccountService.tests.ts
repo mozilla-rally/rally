@@ -8,7 +8,7 @@ import {
   fetchSignInMethodsForEmail,
   reauthenticateWithCredential,
   reauthenticateWithPopup,
-  sendEmailVerification,
+  sendEmailVerification as sendEmailVerificationFn,
   sendPasswordResetEmail as sendPasswordResetEmailFn,
   signInWithEmailAndPassword,
   signInWithRedirect,
@@ -23,6 +23,7 @@ import {
   loginWithEmail,
   loginWithGoogle,
   logout,
+  sendEmailVerification,
   sendPasswordResetEmail,
   signupWithEmail,
 } from "../UserAccountService";
@@ -31,7 +32,7 @@ jest.mock("firebase/auth");
 jest.mock("../FirebaseService");
 
 describe("UserAccountService tests", () => {
-  const auth = { test: "test" };
+  const auth = { test: "test", currentUser: {} };
 
   beforeEach(() => {
     jest.resetAllMocks();
@@ -49,7 +50,7 @@ describe("UserAccountService tests", () => {
       userCredential
     );
 
-    expect(sendEmailVerification).toHaveBeenCalledWith(userCredential.user);
+    expect(sendEmailVerificationFn).toHaveBeenCalledWith(userCredential.user);
 
     expect(useFirebase).toHaveBeenCalled();
   });
@@ -137,6 +138,31 @@ describe("UserAccountService tests", () => {
     expect(signInWithRedirect).toHaveBeenCalledWith(auth, instance);
 
     expect(useFirebase).toHaveBeenCalled();
+  });
+
+  it("sendEmailVerification throws when auth is null", async () => {
+    (useFirebase as jest.Mock).mockReturnValue({ auth: null });
+
+    await expect(
+      async () => await sendEmailVerification()
+    ).rejects.toThrowError("Invalid user.");
+
+    expect(sendEmailVerificationFn).not.toHaveBeenCalled();
+  });
+
+  it("sendEmailVerification throws when current user is null", async () => {
+    (useFirebase as jest.Mock).mockReturnValue({ auth: { currentUser: null } });
+
+    await expect(
+      async () => await sendEmailVerification()
+    ).rejects.toThrowError("Invalid user.");
+
+    expect(sendEmailVerificationFn).not.toHaveBeenCalled();
+  });
+
+  it("sendEmailVerification invokes correct firebase functions", async () => {
+    await sendEmailVerification();
+    expect(sendEmailVerificationFn).toHaveBeenCalledWith(auth.currentUser);
   });
 
   it("sendPasswordResetEmail invokes correct firebase functions", async () => {

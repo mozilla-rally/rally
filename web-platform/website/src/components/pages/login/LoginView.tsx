@@ -1,5 +1,5 @@
 import { FirebaseError } from "@firebase/util";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   Col,
   Container,
@@ -23,12 +23,15 @@ import {
   LoginFormValidationResult,
   validateLoginForm,
 } from "./LoginFormValidator";
+import { UnverifiedEmailError } from "./UnverifiedEmailError";
 
 const strings = Strings.components.pages.login.loginView;
 
 export function LoginView() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showEmailNotVerifiedError, setShowEmailNotVerifiedError] =
+    useState(false);
   const [validationResult, setValidationResult] =
     useState<LoginFormValidationResult>();
 
@@ -48,7 +51,15 @@ export function LoginView() {
   const passwordRef = useRef(password);
   passwordRef.current = password;
 
-  const { loginWithEmail, loginWithGoogle } = useAuthentication();
+  const { loginWithEmail, loginWithGoogle, isLoaded, isUserVerified, user } =
+    useAuthentication();
+
+  useEffect(() => {
+    if (isLoaded && user && user.firebaseUser && !isUserVerified) {
+      setEmail(user.firebaseUser.email as string);
+      setShowEmailNotVerifiedError(true);
+    }
+  }, [isLoaded, isUserVerified, user]);
 
   async function validateAndLogin() {
     setValidationResult(undefined);
@@ -66,7 +77,6 @@ export function LoginView() {
 
     try {
       await loginWithEmail(emailRef.current, passwordRef.current);
-      document.location = "/";
     } catch (e) {
       // Guess whether error is due to email or password
       const errMsg = getFirebaseErrorMessage(e as FirebaseError);
@@ -92,6 +102,13 @@ export function LoginView() {
           </Highlighter>
         </Col>
       </Row>
+      {showEmailNotVerifiedError && (
+        <Row className="mb-3">
+          <Col>
+            <UnverifiedEmailError />
+          </Col>
+        </Row>
+      )}
       <Row className="mb-3">
         <Col>
           <LoginButton

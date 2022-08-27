@@ -1,15 +1,24 @@
 import { render } from "@testing-library/react";
 import { useEffect } from "react";
 
+import { useAuthentication } from "../../../../services/AuthenticationService";
 import {
   LoginState,
   LoginStateProvider,
   useLoginDataContext,
 } from "../LoginDataContext";
 
+jest.mock("../../../../services/AuthenticationService");
+
 describe("LoginDataContext tests", () => {
   it("zero state", () => {
     let initalRender = false;
+
+    (useAuthentication as jest.Mock).mockReturnValue({
+      user: undefined,
+      isLoaded: true,
+      isUserVerified: false,
+    });
 
     function Component() {
       const { loginState } = useLoginDataContext();
@@ -29,9 +38,49 @@ describe("LoginDataContext tests", () => {
     expect(initalRender).toBeTruthy();
   });
 
+  it("sets state to login for unverified user", () => {
+    (useAuthentication as jest.Mock).mockReturnValue({
+      user: {},
+      isLoaded: true,
+      isUserVerified: false,
+    });
+
+    let renderCount = 0;
+
+    function Component() {
+      const { loginState } = useLoginDataContext();
+
+      useEffect(() => {
+        if (renderCount === 0) {
+          expect(loginState).toBe(LoginState.Initial);
+        } else {
+          expect(loginState).toBe(LoginState.Login);
+        }
+
+        renderCount++;
+      }, [loginState]);
+
+      return null;
+    }
+
+    render(
+      <LoginStateProvider>
+        <Component />
+      </LoginStateProvider>
+    );
+
+    expect(renderCount).toBe(2);
+  });
+
   it("login state change", () => {
     let initialRender = false;
     let nextRender = false;
+
+    (useAuthentication as jest.Mock).mockReturnValue({
+      user: undefined,
+      isLoaded: true,
+      isUserVerified: false,
+    });
 
     function Component() {
       const { loginState, setLoginState } = useLoginDataContext();
