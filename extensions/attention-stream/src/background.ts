@@ -284,10 +284,16 @@ class GetPingsUploader extends Uploader {
 
 if (enableDevMode) {
   // When in developer mode, open the options page with the playtest controls when the toolbar button is clicked.
-  browser.browserAction.onClicked.addListener(async () =>
-    await browser.runtime.openOptionsPage()
-  );
-
+  const manifest = browser.runtime.getManifest();
+  if (manifest.manifest_version === 2) {
+    browser.browserAction.onClicked.addListener(async () =>
+      await browser.runtime.openOptionsPage()
+    );
+  } else {
+    browser.action.onClicked.addListener(async () =>
+      await browser.runtime.openOptionsPage()
+    );
+  }
   // Also open it automatically on the first run after a new install only.
   browser.runtime.onInstalled.addListener(async (details) => {
     if (details.reason === "install") {
