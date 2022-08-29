@@ -1,11 +1,9 @@
-import { Container, Row, Col } from "reactstrap";
+import { Col, Container, Row } from "reactstrap";
 import { style } from "typestyle";
+
+import { ScreenSize, Spacing, createResponsiveStyle } from "../../../styles";
+import { ContainerSmallerStyles } from "../../../styles/ContainerStyles";
 import { Layout } from "../../Layout";
-import {
-  ScreenSize,
-  Spacing,
-  createResponsiveStyle,
-} from "../../../styles";
 import { ProfileAge } from "./ProfileAge";
 import { ProfileButtons } from "./ProfileButtons";
 import { ProfileDataProvider } from "./ProfileDataContext";
@@ -16,12 +14,13 @@ import { ProfileIncome } from "./ProfileIncome";
 import { ProfileSchool } from "./ProfileSchool";
 import { ProfileTitle } from "./ProfileTitle";
 import { ProfileZipCode } from "./ProfileZipCode";
-import { ContainerSmallerStyles } from "../../../styles/ContainerStyles";
 
 export function ProfilePageContent() {
   return (
     <Layout>
-      <Container className={`${styles.marginStyle} ${ContainerSmallerStyles.TopLevelContainer} pt-md-5 pt-0 pb-5 g-0`}>
+      <Container
+        className={`${styles.marginStyle} ${ContainerSmallerStyles.TopLevelContainer} pt-md-5 pt-0 pb-5 g-0`}
+      >
         <Row className={`g-0 ${styles.row}`}>
           <Col className={`col-auto ${styles.nav}`} />
           <Col>
@@ -35,9 +34,9 @@ export function ProfilePageContent() {
               <ProfileIncome className="mb-5" />
               <ProfileZipCode />
               <ProfileButtons />
-            </ProfileDataProvider></Col>
+            </ProfileDataProvider>
+          </Col>
         </Row>
-
       </Container>
     </Layout>
   );
@@ -51,10 +50,11 @@ const styles = {
     createResponsiveStyle(
       ScreenSize.Large,
       {
-        margin: "0"
+        margin: "0",
       },
       true
-    )),
+    )
+  ),
   row: style(
     {
       display: "block",
@@ -71,13 +71,13 @@ const styles = {
     {
       marginRight: 0,
       display: "none",
-      width: "232px"
+      width: "232px",
     },
     createResponsiveStyle(
       ScreenSize.Large,
       {
         marginRight: Spacing.xxxLarge,
-        display: "block"
+        display: "block",
       },
       true
     )

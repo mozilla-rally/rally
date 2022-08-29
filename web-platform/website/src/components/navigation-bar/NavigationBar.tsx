@@ -103,8 +103,8 @@ const styles = {
           margin: 0,
 
           $nest: {
-            ".col-links":{
-              marginRight: Spacing.xxxLarge
+            ".col-links": {
+              marginRight: Spacing.xxxLarge,
             },
             ".logo-col": {
               height: Spacing.xxLarge,

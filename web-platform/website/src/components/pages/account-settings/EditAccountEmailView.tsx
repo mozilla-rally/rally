@@ -13,10 +13,15 @@ import {
   Row,
 } from "reactstrap";
 import { style } from "typestyle";
+
 import { Strings } from "../../../resources/Strings";
 import { useAuthentication } from "../../../services/AuthenticationService";
-import { Colors, Spacing, createResponsiveStyle, ScreenSize } from "../../../styles";
-import { ColumnStyles } from "../../../styles/Columns"
+import {
+  Colors,
+  ScreenSize,
+  Spacing,
+  createResponsiveStyle,
+} from "../../../styles";
 import {
   DisabledProductButton,
   ProductButton,
@@ -24,6 +29,7 @@ import {
   TransparentButton,
 } from "../../../styles/Buttons";
 import { CardStyles } from "../../../styles/Cards";
+import { ColumnStyles } from "../../../styles/Columns";
 import { ContainerStyles } from "../../../styles/ContainerStyles";
 import { FontSizeRaw, Fonts } from "../../../styles/Fonts";
 import { getFirebaseErrorMessage } from "../../../utils/FirebaseErrors";
@@ -58,8 +64,8 @@ export function EditAccountEmailView() {
 
   const isPasswordInvalid = Boolean(
     validationResult &&
-    validationResult.password &&
-    validationResult.password.error
+      validationResult.password &&
+      validationResult.password.error
   );
 
   const isDisabled = !email && !password;
@@ -102,7 +108,7 @@ export function EditAccountEmailView() {
       let passwordErr = "";
 
       error.indexOf(firebaseStings["auth/email-already-in-use"]) > -1 ||
-        error.indexOf(firebaseStings["auth/invalid-email"]) > -1
+      error.indexOf(firebaseStings["auth/invalid-email"]) > -1
         ? (emailErr = error)
         : (emailErr = "");
 
@@ -213,12 +219,13 @@ export function EditAccountEmailView() {
               </Form>
             </Col>
           </Row>
-          
+
           <Row className="d-flex justify-content-between align-items-center flex-row-reverse">
             <Col className={`${ColumnStyles.account.buttonCol} col-auto`}>
               <Button
-                className={`fw-bold ps-4 pe-4 pt-2 pb-2 ${isDisabled ? DisabledProductButton : ProductButton
-                  }`}
+                className={`fw-bold ps-4 pe-4 pt-2 pb-2 ${
+                  isDisabled ? DisabledProductButton : ProductButton
+                }`}
                 outline
                 disabled={isDisabled}
                 onClick={() => validateAndUpdate()}
@@ -251,12 +258,10 @@ export function EditAccountEmailView() {
 
 const styles = {
   acctCard: style(
-  createResponsiveStyle(
-    ScreenSize.ExtraSmall,
-    {
-      border: "none"
-    },
-  )),
+    createResponsiveStyle(ScreenSize.ExtraSmall, {
+      border: "none",
+    })
+  ),
   container: style({
     $nest: {
       ".text-content": {

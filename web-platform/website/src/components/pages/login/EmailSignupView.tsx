@@ -44,8 +44,8 @@ export function EmailSignupView() {
 
   const isPasswordInvalid = Boolean(
     validationResult &&
-    validationResult.password &&
-    validationResult.password.error
+      validationResult.password &&
+      validationResult.password.error
   );
 
   // Prevents closure in validateAndSignup
@@ -85,7 +85,7 @@ export function EmailSignupView() {
     if (!validationResult.valid) {
       setValidationResult({
         ...validationResult,
-        password: { error: passwordErrorStrings.invalidRules },
+        password: { error: passwordErrorStrings.passwordError},
       });
       return;
     }
@@ -155,22 +155,20 @@ export function EmailSignupView() {
                   invalid={isPasswordInvalid}
                 />
 
-                {eyeIconVisible &&
-                  !isPasswordInvalid &&
-                  !isEmailInvalid && (
-                    <img
-                      className="toggle-password align-self-center position-absolute m-1"
-                      src={
-                        !passwordVisible
-                          ? "img/icon-password-show.svg"
-                          : "img/icon-password-hide.svg"
-                      }
-                      alt={passwordVisible ? "open eye" : "eye with slash"}
-                      width="24px"
-                      height="24px"
-                      onClick={() => setPasswordVisible(!passwordVisible)}
-                    />
-                  )}
+                {eyeIconVisible && !isPasswordInvalid && !isEmailInvalid && (
+                  <img
+                    className="toggle-password align-self-center position-absolute m-1"
+                    src={
+                      !passwordVisible
+                        ? "img/icon-password-show.svg"
+                        : "img/icon-password-hide.svg"
+                    }
+                    alt={passwordVisible ? "open eye" : "eye with slash"}
+                    width="24px"
+                    height="24px"
+                    onClick={() => setPasswordVisible(!passwordVisible)}
+                  />
+                )}
               </div>
 
               {isPasswordInvalid && (

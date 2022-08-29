@@ -1,7 +1,7 @@
 import { Col, Container, Row } from "reactstrap";
 import { style } from "typestyle";
 
-import { Spacing, ScreenSize, createResponsiveStyle } from "../../../styles";
+import { ScreenSize, Spacing, createResponsiveStyle } from "../../../styles";
 import { ContainerSmallerStyles } from "../../../styles/ContainerStyles";
 import { Layout } from "../../Layout";
 import { AcccountResetPasswordView } from "./AccountResetPasswordView";
@@ -69,10 +69,11 @@ const styles = {
     createResponsiveStyle(
       ScreenSize.Large,
       {
-        margin: "0"
+        margin: "0",
       },
       true
-    )),
+    )
+  ),
   row: style(
     {
       display: "block",

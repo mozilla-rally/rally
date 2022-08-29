@@ -15,10 +15,15 @@ import {
   ToastBody,
 } from "reactstrap";
 import { style } from "typestyle";
-import { ColumnStyles } from "../../../styles/Columns";
+
 import { Strings } from "../../../resources/Strings";
 import { useAuthentication } from "../../../services/AuthenticationService";
-import { Colors, Spacing, createResponsiveStyle, ScreenSize } from "../../../styles";
+import {
+  Colors,
+  ScreenSize,
+  Spacing,
+  createResponsiveStyle,
+} from "../../../styles";
 import {
   DisabledProductButton,
   ProductButton,
@@ -26,6 +31,7 @@ import {
   TransparentButton,
 } from "../../../styles/Buttons";
 import { CardStyles } from "../../../styles/Cards";
+import { ColumnStyles } from "../../../styles/Columns";
 import { ContainerStyles } from "../../../styles/ContainerStyles";
 import { FontSizeRaw, Fonts } from "../../../styles/Fonts";
 import { ToastStyle } from "../../../styles/Toasts";
@@ -73,20 +79,20 @@ export function EditAccountPasswordView() {
 
   const isCurrentInvalid = Boolean(
     validationResult &&
-    validationResult.currentPassword &&
-    validationResult.currentPassword.error
+      validationResult.currentPassword &&
+      validationResult.currentPassword.error
   );
 
   const isNewInvalid = Boolean(
     validationResult &&
-    validationResult.newPassword &&
-    validationResult.newPassword.error
+      validationResult.newPassword &&
+      validationResult.newPassword.error
   );
 
   const isConfirmInvalid = Boolean(
     validationResult &&
-    validationResult.confirmPassword &&
-    validationResult.confirmPassword.error
+      validationResult.confirmPassword &&
+      validationResult.confirmPassword.error
   );
 
   const isDisabled = !password.current || !password.new || !password.confirm;
@@ -181,9 +187,11 @@ export function EditAccountPasswordView() {
         className={`${ContainerStyles.NoSpacing} ${styles.container} p-0`}
       >
         <Toast
-          className={`${ToastStyle.accountToast
-            } m-auto position-absolute d-flex justify-content-center ${toastVisible == true ? opacity : ""
-            }`}
+          className={`${
+            ToastStyle.accountToast
+          } m-auto position-absolute d-flex justify-content-center ${
+            toastVisible == true ? opacity : ""
+          }`}
           fade={toastVisible == true}
           isOpen={toastVisible}
         >
@@ -309,7 +317,7 @@ export function EditAccountPasswordView() {
                     />
                   )}
                 </div>
-                {!isNewInvalid  && (
+                {!isNewInvalid && (
                   <PasswordRules
                     rules={
                       (validationResult && validationResult.passwordRules) || []
@@ -383,8 +391,9 @@ export function EditAccountPasswordView() {
         <Row className="d-flex justify-content-between align-items-center flex-row-reverse">
           <Col className={`${ColumnStyles.account.buttonCol} col-auto`}>
             <Button
-              className={`fw-bold ps-4 pe-4 pt-2 pb-2 ${isDisabled ? DisabledProductButton : ProductButton
-                }`}
+              className={`fw-bold ps-4 pe-4 pt-2 pb-2 ${
+                isDisabled ? DisabledProductButton : ProductButton
+              }`}
               outline
               disabled={isDisabled}
               onClick={() => validateAndUpdate()}
@@ -416,12 +425,10 @@ export function EditAccountPasswordView() {
 
 const styles = {
   acctCard: style(
-    createResponsiveStyle(
-      ScreenSize.ExtraSmall,
-      {
-        border: "none"
-      },
-    )),
+    createResponsiveStyle(ScreenSize.ExtraSmall, {
+      border: "none",
+    })
+  ),
   container: style({
     $nest: {
       ".text-content": {

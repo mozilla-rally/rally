@@ -1,22 +1,21 @@
-import { Container, Row, Col} from "reactstrap";
+import { Col, Container, Row } from "reactstrap";
 import { style } from "typestyle";
-import {
-  ScreenSize,
-  Spacing,
-  createResponsiveStyle,
-} from "../../../styles";
+
+import { ScreenSize, Spacing, createResponsiveStyle } from "../../../styles";
+import { ContainerSmallerStyles } from "../../../styles/ContainerStyles";
 import { Layout } from "../../Layout";
 import { StudiesBackground } from "./StudiesBackground";
 import { StudiesTitle } from "./StudiesTitle";
 import { StudiesTooltip } from "./StudiesTooltip";
 import { StudyList } from "./StudyList";
-import { ContainerSmallerStyles } from "../../../styles/ContainerStyles";
 
 export function StudiesPageContent() {
   return (
     <Layout>
       <StudiesBackground>
-        <Container className={`${ContainerSmallerStyles.TopLevelContainer} ${styles.marginStyle} pt-md-5 pt-0 pb-5 g-0`}>
+        <Container
+          className={`${ContainerSmallerStyles.TopLevelContainer} ${styles.marginStyle} pt-md-5 pt-0 pb-5 g-0`}
+        >
           <Row className={`g-0 ${styles.row}`}>
             <Col className={`col-auto ${styles.nav}`} />
             <Col>
@@ -39,10 +38,11 @@ const styles = {
     createResponsiveStyle(
       ScreenSize.Large,
       {
-        margin: "0"
+        margin: "0",
       },
       true
-    )),
+    )
+  ),
   row: style(
     {
       display: "block",
@@ -59,13 +59,13 @@ const styles = {
     {
       marginRight: 0,
       display: "none",
-      width: "232px"
+      width: "232px",
     },
     createResponsiveStyle(
       ScreenSize.Large,
       {
         marginRight: Spacing.xxxLarge,
-        display: "block"
+        display: "block",
       },
       true
     )
