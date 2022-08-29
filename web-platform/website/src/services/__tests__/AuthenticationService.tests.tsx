@@ -95,7 +95,7 @@ describe("AuthenticationService tests", () => {
       if (!isAuthenticated) {
         expect(user).toBeUndefined();
       } else {
-        expect(user).toEqual({ firebaseUser: unverifiedUser });
+        expect(user).toEqual(unverifiedUser);
         expect(userType).toBe(UserType.Email);
       }
 
@@ -117,7 +117,9 @@ describe("AuthenticationService tests", () => {
     // Invoke onAuthStateChanged callback
     isAuthenticated = true;
     act(() => {
-      (onAuthStateChanged as jest.Mock).mock.calls[0][1](unverifiedUser);
+      (onAuthStateChanged as jest.Mock).mock.calls[0][1](
+        unverifiedUser.firebaseUser
+      );
     });
   });
 

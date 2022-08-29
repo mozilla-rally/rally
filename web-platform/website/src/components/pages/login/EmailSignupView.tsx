@@ -69,7 +69,7 @@ export function EmailSignupView() {
     }));
   }, [password]);
 
-  const { signupWithEmail } = useAuthentication();
+  const { signupWithEmail, logout } = useAuthentication();
   const { setLoginState } = useLoginDataContext();
 
   async function validateAndSignup() {
@@ -92,6 +92,7 @@ export function EmailSignupView() {
 
     try {
       await signupWithEmail(emailRef.current, passwordRef.current);
+      await logout();
       setLoginState(LoginState.EmailAccountCreated);
     } catch (e) {
       setValidationResult({
