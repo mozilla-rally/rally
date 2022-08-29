@@ -309,7 +309,7 @@ export function EditAccountPasswordView() {
                     />
                   )}
                 </div>
-                {eyeIconVisible.new && (
+                {!isNewInvalid  && (
                   <PasswordRules
                     rules={
                       (validationResult && validationResult.passwordRules) || []

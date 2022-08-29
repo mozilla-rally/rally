@@ -79,19 +79,7 @@ export function EditAccountEmailView() {
 
     setValidationResult(validationResult);
 
-    if (!validationResult || !validationResult.valid) {
-      if (validationResult.password) {
-        if (!validationResult.password.error) {
-          const passwordErr =
-            "Invalid password. Requires 1 lowercase, 1 uppercase, 1 number, at least 8 characters";
-
-          //when user enters passsword breaking password rules
-          setValidationResult({
-            ...validationResult,
-            password: { error: passwordErr },
-          });
-        }
-      }
+    if (!validationResult.valid) {
       return;
     }
 
