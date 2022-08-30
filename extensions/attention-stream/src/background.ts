@@ -13,9 +13,13 @@
 import { Rally, RunStates } from "@mozilla/rally-sdk";
 
 import PingEncryptionPlugin from "@mozilla/glean/plugins/encryption";
-import Glean, { Uploader, UploadResult, UploadResultStatus } from "@mozilla/glean/webext";
+import Glean, {
+  Uploader,
+  UploadResult,
+  UploadResultStatus,
+} from "@mozilla/glean/webext";
 
-import { destinationDomains } from "./domains";
+import { destinationDomains as newsDomains } from "./news-domains";
 
 // Import generated Glean metrics.
 import * as userJourney from "../src/generated/userJourney";
@@ -56,22 +60,23 @@ let storeId = "rally-attention-stream";
 let rallySite = "https://members.rally.mozilla.org";
 
 const publicKey = {
-  "crv": "P-256",
-  "kid": "rally-attention-stream",
-  "kty": "EC",
-  "x": "NFFGDrJUoq-qUEW2JTjk5HJJvOMqZ4XnZGkwJEapDcM",
-  "y": "odcj1VLRkgkyhLapDVwzC9ai0ltVWYQ7u4kETcGoMoE"
+  crv: "P-256",
+  kid: "rally-attention-stream",
+  kty: "EC",
+  x: "NFFGDrJUoq-qUEW2JTjk5HJJvOMqZ4XnZGkwJEapDcM",
+  y: "odcj1VLRkgkyhLapDVwzC9ai0ltVWYQ7u4kETcGoMoE",
 };
 
 // The current Firebase configuration.
 let firebaseConfig = {
-  "apiKey": "AIzaSyAv_gSjNRMbEq3BFCNHPn0soXMCx2IxLeM",
-  "authDomain": "moz-fx-data-rally-w-prod-dfa4.firebaseapp.com",
-  "projectId": "moz-fx-data-rally-w-prod-dfa4",
-  "storageBucket": "moz-fx-data-rally-w-prod-dfa4.appspot.com",
-  "messagingSenderId": "982322764946",
-  "appId": "1:982322764946:web:f9b6aea488cebde47ada4b",
-  "functionsHost": "https://us-central1-moz-fx-data-rally-w-prod-dfa4.cloudfunctions.net"
+  apiKey: "AIzaSyAv_gSjNRMbEq3BFCNHPn0soXMCx2IxLeM",
+  authDomain: "moz-fx-data-rally-w-prod-dfa4.firebaseapp.com",
+  projectId: "moz-fx-data-rally-w-prod-dfa4",
+  storageBucket: "moz-fx-data-rally-w-prod-dfa4.appspot.com",
+  messagingSenderId: "982322764946",
+  appId: "1:982322764946:web:f9b6aea488cebde47ada4b",
+  functionsHost:
+    "https://us-central1-moz-fx-data-rally-w-prod-dfa4.cloudfunctions.net",
 };
 
 // Overrides for dev mode - use local emulators with "attentionStream" as study ID.
@@ -79,14 +84,14 @@ if (enableEmulatorMode) {
   studyId = "attentionStream";
   rallySite = "http://localhost:3000";
   firebaseConfig = {
-    "apiKey": "abc123",
-    "authDomain": "demo-rally.firebaseapp.com",
-    "projectId": "demo-rally",
-    "storageBucket": "demo-rally.appspot.com",
-    "messagingSenderId": "abc123",
-    "appId": "1:123:web:abc123",
-    "functionsHost": "http://localhost:5001"
-  }
+    apiKey: "abc123",
+    authDomain: "demo-rally.firebaseapp.com",
+    projectId: "demo-rally",
+    storageBucket: "demo-rally.appspot.com",
+    messagingSenderId: "abc123",
+    appId: "1:123:web:abc123",
+    functionsHost: "http://localhost:5001",
+  };
 }
 
 // This function will be called when the study state changes. By default,
@@ -97,9 +102,11 @@ if (enableEmulatorMode) {
 // Studies should stop data collection and try to unload as much as possible when in "paused" state.
 async function stateChangeCallback(newState) {
   switch (newState) {
-    case (RunStates.Running):
+    case RunStates.Running:
       // The all-0 Rally ID indicates developer mode, in case data is accidentally sent.
-      let rallyId = enableDevMode ? "00000000-0000-0000-0000-000000000000" : rally.rallyId;
+      let rallyId = enableDevMode
+        ? "00000000-0000-0000-0000-000000000000"
+        : rally.rallyId;
 
       // The all-1 Rally ID means that there was an error with the Rally ID.
       if (!rallyId) {
@@ -120,132 +127,185 @@ async function stateChangeCallback(newState) {
 
       // The Rally API has been initialized.
       // Initialize the study and start it.
+      await browser.storage.local.set({ state: RunStates.Running });
 
-      await browser.storage.local.set({ "state": RunStates.Running });
+      // User Journey
+      {
+        this.pageDataListener = async (pageData) => {
+          console.debug(
+            `WebScience page navigation event fired with page data:`,
+            pageData
+          );
 
-      // Example: set a listener for WebScience page navigation events on
-      // http://localhost/* pages. Note that the manifest origin
-      // permissions currently only include http://localhost/*. You should
-      // update the manifest permissions as needed for your study.
+          // This will be a unique ID matching this page for this browsing session.
+          userJourney.pageId.set(pageData.pageId);
 
-      this.pageDataListener = async (pageData) => {
-        console.debug(`WebScience page navigation event fired with page data:`, pageData);
+          // WebScience returns a Number for these, but Glean is expecting an integer.
+          userJourney.attentionDuration.set(
+            Math.floor(pageData.attentionDuration)
+          );
+          userJourney.audioDuration.set(Math.floor(pageData.audioDuration));
+          userJourney.attentionAndAudioDuration.set(
+            Math.floor(pageData.attentionAndAudioDuration)
+          );
 
-        // This will be a unique ID matching this page for this browsing session.
-        userJourney.pageId.set(pageData.pageId);
+          // Max relative scroll depth is a percentage expressed as a decimal by WebScience,
+          // but Glean is expecting an integer.
+          userJourney.maxRelativeScrollDepth.set(
+            Math.floor(pageData.maxRelativeScrollDepth * 100)
+          );
 
-        // WebScience returns a Number for these, but Glean is expecting an integer.
-        userJourney.attentionDuration.set(Math.floor(pageData.attentionDuration));
-        userJourney.audioDuration.set(Math.floor(pageData.audioDuration));
-        userJourney.attentionAndAudioDuration.set(Math.floor(pageData.attentionAndAudioDuration));
+          const pageVisitStart = new Date(pageData.pageVisitStartTime);
+          const pageVisitStop = new Date(pageData.pageVisitStopTime);
+          userJourney.pageVisitStartDateTime.set(pageVisitStart);
+          userJourney.pageVisitStopDateTime.set(pageVisitStop);
 
-        // Max relative scroll depth is a percentage expressed as a decimal by WebScience,
-        // but Glean is expecting an integer.
-        userJourney.maxRelativeScrollDepth.set(Math.floor(pageData.maxRelativeScrollDepth * 100));
+          // Referrer is optional, and will be an empty string if unset.
+          if (pageData.referrer) {
+            userJourney.referrer.setUrl(pageData.referrer);
+          }
+          userJourney.url.setUrl(pageData.url);
 
-        const pageVisitStart = new Date(pageData.pageVisitStartTime);
-        const pageVisitStop = new Date(pageData.pageVisitStopTime);
-        userJourney.pageVisitStartDateTime.set(pageVisitStart);
-        userJourney.pageVisitStopDateTime.set(pageVisitStop);
+          // Submit the metrics constructed above.
+          attentionStreamPings.userJourney.submit();
+        };
 
-        // Referrer is optional, and will be an empty string if unset.
-        if (pageData.referrer) {
-          userJourney.referrer.setUrl(pageData.referrer);
-        }
-        userJourney.url.setUrl(pageData.url);
+        webScience.pageNavigation.onPageData.addListener(
+          this.pageDataListener,
+          { matchPatterns: ["<all_urls>"] }
+        );
+      }
 
-        // Submit the metrics constructed above.
-        attentionStreamPings.userJourney.submit();
-      };
-
-      webScience.pageNavigation.onPageData.addListener(this.pageDataListener, { matchPatterns: ["<all_urls>"] });
-
-      const matchPatterns = webScience.matching.domainsToMatchPatterns(destinationDomains, true);
-
-      // Handle article content callbacks.
-      this.pageTextListener = async (pageData) => {
-        articleContents.pageId.set(pageData.pageId);
-        articleContents.url.setUrl(pageData.url);
-        articleContents.title.set(pageData.title);
-        articleContents.textContent.set(pageData.textContent);
-
-        attentionStreamPings.articleContents.submit();
-      };
-
-      webScience.pageText.onTextParsed.addListener(this.pageTextListener, { matchPatterns });
-
-      // Register the content script for measuring advertisement info.
-      // The CSS selectors file is needed to find ads on the page.
-      // Load content script(s) required by this extension.
-      // Firefox only supports this as of version 105, remove this check when that version of Firefox ships.
+      // Firefox only supports persistent contentScripts as of version 105
+      // ... remove this check when that version of Firefox ships.
       let persistAcrossSessions = true;
       const browserInfo = browser.runtime && browser.runtime.getBrowserInfo && await browser.runtime.getBrowserInfo();
       if (browserInfo && browserInfo.name === "Firefox") {
         persistAcrossSessions = false;
       }
 
-      const contentScriptId = "page-ads";
-      let scripts = await browser.scripting.getRegisteredContentScripts({
-        ids: [contentScriptId],
-      });
+      // News Articles and Ads
+      {
+        const matchPatterns = webScience.matching.domainsToMatchPatterns(
+          newsDomains,
+          true
+        );
 
-      if (scripts.length === 0) {
-        await browser.scripting.registerContentScripts([{
-          id: contentScriptId,
-          js: ["dist/browser-polyfill.min.js", "dist/page-ads.content.js"],
-          matches: matchPatterns,
-          persistAcrossSessions,
-          runAt: "document_idle"
-        }]);
-      }
+        // Handle article content callbacks.
+        this.pageTextListener = async (pageData) => {
+          articleContents.pageId.set(pageData.pageId);
+          articleContents.url.setUrl(pageData.url);
+          articleContents.title.set(pageData.title);
+          articleContents.textContent.set(pageData.textContent);
 
-      this.advertisementListener = async (adInfo, sender) => {
-        advertisements.pageId.set(adInfo.pageId);
-        advertisements.url.setUrl(webScience.matching.normalizeUrl(sender.url));
-        advertisements.body.set(JSON.stringify(adInfo.body));
-        advertisements.ads.set(JSON.stringify(adInfo.ads));
+          attentionStreamPings.articleContents.submit();
+        };
 
-        attentionStreamPings.advertisements.submit();
-      }
+        webScience.pageText.onTextParsed.addListener(this.pageTextListener, {
+          matchPatterns,
+        });
 
-      // Handle advertisement callbacks.
-      webScience.messaging.onMessage.addListener(this.advertisementListener, {
-        type: "WebScience.advertisements",
-        schema: {
-          pageId: "string",
-          type: "string",
-          url: "string",
-          ads: "object",
-          body: "object"
+        // Register the content script for measuring advertisement info.
+        // The CSS selectors file is needed to find ads on the page.
+        const contentScriptId = "page-ads";
+        let scripts = await browser.scripting.getRegisteredContentScripts({
+          ids: [contentScriptId],
+        });
+  
+        if (scripts.length === 0) {
+          await browser.scripting.registerContentScripts([{
+            id: contentScriptId,
+            js: ["dist/browser-polyfill.min.js", "dist/page-ads.content.js"],
+            matches: matchPatterns,
+            persistAcrossSessions,
+            runAt: "document_idle"
+          }]);
         }
-      });
+
+        this.advertisementListener = async (adInfo, sender) => {
+          advertisements.pageId.set(adInfo.pageId);
+          advertisements.url.setUrl(
+            webScience.matching.normalizeUrl(sender.url)
+          );
+          advertisements.body.set(JSON.stringify(adInfo.body));
+          advertisements.ads.set(JSON.stringify(adInfo.ads));
+
+          attentionStreamPings.advertisements.submit();
+        };
+
+        // Handle advertisement callbacks.
+        webScience.messaging.onMessage.addListener(this.advertisementListener, {
+          type: "WebScience.advertisements",
+          schema: {
+            pageId: "string",
+            type: "string",
+            url: "string",
+            ads: "object",
+            body: "object",
+          },
+        });
+      }
+
+      // YouTube Video Info, Ads, and Recommendations
+      {
+        // Register the content scripts for "monkeypatching" YouTube requests
+        // and parsing that request data for ads and video recommendations
+        const contentScriptId = "youtube";
+        let scripts = await browser.scripting.getRegisteredContentScripts({
+          ids: [contentScriptId],
+        });
+  
+        if (scripts.length === 0) {
+          await browser.scripting.registerContentScripts([
+            {
+              id: "youtube",
+              js: [
+                "dist/browser-polyfill.min.js",
+                "dist/youtube/injector.content.js",
+                "dist/youtube/yt-main.content.js",
+              ],
+              matches: ["*://*.youtube.com/*"],
+              persistAcrossSessions: false,
+              runAt: "document_start",
+            },
+          ]);
+        }
+      }
 
       break;
-    case (RunStates.Paused):
+    case RunStates.Paused:
       console.log(`Study paused with Rally ID: ${rally.rallyId}`);
 
       // Take down all resources from run state.
-      webScience.pageNavigation.onPageData.removeListener(this.pageDataListener);
+      webScience.pageNavigation.onPageData.removeListener(
+        this.pageDataListener
+      );
       webScience.pageText.onTextParsed.removeListener(this.pageTextListener);
       webScience.messaging.onMessage.removeListener(this.advertisementListener);
 
+<<<<<<< HEAD
       await browser.scripting.unregisterContentScripts({
         ids: ["page-ads"]
       });
 
 
       await browser.storage.local.set({ "state": RunStates.Paused });
+=======
+      await browser.storage.local.set({ state: RunStates.Paused });
+>>>>>>> 3753539 (Stand up the minimally viable infrastructure for measuring YouTube Ads, Video Details, and Recommendations (no parsing yet))
 
       break;
-    case (RunStates.Ended):
+    case RunStates.Ended:
       console.log(`Study ended with Rally ID: ${rally.rallyId}`);
 
       // Take down all resources from run state.
-      webScience.pageNavigation.onPageData.removeListener(this.pageDataListener);
+      webScience.pageNavigation.onPageData.removeListener(
+        this.pageDataListener
+      );
       webScience.pageText.onTextParsed.removeListener(this.pageTextListener);
       webScience.messaging.onMessage.removeListener(this.advertisementListener);
 
-      await browser.storage.local.set({ "ended": true });
+      await browser.storage.local.set({ ended: true });
 
       break;
     default:
@@ -254,7 +314,18 @@ async function stateChangeCallback(newState) {
 }
 
 // Initialize the Rally SDK.
+<<<<<<< HEAD
 const rally = new Rally({ enableDevMode, stateChangeCallback, rallySite, studyId, storeId, firebaseConfig, enableEmulatorMode });
+=======
+const rally = new Rally({
+  enableDevMode,
+  stateChangeCallback,
+  rallySite,
+  studyId,
+  firebaseConfig,
+  enableEmulatorMode,
+});
+>>>>>>> 3753539 (Stand up the minimally viable infrastructure for measuring YouTube Ads, Video Details, and Recommendations (no parsing yet))
 
 // TODO move to dynamic import, and only load in dev mode.
 import pako from "pako";
@@ -264,7 +335,11 @@ class GetPingsUploader extends Uploader {
   async post(url: string, body: Uint8Array): Promise<UploadResult> {
     const ping = JSON.parse(new TextDecoder().decode(pako.inflate(body)));
 
-    console.debug("Dev mode, storing glean ping instead of sending:", ping, url);
+    console.debug(
+      "Dev mode, storing glean ping instead of sending:",
+      ping,
+      url
+    );
 
     const tableName = url.split("/")[5];
     const documentId = url.split("/")[7];
@@ -284,10 +359,10 @@ class GetPingsUploader extends Uploader {
 
     // create an index for the `user_journey_page_visit_stop_date_time` column, so it can be sorted in the UI (@see `public/options.js`)
     db.version(2).stores({
-      "advertisements": "id",
+      advertisements: "id",
       "article-contents": "id",
       "user-journey": "id, rally_id, user_journey_page_visit_stop_date_time",
-      "study-enrollment": "id, rally_id"
+      "study-enrollment": "id, rally_id",
     });
 
     await db.open();
@@ -299,13 +374,14 @@ class GetPingsUploader extends Uploader {
     return {
       status: 200,
       // @ts-ignore
-      result: UploadResultStatus.Success
+      result: UploadResultStatus.Success,
     };
   }
 }
 
 if (enableDevMode) {
   // When in developer mode, open the options page with the playtest controls when the toolbar button is clicked.
+<<<<<<< HEAD
   const manifest = browser.runtime.getManifest();
   if (manifest.manifest_version === 2) {
     browser.browserAction.onClicked.addListener(async () =>
@@ -316,10 +392,16 @@ if (enableDevMode) {
       await browser.runtime.openOptionsPage()
     );
   }
+=======
+  browser.action.onClicked.addListener(
+    async () => await browser.runtime.openOptionsPage()
+  );
+
+>>>>>>> 3753539 (Stand up the minimally viable infrastructure for measuring YouTube Ads, Video Details, and Recommendations (no parsing yet))
   // Also open it automatically on the first run after a new install only.
   browser.runtime.onInstalled.addListener(async (details) => {
     if (details.reason === "install") {
-      await browser.runtime.openOptionsPage()
+      await browser.runtime.openOptionsPage();
     } else {
       console.debug("unsupported install reason:", details.reason);
     }
@@ -331,14 +413,17 @@ if (enableDevMode) {
   } as unknown as Configuration);
 
   browser.runtime.onMessage.addListener((message, sender) => {
-    console.debug("dev mode received message:", message, "from sender:", sender);
+    console.debug(
+      "dev mode received message:",
+      message,
+      "from sender:",
+      sender
+    );
   });
 } else {
   Glean.initialize("rally-attention-stream", true, {
     debug: { logPings: false },
-    plugins: [
-      new PingEncryptionPlugin(publicKey)
-    ]
+    plugins: [new PingEncryptionPlugin(publicKey)],
   } as unknown as Configuration);
 }
 
