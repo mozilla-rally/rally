@@ -49,6 +49,9 @@ const enableEmulatorMode = Boolean(__ENABLE_EMULATOR_MODE__);
 // The Rally-assigned Study ID.
 let studyId = "attentionStream";
 
+// The "slug" on the extension store.
+let storeId = "rally-attention-stream";
+
 // The website hosting the Rally UI.
 let rallySite = "https://members.rally.mozilla.org";
 
@@ -232,7 +235,7 @@ async function stateChangeCallback(newState) {
 }
 
 // Initialize the Rally SDK.
-const rally = new Rally({ enableDevMode, stateChangeCallback, rallySite, studyId, firebaseConfig, enableEmulatorMode });
+const rally = new Rally({ enableDevMode, stateChangeCallback, rallySite, studyId, storeId, firebaseConfig, enableEmulatorMode });
 
 // TODO move to dynamic import, and only load in dev mode.
 import pako from "pako";

@@ -32,13 +32,19 @@ export interface RallyOptions {
    */
   readonly rallySite: string;
 
-  /**    
-   * A string containing the unique name of the study, 
+  /**
+   * A string containing the unique name of the study,
    * separate from the Firefox add-on ID and Chrome extension ID.
    */
   readonly studyId: string;
 
   /**    
+   * A string containing the unique name of the extension on the extension store,
+   * either Firefox AMO or the Chrome Web Store.
+   */
+  readonly storeId: string;
+
+  /**
    * An object containing the Firebase backend configuration.
    */
   readonly firebaseConfig: FirebaseOptions;
@@ -116,16 +122,12 @@ export class Rally {
       throw new Error("Attribution codes already stored");
     }
 
-    // Study IDs are in camelCase, store IDs are in hyphen-case.
-    const camelToHyphenCase = str => str.replace(/[A-Z]/g, letter => `-${letter.toLowerCase()}`);
-    const storeId = camelToHyphenCase(this._options.studyId);
-
-    let storeUrl = `${this._chromeStoreUrl}/${storeId}/*`;
+    let storeUrl = `${this._chromeStoreUrl}/${this._options.storeId}/*`;
 
     const browserInfo = browser.runtime && browser.runtime.getBrowserInfo && await browser.runtime.getBrowserInfo();
 
     if (browserInfo && browserInfo.name === "firefox") {
-      storeUrl = `${this._firefoxStoreUrl}/${storeId}/*`;
+      storeUrl = `${this._firefoxStoreUrl}/${this._options.storeId}/*`;
     }
 
     const tabs = await browser.tabs.query({ url: storeUrl });

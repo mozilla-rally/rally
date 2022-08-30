@@ -115,6 +115,7 @@ describe('Rally SDK', function () {
       stateChangeCallback: () => { /**/ },
       rallySite: "http://localhost",
       studyId: "exampleStudy1",
+      storeId: "example-study-1",
       firebaseConfig: {},
       enableEmulatorMode: false,
     });
@@ -139,6 +140,7 @@ describe('Rally SDK', function () {
       stateChangeCallback: () => { /**/ },
       rallySite: "http://localhost",
       studyId: "exampleStudy1",
+      storeId: "example-study-1",
       firebaseConfig: {},
       enableEmulatorMode: false,
     });
@@ -172,6 +174,7 @@ describe('Rally SDK', function () {
       },
       rallySite: "http://localhost",
       studyId: "exampleStudy1",
+      storeId: "example-study-1",
       firebaseConfig: {},
       enableEmulatorMode: false,
     });
@@ -211,6 +214,7 @@ describe('Rally SDK', function () {
       },
       rallySite: "http://localhost",
       studyId: "exampleStudy1",
+      storeId: "example-study-1",
       firebaseConfig: {},
       enableEmulatorMode: false
     });
@@ -349,6 +353,7 @@ describe('Rally SDK', function () {
       stateChangeCallback: () => { /**/ },
       rallySite: "http://localhost",
       studyId: "exampleStudy1",
+      storeId: "example-study-1",
       firebaseConfig: {},
       enableEmulatorMode: false
     });
@@ -386,6 +391,7 @@ describe('Rally SDK', function () {
       stateChangeCallback: () => { /**/ },
       rallySite: "http://localhost",
       studyId: "exampleStudy1",
+      storeId: "example-study-1",
       firebaseConfig: {},
       enableEmulatorMode: false
     });
@@ -413,6 +419,7 @@ describe('Rally SDK', function () {
       stateChangeCallback: () => { /**/ },
       rallySite: "http://localhost",
       studyId: "exampleStudy1",
+      storeId: "example-study-1",
       firebaseConfig: {},
       enableEmulatorMode: false
     });
