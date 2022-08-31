@@ -62,7 +62,6 @@ export const DisabledProductButton = style({
   color: `${Colors.ColorWhite} !important`,
   borderColor: `${Colors.ColorBlue40} !important`,
   backgroundColor: `${Colors.ColorBlue40} !important`,
-
 });
 
 export const TransparentButton = style({

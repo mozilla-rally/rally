@@ -28,10 +28,13 @@ import { PasswordRules } from "./PasswordRules";
 import { PrivacyNoticeAndLoginLink } from "./PrivacyNoticeAndLoginLink";
 
 const strings = Strings.components.pages.login.emailSignupView;
+const passwordErrorStrings = Strings.utils.passwordErrorMessages;
 
 export function EmailSignupView() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [eyeIconVisible, setEyeIconVisible] = useState(false);
+  const [passwordVisible, setPasswordVisible] = useState(false);
   const [validationResult, setValidationResult] =
     useState<LoginFormValidationResult>();
 
@@ -80,6 +83,10 @@ export function EmailSignupView() {
     setValidationResult(validationResult);
 
     if (!validationResult.valid) {
+      setValidationResult({
+        ...validationResult,
+        password: { error: passwordErrorStrings.passwordError },
+      });
       return;
     }
 
@@ -132,13 +139,39 @@ export function EmailSignupView() {
               <Label for="password" className="fw-bold">
                 {strings.password}
               </Label>
-              <Input
-                id="password"
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                invalid={isPasswordInvalid}
-              />
+              <div className="d-flex flex-row-reverse">
+                <Input
+                  id="password"
+                  type={passwordVisible ? "text" : "password"}
+                  value={password}
+                  onChange={(e) => {
+                    setPassword(e.target.value);
+                    setEyeIconVisible(true);
+                    if (validationResult)
+                      setValidationResult({
+                        ...validationResult,
+                        password: {},
+                      });
+                  }}
+                  invalid={isPasswordInvalid}
+                />
+
+                {eyeIconVisible && !isPasswordInvalid && !isEmailInvalid && (
+                  <img
+                    className="toggle-password align-self-center position-absolute m-1"
+                    src={
+                      !passwordVisible
+                        ? "img/icon-password-show.svg"
+                        : "img/icon-password-hide.svg"
+                    }
+                    alt={passwordVisible ? "open eye" : "eye with slash"}
+                    width="24px"
+                    height="24px"
+                    onClick={() => setPasswordVisible(!passwordVisible)}
+                  />
+                )}
+              </div>
+
               {isPasswordInvalid && (
                 <FormFeedback className="password-error">
                   {validationResult?.password.error}

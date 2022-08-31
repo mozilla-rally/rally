@@ -1097,6 +1097,7 @@ export const Strings = {
     passwordErrorMessages: {
       mismatched: "Passwords do not match",
       invalidRules: "Invalid rules",
+      passwordError: "Password error",
     },
     emailErrorMessages: {
       newEmail: "Please enter a new email",

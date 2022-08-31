@@ -31,7 +31,7 @@ export function StudiesTooltip({
       {...rest}
     >
       <AccordionItem>
-        <AccordionHeader targetId="1" className="mb-3">
+        <AccordionHeader targetId="1" className="mb-3 mt-3">
           {strings.title}
         </AccordionHeader>
         <AccordionBody accordionId="1">

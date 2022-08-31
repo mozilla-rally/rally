@@ -16,34 +16,33 @@ Create a new github release, prefixing the tag with `v` (`v1.2.3-attention-strea
 built in the previous step.
 
 ## Build extension
-### TODO this section will be performed by CI in the near future.
+
+### Firefox
+
+Firefox (and manifest v2) support is the default on the `main` and `release` branches, and the extension is built
+by a GitHub Action. The extension [is stored as an Artifact](https://docs.github.com/en/actions/using-workflows/storing-workflow-data-as-artifacts).
+
+Rename to `rally_attention_stream-${version}-firefox.zip`
 
 ### Chrome
+### TODO this section will be performed by CI in the near future, see https://github.com/mozilla-rally/rally/issues/192
 
-Chrome (and manifest v3) are the default on the `release` branch:
+Chrome (and manifest v3) are the default on the `release-chrome` branch:
+
+First, merge any changes and tag them:
+
+```
+% git checkout release-chrome
+% git merge --no-ff main
+% git tag v${version}-attention-stream-chrome
+% git push origin v${version}-attention-stream-chromev q
+```
 
 ```sh
 (npm i && npm run build && npm run package) 2>&1 | tee build-chrome.log
 ```
 
 The build output will be in `./web-ext-artifacts`. Rename to `rally_attention_stream-${version}-chrome.zip`.
-
-### Firefox
-
-Firefox (and manifest v2) support is maintained on a separate branch:
-
-```sh
-git checkout firefox-mv2-support
-git merge --no-ff release
-git tag v${version}-attention-stream-firefox
-git push origin v${version}-attention-stream-firefox
-```
-
-```sh
-(npm i && npm run build && npm run package) 2>&1 | tee build-firefox.log
-```
-
-The build output will be in `./web-ext-artifacts`. Rename to `rally_attention_stream-${version}-firefox.zip`.
 
 ### Upload to releases page
 

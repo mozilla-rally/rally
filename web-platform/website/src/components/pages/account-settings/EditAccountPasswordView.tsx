@@ -18,7 +18,12 @@ import { style } from "typestyle";
 
 import { Strings } from "../../../resources/Strings";
 import { useAuthentication } from "../../../services/AuthenticationService";
-import { Colors, Spacing } from "../../../styles";
+import {
+  Colors,
+  ScreenSize,
+  Spacing,
+  createResponsiveStyle,
+} from "../../../styles";
 import {
   DisabledProductButton,
   ProductButton,
@@ -26,6 +31,7 @@ import {
   TransparentButton,
 } from "../../../styles/Buttons";
 import { CardStyles } from "../../../styles/Cards";
+import { ColumnStyles } from "../../../styles/Columns";
 import { ContainerStyles } from "../../../styles/ContainerStyles";
 import { FontSizeRaw, Fonts } from "../../../styles/Fonts";
 import { ToastStyle } from "../../../styles/Toasts";
@@ -43,7 +49,6 @@ import {
 
 const strings = Strings.components.pages.accountSettings.editPasswordAccount;
 const passwordErrorStrings = Strings.utils.passwordErrorMessages;
-
 const ToastStrings = Strings.utils.toastMessages;
 
 export function EditAccountPasswordView() {
@@ -311,7 +316,7 @@ export function EditAccountPasswordView() {
                     />
                   )}
                 </div>
-                {eyeIconVisible.new && (
+                {!isNewInvalid && (
                   <PasswordRules
                     rules={
                       (validationResult && validationResult.passwordRules) || []
@@ -381,31 +386,11 @@ export function EditAccountPasswordView() {
             </Form>
           </Col>
         </Row>
-        <Row className="d-flex justify-content-between align-items-center">
-          <Col className="me-3 col-auto">
-            <Button
-              onClick={() =>
-                setAccountSettingsState(AccountSettingsState.ResetPassword)
-              }
-              className={`p-0 ${TransparentButton}`}
-              outline
-            >
-              {strings.forgot}
-            </Button>
-          </Col>
-          <Col className="col-auto d-flex justify-content-between">
-            <Button
-              className={`d-flex fw-bold ps-4 pe-4 pt-2 pb-2 me-3 ${TertiaryButton}`}
-              outline
-              onClick={() =>
-                setAccountSettingsState(AccountSettingsState.AccountSettings)
-              }
-            >
-              {strings.cancel}
-            </Button>
 
+        <Row className="d-flex justify-content-between align-items-center flex-row-reverse">
+          <Col className={`${ColumnStyles.account.buttonCol} col-auto`}>
             <Button
-              className={`d-flex fw-bold ps-4 pe-4 pt-2 pb-2 ${
+              className={`fw-bold ps-4 pe-4 pt-2 pb-2 ${
                 isDisabled ? DisabledProductButton : ProductButton
               }`}
               outline
@@ -413,6 +398,22 @@ export function EditAccountPasswordView() {
               onClick={() => validateAndUpdate()}
             >
               {strings.update}
+            </Button>
+
+            <Button
+              className={`fw-bold ps-4 pe-4 pt-2 pb-2 me-3 ${TertiaryButton}`}
+              outline
+              onClick={() =>
+                setAccountSettingsState(AccountSettingsState.AccountSettings)
+              }
+            >
+              {strings.cancel}
+            </Button>
+          </Col>
+
+          <Col className={`col-auto ${ColumnStyles.account.forgotPWCol}`}>
+            <Button className={`fw-bold p-0 ${TransparentButton}`} outline>
+              {strings.forgot}
             </Button>
           </Col>
         </Row>
@@ -422,6 +423,11 @@ export function EditAccountPasswordView() {
 }
 
 const styles = {
+  acctCard: style(
+    createResponsiveStyle(ScreenSize.ExtraSmall, {
+      border: "none",
+    })
+  ),
   container: style({
     $nest: {
       ".text-content": {

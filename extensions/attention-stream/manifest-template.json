@@ -2,7 +2,7 @@
   "description": "The Mozilla Rally Attention Stream",
   "author": "Mozilla",
   "name": "Rally Attention Stream",
-  "version": "0.4.6",
+  "version": "0.4.7",
   "homepage_url": "https://github.com/mozilla-rally/rally",
   "options_ui": {
     "page": "public/options.html",
