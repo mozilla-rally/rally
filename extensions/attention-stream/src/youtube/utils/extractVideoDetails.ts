@@ -1,6 +1,6 @@
 import parseVideoId from "./parseVideoId";
 
-const extractVideoDetails = ({ body, url, hostUrl }) => {
+const extractVideoDetails = ({ body, hostUrl }) => {
   const videoIdFromUrl = hostUrl && parseVideoId(hostUrl);
 
   // Make sure the videoDetails objects matches with the current page's videoId
@@ -10,9 +10,12 @@ const extractVideoDetails = ({ body, url, hostUrl }) => {
     body.videoDetails &&
     body.videoDetails.videoId === videoIdFromUrl
   ) {
+
+    // Extract common details
+    // via destructuring
     const {
       author,
-      channelId,
+      channelId: authorChannelId,
       isLiveContent,
       isPrivate,
       keywords,
@@ -23,12 +26,16 @@ const extractVideoDetails = ({ body, url, hostUrl }) => {
       viewCount,
     } = body.videoDetails;
 
+    if (isPrivate) {
+      throw new Error(
+        "Non-Critical Error - Private Video: encountered a private video; aborting all extraction..."
+      );
+    }
+
     return {
-      // Extract common details
       author,
-      channelId,
+      authorChannelId,
       isLiveContent,
-      isPrivate,
       keywords,
       lengthSeconds,
       shortDescription,
@@ -36,7 +43,7 @@ const extractVideoDetails = ({ body, url, hostUrl }) => {
       videoId,
       viewCount,
       // Still keep the raw object
-      raw: body.videoDetails
+      rawData: body.videoDetails,
     };
   }
   return null;
