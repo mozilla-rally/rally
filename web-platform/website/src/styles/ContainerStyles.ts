@@ -1,3 +1,4 @@
+import { AuthErrorCodes } from "firebase/auth";
 import { style } from "typestyle";
 
 import { createResponsiveStyle } from "./ResponsiveStyle";
@@ -9,6 +10,17 @@ const smallerStyle = {
   paddingBottom: Spacing.xLarge,
   paddingLeft: Spacing.xxxLarge,
   paddingRight: Spacing.xxxLarge,
+};
+
+const smallerAccountStyle = {
+  ...smallerStyle,
+  paddingLeft: Spacing.Medium,
+  paddingRight: Spacing.Medium,
+};
+
+const mediumStyle = {
+  paddingLeft: Spacing.xxxLarge * 3,
+  paddingRight: Spacing.xxxLarge * 3,
 };
 
 const largeStyle = {
@@ -36,3 +48,13 @@ export const ContainerStyles = {
     },
   }),
 };
+
+export const ContainerSmallerStyles = {
+  TopLevelContainer: style(
+    smallerAccountStyle,
+    createResponsiveStyle(ScreenSize.xLarge, mediumStyle, true),
+    createResponsiveStyle(ScreenSize.xxLarge, largeStyle, true),
+    
+  ),
+};
+

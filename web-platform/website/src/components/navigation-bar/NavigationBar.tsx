@@ -10,7 +10,7 @@ import {
   Spacing,
   createResponsiveStyle,
 } from "../../styles";
-import { ContainerStyles } from "../../styles/ContainerStyles";
+import { ContainerSmallerStyles } from "../../styles/ContainerStyles";
 import { LinkStyles } from "../../styles/LinkStyles";
 import { DesktopMenu } from "./DesktopMenu";
 import { MobileMenu } from "./MobileMenu";
@@ -22,12 +22,12 @@ export function NavigationBar() {
 
   return (
     <Container
-      className={`${ContainerStyles.TopLevelContainer} ${styles.nav} ${
+      className={`${ContainerSmallerStyles.TopLevelContainer} ${styles.nav} ${
         isUserVerified ? "" : "border-0"
       } border-lg-1 ms-0 me-0`}
     >
-      <Row className={"align-items-center gx-0 gy-0"}>
-        <Col className="col-md-auto logo-col">
+      <Row className="align-items-center gx-0 gy-0">
+        <Col className={`col-md-auto logo-col ${styles.logoCol}`}>
           <a href={isUserVerified ? "/" : strings.rallyWebsiteUrl}>
             <img
               src="/img/moz-rally-logo.svg"
@@ -53,7 +53,7 @@ function TopLinks() {
     <>
       {strings.topLinks.map((topLink, i) => (
         <Col
-          className="col-md-auto d-none d-lg-block"
+          className="col-md-auto d-none d-lg-block col-links"
           key={`${i}-topLink.href`}
         >
           <Link href={topLink.href}>
@@ -103,10 +103,9 @@ const styles = {
           margin: 0,
 
           $nest: {
-            ".col": {
+            ".col-links": {
               marginRight: Spacing.xxxLarge,
             },
-
             ".logo-col": {
               height: Spacing.xxLarge,
             },
@@ -125,5 +124,15 @@ const styles = {
         },
       },
     }
+  ),
+  logoCol: style(
+    {
+      marginRight: `0`,
+    },
+    createResponsiveStyle(
+      ScreenSize.Medium,
+      { marginRight: Spacing.xxxLarge },
+      true
+    )
   ),
 };

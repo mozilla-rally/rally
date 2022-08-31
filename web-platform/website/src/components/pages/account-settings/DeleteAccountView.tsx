@@ -9,8 +9,14 @@ import {
   UserType,
   useAuthentication,
 } from "../../../services/AuthenticationService";
-import { Colors, Spacing } from "../../../styles";
+import {
+  Colors,
+  ScreenSize,
+  Spacing,
+  createResponsiveStyle,
+} from "../../../styles";
 import { AccentButton, TertiaryButton } from "../../../styles/Buttons";
+import { ColumnStyles } from "../../../styles/Columns";
 import { ContainerStyles } from "../../../styles/ContainerStyles";
 import { FontSizeRaw, Fonts } from "../../../styles/Fonts";
 import { getFirebaseErrorMessage } from "../../../utils/FirebaseErrors";
@@ -31,7 +37,7 @@ export function DeleteAccountView() {
   const router = useRouter();
 
   return (
-    <Card className="flex-nowrap p-4">
+    <Card className={`flex-nowrap p-4 ${styles.acctCard}`}>
       <Container
         className={`${ContainerStyles.NoSpacing} ${styles.container} p-0`}
       >
@@ -40,31 +46,30 @@ export function DeleteAccountView() {
             <h1 className={Fonts.Headline}>{strings.title}</h1>
           </Col>
         </Row>
-        <Row className="mb-3">
+        <Row className={`mb-3 content-row ${styles.contentRow}`}>
           <Col className="text-content">{strings.text}</Col>
           <Col>
             <img src="img/before-you-go.png" className="w-100" alt="" />
           </Col>
         </Row>
-        <Row>
-          <Col className="me-3 col-auto">
+        <Row className="d-flex justify-content-between align-items-center flex-row-reverse">
+          <Col className={`${ColumnStyles.account.buttonCol} col-auto`}>
             <Button
-              className={`d-flex fw-bold ps-4 pe-4 pt-2 pb-2 ${TertiaryButton}`}
+              className={`fw-bold ps-4 pe-4 pt-2 pb-2 ${AccentButton}`}
+              onClick={async () => setShowConfirmationDialog(true)}
+              outline
+            >
+              {strings.deleteAccount}
+            </Button>
+
+            <Button
+              className={`fw-bold ps-4 pe-4 pt-2 pb-2 me-3 ${TertiaryButton}`}
               outline
               onClick={() =>
                 setAccountSettingsState(AccountSettingsState.AccountSettings)
               }
             >
               {strings.cancel}
-            </Button>
-          </Col>
-          <Col className="col-auto">
-            <Button
-              className={`d-flex fw-bold ps-4 pe-4 pt-2 pb-2 ${AccentButton}`}
-              onClick={async () => setShowConfirmationDialog(true)}
-              outline
-            >
-              {strings.deleteAccount}
             </Button>
           </Col>
         </Row>
@@ -101,6 +106,11 @@ export function DeleteAccountView() {
 }
 
 const styles = {
+  acctCard: style(
+    createResponsiveStyle(ScreenSize.ExtraSmall, {
+      border: "none",
+    })
+  ),
   container: style({
     $nest: {
       ".text-content": {
@@ -120,4 +130,14 @@ const styles = {
       },
     },
   }),
+  contentRow: style(
+    { display: "block" },
+    createResponsiveStyle(
+      ScreenSize.Large,
+      {
+        display: "flex",
+      },
+      true
+    )
+  ),
 };
