@@ -85,7 +85,7 @@ export function EmailSignupView() {
     if (!validationResult.valid) {
       setValidationResult({
         ...validationResult,
-        password: { error: passwordErrorStrings.passwordError},
+        password: { error: passwordErrorStrings.passwordError },
       });
       return;
     }

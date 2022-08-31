@@ -49,7 +49,6 @@ import {
 
 const strings = Strings.components.pages.accountSettings.editPasswordAccount;
 const passwordErrorStrings = Strings.utils.passwordErrorMessages;
-
 const ToastStrings = Strings.utils.toastMessages;
 
 export function EditAccountPasswordView() {

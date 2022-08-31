@@ -29,14 +29,14 @@ export function AccountSettingsMobileNavigationBar() {
     >
       {strings.sections.map((section) => {
         if (section.links) {
-          return <AccordionSection {...section} key={section.text} />;
+          return <AccountSettingsSection {...section} key={section.text} />;
         }
       })}
     </Container>
   );
 }
 
-function AccordionSection(section: {
+function AccountSettingsSection(section: {
   text: string;
   icon: string;
   command: string;

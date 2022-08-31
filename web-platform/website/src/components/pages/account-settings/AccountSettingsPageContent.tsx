@@ -10,7 +10,8 @@ import {
   AccountSettingsState,
   useAccountSettingsDataContext,
 } from "./AccountSettingsDataContext";
-import { AccountSettingsNavigationBarWrapper } from "./AccountSettingsNavigationBarWrapper";
+import { AccountSettingsMobileNavigationBar } from "./AccountSettingsMobileNavigationBar";
+import { AccountSettingsNavigationBar } from "./AccountSettingsNavigationBar";
 import { AccountSettingsView } from "./AccountSettingsView";
 import { DeleteAccountView } from "./DeleteAccountView";
 import { EditAccountEmailView } from "./EditAccountEmailView";
@@ -25,7 +26,8 @@ export function AccountSettingsPageContent() {
         >
           <Row className={`g-0 ${styles.row}`}>
             <Col className={`col-auto ${styles.nav}`}>
-              <AccountSettingsNavigationBarWrapper />
+              <AccountSettingsMobileNavigationBar />
+              <AccountSettingsNavigationBar />
             </Col>
             <Col>
               <AccountSettingsContentFactory />
