@@ -177,13 +177,27 @@ async function stateChangeCallback(newState) {
       // Register the content script for measuring advertisement info.
       // The CSS selectors file is needed to find ads on the page.
       // Load content script(s) required by this extension.
-      await browser.scripting.registerContentScripts([{
-        id: "page-ads",
-        js: ["dist/browser-polyfill.min.js", "dist/page-ads.content.js"],
-        matches: matchPatterns,
-        persistAcrossSessions: false,
-        runAt: "document_idle"
-      }]);
+      // Firefox only supports this as of version 105, remove this check when that version of Firefox ships.
+      let persistAcrossSessions = true;
+      const browserInfo = browser.runtime && browser.runtime.getBrowserInfo && await browser.runtime.getBrowserInfo();
+      if (browserInfo && browserInfo.name === "Firefox") {
+        persistAcrossSessions = false;
+      }
+
+      const contentScriptId = "page-ads";
+      let scripts = await browser.scripting.getRegisteredContentScripts({
+        ids: [contentScriptId],
+      });
+
+      if (scripts.length === 0) {
+        await browser.scripting.registerContentScripts([{
+          id: contentScriptId,
+          js: ["dist/browser-polyfill.min.js", "dist/page-ads.content.js"],
+          matches: matchPatterns,
+          persistAcrossSessions,
+          runAt: "document_idle"
+        }]);
+      }
 
       this.advertisementListener = async (adInfo, sender) => {
         advertisements.pageId.set(adInfo.pageId);
@@ -214,6 +228,11 @@ async function stateChangeCallback(newState) {
       webScience.pageNavigation.onPageData.removeListener(this.pageDataListener);
       webScience.pageText.onTextParsed.removeListener(this.pageTextListener);
       webScience.messaging.onMessage.removeListener(this.advertisementListener);
+
+      await browser.scripting.unregisterContentScripts({
+        ids: ["page-ads"]
+      });
+
 
       await browser.storage.local.set({ "state": RunStates.Paused });
 
