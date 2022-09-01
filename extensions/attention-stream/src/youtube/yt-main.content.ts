@@ -1,6 +1,7 @@
 import validate from "./utils/validate";
 
 import extractVideoDetails from "./utils/extractVideoDetails";
+import extractAds from "./utils/extractAds";
 import extractRecommendations from "./utils/extractRecommendations";
 
 // Listen for messages from the injected script on YouTube
@@ -14,11 +15,12 @@ window.addEventListener("message", ({ source, data }) => {
       // Each category's handler is responsible for returning null
       // as soon as it knows it won't find anything.
       const videoDetails = extractVideoDetails({ ...data });
-      // const ads = extractAds({...data});
+      const ads = extractAds({ ...data });
       const recommendations = extractRecommendations({ ...data });
 
       videoDetails &&
         console.log("Mozilla Rally: found current video details", videoDetails);
+      ads && console.log("Mozilla Rally: found ads on this page", ads);
       recommendations &&
         console.log(
           "Mozilla Rally: found video recommendations on this page",

@@ -1,4 +1,15 @@
-const traverse = (jsonObject, shouldDelete, returnFirst, keys) => {
+/*
+ * Recrusive tree traversal of JSON object:
+ * Returns or deletes one or multiple keys
+ * depending on parameters
+ */
+const traverse = (
+  jsonObject,
+  shouldDelete,
+  returnFirst,
+  keys,
+  keepKeys = false
+) => {
   let results = [];
 
   const traverseHelper = (jsonObject) => {
@@ -7,7 +18,11 @@ const traverse = (jsonObject, shouldDelete, returnFirst, keys) => {
         if (shouldDelete) {
           delete jsonObject[key];
         } else {
-          results.push(jsonObject[key]);
+          if (keepKeys) {
+            results.push([key, jsonObject[key]]);
+          } else {
+            results.push(jsonObject[key]);
+          }
         }
 
         if (returnFirst) {
@@ -26,11 +41,12 @@ const traverse = (jsonObject, shouldDelete, returnFirst, keys) => {
 };
 
 const fishFor = (key, jsonObject) => {
-  return [traverse(jsonObject, false, true, [key])];
+  const [result] = traverse(jsonObject, false, true, [key]);
+  return result;
 };
 
-const fishForAll = (keys, jsonObject) => {
-  return traverse(jsonObject, false, false, keys);
+const fishForAll = (keys, jsonObject, keepKeys = false) => {
+  return traverse(jsonObject, false, false, keys, keepKeys);
 };
 
 const fishForAndDelete = (key, jsonObject) => {

@@ -179,7 +179,10 @@ async function stateChangeCallback(newState) {
       // Firefox only supports persistent contentScripts as of version 105
       // ... remove this check when that version of Firefox ships.
       let persistAcrossSessions = true;
-      const browserInfo = browser.runtime && browser.runtime.getBrowserInfo && await browser.runtime.getBrowserInfo();
+      const browserInfo =
+        browser.runtime &&
+        browser.runtime.getBrowserInfo &&
+        (await browser.runtime.getBrowserInfo());
       if (browserInfo && browserInfo.name === "Firefox") {
         persistAcrossSessions = false;
       }
@@ -211,15 +214,17 @@ async function stateChangeCallback(newState) {
         let scripts = await browser.scripting.getRegisteredContentScripts({
           ids: [contentScriptId],
         });
-  
+
         if (scripts.length === 0) {
-          await browser.scripting.registerContentScripts([{
-            id: contentScriptId,
-            js: ["dist/browser-polyfill.min.js", "dist/page-ads.content.js"],
-            matches: matchPatterns,
-            persistAcrossSessions,
-            runAt: "document_idle"
-          }]);
+          await browser.scripting.registerContentScripts([
+            {
+              id: contentScriptId,
+              js: ["dist/browser-polyfill.min.js", "dist/page-ads.content.js"],
+              matches: matchPatterns,
+              persistAcrossSessions,
+              runAt: "document_idle",
+            },
+          ]);
         }
 
         this.advertisementListener = async (adInfo, sender) => {
@@ -254,7 +259,7 @@ async function stateChangeCallback(newState) {
         let scripts = await browser.scripting.getRegisteredContentScripts({
           ids: [contentScriptId],
         });
-  
+
         if (scripts.length === 0) {
           await browser.scripting.registerContentScripts([
             {
@@ -276,34 +281,15 @@ async function stateChangeCallback(newState) {
     case RunStates.Paused:
       console.log(`Study paused with Rally ID: ${rally.rallyId}`);
 
-      // Take down all resources from run state.
-      webScience.pageNavigation.onPageData.removeListener(
-        this.pageDataListener
-      );
-      webScience.pageText.onTextParsed.removeListener(this.pageTextListener);
-      webScience.messaging.onMessage.removeListener(this.advertisementListener);
+      await resourceCleanup();
 
-<<<<<<< HEAD
-      await browser.scripting.unregisterContentScripts({
-        ids: ["page-ads"]
-      });
-
-
-      await browser.storage.local.set({ "state": RunStates.Paused });
-=======
       await browser.storage.local.set({ state: RunStates.Paused });
->>>>>>> 3753539 (Stand up the minimally viable infrastructure for measuring YouTube Ads, Video Details, and Recommendations (no parsing yet))
 
       break;
     case RunStates.Ended:
       console.log(`Study ended with Rally ID: ${rally.rallyId}`);
 
-      // Take down all resources from run state.
-      webScience.pageNavigation.onPageData.removeListener(
-        this.pageDataListener
-      );
-      webScience.pageText.onTextParsed.removeListener(this.pageTextListener);
-      webScience.messaging.onMessage.removeListener(this.advertisementListener);
+      await resourceCleanup();
 
       await browser.storage.local.set({ ended: true });
 
@@ -311,21 +297,29 @@ async function stateChangeCallback(newState) {
     default:
       throw new Error(`Unknown study state: ${newState}`);
   }
+
+  async function resourceCleanup() {
+    // Take down all resources from run state.
+    webScience.pageNavigation.onPageData.removeListener(this.pageDataListener);
+    webScience.pageText.onTextParsed.removeListener(this.pageTextListener);
+    webScience.messaging.onMessage.removeListener(this.advertisementListener);
+
+    await browser.scripting.unregisterContentScripts({
+      ids: ["page-ads", "youtube"],
+    });
+  }
 }
 
 // Initialize the Rally SDK.
-<<<<<<< HEAD
-const rally = new Rally({ enableDevMode, stateChangeCallback, rallySite, studyId, storeId, firebaseConfig, enableEmulatorMode });
-=======
 const rally = new Rally({
   enableDevMode,
   stateChangeCallback,
   rallySite,
   studyId,
+  storeId,
   firebaseConfig,
   enableEmulatorMode,
 });
->>>>>>> 3753539 (Stand up the minimally viable infrastructure for measuring YouTube Ads, Video Details, and Recommendations (no parsing yet))
 
 // TODO move to dynamic import, and only load in dev mode.
 import pako from "pako";
@@ -381,23 +375,17 @@ class GetPingsUploader extends Uploader {
 
 if (enableDevMode) {
   // When in developer mode, open the options page with the playtest controls when the toolbar button is clicked.
-<<<<<<< HEAD
   const manifest = browser.runtime.getManifest();
   if (manifest.manifest_version === 2) {
-    browser.browserAction.onClicked.addListener(async () =>
-      await browser.runtime.openOptionsPage()
+    browser.browserAction.onClicked.addListener(
+      async () => await browser.runtime.openOptionsPage()
     );
   } else {
-    browser.action.onClicked.addListener(async () =>
-      await browser.runtime.openOptionsPage()
+    browser.action.onClicked.addListener(
+      async () => await browser.runtime.openOptionsPage()
     );
   }
-=======
-  browser.action.onClicked.addListener(
-    async () => await browser.runtime.openOptionsPage()
-  );
 
->>>>>>> 3753539 (Stand up the minimally viable infrastructure for measuring YouTube Ads, Video Details, and Recommendations (no parsing yet))
   // Also open it automatically on the first run after a new install only.
   browser.runtime.onInstalled.addListener(async (details) => {
     if (details.reason === "install") {

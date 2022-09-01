@@ -11,7 +11,7 @@ const extractVideoDetails = ({ body, hostUrl }) => {
     body.videoDetails.videoId === videoIdFromUrl
   ) {
 
-    // Extract common details
+    // Extract useful details
     // via destructuring
     const {
       author,

@@ -1,15 +1,27 @@
 import * as traverse from "./traverseFishing";
 
+const extractRecommendations = ({ body }) => {
+  const renderers = traverse.fishForAll(
+    ["compactVideoRenderer", "videoRenderer" /*, "reelItemRenderer"*/], // leave out Reels/Shorts for now
+    body
+  );
+  if (renderers.length > 0) {
+    return renderers.filter(hasVideoId).map(sanitizeRecommendation);
+  }
+  return null;
+};
+
+export default extractRecommendations;
+
+// Some compactVideoRenderers have no top-level videoId
+// these are not algorithmic recommendations and can be ignored
 const hasVideoId = (rec) => rec.videoId;
 
 const sanitizeRecommendation = (rec) => {
   // Remove fields that are purely for UI
-  traverse.fishForAndDeleteAll(
-    ["menu", "thumbnailOverlays"],
-    rec
-  );
+  traverse.fishForAndDeleteAll(["menu", "thumbnailOverlays"], rec);
 
-  // Extract common details
+  // Extract useful details
   // via nested destructuring
   // (requires lengthy/complex default assignments)
   const {
@@ -39,7 +51,9 @@ const sanitizeRecommendation = (rec) => {
   // the title is reported differently for
   // compactVideoRenderer vs videoRenderer vs reelItemRenderer
   // (leaving out reelItemRenderer for now)
-  const title = rec.title.simpleText || rec.title.runs[0].text /* || rec.headline.simpleText */;
+  const title =
+    rec.title.simpleText ||
+    rec.title.runs[0].text; /* || rec.headline.simpleText */
 
   return {
     videoId,
@@ -60,16 +74,3 @@ const sanitizeRecommendation = (rec) => {
     rawData: rec,
   };
 };
-
-const extractRecommendations = ({ body }) => {
-  const renderers = traverse.fishForAll(
-    ["compactVideoRenderer", "videoRenderer" /*, "reelItemRenderer"*/], // leave out Reels/Shorts for now
-    body
-  );
-  if (renderers.length > 0) {
-    return renderers.filter(hasVideoId).map(sanitizeRecommendation);
-  }
-  return null;
-};
-
-export default extractRecommendations;
