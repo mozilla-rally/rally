@@ -19,8 +19,10 @@ describe("ProfileButtons tests", () => {
   });
 
   it("zero state with invalid data", async () => {
+    const updateUserDocument = jest.fn();
+
     (useUserDocument as jest.Mock).mockReturnValue({
-      updateUserDocument: undefined,
+      updateUserDocument,
       userDocument: undefined,
     });
 
@@ -55,11 +57,17 @@ describe("ProfileButtons tests", () => {
     await userEvent.click(cancelButton);
 
     expect(push).toHaveBeenCalledWith("/");
+
+    expect(updateUserDocument).toHaveBeenCalledWith({
+      onboared: true,
+    });
   });
 
   it("zero state with valid data", async () => {
+    const updateUserDocument = jest.fn();
+
     (useUserDocument as jest.Mock).mockReturnValue({
-      updateUserDocument: undefined,
+      updateUserDocument,
       userDocument: {},
     });
 
@@ -94,6 +102,10 @@ describe("ProfileButtons tests", () => {
     await userEvent.click(cancelButton);
 
     expect(push).toHaveBeenCalledWith("/");
+
+    expect(updateUserDocument).toHaveBeenCalledWith({
+      onboared: true,
+    });
   });
 
   it("updates data upon save when user document does not exist", async () => {
@@ -126,6 +138,7 @@ describe("ProfileButtons tests", () => {
       demographicsData: {
         exactIncome: "10000",
       },
+      onboared: true,
     });
   });
 
@@ -159,6 +172,7 @@ describe("ProfileButtons tests", () => {
       demographicsData: {
         exactIncome: "10000",
       },
+      onboared: true,
     });
   });
 });

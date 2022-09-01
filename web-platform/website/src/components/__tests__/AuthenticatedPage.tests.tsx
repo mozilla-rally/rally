@@ -176,7 +176,7 @@ describe("AuthenticatedPage tests", () => {
 
     (useUserDocument as jest.Mock).mockReturnValue({
       isDocumentLoaded: true,
-      userDocument: { enrolled: true },
+      userDocument: { enrolled: true, onboared: true },
     });
 
     const root = render(
@@ -256,7 +256,7 @@ describe("AuthenticatedPage tests", () => {
     (useRouter as jest.Mock).mockReturnValue({
       isReady: true,
       replace,
-      pathname: "/privacy-policy",
+      pathname: "/",
     });
 
     (useAuthentication as jest.Mock).mockReturnValue({
@@ -276,8 +276,39 @@ describe("AuthenticatedPage tests", () => {
       </AuthenticatedPage>
     );
 
-    expect(root.container.childNodes.length).toBe(1);
-    expect(root.getByText("Test")).toBeInTheDocument();
-    expect(replace).not.toHaveBeenCalled();
+    expect(root.container.childNodes.length).toBe(0);
+    expect(root.queryByText("Test")).not.toBeInTheDocument();
+    expect(replace).toHaveBeenCalledWith("/privacy-policy");
+  });
+
+  it("renders the profile when user is not onboarded", () => {
+    const replace = jest.fn();
+
+    (useRouter as jest.Mock).mockReturnValue({
+      isReady: true,
+      replace,
+      pathname: "/privacy-policy",
+    });
+
+    (useAuthentication as jest.Mock).mockReturnValue({
+      isLoaded: true,
+      user: {},
+      isUserVerified: true,
+    });
+
+    (useUserDocument as jest.Mock).mockReturnValue({
+      isDocumentLoaded: true,
+      userDocument: { enrolled: true },
+    });
+
+    const root = render(
+      <AuthenticatedPage>
+        <div>Test</div>
+      </AuthenticatedPage>
+    );
+
+    expect(root.container.childNodes.length).toBe(0);
+    expect(root.queryByText("Test")).not.toBeInTheDocument();
+    expect(replace).toHaveBeenCalledWith("/profile");
   });
 });

@@ -28,5 +28,15 @@ export function AuthenticatedPage(props: {
     return null;
   }
 
+  if (
+    router.pathname !== "/profile" &&
+    userDocument &&
+    userDocument.enrolled &&
+    !userDocument.onboared
+  ) {
+    router.replace("/profile");
+    return null;
+  }
+
   return <>{props.children}</>;
 }
