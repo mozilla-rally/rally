@@ -25,6 +25,7 @@ export function ProfileButtons() {
           onClick={() => {
             updateUserDocument({
               demographicsData: profileData,
+              onboared: true,
             });
 
             router.push("/");
@@ -37,6 +38,10 @@ export function ProfileButtons() {
           className={`d-flex fw-bold ps-4 pe-4 pt-2 pb-2 ${TertiaryButton}`}
           outline
           onClick={() => {
+            updateUserDocument({
+              onboared: true,
+            });
+
             router.push("/");
           }}
         >

@@ -40,9 +40,27 @@ describe("privacy policy page tests", () => {
     expect(useRouter).toHaveBeenCalled();
   });
 
+  it("routes to profile page when user is not onboarded", () => {
+    (useUserDocument as jest.Mock).mockReturnValue({
+      userDocument: { enrolled: true /* onboared: false */ },
+    });
+
+    const replace = jest.fn();
+    (useRouter as jest.Mock).mockReturnValue({ replace, isReady: true });
+
+    const root = render(<PrivacyPolicyPage />);
+
+    expect(root.container.firstChild).toBeNull();
+
+    expect(replace).toHaveBeenCalledWith("/profile");
+
+    expect(useUserDocument).toHaveBeenCalled();
+    expect(useRouter).toHaveBeenCalled();
+  });
+
   it("routes to home page when user is already enrolled", () => {
     (useUserDocument as jest.Mock).mockReturnValue({
-      userDocument: { enrolled: true },
+      userDocument: { enrolled: true, onboared: true },
     });
 
     const replace = jest.fn();

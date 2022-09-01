@@ -19,7 +19,11 @@ const PrivacyPolicyPage: NextPage = () => {
   }
 
   if (userDocument && userDocument.enrolled) {
-    router.replace("/");
+    if (!userDocument.onboared) {
+      router.replace("/profile");
+    } else {
+      router.replace("/");
+    }
     return null;
   }
 
