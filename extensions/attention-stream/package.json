@@ -1,6 +1,6 @@
 {
   "name": "rally-attention-stream",
-  "version": "0.4.7",
+  "version": "0.4.8",
   "scripts": {
     "config:chrome": "tsx scripts/generate-manifest.ts --browser=chrome --manifest-version=3",
     "config:firefox": "tsx scripts/generate-manifest.ts --browser=firefox --manifest-version=2",
