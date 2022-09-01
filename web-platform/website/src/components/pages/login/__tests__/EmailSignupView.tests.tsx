@@ -30,6 +30,7 @@ const strings = Strings.components.pages.login.emailSignupView;
 
 describe("EmailSignupView tests", () => {
   const signupWithEmail = jest.fn();
+  const logout = jest.fn();
   const setLoginState = jest.fn();
 
   beforeEach(() => {
@@ -42,6 +43,7 @@ describe("EmailSignupView tests", () => {
 
     (useAuthentication as jest.Mock).mockReturnValue({
       signupWithEmail,
+      logout,
     });
 
     (useLoginDataContext as jest.Mock).mockReturnValue({
@@ -211,6 +213,7 @@ describe("EmailSignupView tests", () => {
 
     expect(PrivacyNoticeAndLoginLink).toHaveBeenCalled();
 
+    expect(logout).toHaveBeenCalled();
     expect(setLoginState).toHaveBeenCalledWith(LoginState.EmailAccountCreated);
   });
 

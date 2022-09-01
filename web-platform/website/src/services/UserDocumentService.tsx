@@ -13,7 +13,6 @@ import {
   doc,
   onSnapshot,
   setDoc,
-  updateDoc,
 } from "firebase/firestore";
 import { createContext, useContext, useEffect, useState } from "react";
 
@@ -44,7 +43,7 @@ export function UserDocumentProvider(props: { children: React.ReactNode }) {
   const [isDocumentLoaded, setIsDocumentLoaded] = useState(false);
   const [userDocument, setUserDocument] = useState<UserDocument | null>(null);
 
-  const { user, isLoaded } = useAuthentication();
+  const { user, isLoaded, isUserVerified } = useAuthentication();
   const { db } = useFirebase();
 
   useEffect(() => {
@@ -52,7 +51,7 @@ export function UserDocumentProvider(props: { children: React.ReactNode }) {
       return;
     }
 
-    if (!user) {
+    if (!user || !isUserVerified) {
       setIsDocumentLoaded(true);
       return;
     }

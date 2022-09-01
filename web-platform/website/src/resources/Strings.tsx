@@ -408,6 +408,12 @@ export const Strings = {
             title: "Check Your Email",
           },
         },
+        unverifiedEmailError: {
+          activateEmail:
+            "Email account is not verified. Please check your inbox and activate your account.",
+          cantFindEmail: "Can't find the email?",
+          resendEmail: "Resend verification email.",
+        },
       },
       privacyPolicy: {
         buttons: {
@@ -1091,6 +1097,7 @@ export const Strings = {
     passwordErrorMessages: {
       mismatched: "Passwords do not match",
       invalidRules: "Invalid rules",
+      passwordError: "Password error",
     },
     emailErrorMessages: {
       newEmail: "Please enter a new email",

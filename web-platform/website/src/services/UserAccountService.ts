@@ -1,4 +1,5 @@
 import { FirebaseError } from "@firebase/util";
+import assert from "assert";
 import {
   EmailAuthProvider,
   GoogleAuthProvider,
@@ -9,7 +10,7 @@ import {
   fetchSignInMethodsForEmail,
   reauthenticateWithCredential,
   reauthenticateWithPopup,
-  sendEmailVerification,
+  sendEmailVerification as sendEmailVerificationFn,
   sendPasswordResetEmail as sendPasswordResetEmailFn,
   signInWithEmailAndPassword,
   signInWithRedirect,
@@ -52,6 +53,13 @@ export async function logout() {
   await signOut(auth);
 }
 
+export async function sendEmailVerification(): Promise<void> {
+  const { auth } = useFirebase();
+
+  assert(auth && auth.currentUser, "Invalid user.");
+  await sendEmailVerificationFn(auth.currentUser as User);
+}
+
 export async function sendPasswordResetEmail(email: string): Promise<void> {
   const { auth } = useFirebase();
   await sendPasswordResetEmailFn(auth, email);
@@ -69,7 +77,7 @@ export async function signupWithEmail(
     password
   );
 
-  await sendEmailVerification(userCredential.user);
+  await sendEmailVerificationFn(userCredential.user);
 
   return userCredential;
 }
@@ -92,7 +100,7 @@ export async function deleteGoogleUser(user?: User): Promise<boolean> {
 export async function changeUserEmail(
   user: User | undefined,
   email: string,
-  password: string,
+  password: string
 ): Promise<boolean> {
   if (!user || !user.email) {
     return false;
@@ -113,15 +121,15 @@ export async function changeUserEmail(
   }
   await updateEmail(user, email);
   if (!user.emailVerified) {
-    await sendEmailVerification(user);
-  } 
+    await sendEmailVerificationFn(user);
+  }
   return true;
 }
 
 export async function changeUserPassword(
   user: User | undefined,
   oldPassword: string,
-  newPassword: string,
+  newPassword: string
 ): Promise<boolean> {
   if (!user || !user.email) {
     return false;

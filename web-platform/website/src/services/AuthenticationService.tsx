@@ -11,6 +11,7 @@ import {
   loginWithEmail as loginWithEmailFn,
   loginWithGoogle as loginWithGoogleFn,
   logout as logoutFn,
+  sendEmailVerification,
   sendPasswordResetEmail as sendPasswordResetEmailFn,
   signupWithEmail as signupWithEmailFn,
 } from "./UserAccountService";
@@ -34,6 +35,7 @@ export interface UserDataContext {
   loginWithEmail: (email: string, password: string) => Promise<UserCredential>;
   loginWithGoogle: () => Promise<void>;
   logout: () => Promise<void>;
+  sendEmailVerification: () => Promise<void>;
   signupWithEmail(email: string, password: string): Promise<UserCredential>;
   sendPasswordResetEmail(email: string): Promise<void>;
   user?: User;
@@ -61,23 +63,21 @@ export function AuthenticationProvider(props: { children: React.ReactNode }) {
 
   useEffect(() => {
     return onAuthStateChanged(auth, (firebaseUser) => {
+      setIsUserVerified(
+        Boolean(
+          firebaseUser &&
+            firebaseUser.providerData &&
+            firebaseUser.providerData.length &&
+            ((firebaseUser.providerData[0].providerId === "password" &&
+              firebaseUser.emailVerified) ||
+              firebaseUser.providerData[0].providerId === "google.com")
+        )
+      );
+
       setUser(firebaseUser ? { firebaseUser } : undefined);
       setIsLoaded(true);
     });
   }, []);
-
-  useEffect(() => {
-    setIsUserVerified(
-      Boolean(
-        user &&
-          user.firebaseUser.providerData &&
-          user.firebaseUser.providerData.length &&
-          ((user.firebaseUser.providerData[0].providerId === "password" &&
-            user.firebaseUser.emailVerified) ||
-            user.firebaseUser.providerData[0].providerId === "google.com")
-      )
-    );
-  }, [user]);
 
   return (
     <AuthenticationContext.Provider
@@ -89,8 +89,6 @@ export function AuthenticationProvider(props: { children: React.ReactNode }) {
         loginWithEmail: loginWithEmailFn,
         loginWithGoogle: loginWithGoogleFn,
         logout: logoutFn,
-        sendPasswordResetEmail: sendPasswordResetEmailFn,
-        signupWithEmail: signupWithEmailFn,
         changeUserEmail: async (email: string, password: string) => {
           return await changeUserEmail(
             user && user.firebaseUser,
@@ -130,6 +128,9 @@ export function AuthenticationProvider(props: { children: React.ReactNode }) {
 
           return isGoogleAccount ? UserType.Google : UserType.Email;
         },
+        sendEmailVerification,
+        sendPasswordResetEmail: sendPasswordResetEmailFn,
+        signupWithEmail: signupWithEmailFn,
       }}
     >
       {props.children}

@@ -56,8 +56,6 @@ describe("EditAccountEmailView tests", () => {
 
     await setEmail(invalidEmail);
 
-    root.debug();
-
     const button = root.getByText(strings.update) as HTMLElement;
     expect(button).toBeInTheDocument();
 
