@@ -159,7 +159,10 @@ const styles = {
           ".dropdown-menu": {
             transform: "none",
             width: "100%",
-            border: "none",
+            borderRadius: "4px",
+            borderBottom: "1px solid #cdcdd4",
+            boxShadow: `0px 0px 1px rgba(0, 0, 0, 0.25),
+            0px 8px 48px rgba(34, 0, 51, 0.04), 0px 4px 8px rgba(15, 13, 26, 0.13)`
           },
         },
       },
