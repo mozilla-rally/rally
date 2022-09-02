@@ -37,11 +37,11 @@ const extractVideoDetails = ({ body, hostUrl }) => {
       authorChannelId,
       isLiveContent,
       keywords,
-      lengthSeconds,
+      lengthSeconds: parseInt(lengthSeconds),
       shortDescription,
       title,
       videoId,
-      viewCount,
+      viewCount: parseInt(viewCount),
       // Still keep the raw object
       rawData: body.videoDetails,
     };

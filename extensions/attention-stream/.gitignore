@@ -111,5 +111,5 @@ web-ext-artifacts/
 .venv
 generated/
 
-# Manifest file is copied from dev/prod versions
+# Manifest file is generated with generate-manifest.ts
 manifest.json

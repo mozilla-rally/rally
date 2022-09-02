@@ -15,8 +15,8 @@ const PATHS = [
 declare var ytInitialPlayerResponse;
 declare var ytInitialData;
 
-// the initial ads are sometimes baked into the HTML of the page,
-// at variable ytInitialPlayerResponse or ytInitialData
+// the initial data is sometimes baked into the HTML of the page,
+// in variable ytInitialPlayerResponse or ytInitialData
 // so we send that too!
 setTimeout(() => {
   if (typeof ytInitialPlayerResponse !== 'undefined') {
@@ -44,7 +44,7 @@ setTimeout(() => {
     );
     window.postMessage(data, '*');
   }
-}, 5000);
+}, 3000);
 
 const cleanAndParse = text => JSON.parse(text.replace('for (;;);', ''));
 

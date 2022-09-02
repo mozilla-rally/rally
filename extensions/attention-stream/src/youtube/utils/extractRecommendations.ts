@@ -6,7 +6,10 @@ const extractRecommendations = ({ body }) => {
     body
   );
   if (renderers.length > 0) {
-    return renderers.filter(hasVideoId).map(sanitizeRecommendation);
+    return {
+      recommendations: renderers.filter(hasVideoId).map(sanitizeRecommendation),
+      isInitialSetOfRecommendations: !traverse.fishFor("continuationItems", body)
+    }
   }
   return null;
 };

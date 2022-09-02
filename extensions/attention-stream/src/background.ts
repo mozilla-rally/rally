@@ -277,36 +277,67 @@ async function stateChangeCallback(newState) {
         }
       }
 
+      this.youtubeListener = async (message) => {
+        if (!message || !message.type) return;
+        switch (message.type) {
+          case "MozillaRally.YouTube.videodetails":
+            console.log("CURRENT VIDEO DETAILS:", message);
+            break;
+
+          case "MozillaRally.YouTube.recommendations":
+            console.log("VIDEO RECOMMENDATIONS:", message);
+            break;
+
+          case "MozillaRally.YouTube.ads":
+            console.log("ADVERTISEMENTS:", message);
+            break;
+
+          default:
+            console.debug(
+              `Mozilla Rally - unknown message type received: ${message.type}`
+            );
+        }
+      };
+
+      browser.runtime.onMessage.addListener(this.youtubeListener);
+
       break;
     case RunStates.Paused:
       console.log(`Study paused with Rally ID: ${rally.rallyId}`);
 
-      await resourceCleanup();
+      // Take down all resources from run state.
+      webScience.pageNavigation.onPageData.removeListener(
+        this.pageDataListener
+      );
+      webScience.pageText.onTextParsed.removeListener(this.pageTextListener);
+      webScience.messaging.onMessage.removeListener(this.advertisementListener);
+      browser.runtime.onMessage.removeListener(this.youtubeListener);
 
+      await browser.scripting.unregisterContentScripts({
+        ids: ["page-ads", "youtube"],
+      });
       await browser.storage.local.set({ state: RunStates.Paused });
 
       break;
     case RunStates.Ended:
       console.log(`Study ended with Rally ID: ${rally.rallyId}`);
 
-      await resourceCleanup();
+      // Take down all resources from run state.
+      webScience.pageNavigation.onPageData.removeListener(
+        this.pageDataListener
+      );
+      webScience.pageText.onTextParsed.removeListener(this.pageTextListener);
+      webScience.messaging.onMessage.removeListener(this.advertisementListener);
+      browser.runtime.onMessage.removeListener(this.youtubeListener);
 
+      await browser.scripting.unregisterContentScripts({
+        ids: ["page-ads", "youtube"],
+      });
       await browser.storage.local.set({ ended: true });
 
       break;
     default:
       throw new Error(`Unknown study state: ${newState}`);
-  }
-
-  async function resourceCleanup() {
-    // Take down all resources from run state.
-    webScience.pageNavigation.onPageData.removeListener(this.pageDataListener);
-    webScience.pageText.onTextParsed.removeListener(this.pageTextListener);
-    webScience.messaging.onMessage.removeListener(this.advertisementListener);
-
-    await browser.scripting.unregisterContentScripts({
-      ids: ["page-ads", "youtube"],
-    });
   }
 }
 
