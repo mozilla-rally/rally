@@ -45,14 +45,14 @@ export const studies = {
     authors: {
       name: "Mozilla Rally",
     },
-    version: "0.4.3",
+    version: "0.4.8",
     firefoxAddonId: "attention-stream@rally.mozilla.org",
     chromeExtensionId: "bahhehaddofgkccippmjcecepdakppme",
     studyId: "attentionStream",
     schemaNamespace: "rally-attention-stream",
     downloadLink: {
-      chrome: "https://chrome.google.com/webstore/detail/attention-stream/bahhehaddofgkccippmjcecepdakppme",
-      firefox: "https://addons.mozilla.org/en-US/firefox/addon/attention-stream/",
+      chrome: "https://chrome.google.com/webstore/detail/rally-attention-stream/bahhehaddofgkccippmjcecepdakppme",
+      firefox: "https://addons.mozilla.org/en-US/firefox/addon/rally-attention-stream",
     },
     endDate: "Ongoing",
     studyEnded: false,
