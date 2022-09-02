@@ -3,7 +3,7 @@ import { style } from "typestyle";
 
 import { Strings } from "../resources/Strings";
 import { Colors } from "../styles/Colors";
-import { ContainerStyles } from "../styles/ContainerStyles";
+import { ContainerSmallerStyles } from "../styles/ContainerStyles";
 import { FontSize } from "../styles/Fonts";
 import { LinkStyles } from "../styles/LinkStyles";
 import { Spacing } from "../styles/Spacing";
@@ -13,7 +13,7 @@ const strings = Strings.components.footer;
 export function Footer() {
   return (
     <Container
-      className={`${ContainerStyles.TopLevelContainer} ${styles.container} g-0`}
+      className={`${ContainerSmallerStyles.TopLevelContainer} ${styles.container} g-0`}
     >
       <Row>
         <Col>

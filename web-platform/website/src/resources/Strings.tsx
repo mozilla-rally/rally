@@ -340,6 +340,11 @@ export const Strings = {
           password: "Password",
           title: "Create Account",
         },
+        launchCardText: 
+        {
+          headline:"Use your data to build a better internet",
+          bullets: ["Monitor big tech platforms", "Improve user privacy and control", "Leave at any time. We'll delete your data"]          
+        },
         loginFormValidators: {
           invalidFormat: "Invalid format",
           required: "Required",
