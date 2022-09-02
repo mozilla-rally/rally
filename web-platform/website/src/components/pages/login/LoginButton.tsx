@@ -1,7 +1,7 @@
 import { Button, ButtonProps, Col, Container, Row } from "reactstrap";
 import { style } from "typestyle";
 
-import { Spacing } from "../../../styles/Spacing";
+import { Spacing, createResponsiveStyle, ScreenSize } from "../../../styles";
 
 export interface LoginButtonProps extends ButtonProps {
   icon?: string;
@@ -12,7 +12,7 @@ export function LoginButton(props: LoginButtonProps) {
 
   return (
     <Button
-      className={`w-100 ps-5 pe-5 ${styles.loginButton} ${className || ""}`}
+      className={`w-100 ${styles.loginButton} ${className || ""}`}
       {...otherProps}
     >
       <Container className="w-100 flex-nowrap">
@@ -40,5 +40,9 @@ const styles = {
     paddingBottom: Spacing.Medium,
     borderWidth: 2,
     fontWeight: 700,
-  }),
+  },
+  createResponsiveStyle(ScreenSize.ExtraSmall, {
+    padding: "10px"
+  })
+  ),
 };
