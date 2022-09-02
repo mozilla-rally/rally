@@ -23,12 +23,12 @@ const sanitizeRecommendation = (rec) => {
 
   // Extract useful details
   // via nested destructuring
-  // (requires lengthy/complex default assignments)
+  // (requires lots of default assignments)
   const {
     videoId,
-    descriptionSnippet: { runs: [{ text: descriptionSnippet = undefined }] } = {
-      runs: [{}],
-    },
+    descriptionSnippet: {
+      runs: [{ text: descriptionSnippet = undefined }] = [{}],
+    } = {},
     viewCountText: { simpleText: viewCountText = undefined } = {},
     lengthText: { simpleText: lengthText = undefined } = {},
     ownerBadges: authorBadges = [],
@@ -41,16 +41,16 @@ const sanitizeRecommendation = (rec) => {
             browseEndpoint: {
               browseId: authorChannelId = undefined,
               canonicalBaseUrl: authorChannelPath = undefined,
-            },
-          },
+            } = {},
+          } = {},
         },
-      ],
-    } = { runs: [{ navigationEndpoint: { browseEndpoint: {} } }] },
+      ] = [{}],
+    } = {},
   } = rec;
 
   // the title is reported differently for
   // compactVideoRenderer vs videoRenderer vs reelItemRenderer
-  // (leaving out reelItemRenderer for now)
+  // (leaving out reelItemRenderer titles for now)
   const title =
     rec.title.simpleText ||
     rec.title.runs[0].text; /* || rec.headline.simpleText */

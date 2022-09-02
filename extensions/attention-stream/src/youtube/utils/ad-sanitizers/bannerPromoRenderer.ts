@@ -10,10 +10,12 @@ const sanitizeBannerPromo = (adData) => {
   traverse.fishForAndDeleteAll(["dismissButton"], adData);
 
   // Extract useful details
-  const [adVideoId] = traverse.fishForAll(["adVideoId", "externalVideoId"], adData);
-  const {
-    promoText: { runs: [{ text: title = undefined }] } = { runs: [{}] },
-  } = adData;
+  const [adVideoId] = traverse.fishForAll(
+    ["adVideoId", "externalVideoId"],
+    adData
+  );
+  const { promoText: { runs: [{ text: title = undefined }] = [{}] } = {} } =
+    adData;
   const destinationUrl = getDestinationUrl(adData);
 
   return {
