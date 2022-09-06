@@ -362,11 +362,18 @@ export const countRallyUsers = functions.https.onRequest(async (req, res) => {
   const extensionCounts = new Map();
   await listAllUsers(undefined, userCounts, extensionCounts);
 
-  console.log({ users: Array.from(userCounts), extensions: Array.from(extensionCounts) });
+  console.log({
+    users: Array.from(userCounts),
+    extensions: Array.from(extensionCounts),
+  });
   res.status(200).send("OK");
 });
 
-const listAllUsers = async (nextPageToken: string | undefined, userCounts: Map<string, number>, extensionCounts: Map<string, number>) => {
+const listAllUsers = async (
+  nextPageToken: string | undefined,
+  userCounts: Map<string, number>,
+  extensionCounts: Map<string, number>
+) => {
   // List batch of users, 1000 at a time.
   const listUsersResult = await admin.auth().listUsers(1000, nextPageToken);
   listUsersResult.users.forEach((userRecord) => {
@@ -396,3 +403,36 @@ const listAllUsers = async (nextPageToken: string | undefined, userCounts: Map<s
     await listAllUsers(listUsersResult.pageToken, userCounts, extensionCounts);
   }
 };
+
+/**
+ * Lookup a user by rallyId
+ *
+ * @param {!express:Request} req HTTP request context.
+ * @param {!express:Response} res HTTP response context.
+ */
+
+export const lookupUserByRallyId = functions.https.onRequest(
+  async (req, res) => {
+    if (!req.query.rallyId) {
+      res.status(400).send(`Bad Request: expected "rallyId" value in query`);
+      return;
+    }
+
+    const extensionUsersCollection = admin
+      .firestore()
+      .collection("extensionUsers");
+    const results = await extensionUsersCollection
+      .where("rallyId", "==", req.query.rallyId)
+      .get();
+
+    if (results.empty) {
+      console.log(`No matching users for rallyId ${req.query.rallyId}`);
+    } else {
+      console.log(`Users found with rallyId ${req.query.rallyId}:`);
+      results.forEach((doc) => {
+        console.log(doc.id);
+      });
+    }
+    res.status(200).send("OK");
+  }
+);
