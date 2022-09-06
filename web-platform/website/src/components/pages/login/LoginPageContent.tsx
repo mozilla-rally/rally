@@ -1,11 +1,12 @@
 import { Card, Col, Container, Row } from "reactstrap";
 import { style } from "typestyle";
 
+import { Strings } from "../../../resources/Strings";
 import { ScreenSize, Spacing, createResponsiveStyle } from "../../../styles";
+import { FontSizeRaw } from "../../../styles/Fonts";
 import { EmailAccountCreatedView } from "./EmailAccountCreatedView";
 import { EmailSignupView } from "./EmailSignupView";
 import { InitialLoginView } from "./InitialLoginView";
-import { Strings } from "../../../resources/Strings"
 import {
   LoginState,
   LoginStateProvider,
@@ -13,9 +14,8 @@ import {
 } from "./LoginDataContext";
 import { LoginView } from "./LoginView";
 import { ResetPasswordView } from "./ResetPasswordView";
-import { FontSizeRaw } from "../../../styles/Fonts";
 
-const strings = Strings.components.pages.login.launchCardText
+const strings = Strings.components.pages.login.launchCardText;
 
 export function LoginPageContent() {
   return (
@@ -42,13 +42,15 @@ function RenderLaunchText() {
         <ul className="bullets">
           {strings.bullets.map((item) => {
             return (
-              <li className="bullets-item">{item}</li>
-            )
+              <li key={item} className="bullets-item">
+                {item}
+              </li>
+            );
           })}
         </ul>
       </Card>
     </Col>
-  )
+  );
 }
 
 function LoginCardFactory() {
@@ -85,11 +87,11 @@ const styles = {
           height: "auto",
         },
         ".login-col": {
-          marginRight: "3rem"
+          marginRight: 1.2 * Spacing.xxxLarge,
         },
         ".login-card": {
           minWidth: 450,
-          padding: "3rem"
+          padding: 1.2 * Spacing.xxxLarge,
         },
       },
     },
@@ -105,13 +107,13 @@ const styles = {
             ".login-card": {
               border: "none",
               padding: "1rem",
-              minWidth: 300
+              minWidth: 300,
             },
           },
         },
         ".login-col": {
           marginRight: 0,
-        }
+        },
       },
     })
   ),
@@ -122,12 +124,12 @@ const styles = {
       $nest: {
         ".launch-card": {
           border: "none",
-          backgroundColor: "transparent"
+          backgroundColor: "transparent",
         },
         ".launch-header": {
           marginBottom: Spacing.xLarge,
           fontWeight: "bold",
-          fontSize: `${FontSizeRaw.xxLarge.fontSize} !important`
+          fontSize: `${FontSizeRaw.xxLarge.fontSize} !important`,
         },
         ".bullets": {
           listStyle: "none",
@@ -143,13 +145,17 @@ const styles = {
               fontSize: FontSizeRaw.Large.fontSize,
               color: "#20123a",
               paddingBottom: "20px",
-            }
-          }
-        }
+            },
+          },
+        },
       },
     },
-    createResponsiveStyle(ScreenSize.Medium, {
-      display: "flex"
-    }, true),
-  )
+    createResponsiveStyle(
+      ScreenSize.Medium,
+      {
+        display: "flex",
+      },
+      true
+    )
+  ),
 };

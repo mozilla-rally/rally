@@ -7,7 +7,11 @@ import { Layout } from "../components/Layout";
 import { LoginPageContent } from "../components/pages/login/LoginPageContent";
 import { Strings } from "../resources/Strings";
 import { useAuthentication } from "../services/AuthenticationService";
-import { ApplyFullscapePageStyles, createResponsiveStyle, ScreenSize } from "../styles";
+import {
+  ApplyFullscapePageStyles,
+  ScreenSize,
+  createResponsiveStyle,
+} from "../styles";
 
 const strings = Strings.pages.login;
 
@@ -34,7 +38,6 @@ const LoginPage: NextPage = () => {
         <div className={styles.signBackground}>
           <LoginPageContent />
         </div>
-
       </>
     </Layout>
   );
@@ -43,17 +46,22 @@ const LoginPage: NextPage = () => {
 ApplyFullscapePageStyles();
 
 const styles = {
-  signBackground: style({
-    backgroundImage: "none",
-  },
-    createResponsiveStyle(ScreenSize.Medium, {
-      width: "100%",
-      height: "100vh",
-      background: "no-repeat",
-      backgroundImage: `url("/img/network-background.png")`,
-      backgroundPosition: "right top",
-    },true)
-  )
-}
+  signBackground: style(
+    {
+      backgroundImage: "none",
+    },
+    createResponsiveStyle(
+      ScreenSize.Medium,
+      {
+        width: "100%",
+        height: "100vh",
+        background: "no-repeat",
+        backgroundImage: `url("/img/network-background.png")`,
+        backgroundPosition: "right top",
+      },
+      true
+    )
+  ),
+};
 
 export default LoginPage;

@@ -1,8 +1,12 @@
 import { RenderResult, act, render } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+
 import { Strings } from "../../../../resources/Strings";
 import { useAuthentication } from "../../../../services/AuthenticationService";
-import { validatePasswordAccountForm, validatePasswordRules} from "../../login/LoginFormValidator";
+import {
+  validatePasswordAccountForm,
+  validatePasswordRules,
+} from "../../login/LoginFormValidator";
 import { PasswordRules } from "../../login/PasswordRules";
 import { useAccountSettingsDataContext } from "../AccountSettingsDataContext";
 import { EditAccountPasswordView } from "../EditAccountPasswordView";
@@ -16,7 +20,6 @@ jest.mock("../AccountSettingsDataContext");
 const strings = Strings.components.pages.accountSettings.editPasswordAccount;
 
 describe("EditAccountPasswordView tests", () => {
-
   beforeEach(() => {
     jest.resetAllMocks();
     (useAccountSettingsDataContext as jest.Mock).mockReturnValue({
@@ -24,7 +27,7 @@ describe("EditAccountPasswordView tests", () => {
     });
     (PasswordRules as jest.Mock).mockImplementation(() => null);
     (useAuthentication as jest.Mock).mockReturnValue({
-      changeUserPassword: undefined
+      changeUserPassword: undefined,
     });
     (validatePasswordRules as jest.Mock).mockReturnValue([]);
   });
@@ -47,7 +50,7 @@ describe("EditAccountPasswordView tests", () => {
     (validatePasswordAccountForm as jest.Mock).mockReturnValue({
       newPassword: { error: passwordError },
       validRules: false,
-      valid: false
+      valid: false,
     });
 
     userEvent.setup();

@@ -1,7 +1,7 @@
 import { Button, ButtonProps, Col, Container, Row } from "reactstrap";
 import { style } from "typestyle";
 
-import { Spacing, createResponsiveStyle, ScreenSize } from "../../../styles";
+import { ScreenSize, Spacing, createResponsiveStyle } from "../../../styles";
 
 export interface LoginButtonProps extends ButtonProps {
   icon?: string;
@@ -35,14 +35,15 @@ export function LoginButton(props: LoginButtonProps) {
 }
 
 const styles = {
-  loginButton: style({
-    paddingTop: Spacing.Medium,
-    paddingBottom: Spacing.Medium,
-    borderWidth: 2,
-    fontWeight: 700,
-  },
-  createResponsiveStyle(ScreenSize.ExtraSmall, {
-    padding: "10px"
-  })
+  loginButton: style(
+    {
+      paddingTop: Spacing.Medium,
+      paddingBottom: Spacing.Medium,
+      borderWidth: Spacing.Micro / 2,
+      fontWeight: 700,
+    },
+    createResponsiveStyle(ScreenSize.ExtraSmall, {
+      padding: 2.5 * Spacing.Micro,
+    })
   ),
 };
