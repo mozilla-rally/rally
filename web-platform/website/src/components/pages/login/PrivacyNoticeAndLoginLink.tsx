@@ -15,7 +15,7 @@ export function PrivacyNoticeAndLoginLink() {
   return (
     <Container className={`${styles.container} p-0`}>
       <Row className="privacy-notice mb-5">
-        <Col className="d-flex justify-content-center">
+        <Col className="d-flex justify-content-center text-center">
           {strings.privacyNotice}
         </Col>
       </Row>

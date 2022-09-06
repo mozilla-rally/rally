@@ -39,6 +39,9 @@ export const FontSizeRaw = {
   xLarge: {
     fontSize: `${20 / 16}rem`,
   },
+  xxLarge: {
+    fontSize: `${24 / 16}rem`,
+  },
 };
 
 export const FontSize = {
@@ -46,5 +49,6 @@ export const FontSize = {
   Small: style(FontSizeRaw.Small),
   Normal: style(FontSizeRaw.Normal),
   Large: style(FontSizeRaw.Large),
-  xLarge: style(FontSizeRaw.xLarge)
+  xLarge: style(FontSizeRaw.xLarge),
+  xxLarge: style(FontSizeRaw.xxLarge),
 };

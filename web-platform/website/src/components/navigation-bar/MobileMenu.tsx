@@ -159,7 +159,9 @@ const styles = {
           ".dropdown-menu": {
             transform: "none",
             width: "100%",
+            borderRadius: Spacing.Micro,
             border: "none",
+            borderBottom: "1px solid #cdcdd4",
           },
         },
       },
