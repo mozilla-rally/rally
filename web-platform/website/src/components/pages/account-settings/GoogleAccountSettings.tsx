@@ -25,7 +25,7 @@ export function GoogleAccountSettings() {
   ).toDateString();
 
   return (
-    <Card className={`${CardStyles.account.default} flex-nowrap`}>
+    <Card className={`${CardStyles.account.default} flex-nowrap p-4`}>
       <Container className={`${ContainerStyles.NoSpacing} p-0`}>
         <Row>
           <Col>
