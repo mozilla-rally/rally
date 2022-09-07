@@ -1,4 +1,5 @@
 import actionCompanionAdRenderer from "./actionCompanionAdRenderer";
+import adsEngagementPanelRenderer from "./adsEngagementPanelRenderer";
 import bannerPromoRenderer from "./bannerPromoRenderer";
 import compactPromotedVideoRenderer from "./compactPromotedVideoRenderer";
 import displayAdRenderer from "./displayAdRenderer";
@@ -12,6 +13,7 @@ import promotedSparklesWebRenderer from "./promotedSparklesWebRenderer";
 
 export {
   actionCompanionAdRenderer,
+  adsEngagementPanelRenderer,
   bannerPromoRenderer,
   compactPromotedVideoRenderer,
   displayAdRenderer,
