@@ -2,60 +2,30 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-import { FirebaseOptions, initializeApp } from "firebase/app";
-import { Auth, connectAuthEmulator, getAuth, onAuthStateChanged, signInWithCustomToken, User } from "firebase/auth";
-import { connectFirestoreEmulator, doc, DocumentData, DocumentSnapshot, Firestore, getDoc, getFirestore, onSnapshot } from "firebase/firestore";
+import { initializeApp } from "firebase/app";
+import {
+  Auth,
+  connectAuthEmulator,
+  getAuth,
+  onAuthStateChanged,
+  signInWithCustomToken,
+  User,
+} from "firebase/auth";
+import {
+  connectFirestoreEmulator,
+  doc,
+  DocumentData,
+  DocumentSnapshot,
+  Firestore,
+  getDoc,
+  getFirestore,
+  onSnapshot,
+} from "firebase/firestore";
 import { v4 as uuidv4 } from "uuid";
 import browser, { Tabs } from "webextension-polyfill";
+import type { RallyOptions } from "./RallyOptions";
 import { RunStates } from "./RunStates";
 import { WebMessages } from "./WebMessages";
-
-/**
- * Options to initialize the Rally library.   
- */
-export interface RallyOptions {
-  /* Whether or not to initialize Rally.js in developer mode.
-   * In this mode we do not attempt to connect to Firebase,
-   * and allow messages to enable/disable enrollment.
-   */
-  readonly enableDevMode: boolean;
-
-  /**   
-   * A function to call when the study is paused or running.
-   * Takes a single parameter, `message`, which is the {String}
-   * received regarding the current study state ("paused" or "running".)
-   */
-  stateChangeCallback: (state: RunStates) => void;
-
-  /**        
-   * A string containing the Rally Web Platform site.
-   */
-  readonly rallySite: string;
-
-  /**
-   * A string containing the unique name of the study,
-   * separate from the Firefox add-on ID and Chrome extension ID.
-   */
-  readonly studyId: string;
-
-  /**    
-   * A string containing the unique name of the extension on the extension store,
-   * either Firefox AMO or the Chrome Web Store.
-   */
-  readonly storeId: string;
-
-  /**
-   * An object containing the Firebase backend configuration.
-   */
-  readonly firebaseConfig: FirebaseOptions;
-
-  /**    
-   * Whether or not to initialize Rally.js in emulator mode.
-   * In this mode the SDK attempts to use a local Firebase emulator. 
-   * Note that the firebaseConfig must still be provided.
-   */
-  readonly enableEmulatorMode: boolean;
-}
 
 export class Rally {
   private _rallyId: string;
@@ -70,7 +40,12 @@ export class Rally {
   private _chromeStoreUrl = `https://chrome.google.com/webstore/detail`;
   private _firefoxStoreUrl = `https://addons.mozilla.org/en-US/firefox/addon`;
 
-  private _listeners: Set<((message: unknown, sender: browser.Runtime.MessageSender) => void | Promise<unknown>)> = new Set();
+  private _listeners: Set<
+    (
+      message: unknown,
+      sender: browser.Runtime.MessageSender
+    ) => void | Promise<unknown>
+  > = new Set();
 
   constructor(options: RallyOptions) {
     if (!options) {
@@ -78,11 +53,15 @@ export class Rally {
     }
 
     if (!options.stateChangeCallback) {
-      throw new Error("Rally.initialize - Initialization failed, stateChangeCallback is required.");
+      throw new Error(
+        "Rally.initialize - Initialization failed, stateChangeCallback is required."
+      );
     }
 
     if (typeof options.stateChangeCallback !== "function") {
-      throw new Error("Rally.initialize - Initialization failed, stateChangeCallback is not a function.");
+      throw new Error(
+        "Rally.initialize - Initialization failed, stateChangeCallback is not a function."
+      );
     }
 
     this._signedIn = false;
@@ -92,7 +71,9 @@ export class Rally {
     this._state = RunStates.Paused;
 
     if (options.enableDevMode) {
-      console.debug("Rally SDK - running in developer mode, not using Firebase");
+      console.debug(
+        "Rally SDK - running in developer mode, not using Firebase"
+      );
       const webListener = (m, s) => this.handleWebMessage(m, s);
       browser.runtime.onMessage.addListener(webListener);
       this._listeners.add(webListener);
@@ -106,14 +87,19 @@ export class Rally {
     this._db = getFirestore(firebaseApp);
 
     if (options.enableEmulatorMode) {
-      console.debug("Rally SDK - running in Firebase emulator mode:", options.firebaseConfig);
+      console.debug(
+        "Rally SDK - running in Firebase emulator mode:",
+        options.firebaseConfig
+      );
 
-      connectAuthEmulator(this._auth, 'http://localhost:9099');
-      connectFirestoreEmulator(this._db, 'localhost', 8080);
+      connectAuthEmulator(this._auth, "http://localhost:9099");
+      connectFirestoreEmulator(this._db, "localhost", 8080);
     }
 
     this.storeAttributionCodes();
-    onAuthStateChanged(this._auth, user => this.authStateChangedCallback(user));
+    onAuthStateChanged(this._auth, (user) =>
+      this.authStateChangedCallback(user)
+    );
   }
 
   private async getAttributionFromStore() {
@@ -124,7 +110,10 @@ export class Rally {
 
     let storeUrl = `${this._chromeStoreUrl}/${this._options.storeId}/*`;
 
-    const browserInfo = browser.runtime && browser.runtime.getBrowserInfo && await browser.runtime.getBrowserInfo();
+    const browserInfo =
+      browser.runtime &&
+      browser.runtime.getBrowserInfo &&
+      (await browser.runtime.getBrowserInfo());
 
     if (browserInfo && browserInfo.name === "firefox") {
       storeUrl = `${this._firefoxStoreUrl}/${this._options.storeId}/*`;
@@ -173,7 +162,7 @@ export class Rally {
 
   private async getAttributionCodes() {
     const attribution = await browser.storage.local.get();
-    return attribution && attribution["attribution"] || {};
+    return (attribution && attribution["attribution"]) || {};
   }
 
   private async processLoggedInUser() {
@@ -182,7 +171,8 @@ export class Rally {
     const idTokenResult = await this._auth.currentUser.getIdTokenResult();
     const uid = idTokenResult.claims.firebaseUid as string;
 
-    const getUserStudyDoc = () => getDoc(doc(this._db, "users", uid, "studies", this._options.studyId));
+    const getUserStudyDoc = () =>
+      getDoc(doc(this._db, "users", uid, "studies", this._options.studyId));
 
     this.monitorUserRecord(uid);
     this.monitorCurrentStudyRecordForUser(uid);
@@ -192,17 +182,20 @@ export class Rally {
   // Monitors user record at: extensionUsers/<uid>
   private monitorUserRecord(uid: string) {
     // This contains the Rally ID, need to call the Rally state change callback with it.
-    onSnapshot(doc(this._db, "extensionUsers", uid), extensionUserDoc => {
+    onSnapshot(doc(this._db, "extensionUsers", uid), (extensionUserDoc) => {
       if (!extensionUserDoc.exists()) {
         // User record is either not present or is somehow deleted
         // hence change the state to be logged out
         this._signedIn = false;
 
-        throw new Error("Rally onSnapshot - extensionUser document does not exist");
+        throw new Error(
+          "Rally onSnapshot - extensionUser document does not exist"
+        );
       }
 
       // https://datatracker.ietf.org/doc/html/rfc4122#section-4.1.7
-      const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-5][0-9a-f]{3}-[089ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+      const uuidRegex =
+        /^[0-9a-f]{8}-[0-9a-f]{4}-[0-5][0-9a-f]{3}-[089ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 
       const data = extensionUserDoc.data();
 
@@ -212,7 +205,9 @@ export class Rally {
           this._rallyId = data.rallyId;
         } else {
           // Do not loop or destroy data if the stored Rally ID is invalid, bail out instead.
-          throw new Error(`Stored Rally ID is not a valid UUID: ${data.rallyId}`);
+          throw new Error(
+            `Stored Rally ID is not a valid UUID: ${data.rallyId}`
+          );
         }
       }
     });
@@ -220,69 +215,86 @@ export class Rally {
 
   // Monitor user's current study record at: users/<uid>/studies/<studyId> and pause/resume data collection.
   private monitorCurrentStudyRecordForUser(uid: string) {
-    onSnapshot(doc(this._db, "users", uid, "studies", this._options.studyId), async userStudiesDoc => {
-      if (!userStudiesDoc.exists()) {
-        // This document is created by the site and may not exist yet.
-        console.warn("Rally.onSnapshot - userStudies document does not exist");
-        return;
-      }
-
-      const data = userStudiesDoc.data();
-      if (data.enrolled) {
-        this.resume();
-      } else {
-        this.pause();
-      }
-    });
-  }
-
-  // Monitor current study record at: studies/<studyId> and pause/resume/end data collection.
-  private monitorCurrentStudyRecord(getUserStudyDoc: () => Promise<DocumentSnapshot<DocumentData>>) {
-    onSnapshot(doc(this._db, "studies", this._options.studyId), async studiesDoc => {
-      // TODO do runtime validation of this document
-      if (!studiesDoc.exists()) {
-        throw new Error("Rally onSnapshot - studies document does not exist");
-      }
-
-      const data = studiesDoc.data();
-
-      if (data.studyPaused && data.studyPaused === true) {
-        if (this._state !== RunStates.Paused) {
-          this.pause();
-        }
-      } else {
-        const userStudiesDoc = await getUserStudyDoc();
-        // TODO do runtime validation of this document
-        if (userStudiesDoc && !userStudiesDoc.exists()) {
+    onSnapshot(
+      doc(this._db, "users", uid, "studies", this._options.studyId),
+      async (userStudiesDoc) => {
+        if (!userStudiesDoc.exists()) {
           // This document is created by the site and may not exist yet.
-          console.warn("Rally.onSnapshot - userStudies document does not exist yet");
+          console.warn(
+            "Rally.onSnapshot - userStudies document does not exist"
+          );
           return;
         }
 
         const data = userStudiesDoc.data();
-
-        if (data.enrolled && this._state !== RunStates.Running) {
+        if (data.enrolled) {
           this.resume();
+        } else {
+          this.pause();
         }
       }
+    );
+  }
 
-      if (data.studyEnded === true) {
-        if (this._state !== RunStates.Ended) {
-          this.end();
+  // Monitor current study record at: studies/<studyId> and pause/resume/end data collection.
+  private monitorCurrentStudyRecord(
+    getUserStudyDoc: () => Promise<DocumentSnapshot<DocumentData>>
+  ) {
+    onSnapshot(
+      doc(this._db, "studies", this._options.studyId),
+      async (studiesDoc) => {
+        // TODO do runtime validation of this document
+        if (!studiesDoc.exists()) {
+          throw new Error("Rally onSnapshot - studies document does not exist");
+        }
+
+        const data = studiesDoc.data();
+
+        if (data.studyPaused && data.studyPaused === true) {
+          if (this._state !== RunStates.Paused) {
+            this.pause();
+          }
+        } else {
+          const userStudiesDoc = await getUserStudyDoc();
+          // TODO do runtime validation of this document
+          if (userStudiesDoc && !userStudiesDoc.exists()) {
+            // This document is created by the site and may not exist yet.
+            console.warn(
+              "Rally.onSnapshot - userStudies document does not exist yet"
+            );
+            return;
+          }
+
+          const data = userStudiesDoc.data();
+
+          if (data.enrolled && this._state !== RunStates.Running) {
+            this.resume();
+          }
+        }
+
+        if (data.studyEnded === true) {
+          if (this._state !== RunStates.Ended) {
+            this.end();
+          }
         }
       }
-    });
+    );
   }
 
   private async promptSignUp() {
     let loadedTab: Tabs.Tab;
 
-    const tabs = await browser.tabs.query({ url: `${this._options.rallySite}/*` });
+    const tabs = await browser.tabs.query({
+      url: `${this._options.rallySite}/*`,
+    });
     // If there are any tabs with the Rally site loaded, focus the latest one.
     if (tabs && tabs.length > 0) {
       loadedTab = tabs.pop();
       await browser.windows.update(loadedTab.windowId, { focused: true });
-      await browser.tabs.update(loadedTab.id, { highlighted: true, active: true });
+      await browser.tabs.update(loadedTab.id, {
+        highlighted: true,
+        active: true,
+      });
       /**
        * Reload page to load content script after extension install.
        * TODO We should be able to do this without reloading the page.
@@ -292,7 +304,7 @@ export class Rally {
     } else {
       // Otherwise, open the website.
       loadedTab = await browser.tabs.create({
-        url: this._options.rallySite
+        url: this._options.rallySite,
       });
     }
   }
@@ -330,27 +342,38 @@ export class Rally {
   }
 
   /**
-  * Handles messages coming in from the external website.
-  *
-  * @param {Object} message
-  *        The payload of the message. May be an empty object, or contain auth credential.
-  *
-  *        email credential: { email, password, providerId }
-  *        oAuth credential: { oauthIdToken, providerId }
-  *
-  * @param {runtime.MessageSender} sender
-  *        An object containing information about who sent
-  *        the message.
-  * @returns {Promise} The response to the received message.
-  *          It can be resolved with a value that is sent to the
-  *          `sender` or rejected in case of errors.
-  */
-  private async handleWebMessage(message: { type: WebMessages, data; }, sender: any) { // eslint-disable-line @typescript-eslint/no-explicit-any
+   * Handles messages coming in from the external website.
+   *
+   * @param {Object} message
+   *        The payload of the message. May be an empty object, or contain auth credential.
+   *
+   *        email credential: { email, password, providerId }
+   *        oAuth credential: { oauthIdToken, providerId }
+   *
+   * @param {runtime.MessageSender} sender
+   *        An object containing information about who sent
+   *        the message.
+   * @returns {Promise} The response to the received message.
+   *          It can be resolved with a value that is sent to the
+   *          `sender` or rejected in case of errors.
+   */
+  private async handleWebMessage(
+    message: { type: WebMessages; data },
+    sender: any
+  ) {
+    // eslint-disable-line @typescript-eslint/no-explicit-any
     if (sender.id !== browser.runtime.id) {
-      throw new Error(`Rally.handleWebMessage - unknown sender ${sender.id}, expected ${browser.runtime.id}`);
+      throw new Error(
+        `Rally.handleWebMessage - unknown sender ${sender.id}, expected ${browser.runtime.id}`
+      );
     }
     if (this._options.enableDevMode) {
-      console.debug("Rally.handleWebMessage - received web message", message, "from", sender);
+      console.debug(
+        "Rally.handleWebMessage - received web message",
+        message,
+        "from",
+        sender
+      );
     }
     // ** IMPORTANT **
     //
@@ -373,14 +396,29 @@ export class Rally {
         // Now that the site is open, send a message asking for a JWT.
         if (!this._signedIn) {
           console.debug("not signed in, sending complete_signup request");
-          await browser.tabs.sendMessage(sender.tab.id, { type: WebMessages.CompleteSignup, data: { studyId: this._options.studyId } });
+          await browser.tabs.sendMessage(sender.tab.id, {
+            type: WebMessages.CompleteSignup,
+            data: {
+              studyId: this._options.studyId,
+              version: this._options.version,
+            },
+          });
         } else {
-          console.debug("already signed in, not sending complete_signup request");
+          console.debug(
+            "already signed in, not sending complete_signup request"
+          );
         }
 
         console.debug("sending web-check-response to sender:", sender, " done");
         const attribution = await this.getAttributionCodes();
-        await browser.tabs.sendMessage(sender.tab.id, { type: WebMessages.WebCheckResponse, data: { studyId: this._options.studyId, attribution } });
+        await browser.tabs.sendMessage(sender.tab.id, {
+          type: WebMessages.WebCheckResponse,
+          data: {
+            studyId: this._options.studyId,
+            version: this._options.version,
+            attribution,
+          },
+        });
         break;
       }
       case WebMessages.CompleteSignupResponse:
@@ -396,14 +434,20 @@ export class Rally {
 
         break;
       case WebMessages.ChangeState:
-        console.debug("Rally SDK - received rally-sdk.change-state in dev mode");
+        console.debug(
+          "Rally SDK - received rally-sdk.change-state in dev mode"
+        );
 
         if (!this._options.enableDevMode) {
-          throw new Error("Rally SDK state can only be changed directly when in developer mode.");
+          throw new Error(
+            "Rally SDK state can only be changed directly when in developer mode."
+          );
         }
 
         if (!message.data.state) {
-          console.debug(`Rally SDK - No state change requested: ${message.data}`);
+          console.debug(
+            `Rally SDK - No state change requested: ${message.data}`
+          );
           return;
         }
 
@@ -412,7 +456,9 @@ export class Rally {
             console.debug("Rally SDK - dev mode, resuming study");
             if (!this._rallyId) {
               this._rallyId = uuidv4();
-              console.debug(`Rally SDK - dev mode, generated Rally ID: ${this._rallyId}`);
+              console.debug(
+                `Rally SDK - dev mode, generated Rally ID: ${this._rallyId}`
+              );
             }
 
             this.resume();
@@ -429,13 +475,17 @@ export class Rally {
 
             break;
           default:
-            console.debug(`Rally SDK - invalid state change requested: ${message.data.state}`);
+            console.debug(
+              `Rally SDK - invalid state change requested: ${message.data.state}`
+            );
         }
 
         break;
       default:
         if (this._options.enableDevMode) {
-          console.debug(`Rally._handleWebMessage - unexpected message type "${message.type}"`);
+          console.debug(
+            `Rally._handleWebMessage - unexpected message type "${message.type}"`
+          );
         }
     }
   }
@@ -444,7 +494,9 @@ export class Rally {
     console.debug("Rally.completeSignUp called:", data);
     try {
       if (!data || !data.rallyToken) {
-        throw new Error(`Rally.completeSignUp - rally token not well-formed: ${data.rallyToken}`);
+        throw new Error(
+          `Rally.completeSignUp - rally token not well-formed: ${data.rallyToken}`
+        );
       }
 
       console.debug("Rally.completeSignUp - ", data);
@@ -456,7 +508,11 @@ export class Rally {
       await signInWithCustomToken(this._auth, data.rallyToken);
       return true;
     } catch (ex) {
-      console.error("Rally.completeSignUp - signInWithCustomToken failed:", ex.code, ex.message);
+      console.error(
+        "Rally.completeSignUp - signInWithCustomToken failed:",
+        ex.code,
+        ex.message
+      );
       return false;
     }
   }
@@ -479,6 +535,8 @@ export class Rally {
    * Intended for tests, it's unlikely an extension would want to do this.
    */
   shutdown() {
-    this._listeners.forEach(listener => browser.runtime.onMessage.removeListener(listener));
+    this._listeners.forEach((listener) =>
+      browser.runtime.onMessage.removeListener(listener)
+    );
   }
 }

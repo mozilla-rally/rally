@@ -79,6 +79,7 @@ export function AddStudyView() {
                   studies: {
                     [study.studyId]: {
                       studyId: study.studyId,
+                      version: study.version,
                       enrolled: true,
                       joinedOn: Timestamp.now(),
                     },
