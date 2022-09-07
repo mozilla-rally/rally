@@ -1,0 +1,9 @@
+{
+	"extends": "../tools/typescript/tsconfig.json",
+	"compilerOptions": {
+		"outDir": "dist",
+		"declaration": false
+	},
+	"include": ["src/**/*.ts"],
+	"exclude": ["src/**/__tests__/*", "node_modules"]
+}

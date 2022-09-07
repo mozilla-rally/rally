@@ -390,6 +390,11 @@
    */
   "projects": [
     {
+      "packageName": "rally-attention-stream",
+      "projectFolder": "extensions/attention-stream",
+      "shouldPublish": false
+    },
+    {
       "packageName": "@mozilla/rally-sdk",
       "projectFolder": "extensions/sdk",
       "versionPolicyName": "RallyVersionPolicy",
@@ -423,8 +428,8 @@
       "shouldPublish": false
     },
     {
-      "packageName": "rally-attention-stream",
-      "projectFolder": "extensions/attention-stream",
+      "packageName": "scripts",
+      "projectFolder": "scripts",
       "shouldPublish": false
     }
     // {
