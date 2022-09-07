@@ -20,6 +20,7 @@ import { detectBrowser } from "../../../../utils/BrowserDetector";
 import { BrowserType } from "../../../../utils/BrowserType";
 import { useStudy } from "./StudyDataContext";
 import { StudyTitle } from "./StudyTitle";
+import { ColumnStyles } from "../../../../styles/Columns";
 
 const strings = Strings.components.pages.studies.studyCard.addStudy;
 
@@ -59,19 +60,11 @@ export function AddStudyView() {
             <div className={styles.modalText}>{strings.enrollText}</div>
           </Col>
         </Row>
-        <Row>
-          <Col className="me-3 col-auto">
+        <Row className="d-flex align-items-center flex-row-reverse">
+
+          <Col className={`${ColumnStyles.account.buttonCol} col-auto`}>
             <Button
-              className={`d-flex fw-bold ps-4 pe-4 pt-2 pb-2 ${TertiaryButton}`}
-              outline
-              onClick={() => endStudyEnrollmentToggle()}
-            >
-              {strings.cancel}
-            </Button>
-          </Col>
-          <Col className="col-auto">
-            <Button
-              className={`d-flex fw-bold ps-4 pe-4 pt-2 pb-2 ${SecondaryButton}`}
+              className={`fw-bold ps-4 pe-4 pt-2 pb-2 ${SecondaryButton}`}
               onClick={async () => {
                 endStudyEnrollmentToggle();
 
@@ -96,6 +89,16 @@ export function AddStudyView() {
               {strings.addExtension}
             </Button>
           </Col>
+
+          <Col className={`col-auto ${ColumnStyles.account.forgotPWCol}`}>
+            <Button
+              className={`fw-bold ps-4 pe-4 pt-2 pb-2 ${TertiaryButton}`}
+              outline
+              onClick={() => endStudyEnrollmentToggle()}
+            >
+              {strings.cancel}
+            </Button>
+          </Col>
         </Row>
       </Container>
     </Modal>
@@ -112,16 +115,18 @@ const styles = {
     createResponsiveStyle(ScreenSize.ExtraSmall, smallModalStyle),
     createResponsiveStyle(ScreenSize.Small, smallModalStyle),
     {
-      maxWidth: "unset",
+      maxWidth: "unset"
     }
   ),
   modalContent: style(
-    createResponsiveStyle(ScreenSize.Small, {
-      width: "unset",
+    createResponsiveStyle(ScreenSize.ExtraSmall, {
+      width: "100%",
+      maxWidth: 400,
+      padding: Spacing.Micro * 5,
     }),
     {
       width: 660,
-      boxSizing: "content-box",
+      boxSizing: "border-box",
       maxWidth: "unset",
       padding: Spacing.xxLarge,
       marginLeft: "auto",
