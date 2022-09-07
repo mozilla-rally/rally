@@ -6,10 +6,20 @@ const extractRecommendations = ({ body }) => {
     body
   );
   if (renderers.length > 0) {
+    const recommendationsDetails = renderers
+      .filter(hasVideoId)
+      .map(sanitizeRecommendation);
+    const isInitialSetOfRecommendations = !traverse.fishFor(
+      "continuationItems",
+      body
+    );
     return {
-      recommendations: renderers.filter(hasVideoId).map(sanitizeRecommendation),
-      isInitialSetOfRecommendations: !traverse.fishFor("continuationItems", body)
-    }
+      recommendationsDetails,
+      isInitialSetOfRecommendations,
+      firstTwentyRecommendationsVideoIds: isInitialSetOfRecommendations
+        ? recommendationsDetails.map((rec) => rec.videoId).slice(0, 20)
+        : undefined,
+    };
   }
   return null;
 };
@@ -49,6 +59,8 @@ const sanitizeRecommendation = (rec) => {
         },
       ] = [{}],
     } = {},
+    thumbnail,
+    publishedTimeText: { simpleText: publishedTimeText = undefined } = {},
   } = rec;
 
   // the title is reported differently for
@@ -73,7 +85,9 @@ const sanitizeRecommendation = (rec) => {
     videoBadges: videoBadges.map(
       ({ metadataBadgeRenderer: { label } }) => label
     ),
-    // Still keep the raw object
-    rawData: rec,
+    thumbnail,
+    publishedTimeText,
+    // Don't keep the raw data for these (it adds up to be too much)
+    // rawData: rec,
   };
 };

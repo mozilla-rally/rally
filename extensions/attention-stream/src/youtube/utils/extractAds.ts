@@ -38,10 +38,10 @@ const extractAds = async ({ body }) => {
       } catch (err) {
         console.error(`Error while fetching "About This Ad" info:`, err);
       }
-      // The URL is highly sensitive (has some auth information)
-      // and should not be sent anywhere
-      delete ad.aboutThisAdUrl_SENSITIVE;
     }
+    // The URL is highly sensitive (has some auth information)
+    // and should not be sent anywhere
+    delete ad.aboutThisAdUrl_SENSITIVE;
   }
 
   if (ads.length > 0) {
