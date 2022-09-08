@@ -86,7 +86,7 @@ const xhrLoadHandler = function() {
 const { open, send } = XMLHttpRequest.prototype;
 
 XMLHttpRequest.prototype.open = function(_method, url) {
-  this.__xData = { url: url.toLowerCase() };
+  this.__xData = { url };
   return open.apply(this, arguments);
 };
 
