@@ -18,7 +18,7 @@ const sanitizeInstreamVideoAd = (adData) => {
     traverse.fishFor("visitAdvertiserRenderer", adData) || {};
   const {
     buttonRenderer: {
-      text: { runs: [{ text: advertiser = undefined }] = [{}] } = {},
+      text: { runs: [{ text: advertiserWebsite = undefined }] = [{}] } = {},
     } = {},
   } = visitAdvertiserRenderer;
   const { text: title } = traverse.fishFor("headline", adData) || {};
@@ -28,7 +28,7 @@ const sanitizeInstreamVideoAd = (adData) => {
   return {
     type: "instreamVideoAd",
     adVideoId,
-    advertiser,
+    advertiserWebsite,
     aboutThisAdUrl_SENSITIVE,
     title,
     description,

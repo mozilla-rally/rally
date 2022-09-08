@@ -26,6 +26,9 @@ import * as userJourney from "../src/generated/userJourney";
 import * as rallyManagementMetrics from "../src/generated/rally";
 import * as advertisements from "../src/generated/advertisements";
 import * as articleContents from "../src/generated/articleContents";
+import * as youtubeVideoDetails from "../src/generated/youtubeVideoDetails";
+import * as youtubeVideoRecommendations from "../src/generated/youtubeVideoRecommendations";
+import * as youtubeAd from "../src/generated/youtubeAd";
 
 // Import generated Glean pings.
 import * as attentionStreamPings from "../src/generated/pings";
@@ -279,17 +282,57 @@ async function stateChangeCallback(newState) {
 
       this.youtubeListener = async (message) => {
         if (!message || !message.type) return;
-        switch (message.type) {
+        const messageType = message.type;
+        delete message.type;
+
+        const constructAndSendPing = async (metrics, ping, data) => {
+          for (let [key, value] of Object.entries(data)) {
+            if (typeof value === "undefined") continue; // skip empty data
+            if (
+              typeof value === "object" &&
+              // Make exceptions for arrays with short (<50 chars) strings
+              key !== "firstTwentyVideoIds" &&
+              key !== "keywords"
+            ) {
+              // Stringify value if it's an object
+              // or an array that doesn't fit into Glean's string_list type
+              value = JSON.stringify(value);
+            }
+            metrics[key].set(value);
+          }
+          ping.submit();
+        };
+
+        switch (messageType) {
           case "MozillaRally.YouTube.videodetails":
-            console.log("CURRENT VIDEO DETAILS:", message);
+            console.debug("YouTube: CURRENT VIDEO DETAILS:", message);
+            constructAndSendPing(
+              youtubeVideoDetails,
+              attentionStreamPings.youtubeVideoDetails,
+              message
+            );
             break;
 
           case "MozillaRally.YouTube.recommendations":
-            console.log("VIDEO RECOMMENDATIONS:", message);
+            console.debug("YouTube: VIDEO RECOMMENDATIONS:", message);
+            constructAndSendPing(
+              youtubeVideoRecommendations,
+              attentionStreamPings.youtubeVideoRecommendations,
+              message
+            );
             break;
 
           case "MozillaRally.YouTube.ads":
-            console.log("ADVERTISEMENTS:", message);
+            console.debug("YouTube: ADVERTISEMENTS:", message);
+            message.ads.forEach((ad) => {
+              ad.pageId = message.pageId;
+              ad.url = message.url;
+              constructAndSendPing(
+                youtubeAd,
+                attentionStreamPings.youtubeAds,
+                ad
+              );
+            });
             break;
 
           default:
@@ -388,6 +431,9 @@ class GetPingsUploader extends Uploader {
       "article-contents": "id",
       "user-journey": "id, rally_id, user_journey_page_visit_stop_date_time",
       "study-enrollment": "id, rally_id",
+      "youtube-video-details": "id",
+      "youtube-video-recommendations": "id",
+      "youtube-ads": "id",
     });
 
     await db.open();

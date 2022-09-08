@@ -11,14 +11,14 @@ const sanitizePromotedSparklesWeb = (adData) => {
 
   // Extract useful details
   const title = adData.title?.simpleText;
-  const advertiser = adData.websiteText?.simpleText;
+  const advertiserWebsite = adData.websiteText?.simpleText;
   const description = adData.description?.simpleText;
   const destinationUrl = getDestinationUrl(adData);
 
   return {
     type: "promotedSparklesWeb",
     aboutThisAdUrl_SENSITIVE,
-    advertiser,
+    advertiserWebsite,
     title,
     description,
     destinationUrl,

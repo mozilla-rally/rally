@@ -1,3 +1,4 @@
+import * as traverse from "./traverseFishing";
 import parseVideoId from "./parseVideoId";
 
 const extractVideoDetails = ({ body, hostUrl }) => {
@@ -10,7 +11,6 @@ const extractVideoDetails = ({ body, hostUrl }) => {
     body.videoDetails &&
     body.videoDetails.videoId === videoIdFromUrl
   ) {
-
     // Extract useful details
     // via destructuring
     const {
@@ -32,13 +32,16 @@ const extractVideoDetails = ({ body, hostUrl }) => {
       );
     }
 
+    const containsSponsoredContent = !!traverse.fishFor("paidContentOverlay", body);
+
     return {
       author,
       authorChannelId,
       isLiveContent,
-      keywords,
-      lengthSeconds: parseInt(lengthSeconds),
-      shortDescription,
+      containsSponsoredContent,
+      keywords: keywords?.slice(0, 20), // Glean limits string arrays to length of 20
+      length: parseInt(lengthSeconds),
+      description: shortDescription,
       title,
       videoId,
       viewCount: parseInt(viewCount),

@@ -6,18 +6,15 @@ const extractRecommendations = ({ body }) => {
     body
   );
   if (renderers.length > 0) {
-    const recommendationsDetails = renderers
+    const detailsList = renderers
       .filter(hasVideoId)
       .map(sanitizeRecommendation);
-    const isInitialSetOfRecommendations = !traverse.fishFor(
-      "continuationItems",
-      body
-    );
+    const isInitialSet = !traverse.fishFor("continuationItems", body);
     return {
-      recommendationsDetails,
-      isInitialSetOfRecommendations,
-      firstTwentyRecommendationsVideoIds: isInitialSetOfRecommendations
-        ? recommendationsDetails.map((rec) => rec.videoId).slice(0, 20)
+      detailsList,
+      isInitialSet,
+      firstTwentyVideoIds: isInitialSet
+        ? detailsList.map((rec) => rec.videoId).slice(0, 20)
         : undefined,
     };
   }

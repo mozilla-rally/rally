@@ -45,7 +45,7 @@ const extractAds = async ({ body }) => {
   }
 
   if (ads.length > 0) {
-    return ads;
+    return { ads };
   }
   return null;
 };
