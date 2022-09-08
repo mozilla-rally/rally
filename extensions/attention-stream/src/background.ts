@@ -278,71 +278,71 @@ async function stateChangeCallback(newState) {
             },
           ]);
         }
-      }
 
-      this.youtubeListener = async (message) => {
-        if (!message || !message.type) return;
-        const messageType = message.type;
-        delete message.type;
+        this.youtubeListener = async (message) => {
+          if (!message || !message.type) return;
+          const messageType = message.type;
+          delete message.type;
 
-        const constructAndSendPing = async (metrics, ping, data) => {
-          for (let [key, value] of Object.entries(data)) {
-            if (typeof value === "undefined") continue; // skip empty data
-            if (
-              typeof value === "object" &&
-              // Make exceptions for arrays with short (<50 chars) strings
-              key !== "firstTwentyVideoIds" &&
-              key !== "keywords"
-            ) {
-              // Stringify value if it's an object
-              // or an array that doesn't fit into Glean's string_list type
-              value = JSON.stringify(value);
+          const constructAndSendPing = async (metrics, ping, data) => {
+            for (let [key, value] of Object.entries(data)) {
+              if (typeof value === "undefined") continue; // skip empty data
+              if (
+                typeof value === "object" &&
+                // Make exceptions for arrays with short (<50 chars) strings
+                key !== "firstTwentyVideoIds" &&
+                key !== "keywords"
+              ) {
+                // Stringify value if it's an object
+                // or an array that doesn't fit into Glean's string_list type
+                value = JSON.stringify(value);
+              }
+              metrics[key].set(value);
             }
-            metrics[key].set(value);
+            ping.submit();
+          };
+
+          switch (messageType) {
+            case "MozillaRally.YouTube.videodetails":
+              console.debug("YouTube: CURRENT VIDEO DETAILS:", message);
+              constructAndSendPing(
+                youtubeVideoDetails,
+                attentionStreamPings.youtubeVideoDetails,
+                message
+              );
+              break;
+
+            case "MozillaRally.YouTube.recommendations":
+              console.debug("YouTube: VIDEO RECOMMENDATIONS:", message);
+              constructAndSendPing(
+                youtubeVideoRecommendations,
+                attentionStreamPings.youtubeVideoRecommendations,
+                message
+              );
+              break;
+
+            case "MozillaRally.YouTube.ads":
+              console.debug("YouTube: ADVERTISEMENTS:", message);
+              message.ads.forEach((ad) => {
+                ad.pageId = message.pageId;
+                ad.url = message.url;
+                constructAndSendPing(
+                  youtubeAd,
+                  attentionStreamPings.youtubeAds,
+                  ad
+                );
+              });
+              break;
+
+            default:
+              console.debug(
+                `Mozilla Rally - unknown message type received: ${message.type}`
+              );
           }
-          ping.submit();
         };
 
-        switch (messageType) {
-          case "MozillaRally.YouTube.videodetails":
-            console.debug("YouTube: CURRENT VIDEO DETAILS:", message);
-            constructAndSendPing(
-              youtubeVideoDetails,
-              attentionStreamPings.youtubeVideoDetails,
-              message
-            );
-            break;
-
-          case "MozillaRally.YouTube.recommendations":
-            console.debug("YouTube: VIDEO RECOMMENDATIONS:", message);
-            constructAndSendPing(
-              youtubeVideoRecommendations,
-              attentionStreamPings.youtubeVideoRecommendations,
-              message
-            );
-            break;
-
-          case "MozillaRally.YouTube.ads":
-            console.debug("YouTube: ADVERTISEMENTS:", message);
-            message.ads.forEach((ad) => {
-              ad.pageId = message.pageId;
-              ad.url = message.url;
-              constructAndSendPing(
-                youtubeAd,
-                attentionStreamPings.youtubeAds,
-                ad
-              );
-            });
-            break;
-
-          default:
-            console.debug(
-              `Mozilla Rally - unknown message type received: ${message.type}`
-            );
-        }
-      };
-
-      browser.runtime.onMessage.addListener(this.youtubeListener);
+        browser.runtime.onMessage.addListener(this.youtubeListener);
+      }
 
       break;
     case RunStates.Paused:
