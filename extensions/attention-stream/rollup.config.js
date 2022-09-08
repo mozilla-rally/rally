@@ -165,8 +165,9 @@ export default (cliArgs) => {
         ]
     });
 
-    // Configuration for content scripts (src/**/*.content.js) and
-    // worker scripts (src/**/*.worker.js). These files will be
+    // Configuration for content scripts (src/**/*.content.js),
+    // worker scripts (src/**/*.worker.js), and injected scripts
+    // (src/**/*.injected.js). These files will be
     // output to dist/ with the same relative path they have in
     // src/, but with any module dependencies (your own modules or
     // modules from npm) bundled in. We provide this configuration
@@ -175,7 +176,7 @@ export default (cliArgs) => {
     // background script might want to reference the bundled
     // scripts (e.g., browser.contentScripts.register() or new
     // Worker()).
-    const scriptPaths = globby.sync([`src/**/*.content.ts`, `src/**/*.worker.ts`]);
+    const scriptPaths = globby.sync([`src/**/*.content.ts`, `src/**/*.worker.ts`, `src/**/*.injected.ts`]);
     for (const scriptPath of scriptPaths) {
         rollupConfig.push({
             input: scriptPath,
