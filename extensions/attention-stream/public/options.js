@@ -56,6 +56,7 @@ document.getElementById("download").addEventListener("click", async () => {
     "youtube-video-details",
     "youtube-video-recommendations",
     "youtube-ads",
+    "meta-pixel",
   ]) {
     const tableContents = await db.table(tableName).toArray();
     const dataUrl = `data:application/json,${encodeURIComponent(
