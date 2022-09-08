@@ -19,13 +19,16 @@ import Glean, {
   UploadResultStatus,
 } from "@mozilla/glean/webext";
 
-import { destinationDomains } from "./domains";
+import { destinationDomains as newsDomains } from "./news-domains";
 
 // Import generated Glean metrics.
 import * as advertisements from "../src/generated/advertisements";
 import * as articleContents from "../src/generated/articleContents";
 import * as rallyManagementMetrics from "../src/generated/rally";
 import * as userJourney from "../src/generated/userJourney";
+import * as youtubeVideoDetails from "../src/generated/youtubeVideoDetails";
+import * as youtubeVideoRecommendations from "../src/generated/youtubeVideoRecommendations";
+import * as youtubeAd from "../src/generated/youtubeAd";
 
 // Import generated Glean pings.
 import * as attentionStreamPings from "../src/generated/pings";
@@ -127,80 +130,57 @@ async function stateChangeCallback(newState) {
 
       // The Rally API has been initialized.
       // Initialize the study and start it.
-
       await browser.storage.local.set({ state: RunStates.Running });
 
-      // Example: set a listener for WebScience page navigation events on
-      // http://localhost/* pages. Note that the manifest origin
-      // permissions currently only include http://localhost/*. You should
-      // update the manifest permissions as needed for your study.
+      // User Journey
+      {
+        this.pageDataListener = async (pageData) => {
+          console.debug(
+            `WebScience page navigation event fired with page data:`,
+            pageData
+          );
 
-      this.pageDataListener = async (pageData) => {
-        console.debug(
-          `WebScience page navigation event fired with page data:`,
-          pageData
+          // This will be a unique ID matching this page for this browsing session.
+          userJourney.pageId.set(pageData.pageId);
+
+          // WebScience returns a Number for these, but Glean is expecting an integer.
+          userJourney.attentionDuration.set(
+            Math.floor(pageData.attentionDuration)
+          );
+          userJourney.audioDuration.set(Math.floor(pageData.audioDuration));
+          userJourney.attentionAndAudioDuration.set(
+            Math.floor(pageData.attentionAndAudioDuration)
+          );
+
+          // Max relative scroll depth is a percentage expressed as a decimal by WebScience,
+          // but Glean is expecting an integer.
+          userJourney.maxRelativeScrollDepth.set(
+            Math.floor(pageData.maxRelativeScrollDepth * 100)
+          );
+
+          const pageVisitStart = new Date(pageData.pageVisitStartTime);
+          const pageVisitStop = new Date(pageData.pageVisitStopTime);
+          userJourney.pageVisitStartDateTime.set(pageVisitStart);
+          userJourney.pageVisitStopDateTime.set(pageVisitStop);
+
+          // Referrer is optional, and will be an empty string if unset.
+          if (pageData.referrer) {
+            userJourney.referrer.setUrl(pageData.referrer);
+          }
+          userJourney.url.setUrl(pageData.url);
+
+          // Submit the metrics constructed above.
+          attentionStreamPings.userJourney.submit();
+        };
+
+        webScience.pageNavigation.onPageData.addListener(
+          this.pageDataListener,
+          { matchPatterns: ["<all_urls>"] }
         );
+      }
 
-        // This will be a unique ID matching this page for this browsing session.
-        userJourney.pageId.set(pageData.pageId);
-
-        // WebScience returns a Number for these, but Glean is expecting an integer.
-        userJourney.attentionDuration.set(
-          Math.floor(pageData.attentionDuration)
-        );
-        userJourney.audioDuration.set(Math.floor(pageData.audioDuration));
-        userJourney.attentionAndAudioDuration.set(
-          Math.floor(pageData.attentionAndAudioDuration)
-        );
-
-        // Max relative scroll depth is a percentage expressed as a decimal by WebScience,
-        // but Glean is expecting an integer.
-        userJourney.maxRelativeScrollDepth.set(
-          Math.floor(pageData.maxRelativeScrollDepth * 100)
-        );
-
-        const pageVisitStart = new Date(pageData.pageVisitStartTime);
-        const pageVisitStop = new Date(pageData.pageVisitStopTime);
-        userJourney.pageVisitStartDateTime.set(pageVisitStart);
-        userJourney.pageVisitStopDateTime.set(pageVisitStop);
-
-        // Referrer is optional, and will be an empty string if unset.
-        if (pageData.referrer) {
-          userJourney.referrer.setUrl(pageData.referrer);
-        }
-        userJourney.url.setUrl(pageData.url);
-
-        // Submit the metrics constructed above.
-        attentionStreamPings.userJourney.submit();
-      };
-
-      webScience.pageNavigation.onPageData.addListener(this.pageDataListener, {
-        matchPatterns: ["<all_urls>"],
-      });
-
-      const matchPatterns = webScience.matching.domainsToMatchPatterns(
-        destinationDomains,
-        true
-      );
-
-      // Handle article content callbacks.
-      this.pageTextListener = async (pageData) => {
-        articleContents.pageId.set(pageData.pageId);
-        articleContents.url.setUrl(pageData.url);
-        articleContents.title.set(pageData.title);
-        articleContents.textContent.set(pageData.textContent);
-
-        attentionStreamPings.articleContents.submit();
-      };
-
-      webScience.pageText.onTextParsed.addListener(this.pageTextListener, {
-        matchPatterns,
-      });
-
-      // Register the content script for measuring advertisement info.
-      // The CSS selectors file is needed to find ads on the page.
-      // Load content script(s) required by this extension.
-      // Firefox only supports this as of version 105, remove this check when that version of Firefox ships.
+      // Firefox only supports persistent contentScripts as of version 105
+      // ... remove this check when that version of Firefox ships.
       let persistAcrossSessions = true;
       const browserInfo =
         browser.runtime &&
@@ -210,43 +190,159 @@ async function stateChangeCallback(newState) {
         persistAcrossSessions = false;
       }
 
-      const contentScriptId = "page-ads";
-      let scripts = await browser.scripting.getRegisteredContentScripts({
-        ids: [contentScriptId],
-      });
+      // News Articles and Ads
+      {
+        const matchPatterns = webScience.matching.domainsToMatchPatterns(
+          newsDomains,
+          true
+        );
 
-      if (scripts.length === 0) {
-        await browser.scripting.registerContentScripts([
-          {
-            id: contentScriptId,
-            js: ["dist/browser-polyfill.min.js", "dist/page-ads.content.js"],
-            matches: matchPatterns,
-            persistAcrossSessions,
-            runAt: "document_idle",
+        // Handle article content callbacks.
+        this.pageTextListener = async (pageData) => {
+          articleContents.pageId.set(pageData.pageId);
+          articleContents.url.setUrl(pageData.url);
+          articleContents.title.set(pageData.title);
+          articleContents.textContent.set(pageData.textContent);
+
+          attentionStreamPings.articleContents.submit();
+        };
+
+        webScience.pageText.onTextParsed.addListener(this.pageTextListener, {
+          matchPatterns,
+        });
+
+        // Register the content script for measuring advertisement info.
+        // The CSS selectors file is needed to find ads on the page.
+        const contentScriptId = "page-ads";
+        let scripts = await browser.scripting.getRegisteredContentScripts({
+          ids: [contentScriptId],
+        });
+
+        if (scripts.length === 0) {
+          await browser.scripting.registerContentScripts([
+            {
+              id: contentScriptId,
+              js: ["dist/browser-polyfill.min.js", "dist/page-ads.content.js"],
+              matches: matchPatterns,
+              persistAcrossSessions,
+              runAt: "document_idle",
+            },
+          ]);
+        }
+
+        this.advertisementListener = async (adInfo, sender) => {
+          advertisements.pageId.set(adInfo.pageId);
+          advertisements.url.setUrl(
+            webScience.matching.normalizeUrl(sender.url)
+          );
+          advertisements.body.set(JSON.stringify(adInfo.body));
+          advertisements.ads.set(JSON.stringify(adInfo.ads));
+
+          attentionStreamPings.advertisements.submit();
+        };
+
+        // Handle advertisement callbacks.
+        webScience.messaging.onMessage.addListener(this.advertisementListener, {
+          type: "WebScience.advertisements",
+          schema: {
+            pageId: "string",
+            type: "string",
+            url: "string",
+            ads: "object",
+            body: "object",
           },
-        ]);
+        });
       }
 
-      this.advertisementListener = async (adInfo, sender) => {
-        advertisements.pageId.set(adInfo.pageId);
-        advertisements.url.setUrl(webScience.matching.normalizeUrl(sender.url));
-        advertisements.body.set(JSON.stringify(adInfo.body));
-        advertisements.ads.set(JSON.stringify(adInfo.ads));
+      // YouTube Video Info, Ads, and Recommendations
+      {
+        // Register the content scripts for "monkeypatching" YouTube requests
+        // and parsing that request data for ads and video recommendations
+        const contentScriptId = "youtube";
+        let scripts = await browser.scripting.getRegisteredContentScripts({
+          ids: [contentScriptId],
+        });
 
-        attentionStreamPings.advertisements.submit();
-      };
+        if (scripts.length === 0) {
+          await browser.scripting.registerContentScripts([
+            {
+              id: "youtube",
+              js: [
+                "dist/browser-polyfill.min.js",
+                "dist/youtube/injector.content.js",
+                "dist/youtube/yt-main.content.js",
+              ],
+              matches: ["*://*.youtube.com/*"],
+              persistAcrossSessions: false,
+              runAt: "document_start",
+            },
+          ]);
+        }
 
-      // Handle advertisement callbacks.
-      webScience.messaging.onMessage.addListener(this.advertisementListener, {
-        type: "WebScience.advertisements",
-        schema: {
-          pageId: "string",
-          type: "string",
-          url: "string",
-          ads: "object",
-          body: "object",
-        },
-      });
+        this.youtubeListener = async (message) => {
+          if (!message || !message.type) return;
+          const messageType = message.type;
+          delete message.type;
+
+          const constructAndSendPing = async (metrics, ping, data) => {
+            for (let [key, value] of Object.entries(data)) {
+              if (typeof value === "undefined") continue; // skip empty data
+              if (
+                typeof value === "object" &&
+                // Make exceptions for arrays with short (<50 chars) strings
+                key !== "firstTwentyVideoIds" &&
+                key !== "keywords"
+              ) {
+                // Stringify value if it's an object
+                // or an array that doesn't fit into Glean's string_list type
+                value = JSON.stringify(value);
+              }
+              metrics[key].set(value);
+            }
+            ping.submit();
+          };
+
+          switch (messageType) {
+            case "MozillaRally.YouTube.videodetails":
+              console.debug("YouTube: CURRENT VIDEO DETAILS:", message);
+              constructAndSendPing(
+                youtubeVideoDetails,
+                attentionStreamPings.youtubeVideoDetails,
+                message
+              );
+              break;
+
+            case "MozillaRally.YouTube.recommendations":
+              console.debug("YouTube: VIDEO RECOMMENDATIONS:", message);
+              constructAndSendPing(
+                youtubeVideoRecommendations,
+                attentionStreamPings.youtubeVideoRecommendations,
+                message
+              );
+              break;
+
+            case "MozillaRally.YouTube.ads":
+              console.debug("YouTube: ADVERTISEMENTS:", message);
+              message.ads.forEach((ad) => {
+                ad.pageId = message.pageId;
+                ad.url = message.url;
+                constructAndSendPing(
+                  youtubeAd,
+                  attentionStreamPings.youtubeAds,
+                  ad
+                );
+              });
+              break;
+
+            default:
+              console.debug(
+                `Mozilla Rally - unknown message type received: ${message.type}`
+              );
+          }
+        };
+
+        browser.runtime.onMessage.addListener(this.youtubeListener);
+      }
 
       break;
     case RunStates.Paused:
@@ -258,11 +354,11 @@ async function stateChangeCallback(newState) {
       );
       webScience.pageText.onTextParsed.removeListener(this.pageTextListener);
       webScience.messaging.onMessage.removeListener(this.advertisementListener);
+      browser.runtime.onMessage.removeListener(this.youtubeListener);
 
       await browser.scripting.unregisterContentScripts({
-        ids: ["page-ads"],
+        ids: ["page-ads", "youtube"],
       });
-
       await browser.storage.local.set({ state: RunStates.Paused });
 
       break;
@@ -275,7 +371,11 @@ async function stateChangeCallback(newState) {
       );
       webScience.pageText.onTextParsed.removeListener(this.pageTextListener);
       webScience.messaging.onMessage.removeListener(this.advertisementListener);
+      browser.runtime.onMessage.removeListener(this.youtubeListener);
 
+      await browser.scripting.unregisterContentScripts({
+        ids: ["page-ads", "youtube"],
+      });
       await browser.storage.local.set({ ended: true });
 
       break;
@@ -332,6 +432,9 @@ class GetPingsUploader extends Uploader {
       "article-contents": "id",
       "user-journey": "id, rally_id, user_journey_page_visit_stop_date_time",
       "study-enrollment": "id, rally_id",
+      "youtube-video-details": "id",
+      "youtube-video-recommendations": "id",
+      "youtube-ads": "id",
     });
 
     await db.open();
@@ -360,6 +463,7 @@ if (enableDevMode) {
       async () => await browser.runtime.openOptionsPage()
     );
   }
+
   // Also open it automatically on the first run after a new install only.
   browser.runtime.onInstalled.addListener(async (details) => {
     if (details.reason === "install") {

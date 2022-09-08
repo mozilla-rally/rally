@@ -56,3 +56,33 @@ article-contents:
     - https://bugzilla.mozilla.org/show_bug.cgi?id=1778367
   notification_emails:
     - than@mozilla.com
+
+youtube-video-details:
+  description: Metadata about the current YouTube video
+  include_client_id: false
+  send_if_empty: false
+  bugs:
+    - https://github.com/mozilla-rally/rally/pull/222
+  data_reviews: []
+  notification_emails:
+    - than@mozilla.com
+
+youtube-video-recommendations:
+  description: A list of algorithmic YouTube video recommendations
+  include_client_id: false
+  send_if_empty: false
+  bugs:
+    - https://github.com/mozilla-rally/rally/pull/222
+  data_reviews: []
+  notification_emails:
+    - than@mozilla.com
+
+youtube-ads:
+  description: Information about an ad that was shown to the user on YouTube
+  include_client_id: false
+  send_if_empty: false
+  bugs:
+    - https://github.com/mozilla-rally/rally/pull/222
+  data_reviews: []
+  notification_emails:
+    - than@mozilla.com

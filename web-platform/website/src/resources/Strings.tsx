@@ -781,7 +781,7 @@ export const Strings = {
         },
         buttons: {
           saveChanges: "Save Changes",
-          cancel: "Cancel",
+          cancel: "Skip",
         },
         ethnicity: {
           options: [
