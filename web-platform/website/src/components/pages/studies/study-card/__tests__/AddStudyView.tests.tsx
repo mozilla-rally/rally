@@ -24,6 +24,7 @@ describe("AddStudyView tests", () => {
   const endStudyEnrollmentToggle = jest.fn();
   const study = {
     studyId: "Test Study",
+    version: "1.0",
     downloadLink: {
       chrome: "chrome.com",
       firefox: "firefox.com",
@@ -168,6 +169,7 @@ describe("AddStudyView tests", () => {
       studies: {
         [study.studyId]: {
           studyId: study.studyId,
+          version: study.version,
           enrolled: true,
           joinedOn: Timestamp.now(),
         },

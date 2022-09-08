@@ -22,10 +22,10 @@ import Glean, {
 import { destinationDomains as newsDomains } from "./news-domains";
 
 // Import generated Glean metrics.
-import * as userJourney from "../src/generated/userJourney";
-import * as rallyManagementMetrics from "../src/generated/rally";
 import * as advertisements from "../src/generated/advertisements";
 import * as articleContents from "../src/generated/articleContents";
+import * as rallyManagementMetrics from "../src/generated/rally";
+import * as userJourney from "../src/generated/userJourney";
 import * as youtubeVideoDetails from "../src/generated/youtubeVideoDetails";
 import * as youtubeVideoRecommendations from "../src/generated/youtubeVideoRecommendations";
 import * as youtubeAd from "../src/generated/youtubeAd";
@@ -390,14 +390,15 @@ const rally = new Rally({
   stateChangeCallback,
   rallySite,
   studyId,
+  version: browser.runtime.getManifest().version,
   storeId,
   firebaseConfig,
   enableEmulatorMode,
 });
 
 // TODO move to dynamic import, and only load in dev mode.
-import pako from "pako";
 import type { Configuration } from "@mozilla/glean/dist/types/core/config";
+import pako from "pako";
 
 class GetPingsUploader extends Uploader {
   async post(url: string, body: Uint8Array): Promise<UploadResult> {
