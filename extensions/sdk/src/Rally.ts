@@ -126,7 +126,7 @@ export class Rally {
 
     const browserInfo = browser.runtime && browser.runtime.getBrowserInfo && await browser.runtime.getBrowserInfo();
 
-    if (browserInfo && browserInfo.name === "firefox") {
+    if (browserInfo && browserInfo.name === "Firefox") {
       storeUrl = `${this._firefoxStoreUrl}/${this._options.storeId}/*`;
     }
 
