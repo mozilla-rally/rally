@@ -1,8 +1,8 @@
 import { Button, Col, Container, Row } from "reactstrap";
 import { style } from "typestyle";
-
+import { createResponsiveStyle } from "../../../../styles";
 import { Strings } from "../../../../resources/Strings";
-import { Colors, Spacing } from "../../../../styles";
+import { Colors, Spacing, ScreenSize } from "../../../../styles";
 import { FontSize } from "../../../../styles/Fonts";
 import { useStudy } from "./StudyDataContext";
 import { StudyTitle } from "./StudyTitle";
@@ -14,7 +14,7 @@ export function StudyTopDetails() {
 
   return (
     <Container className={`${styles.container}`}>
-      <Row>
+      <Row className={`${styles.row}`}>
         <Col>
           <StudyTitle />
         </Col>
@@ -31,8 +31,8 @@ export function StudyTopDetails() {
           ) : null}
         </Col>
       </Row>
-      <Row>
-        <hr />
+      <Row className="py-3">
+        <hr className="m-0" />
       </Row>
     </Container>
   );
@@ -59,4 +59,13 @@ const styles = {
       },
     },
   }),
+  row: style({
+    flexDirection: "row"
+  },
+    createResponsiveStyle(
+      ScreenSize.ExtraSmall, {
+      flexDirection: "column"
+    }
+    )
+  )
 };
