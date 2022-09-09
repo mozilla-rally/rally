@@ -14,13 +14,13 @@ import {
   createResponsiveStyle,
 } from "../../../../styles";
 import { SecondaryButton, TertiaryButton } from "../../../../styles/Buttons";
+import { ColumnStyles } from "../../../../styles/Columns";
 import { ContainerStyles } from "../../../../styles/ContainerStyles";
 import { FontSizeRaw, FontsRaw } from "../../../../styles/Fonts";
 import { detectBrowser } from "../../../../utils/BrowserDetector";
 import { BrowserType } from "../../../../utils/BrowserType";
 import { useStudy } from "./StudyDataContext";
 import { StudyTitle } from "./StudyTitle";
-import { ColumnStyles } from "../../../../styles/Columns";
 
 const strings = Strings.components.pages.studies.studyCard.addStudy;
 
@@ -61,7 +61,6 @@ export function AddStudyView() {
           </Col>
         </Row>
         <Row className="d-flex align-items-center flex-row-reverse">
-
           <Col className={`${ColumnStyles.account.buttonCol} col-auto`}>
             <Button
               className={`fw-bold ps-4 pe-4 pt-2 pb-2 ${SecondaryButton}`}
@@ -116,7 +115,7 @@ const styles = {
     createResponsiveStyle(ScreenSize.ExtraSmall, smallModalStyle),
     createResponsiveStyle(ScreenSize.Small, smallModalStyle),
     {
-      maxWidth: "unset"
+      maxWidth: "unset",
     }
   ),
   modalContent: style(
