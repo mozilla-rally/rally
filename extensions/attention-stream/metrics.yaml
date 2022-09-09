@@ -750,3 +750,63 @@ youtube_ad:
     notification_emails:
       - than@mozilla.com
     expires: never
+
+meta_pixel:
+  url:
+    type: url
+    description: |
+      The URL of the webpage where this pixel was fired from.
+    lifetime: ping
+    send_in_pings:
+      - meta-pixel
+    bugs:
+      - https://github.com/mozilla-rally/rally/issues/167
+    data_reviews: []
+    notification_emails:
+      - than@mozilla.com
+    expires: never
+
+  page_id:
+    type: string
+    description: |
+      A unique ID associated with a page visit. Each
+      page ID is 128-bit value, randomly generated with
+      the Web Crypto API and stored as a hexadecimal
+      string.
+    lifetime: ping
+    send_in_pings:
+      - meta-pixel
+    bugs:
+      - https://github.com/mozilla-rally/rally/issues/167
+    data_reviews: []
+    notification_emails:
+      - than@mozilla.com
+    expires: never
+
+  pixel_url:
+    type: url
+    description: |
+      The pixel request url that Meta/Facebook collects.
+    lifetime: ping
+    send_in_pings:
+      - meta-pixel
+    bugs:
+      - https://github.com/mozilla-rally/rally/issues/167
+    data_reviews: []
+    notification_emails:
+      - than@mozilla.com
+    expires: never
+
+  form_data:
+    type: text
+    description: |
+      Any HTTP POST form data sent along to the tracker.
+    lifetime: ping
+    send_in_pings:
+      - meta-pixel
+    bugs:
+      - https://github.com/mozilla-rally/rally/issues/167
+    data_reviews: []
+    notification_emails:
+      - than@mozilla.com
+    expires: never

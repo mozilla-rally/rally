@@ -86,3 +86,19 @@ youtube-ads:
   data_reviews: []
   notification_emails:
     - than@mozilla.com
+
+meta-pixel:
+  description: |
+    A ping representing a Meta/Facebook tracking pixel event
+    observed by the study. See the `reasons` documentation
+    for additional information.
+  include_client_id: false
+  send_if_empty: false
+  bugs:
+    - https://github.com/mozilla-rally/rally/issues/167
+  data_reviews: []
+  notification_emails:
+    - than@mozilla.com
+  reasons:
+    tracking-pixel-observed: |
+      A Meta/Facebook pixel was observed.
