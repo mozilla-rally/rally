@@ -137,13 +137,17 @@ async function updateUserDocument(
 ): Promise<void> {
   assert(partialDocument, "Invalid user document.");
 
-  if (partialDocument.studies) {
-    for (const studyId in partialDocument.studies) {
+  const { studies, ...others } = partialDocument;
+
+  if (studies) {
+    for (const studyId in studies) {
       const studyRef = doc(db, "users", firebaseUid, "studies", studyId);
-      await setDoc(studyRef, partialDocument.studies[studyId], { merge: true });
+      await setDoc(studyRef, studies[studyId], { merge: true });
     }
   }
 
-  const userDocRef = doc(db, "users", firebaseUid);
-  await setDoc(userDocRef, partialDocument as {}, { merge: true });
+  if (others) {
+    const userDocRef = doc(db, "users", firebaseUid);
+    await setDoc(userDocRef, others, { merge: true });
+  }
 }

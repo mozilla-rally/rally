@@ -1,8 +1,9 @@
 import { Button, Col, Container, Row } from "reactstrap";
 import { style } from "typestyle";
-import { createResponsiveStyle } from "../../../../styles";
+
 import { Strings } from "../../../../resources/Strings";
-import { Colors, Spacing, ScreenSize } from "../../../../styles";
+import { createResponsiveStyle } from "../../../../styles";
+import { Colors, ScreenSize, Spacing } from "../../../../styles";
 import { FontSize } from "../../../../styles/Fonts";
 import { useStudy } from "./StudyDataContext";
 import { StudyTitle } from "./StudyTitle";
@@ -59,13 +60,12 @@ const styles = {
       },
     },
   }),
-  row: style({
-    flexDirection: "row"
-  },
-    createResponsiveStyle(
-      ScreenSize.ExtraSmall, {
-      flexDirection: "column"
-    }
-    )
-  )
+  row: style(
+    {
+      flexDirection: "row",
+    },
+    createResponsiveStyle(ScreenSize.ExtraSmall, {
+      flexDirection: "column",
+    })
+  ),
 };

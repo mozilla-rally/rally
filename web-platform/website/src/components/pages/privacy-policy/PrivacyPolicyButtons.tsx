@@ -1,5 +1,6 @@
 import { UserDocument } from "@mozilla/rally-shared-types/dist";
 import { Button, Col, Row } from "reactstrap";
+
 import { Strings } from "../../../resources/Strings";
 import { useAuthentication } from "../../../services/AuthenticationService";
 import { useUserDocument } from "../../../services/UserDocumentService";

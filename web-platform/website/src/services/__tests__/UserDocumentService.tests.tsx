@@ -288,6 +288,7 @@ describe("UserDocumentService tests", () => {
           joinedOn: "Fake" as unknown as Timestamp,
         },
       },
+      otherProp: "hello",
     } as Partial<UserDocument>;
 
     await act(async () => {
@@ -299,7 +300,12 @@ describe("UserDocumentService tests", () => {
       updateData?.studies?.studyA,
       { merge: true }
     );
-    expect(setDoc).toHaveBeenCalledWith(docRef, updateData, { merge: true });
+
+    expect(setDoc).toHaveBeenCalledWith(
+      docRef,
+      { otherProp: "hello" },
+      { merge: true }
+    );
   });
 
   async function renderComponent(
