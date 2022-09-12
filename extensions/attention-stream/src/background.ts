@@ -18,6 +18,7 @@ import Glean, {
   UploadResult,
   UploadResultStatus,
 } from "@mozilla/glean/webext";
+import semverGte from "semver/functions/gte";
 
 import { destinationDomains as newsDomains } from "./news-domains";
 
@@ -266,6 +267,15 @@ async function stateChangeCallback(newState) {
             body: "object",
           },
         });
+      }
+
+      // Only collect YouTube and tracking pixel info
+      // if user has consented to version 0.5.0 or above
+      if (
+        !(rally.userVersion && semverGte(rally.userVersion, "0.5.0")) &&
+        !enableDevMode
+      ) {
+        break;
       }
 
       // YouTube Video Info, Ads, and Recommendations

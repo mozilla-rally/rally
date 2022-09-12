@@ -34,6 +34,7 @@ export class Rally {
   private _auth: Auth;
   private _db: Firestore;
   private _signedIn: boolean;
+  private _userVersion: string;
 
   private _options: RallyOptions;
 
@@ -174,13 +175,13 @@ export class Rally {
     const getUserStudyDoc = () =>
       getDoc(doc(this._db, "users", uid, "studies", this._options.studyId));
 
-    this.monitorUserRecord(uid);
+    this.monitorExtensionUserRecord(uid);
     this.monitorCurrentStudyRecordForUser(uid);
-    this.monitorCurrentStudyRecord(getUserStudyDoc);
+    this.monitorCurrentStudyGlobalRecord(getUserStudyDoc);
   }
 
   // Monitors user record at: extensionUsers/<uid>
-  private monitorUserRecord(uid: string) {
+  private monitorExtensionUserRecord(uid: string) {
     // This contains the Rally ID, need to call the Rally state change callback with it.
     onSnapshot(doc(this._db, "extensionUsers", uid), (extensionUserDoc) => {
       if (!extensionUserDoc.exists()) {
@@ -227,6 +228,9 @@ export class Rally {
         }
 
         const data = userStudiesDoc.data();
+        if (data.version) {
+          this._userVersion = data.version;
+        }
         if (data.enrolled) {
           this.resume();
         } else {
@@ -237,7 +241,7 @@ export class Rally {
   }
 
   // Monitor current study record at: studies/<studyId> and pause/resume/end data collection.
-  private monitorCurrentStudyRecord(
+  private monitorCurrentStudyGlobalRecord(
     getUserStudyDoc: () => Promise<DocumentSnapshot<DocumentData>>
   ) {
     onSnapshot(
@@ -250,10 +254,10 @@ export class Rally {
 
         const data = studiesDoc.data();
 
-        if (data.studyPaused && data.studyPaused === true) {
-          if (this._state !== RunStates.Paused) {
-            this.pause();
-          }
+        if (data.studyEnded) {
+          this.end();
+        } else if (data.studyPaused) {
+          this.pause();
         } else {
           const userStudiesDoc = await getUserStudyDoc();
           // TODO do runtime validation of this document
@@ -267,14 +271,8 @@ export class Rally {
 
           const data = userStudiesDoc.data();
 
-          if (data.enrolled && this._state !== RunStates.Running) {
+          if (data.enrolled) {
             this.resume();
-          }
-        }
-
-        if (data.studyEnded === true) {
-          if (this._state !== RunStates.Ended) {
-            this.end();
           }
         }
       }
@@ -528,6 +526,10 @@ export class Rally {
 
   get state() {
     return this._state;
+  }
+
+  get userVersion() {
+    return this._userVersion;
   }
 
   /**
