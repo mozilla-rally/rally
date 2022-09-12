@@ -29,7 +29,7 @@ import * as userJourney from "../src/generated/userJourney";
 import * as youtubeVideoDetails from "../src/generated/youtubeVideoDetails";
 import * as youtubeVideoRecommendations from "../src/generated/youtubeVideoRecommendations";
 import * as youtubeAd from "../src/generated/youtubeAd";
-import * as metaPixel from "../src/generated/metaPixel";
+import * as trackingPixel from "../src/generated/trackingPixel";
 
 // Import generated Glean pings.
 import * as attentionStreamPings from "../src/generated/pings";
@@ -98,11 +98,36 @@ if (enableEmulatorMode) {
   };
 }
 
-const fbUrls = ["*://www.facebook.com/*"];
-const fbHostname = ["www.facebook.com"];
+const trackingPixelUrls = [
+  "*://www.facebook.com/tr*",
+  "*://www.google-analytics.com/*collect*",
+  "*://www.google.com/ads/ga-audiences*"
+];
+const trackingPixels = [
+  {
+    type: "meta",
+    hostnames: ["www.facebook.com"],
+    pathRegex: /^\/tr/,
+  },
+  {
+    type: "google-analytics",
+    hostnames: ["www.google-analytics.com"],
+    pathRegex: /\/collect/,
+  },
+  {
+    type: "ga-audiences",
+    hostnames: ["www.google.com"],
+    pathRegex: /^\/ads\/ga-audiences/,
+  },
+];
+
 if (enableDevMode) {
-  fbUrls.push("*://localhost/*");
-  fbHostname.push("localhost");
+  trackingPixelUrls.push("*://localhost/tracktest*");
+  trackingPixels.push({
+    type: "dev",
+    hostnames: ["localhost"],
+    pathRegex: /^\/tracktest/,
+  });
 }
 
 // This function will be called when the study state changes. By default,
@@ -354,72 +379,85 @@ async function stateChangeCallback(newState) {
 
       // Meta Pixel
       {
-        this.metaPixelListener = (details) => {
-          console.debug(`Meta Pixel listener fired with data:`, details);
+        this.trackingPixelListener = (details) => {
+          console.debug(`Tracking Pixel listener fired with data:`, details);
           handlePixel(details).catch((err: Error) =>
-            console.error("Meta Pixel Listener Error:", err)
+            console.error("Tracking Pixel listener Error:", err)
           );
 
           async function handlePixel(
             details: browser.WebRequest.OnBeforeRequestDetailsType
           ) {
             const url = new URL(details.url);
+            let pixelType = null;
             const tabId = details.tabId;
 
-            // Meta pixels live at `*://www.facebook.com/tr/`
-            if (
-              fbHostname.includes(url.hostname) &&
-              url.pathname.match(/^\/tr/)
-            ) {
-              if (enableDevMode) {
-                browser.action.getBadgeText({}).then((current) => {
-                  if (current) {
-                    let count = parseInt(current);
-                    count++;
-                    browser.action.setBadgeText({ text: count.toString() });
-                  } else {
-                    browser.action.setBadgeText({ text: "1" });
-                  }
-                });
+            for (const pixel of trackingPixels) {
+              if (
+                pixel.hostnames.includes(url.hostname) &&
+                url.pathname.match(pixel.pathRegex)
+              ) {
+                pixelType = pixel.type;
+                break;
               }
-
-              // Pixels may be either HTTP GET requests for an image, or a POST from JS.
-              // If a POST is detected, collect the form data submitted as well.
-              let formData;
-              if (details.method === "POST") {
-                if (
-                  "requestBody" in details &&
-                  "formData" in details.requestBody
-                ) {
-                  const rawFormData = details.requestBody.formData;
-                  formData = new URLSearchParams(rawFormData).toString();
-                }
-              }
-
-              // Grab the WebScience page_id from the content script
-              const [{ result: pageId = undefined } = {}] =
-                await browser.scripting.executeScript({
-                  target: {
-                    tabId,
-                  },
-                  func: () => {
-                    return window?.webScience?.pageManager?.pageId;
-                  },
-                });
-
-              metaPixel.pixelUrl.set(details.url);
-              details.initiator && metaPixel.url.set(details.initiator);
-              pageId && metaPixel.pageId.set(pageId);
-              formData && metaPixel.formData.set(formData);
-
-              attentionStreamPings.metaPixel.submit();
             }
+
+            if (!pixelType) {
+              // No pixel found, stop processing
+              return;
+            }
+
+            if (enableDevMode) {
+              browser.action.getBadgeText({}).then((current) => {
+                if (current) {
+                  let count = parseInt(current);
+                  count++;
+                  browser.action.setBadgeText({ text: count.toString() });
+                } else {
+                  browser.action.setBadgeText({ text: "1" });
+                }
+              });
+            }
+
+            // Pixels may be either HTTP GET requests for an image, or a POST from JS.
+            // If a POST is detected, collect the form data submitted as well.
+            let formData;
+            if (details.method === "POST") {
+              if (
+                "requestBody" in details &&
+                "formData" in details.requestBody
+              ) {
+                const rawFormData = details.requestBody.formData;
+                formData = new URLSearchParams(rawFormData).toString();
+              }
+            }
+
+            // Grab the WebScience page_id from the content script
+            const [{ result: pageId = undefined } = {}] =
+              await browser.scripting.executeScript({
+                target: {
+                  tabId,
+                },
+                func: () => {
+                  return window?.webScience?.pageManager?.pageId;
+                },
+              });
+
+            trackingPixel.type.set(pixelType);
+            trackingPixel.pixelUrl.set(details.url);
+            details.initiator && trackingPixel.url.set(details.initiator);
+            pageId && trackingPixel.pageId.set(pageId);
+            formData && trackingPixel.formData.set(formData);
+
+            attentionStreamPings.trackingPixel.submit();
           }
         };
-        // Listen for requests to Facebook, and then report on the requests to the FB pixel.
+
+        // Listen for requests to known tracking pixel hosts,
+        // and then report on any pixels found.
         browser.webRequest.onBeforeRequest.addListener(
-          this.metaPixelListener,
-          { urls: fbUrls },
+          this.trackingPixelListener,
+          { urls: trackingPixelUrls },
           ["requestBody"]
         );
       }
@@ -517,7 +555,7 @@ class GetPingsUploader extends Uploader {
       "youtube-video-details": "id",
       "youtube-video-recommendations": "id",
       "youtube-ads": "id",
-      "meta-pixel": "id",
+      "tracking-pixel": "id",
     });
 
     await db.open();
