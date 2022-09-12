@@ -7,7 +7,7 @@ const sanitizeBannerPromo = (adData) => {
   const aboutThisAdUrl_SENSITIVE = getAboutThisAdUrl(adData);
 
   // Remove fields that are purely for UI
-  traverse.fishForAndDeleteAll(["dismissButton"], adData);
+  traverse.fishForAndDeleteAll(["dismissButton", "adInfoRenderer"], adData);
 
   // Extract useful details
   const [adVideoId] = traverse.fishForAll(
