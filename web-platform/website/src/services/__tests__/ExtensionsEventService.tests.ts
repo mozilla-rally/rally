@@ -1,8 +1,16 @@
+import { logEvent } from "firebase/analytics";
+
+import { getCurrentUser } from "../AuthenticationService";
 import {
   IExtensionEventHandler,
   dispose,
   initializeExtensionEvents,
 } from "../ExtensionsEventService";
+import { useFirebase } from "../FirebaseService";
+
+jest.mock("firebase/analytics");
+jest.mock("../AuthenticationService");
+jest.mock("../FirebaseService");
 
 describe("ExtensionsEventService tests", () => {
   describe("initializeExtensionEvents tests", () => {
@@ -49,6 +57,214 @@ describe("ExtensionsEventService tests", () => {
         "rally-sdk.web-check-response",
         expect.anything()
       );
+    });
+
+    describe("complete signup message tests", () => {
+      it("throws when complete signup message is null or undefined", async () => {
+        assertEventSubscriptionsAndWebCheck(
+          {} as unknown as IExtensionEventHandler
+        );
+
+        expect(
+          async () => await invokeCompleteSignup(null as unknown as CustomEvent)
+        ).rejects.toThrow("Invalid complete signup event.");
+
+        expect(
+          async () =>
+            await invokeCompleteSignup(undefined as unknown as CustomEvent)
+        ).rejects.toThrow("Invalid complete signup event.");
+      });
+
+      it("throws when type is missing", async () => {
+        assertEventSubscriptionsAndWebCheck(
+          {} as unknown as IExtensionEventHandler
+        );
+
+        expect(
+          async () => await invokeCompleteSignup({} as unknown as CustomEvent)
+        ).rejects.toThrow("Invalid complete signup event type.");
+      });
+
+      it("throws when detail is missing", async () => {
+        assertEventSubscriptionsAndWebCheck(
+          {} as unknown as IExtensionEventHandler
+        );
+
+        expect(
+          async () =>
+            await invokeCompleteSignup({
+              type: "rally-sdk.complete-signup",
+            } as unknown as CustomEvent)
+        ).rejects.toThrow("Invalid complete signup event detail.");
+      });
+
+      it("throws when studyId is missing", async () => {
+        assertEventSubscriptionsAndWebCheck(
+          {} as unknown as IExtensionEventHandler
+        );
+
+        expect(
+          async () =>
+            await invokeCompleteSignup({
+              type: "rally-sdk.complete-signup",
+              detail: JSON.stringify({}),
+            } as unknown as CustomEvent)
+        ).rejects.toThrow("Invalid complete signup event study id.");
+      });
+
+      it("fails when user is invalid", async () => {
+        assertEventSubscriptionsAndWebCheck(
+          {} as unknown as IExtensionEventHandler
+        );
+
+        (useFirebase as jest.Mock).mockReturnValue({});
+
+        await expect(
+          async () =>
+            await invokeCompleteSignup({
+              type: "rally-sdk.complete-signup",
+              detail: JSON.stringify({ studyId: "studyId" }),
+            } as unknown as CustomEvent)
+        ).rejects.toThrow("Invalid user.");
+
+        (getCurrentUser as jest.Mock).mockImplementation(async () => null);
+
+        await expect(
+          async () =>
+            await invokeCompleteSignup({
+              type: "rally-sdk.complete-signup",
+              detail: JSON.stringify({ studyId: "studyId" }),
+            } as unknown as CustomEvent)
+        ).rejects.toThrow("Invalid user.");
+      });
+
+      it("fails when user id token is invalid", async () => {
+        assertEventSubscriptionsAndWebCheck(
+          {} as unknown as IExtensionEventHandler
+        );
+
+        (getCurrentUser as jest.Mock).mockImplementation(async () => ({
+          getIdToken: () => null,
+        }));
+
+        (useFirebase as jest.Mock).mockReturnValue({
+          functionsHost: "functionsHost",
+        });
+
+        await expect(
+          async () =>
+            await invokeCompleteSignup({
+              type: "rally-sdk.complete-signup",
+              detail: JSON.stringify({ studyId: "studyId" }),
+            } as unknown as CustomEvent)
+        ).rejects.toThrow("Invalid id token.");
+      });
+
+      it("fails when rally token fails", async () => {
+        global.fetch = jest.fn().mockImplementation(async () => {
+          throw new Error("Fetch error.");
+        });
+
+        assertEventSubscriptionsAndWebCheck(
+          {} as unknown as IExtensionEventHandler
+        );
+
+        (getCurrentUser as jest.Mock).mockImplementation(async () => ({
+          getIdToken: () => "id token",
+        }));
+
+        (useFirebase as jest.Mock).mockReturnValue({
+          analytics: "analytics",
+          functionsHost: "functionsHost",
+        });
+
+        await expect(
+          async () =>
+            await invokeCompleteSignup({
+              type: "rally-sdk.complete-signup",
+              detail: JSON.stringify({ studyId: "studyId" }),
+            } as unknown as CustomEvent)
+        ).rejects.toThrow("Fetch error.");
+
+        expect(global.fetch).toHaveBeenCalledWith("functionsHost/rallytoken", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: "Bearer id token",
+          },
+          body: JSON.stringify({ studyId: "studyId" }),
+        });
+      });
+
+      it("successful call", async () => {
+        global.fetch = jest.fn().mockImplementation(async () => {
+          return {
+            json: async () => ({ rallyToken: "rally token" }),
+          };
+        });
+
+        assertEventSubscriptionsAndWebCheck(
+          {} as unknown as IExtensionEventHandler
+        );
+
+        (getCurrentUser as jest.Mock).mockImplementation(async () => ({
+          getIdToken: () => "id token",
+        }));
+
+        (useFirebase as jest.Mock).mockReturnValue({
+          analytics: "analytics",
+          functionsHost: "functionsHost",
+        });
+
+        const attribution = {
+          source: "source",
+          medium: "medium",
+          campaign: "campaign",
+          term: "term",
+          content: "content",
+        };
+
+        await invokeCompleteSignup({
+          type: "rally-sdk.complete-signup",
+          detail: JSON.stringify({
+            studyId: "studyId",
+            attribution,
+          }),
+        } as unknown as CustomEvent);
+
+        expect(global.fetch).toHaveBeenCalledWith("functionsHost/rallytoken", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: "Bearer id token",
+          },
+          body: JSON.stringify({ studyId: "studyId" }),
+        });
+
+        expect(logEvent).toHaveBeenCalledWith(
+          "analytics",
+          "activate_extension",
+          { studyId: "studyId", ...attribution }
+        );
+
+        expect(window.dispatchEvent).toHaveBeenCalledWith(
+          new CustomEvent("rally-sdk.complete-signup-response", {
+            detail: { studyId: "studyId", rallyToken: "rallyToken" },
+          })
+        );
+      });
+
+      async function invokeCompleteSignup(e: CustomEvent) {
+        const mockCall = (window.addEventListener as jest.Mock).mock.calls.find(
+          (a) => a[0] === "rally-sdk.complete-signup"
+        );
+
+        expect(mockCall).toBeDefined();
+
+        const onWebCheckResponse = mockCall[1];
+
+        await onWebCheckResponse(e);
+      }
     });
 
     describe("web check message tests", () => {

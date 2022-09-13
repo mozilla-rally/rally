@@ -1,4 +1,5 @@
 import { FirebaseApp, initializeApp } from "@firebase/app";
+import assert from "assert";
 import { Analytics, getAnalytics } from "firebase/analytics";
 import { Auth, getAuth } from "firebase/auth";
 import { Firestore, getFirestore } from "firebase/firestore";
@@ -10,6 +11,7 @@ export interface FirebaseDataContext {
   analytics: Analytics;
   auth: Auth;
   db: Firestore;
+  functionsHost: string;
 }
 
 let context: FirebaseDataContext | null = null;
@@ -19,12 +21,17 @@ export function useFirebase() {
     const app = initializeApp(FirebaseConfig);
     const auth = getAuth(app);
     const db = getFirestore(app);
+    const functionsHost = FirebaseConfig.functionsHost;
+
+    assert(functionsHost, "Invalid functions host");
+
     context = {
       app,
       analytics:
         typeof window !== "undefined" ? getAnalytics(app) : ({} as Analytics),
       auth,
       db,
+      functionsHost,
     };
   }
 

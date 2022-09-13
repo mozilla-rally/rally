@@ -5,6 +5,7 @@ import { useEffect } from "react";
 import {
   AuthenticationProvider,
   UserType,
+  getCurrentUser,
   useAuthentication,
 } from "../AuthenticationService";
 import { useFirebase } from "../FirebaseService";
@@ -446,5 +447,23 @@ describe("AuthenticationService tests", () => {
     });
 
     expect(deleteGoogleUserFn).toHaveBeenCalledWith(verifiedUser);
+  });
+
+  it("getCurrentUser correctly returns the user", async () => {
+    (useFirebase as jest.Mock).mockReturnValue(auth);
+
+    const userPromise = getCurrentUser();
+
+    expect(onAuthStateChanged).toHaveBeenCalled();
+
+    expect((onAuthStateChanged as jest.Mock).mock.calls[0][0]).toBe(auth.auth);
+
+    const user = {
+      id: "1234",
+    };
+
+    (onAuthStateChanged as jest.Mock).mock.calls[0][1](user);
+
+    await expect(userPromise).resolves.toBe(user);
   });
 });
