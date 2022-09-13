@@ -40,6 +40,9 @@ import { Dexie } from "dexie";
 
 import * as webScience from "@mozilla/web-science";
 
+import { getTrackingPixelInfo } from "./tracking-pixels";
+const { trackingPixels, trackingPixelUrls } = getTrackingPixelInfo();
+
 declare global {
   const __ENABLE_DEVELOPER_MODE__: boolean;
   const __ENABLE_EMULATOR_MODE__: boolean;
@@ -53,6 +56,8 @@ const enableDevMode = Boolean(__ENABLE_DEVELOPER_MODE__);
 // config below must match.
 // eslint-disable-next-line no-undef
 const enableEmulatorMode = Boolean(__ENABLE_EMULATOR_MODE__);
+
+const GLEAN_MAX_URL_LENGTH = 2048;
 
 // The Rally-assigned Study ID.
 let studyId = "attentionStream";
@@ -96,38 +101,6 @@ if (enableEmulatorMode) {
     appId: "1:123:web:abc123",
     functionsHost: "http://localhost:5001",
   };
-}
-
-const trackingPixelUrls = [
-  "*://www.facebook.com/tr*",
-  "*://www.google-analytics.com/*collect*",
-  "*://www.google.com/ads/ga-audiences*"
-];
-const trackingPixels = [
-  {
-    type: "meta",
-    hostnames: ["www.facebook.com"],
-    pathRegex: /^\/tr/,
-  },
-  {
-    type: "google-analytics",
-    hostnames: ["www.google-analytics.com"],
-    pathRegex: /\/collect/,
-  },
-  {
-    type: "ga-audiences",
-    hostnames: ["www.google.com"],
-    pathRegex: /^\/ads\/ga-audiences/,
-  },
-];
-
-if (enableDevMode) {
-  trackingPixelUrls.push("*://localhost/tracktest*");
-  trackingPixels.push({
-    type: "dev",
-    hostnames: ["localhost"],
-    pathRegex: /^\/tracktest/,
-  });
 }
 
 // This function will be called when the study state changes. By default,
@@ -377,7 +350,7 @@ async function stateChangeCallback(newState) {
         browser.runtime.onMessage.addListener(this.youtubeListener);
       }
 
-      // Meta Pixel
+      // Tracking Pixels
       {
         this.trackingPixelListener = (details) => {
           console.debug(`Tracking Pixel listener fired with data:`, details);
@@ -388,14 +361,14 @@ async function stateChangeCallback(newState) {
           async function handlePixel(
             details: browser.WebRequest.OnBeforeRequestDetailsType
           ) {
-            const url = new URL(details.url);
             let pixelType = null;
             const tabId = details.tabId;
 
             for (const pixel of trackingPixels) {
               if (
-                pixel.hostnames.includes(url.hostname) &&
-                url.pathname.match(pixel.pathRegex)
+                pixel.matchPatternSet.matches(
+                  webScience.matching.normalizeUrl(details.url)
+                )
               ) {
                 pixelType = pixel.type;
                 break;
@@ -444,8 +417,12 @@ async function stateChangeCallback(newState) {
               });
 
             trackingPixel.type.set(pixelType);
-            trackingPixel.pixelUrl.set(details.url);
-            details.initiator && trackingPixel.url.set(details.initiator);
+            if (details.url.length < GLEAN_MAX_URL_LENGTH) {
+              trackingPixel.trackingUrl.set(details.url);
+            } else {
+              trackingPixel.trackingUrlLong.set(details.url);
+            }
+            details.initiator && trackingPixel.originUrl.set(details.initiator);
             pageId && trackingPixel.pageId.set(pageId);
             formData && trackingPixel.formData.set(formData);
 
@@ -466,36 +443,54 @@ async function stateChangeCallback(newState) {
     case RunStates.Paused:
       console.log(`Study paused with Rally ID: ${rally.rallyId}`);
 
-      // Take down all resources from run state.
-      webScience.pageNavigation.onPageData.removeListener(
-        this.pageDataListener
-      );
-      webScience.pageText.onTextParsed.removeListener(this.pageTextListener);
-      webScience.messaging.onMessage.removeListener(this.advertisementListener);
-      browser.runtime.onMessage.removeListener(this.youtubeListener);
-      browser.webRequest.onBeforeRequest.removeListener(this.metaPixelListener);
+      try {
+        // Take down all resources from run state.
+        webScience.pageNavigation.onPageData.removeListener(
+          this.pageDataListener
+        );
+        webScience.pageText.onTextParsed.removeListener(this.pageTextListener);
+        webScience.messaging.onMessage.removeListener(
+          this.advertisementListener
+        );
+        browser.runtime.onMessage.removeListener(this.youtubeListener);
+        browser.webRequest.onBeforeRequest.removeListener(
+          this.trackingPixelListener
+        );
 
-      await browser.scripting.unregisterContentScripts({
-        ids: ["page-ads", "youtube"],
-      });
+        await browser.scripting.unregisterContentScripts({
+          ids: ["page-ads", "youtube"],
+        });
+      } catch (e) {
+        console.error("Error while removing listeners:", e);
+      }
+
       await browser.storage.local.set({ state: RunStates.Paused });
 
       break;
     case RunStates.Ended:
       console.log(`Study ended with Rally ID: ${rally.rallyId}`);
 
-      // Take down all resources from run state.
-      webScience.pageNavigation.onPageData.removeListener(
-        this.pageDataListener
-      );
-      webScience.pageText.onTextParsed.removeListener(this.pageTextListener);
-      webScience.messaging.onMessage.removeListener(this.advertisementListener);
-      browser.runtime.onMessage.removeListener(this.youtubeListener);
-      browser.webRequest.onBeforeRequest.removeListener(this.metaPixelListener);
+      try {
+        // Take down all resources from run state.
+        webScience.pageNavigation.onPageData.removeListener(
+          this.pageDataListener
+        );
+        webScience.pageText.onTextParsed.removeListener(this.pageTextListener);
+        webScience.messaging.onMessage.removeListener(
+          this.advertisementListener
+        );
+        browser.runtime.onMessage.removeListener(this.youtubeListener);
+        browser.webRequest.onBeforeRequest.removeListener(
+          this.trackingPixelListener
+        );
 
-      await browser.scripting.unregisterContentScripts({
-        ids: ["page-ads", "youtube"],
-      });
+        await browser.scripting.unregisterContentScripts({
+          ids: ["page-ads", "youtube"],
+        });
+      } catch (e) {
+        console.error("Error while removing listeners:", e);
+      }
+
       await browser.storage.local.set({ ended: true });
 
       break;

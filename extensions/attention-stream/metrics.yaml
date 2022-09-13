@@ -757,8 +757,8 @@ tracking_pixel:
     type: string
     description: |
       The type of pixel that was found.
-      Currently this can be "meta" or "google-analytics".
-      lifetime: ping
+      See tracking-pixels.ts for more details on the types of pixels.
+    lifetime: ping
     send_in_pings:
       - tracking-pixel
     bugs:
@@ -768,10 +768,13 @@ tracking_pixel:
       - than@mozilla.com
     expires: never
 
-  url:
+  origin_url:
     type: url
     description: |
-      The URL of the webpage where this pixel was fired from.
+      Where this pixel was fired from.
+      Usually this is directly from the webpage, but sometimes it's
+      through an intermediary. The page_id can be used to unequivocally
+      determine the webpage URL if needed (via a user-journey lookup).
     lifetime: ping
     send_in_pings:
       - tracking-pixel
@@ -799,11 +802,26 @@ tracking_pixel:
       - than@mozilla.com
     expires: never
 
-  pixel_url:
+  tracking_url:
     type: url
     description: |
-      The pixel request url that the tracker collects.
-      This will sometimes contain tracking information in the query string.
+      The pixel request url that the tracker used.
+      This will often contain tracking information in the query string.
+    lifetime: ping
+    send_in_pings:
+      - tracking-pixel
+    bugs:
+      - https://github.com/mozilla-rally/rally/issues/167
+    data_reviews: []
+    notification_emails:
+      - than@mozilla.com
+    expires: never
+
+  tracking_url_long:
+    type: text
+    description: |
+      Same as "tracking_url", except this is used when the URL
+      is longer than 2048 characters, due to limitations in Glean.
     lifetime: ping
     send_in_pings:
       - tracking-pixel
