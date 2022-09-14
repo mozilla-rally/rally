@@ -160,7 +160,7 @@ export class Rally {
     this._listeners.add(webListener);
   }
 
-  private async getAttributionCodes() {
+  async getAttributionCodes() {
     const attribution = await browser.storage.local.get();
     return (attribution && attribution["attribution"]) || {};
   }

@@ -30,6 +30,7 @@ import * as youtubeVideoDetails from "../src/generated/youtubeVideoDetails";
 import * as youtubeVideoRecommendations from "../src/generated/youtubeVideoRecommendations";
 import * as youtubeAd from "../src/generated/youtubeAd";
 import * as trackingPixel from "../src/generated/trackingPixel";
+import * as attribution from "../src/generated/attribution";
 
 // Import generated Glean pings.
 import * as attentionStreamPings from "../src/generated/pings";
@@ -128,6 +129,13 @@ async function stateChangeCallback(newState) {
         console.info("Recording enrollment.");
         rallyManagementMetrics.id.set(rallyId);
         attentionStreamPings.studyEnrollment.submit();
+
+        // Construct the attribution ping, using UTM codes from the extension store URL.
+        const attributionCodes = await rally.getAttributionCodes();
+        ["source", "medium", "campaign", "term", "content"].forEach((key) =>
+          (key in attribution) && attribution.utmCodes[key].set(attributionCodes[key])
+        );
+        attentionStreamPings.attribution.submit();
 
         browser.storage.local.set({
           enrolled: true,
@@ -551,6 +559,7 @@ class GetPingsUploader extends Uploader {
       "youtube-video-recommendations": "id",
       "youtube-ads": "id",
       "tracking-pixel": "id",
+      "attribution": "id"
     });
 
     await db.open();
