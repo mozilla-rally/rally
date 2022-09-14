@@ -62,8 +62,9 @@ youtube-video-details:
   include_client_id: false
   send_if_empty: false
   bugs:
-    - https://github.com/mozilla-rally/rally/pull/222
-  data_reviews: []
+    - https://github.com/mozilla-rally/rally/issues/198
+  data_reviews:
+    - https://bugzilla.mozilla.org/show_bug.cgi?id=1790817
   notification_emails:
     - than@mozilla.com
 
@@ -72,8 +73,9 @@ youtube-video-recommendations:
   include_client_id: false
   send_if_empty: false
   bugs:
-    - https://github.com/mozilla-rally/rally/pull/222
-  data_reviews: []
+    - https://github.com/mozilla-rally/rally/issues/198
+  data_reviews:
+    - https://bugzilla.mozilla.org/show_bug.cgi?id=1790817
   notification_emails:
     - than@mozilla.com
 
@@ -82,8 +84,9 @@ youtube-ads:
   include_client_id: false
   send_if_empty: false
   bugs:
-    - https://github.com/mozilla-rally/rally/pull/222
-  data_reviews: []
+    - https://github.com/mozilla-rally/rally/issues/198
+  data_reviews:
+    - https://bugzilla.mozilla.org/show_bug.cgi?id=1790817
   notification_emails:
     - than@mozilla.com
 
@@ -94,7 +97,8 @@ tracking-pixel:
   send_if_empty: false
   bugs:
     - https://github.com/mozilla-rally/rally/issues/167
-  data_reviews: []
+  data_reviews:
+    - https://bugzilla.mozilla.org/show_bug.cgi?id=1790817
   notification_emails:
     - than@mozilla.com
   reasons:
@@ -106,8 +110,8 @@ attribution:
   include_client_id: false
   send_if_empty: false
   bugs:
-    - TODO
+    - https://github.com/mozilla-rally/rally/issues/191
   data_reviews:
-    - TODO
+    - https://bugzilla.mozilla.org/show_bug.cgi?id=1790817
   notification_emails:
     - than@mozilla.com

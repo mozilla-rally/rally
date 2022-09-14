@@ -321,8 +321,9 @@ youtube_video_details:
     send_in_pings:
       - youtube-video-details
     bugs:
-      - https://github.com/mozilla-rally/rally/pull/222
-    data_reviews: []
+      - https://github.com/mozilla-rally/rally/issues/198
+    data_reviews:
+      - https://bugzilla.mozilla.org/show_bug.cgi?id=1790817
     notification_emails:
       - than@mozilla.com
     expires: never
@@ -335,8 +336,9 @@ youtube_video_details:
     send_in_pings:
       - youtube-video-details
     bugs:
-      - https://github.com/mozilla-rally/rally/pull/222
-    data_reviews: []
+      - https://github.com/mozilla-rally/rally/issues/198
+    data_reviews:
+      - https://bugzilla.mozilla.org/show_bug.cgi?id=1790817
     notification_emails:
       - than@mozilla.com
     expires: never
@@ -349,8 +351,9 @@ youtube_video_details:
     send_in_pings:
       - youtube-video-details
     bugs:
-      - https://github.com/mozilla-rally/rally/pull/222
-    data_reviews: []
+      - https://github.com/mozilla-rally/rally/issues/198
+    data_reviews:
+      - https://bugzilla.mozilla.org/show_bug.cgi?id=1790817
     notification_emails:
       - than@mozilla.com
     expires: never
@@ -363,8 +366,9 @@ youtube_video_details:
     send_in_pings:
       - youtube-video-details
     bugs:
-      - https://github.com/mozilla-rally/rally/pull/222
-    data_reviews: []
+      - https://github.com/mozilla-rally/rally/issues/198
+    data_reviews:
+      - https://bugzilla.mozilla.org/show_bug.cgi?id=1790817
     notification_emails:
       - than@mozilla.com
     expires: never
@@ -377,8 +381,9 @@ youtube_video_details:
     send_in_pings:
       - youtube-video-details
     bugs:
-      - https://github.com/mozilla-rally/rally/pull/222
-    data_reviews: []
+      - https://github.com/mozilla-rally/rally/issues/198
+    data_reviews:
+      - https://bugzilla.mozilla.org/show_bug.cgi?id=1790817
     notification_emails:
       - than@mozilla.com
     expires: never
@@ -393,8 +398,9 @@ youtube_video_details:
     send_in_pings:
       - youtube-video-details
     bugs:
-      - https://github.com/mozilla-rally/rally/pull/222
-    data_reviews: []
+      - https://github.com/mozilla-rally/rally/issues/198
+    data_reviews:
+      - https://bugzilla.mozilla.org/show_bug.cgi?id=1790817
     notification_emails:
       - than@mozilla.com
     expires: never
@@ -407,8 +413,9 @@ youtube_video_details:
     send_in_pings:
       - youtube-video-details
     bugs:
-      - https://github.com/mozilla-rally/rally/pull/222
-    data_reviews: []
+      - https://github.com/mozilla-rally/rally/issues/198
+    data_reviews:
+      - https://bugzilla.mozilla.org/show_bug.cgi?id=1790817
     notification_emails:
       - than@mozilla.com
     expires: never
@@ -422,8 +429,9 @@ youtube_video_details:
     send_in_pings:
       - youtube-video-details
     bugs:
-      - https://github.com/mozilla-rally/rally/pull/222
-    data_reviews: []
+      - https://github.com/mozilla-rally/rally/issues/198
+    data_reviews:
+      - https://bugzilla.mozilla.org/show_bug.cgi?id=1790817
     notification_emails:
       - than@mozilla.com
     expires: never
@@ -436,8 +444,9 @@ youtube_video_details:
     send_in_pings:
       - youtube-video-details
     bugs:
-      - https://github.com/mozilla-rally/rally/pull/222
-    data_reviews: []
+      - https://github.com/mozilla-rally/rally/issues/198
+    data_reviews:
+      - https://bugzilla.mozilla.org/show_bug.cgi?id=1790817
     notification_emails:
       - than@mozilla.com
     expires: never
@@ -450,8 +459,9 @@ youtube_video_details:
     send_in_pings:
       - youtube-video-details
     bugs:
-      - https://github.com/mozilla-rally/rally/pull/222
-    data_reviews: []
+      - https://github.com/mozilla-rally/rally/issues/198
+    data_reviews:
+      - https://bugzilla.mozilla.org/show_bug.cgi?id=1790817
     notification_emails:
       - than@mozilla.com
     expires: never
@@ -464,8 +474,9 @@ youtube_video_details:
     send_in_pings:
       - youtube-video-details
     bugs:
-      - https://github.com/mozilla-rally/rally/pull/222
-    data_reviews: []
+      - https://github.com/mozilla-rally/rally/issues/198
+    data_reviews:
+      - https://bugzilla.mozilla.org/show_bug.cgi?id=1790817
     notification_emails:
       - than@mozilla.com
     expires: never
@@ -479,8 +490,9 @@ youtube_video_details:
     send_in_pings:
       - youtube-video-details
     bugs:
-      - https://github.com/mozilla-rally/rally/pull/222
-    data_reviews: []
+      - https://github.com/mozilla-rally/rally/issues/198
+    data_reviews:
+      - https://bugzilla.mozilla.org/show_bug.cgi?id=1790817
     notification_emails:
       - than@mozilla.com
     expires: never
@@ -493,8 +505,9 @@ youtube_video_details:
     send_in_pings:
       - youtube-video-details
     bugs:
-      - https://github.com/mozilla-rally/rally/pull/222
-    data_reviews: []
+      - https://github.com/mozilla-rally/rally/issues/198
+    data_reviews:
+      - https://bugzilla.mozilla.org/show_bug.cgi?id=1790817
     notification_emails:
       - than@mozilla.com
     expires: never
@@ -508,8 +521,9 @@ youtube_video_recommendations:
     send_in_pings:
       - youtube-video-recommendations
     bugs:
-      - https://github.com/mozilla-rally/rally/pull/222
-    data_reviews: []
+      - https://github.com/mozilla-rally/rally/issues/198
+    data_reviews:
+      - https://bugzilla.mozilla.org/show_bug.cgi?id=1790817
     notification_emails:
       - than@mozilla.com
     expires: never
@@ -522,8 +536,9 @@ youtube_video_recommendations:
     send_in_pings:
       - youtube-video-recommendations
     bugs:
-      - https://github.com/mozilla-rally/rally/pull/222
-    data_reviews: []
+      - https://github.com/mozilla-rally/rally/issues/198
+    data_reviews:
+      - https://bugzilla.mozilla.org/show_bug.cgi?id=1790817
     notification_emails:
       - than@mozilla.com
     expires: never
@@ -537,8 +552,9 @@ youtube_video_recommendations:
     send_in_pings:
       - youtube-video-recommendations
     bugs:
-      - https://github.com/mozilla-rally/rally/pull/222
-    data_reviews: []
+      - https://github.com/mozilla-rally/rally/issues/198
+    data_reviews:
+      - https://bugzilla.mozilla.org/show_bug.cgi?id=1790817
     notification_emails:
       - than@mozilla.com
     expires: never
@@ -554,8 +570,9 @@ youtube_video_recommendations:
     send_in_pings:
       - youtube-video-recommendations
     bugs:
-      - https://github.com/mozilla-rally/rally/pull/222
-    data_reviews: []
+      - https://github.com/mozilla-rally/rally/issues/198
+    data_reviews:
+      - https://bugzilla.mozilla.org/show_bug.cgi?id=1790817
     notification_emails:
       - than@mozilla.com
     expires: never
@@ -569,8 +586,9 @@ youtube_video_recommendations:
     send_in_pings:
       - youtube-video-recommendations
     bugs:
-      - https://github.com/mozilla-rally/rally/pull/222
-    data_reviews: []
+      - https://github.com/mozilla-rally/rally/issues/198
+    data_reviews:
+      - https://bugzilla.mozilla.org/show_bug.cgi?id=1790817
     notification_emails:
       - than@mozilla.com
     expires: never
@@ -584,8 +602,9 @@ youtube_ad:
     send_in_pings:
       - youtube-ads
     bugs:
-      - https://github.com/mozilla-rally/rally/pull/222
-    data_reviews: []
+      - https://github.com/mozilla-rally/rally/issues/198
+    data_reviews:
+      - https://bugzilla.mozilla.org/show_bug.cgi?id=1790817
     notification_emails:
       - than@mozilla.com
     expires: never
@@ -598,8 +617,9 @@ youtube_ad:
     send_in_pings:
       - youtube-ads
     bugs:
-      - https://github.com/mozilla-rally/rally/pull/222
-    data_reviews: []
+      - https://github.com/mozilla-rally/rally/issues/198
+    data_reviews:
+      - https://bugzilla.mozilla.org/show_bug.cgi?id=1790817
     notification_emails:
       - than@mozilla.com
     expires: never
@@ -613,8 +633,9 @@ youtube_ad:
     send_in_pings:
       - youtube-ads
     bugs:
-      - https://github.com/mozilla-rally/rally/pull/222
-    data_reviews: []
+      - https://github.com/mozilla-rally/rally/issues/198
+    data_reviews:
+      - https://bugzilla.mozilla.org/show_bug.cgi?id=1790817
     notification_emails:
       - than@mozilla.com
     expires: never
@@ -628,8 +649,9 @@ youtube_ad:
     send_in_pings:
       - youtube-ads
     bugs:
-      - https://github.com/mozilla-rally/rally/pull/222
-    data_reviews: []
+      - https://github.com/mozilla-rally/rally/issues/198
+    data_reviews:
+      - https://bugzilla.mozilla.org/show_bug.cgi?id=1790817
     notification_emails:
       - than@mozilla.com
     expires: never
@@ -642,8 +664,9 @@ youtube_ad:
     send_in_pings:
       - youtube-ads
     bugs:
-      - https://github.com/mozilla-rally/rally/pull/222
-    data_reviews: []
+      - https://github.com/mozilla-rally/rally/issues/198
+    data_reviews:
+      - https://bugzilla.mozilla.org/show_bug.cgi?id=1790817
     notification_emails:
       - than@mozilla.com
     expires: never
@@ -656,8 +679,9 @@ youtube_ad:
     send_in_pings:
       - youtube-ads
     bugs:
-      - https://github.com/mozilla-rally/rally/pull/222
-    data_reviews: []
+      - https://github.com/mozilla-rally/rally/issues/198
+    data_reviews:
+      - https://bugzilla.mozilla.org/show_bug.cgi?id=1790817
     notification_emails:
       - than@mozilla.com
     expires: never
@@ -670,8 +694,9 @@ youtube_ad:
     send_in_pings:
       - youtube-ads
     bugs:
-      - https://github.com/mozilla-rally/rally/pull/222
-    data_reviews: []
+      - https://github.com/mozilla-rally/rally/issues/198
+    data_reviews:
+      - https://bugzilla.mozilla.org/show_bug.cgi?id=1790817
     notification_emails:
       - than@mozilla.com
     expires: never
@@ -688,8 +713,9 @@ youtube_ad:
     send_in_pings:
       - youtube-ads
     bugs:
-      - https://github.com/mozilla-rally/rally/pull/222
-    data_reviews: []
+      - https://github.com/mozilla-rally/rally/issues/198
+    data_reviews:
+      - https://bugzilla.mozilla.org/show_bug.cgi?id=1790817
     notification_emails:
       - than@mozilla.com
     expires: never
@@ -702,8 +728,9 @@ youtube_ad:
     send_in_pings:
       - youtube-ads
     bugs:
-      - https://github.com/mozilla-rally/rally/pull/222
-    data_reviews: []
+      - https://github.com/mozilla-rally/rally/issues/198
+    data_reviews:
+      - https://bugzilla.mozilla.org/show_bug.cgi?id=1790817
     notification_emails:
       - than@mozilla.com
     expires: never
@@ -717,8 +744,9 @@ youtube_ad:
     send_in_pings:
       - youtube-ads
     bugs:
-      - https://github.com/mozilla-rally/rally/pull/222
-    data_reviews: []
+      - https://github.com/mozilla-rally/rally/issues/198
+    data_reviews:
+      - https://bugzilla.mozilla.org/show_bug.cgi?id=1790817
     notification_emails:
       - than@mozilla.com
     expires: never
@@ -733,8 +761,9 @@ youtube_ad:
     send_in_pings:
       - youtube-ads
     bugs:
-      - https://github.com/mozilla-rally/rally/pull/222
-    data_reviews: []
+      - https://github.com/mozilla-rally/rally/issues/198
+    data_reviews:
+      - https://bugzilla.mozilla.org/show_bug.cgi?id=1790817
     notification_emails:
       - than@mozilla.com
     expires: never
@@ -747,8 +776,9 @@ youtube_ad:
     send_in_pings:
       - youtube-ads
     bugs:
-      - https://github.com/mozilla-rally/rally/pull/222
-    data_reviews: []
+      - https://github.com/mozilla-rally/rally/issues/198
+    data_reviews:
+      - https://bugzilla.mozilla.org/show_bug.cgi?id=1790817
     notification_emails:
       - than@mozilla.com
     expires: never
@@ -764,7 +794,8 @@ tracking_pixel:
       - tracking-pixel
     bugs:
       - https://github.com/mozilla-rally/rally/issues/167
-    data_reviews: []
+    data_reviews:
+      - https://bugzilla.mozilla.org/show_bug.cgi?id=1790817
     notification_emails:
       - than@mozilla.com
     expires: never
@@ -781,7 +812,8 @@ tracking_pixel:
       - tracking-pixel
     bugs:
       - https://github.com/mozilla-rally/rally/issues/167
-    data_reviews: []
+    data_reviews:
+      - https://bugzilla.mozilla.org/show_bug.cgi?id=1790817
     notification_emails:
       - than@mozilla.com
     expires: never
@@ -798,7 +830,8 @@ tracking_pixel:
       - tracking-pixel
     bugs:
       - https://github.com/mozilla-rally/rally/issues/167
-    data_reviews: []
+    data_reviews:
+      - https://bugzilla.mozilla.org/show_bug.cgi?id=1790817
     notification_emails:
       - than@mozilla.com
     expires: never
@@ -813,7 +846,8 @@ tracking_pixel:
       - tracking-pixel
     bugs:
       - https://github.com/mozilla-rally/rally/issues/167
-    data_reviews: []
+    data_reviews:
+      - https://bugzilla.mozilla.org/show_bug.cgi?id=1790817
     notification_emails:
       - than@mozilla.com
     expires: never
@@ -828,7 +862,8 @@ tracking_pixel:
       - tracking-pixel
     bugs:
       - https://github.com/mozilla-rally/rally/issues/167
-    data_reviews: []
+    data_reviews:
+      - https://bugzilla.mozilla.org/show_bug.cgi?id=1790817
     notification_emails:
       - than@mozilla.com
     expires: never
@@ -842,7 +877,8 @@ tracking_pixel:
       - tracking-pixel
     bugs:
       - https://github.com/mozilla-rally/rally/issues/167
-    data_reviews: []
+    data_reviews:
+      - https://bugzilla.mozilla.org/show_bug.cgi?id=1790817
     notification_emails:
       - than@mozilla.com
     expires: never
@@ -863,9 +899,9 @@ attribution:
       This is set when the extension is first installed, any UTM codes present
       in extension store tabs matching the extension ID will be stored.
     bugs:
-      - TODO
+      - https://github.com/mozilla-rally/rally/issues/191
     data_reviews:
-      - TODO
+      - https://bugzilla.mozilla.org/show_bug.cgi?id=1790817
     notification_emails:
       - than@mozilla.com
     expires: never
