@@ -87,11 +87,9 @@ youtube-ads:
   notification_emails:
     - than@mozilla.com
 
-meta-pixel:
+tracking-pixel:
   description: |
-    A ping representing a Meta/Facebook tracking pixel event
-    observed by the study. See the `reasons` documentation
-    for additional information.
+    A ping representing a tracking pixel event observed by the study.
   include_client_id: false
   send_if_empty: false
   bugs:
@@ -101,4 +99,4 @@ meta-pixel:
     - than@mozilla.com
   reasons:
     tracking-pixel-observed: |
-      A Meta/Facebook pixel was observed.
+      A tracking pixel was observed.
