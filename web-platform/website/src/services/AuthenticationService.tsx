@@ -1,4 +1,8 @@
-import { UserCredential, onAuthStateChanged } from "firebase/auth";
+import {
+  User as FirebaseUser,
+  UserCredential,
+  onAuthStateChanged,
+} from "firebase/auth";
 import { createContext, useContext, useEffect, useState } from "react";
 
 import { User } from "../models/User";
@@ -51,6 +55,19 @@ const AuthenticationContext = createContext<UserDataContext>({
 
 export function useAuthentication() {
   return useContext(AuthenticationContext);
+}
+
+// Provides the currently logged in user for non-context caller.
+export async function getCurrentUser() {
+  const { auth } = useFirebase();
+
+  const user: FirebaseUser | null = await new Promise((resolve) => {
+    onAuthStateChanged(auth, (usr) => {
+      resolve(usr);
+    });
+  });
+
+  return user;
 }
 
 export function AuthenticationProvider(props: { children: React.ReactNode }) {
