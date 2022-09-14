@@ -13,6 +13,15 @@ export function ProfileButtons() {
   const { profileData, isValid } = useProfileData();
   const router = useRouter();
 
+  const goToStudiesPage = () => {
+    if (window) {
+      window.scrollTo(0, 0);
+      setTimeout(() => {
+        router.push("/");
+      }, 500);
+    }
+  };
+
   return (
     <Row>
       <Col className="d-flex justify-content-center">
@@ -27,8 +36,7 @@ export function ProfileButtons() {
               demographicsData: profileData,
               onboared: true,
             });
-
-            router.push("/");
+            goToStudiesPage();
           }}
         >
           {strings.saveChanges}
@@ -41,8 +49,7 @@ export function ProfileButtons() {
             updateUserDocument({
               onboared: true,
             });
-
-            router.push("/");
+            goToStudiesPage();
           }}
         >
           {strings.cancel}
