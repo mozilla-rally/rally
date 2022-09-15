@@ -1,13 +1,17 @@
 import { RenderResult, render } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import { logEvent } from "firebase/analytics";
 import { isValidElement } from "react";
 import { act } from "react-dom/test-utils";
 
 import { Strings } from "../../../../../resources/Strings";
+import { useFirebase } from "../../../../../services/FirebaseService";
 import { useUserDocument } from "../../../../../services/UserDocumentService";
 import { LeaveStudyView } from "../LeaveStudyView";
 import { useStudy } from "../StudyDataContext";
 
+jest.mock("firebase/analytics");
+jest.mock("../../../../../services/FirebaseService");
 jest.mock("../../../../../services/UserDocumentService");
 jest.mock("../StudyDataContext");
 
@@ -28,6 +32,7 @@ describe("LeaveStudyView tests", () => {
     jest.resetAllMocks();
     jest.resetModules();
 
+    (useFirebase as jest.Mock).mockReturnValue({ analytics: "analytics" });
     (useUserDocument as jest.Mock).mockReturnValue({ updateUserDocument });
   });
 
@@ -98,6 +103,9 @@ describe("LeaveStudyView tests", () => {
     });
 
     expect(endStudyEnrollmentToggle).toHaveBeenCalled();
+    expect(logEvent).toHaveBeenCalledWith("analytics", "select_content", {
+      content_type: `canceled_leave_study`,
+    });
   });
 
   function setupStudy(
@@ -158,5 +166,9 @@ describe("LeaveStudyView tests", () => {
     });
 
     expect(endStudyEnrollmentToggle).toHaveBeenCalled();
+
+    expect(logEvent).toHaveBeenCalledWith("analytics", "select_content", {
+      content_type: `leave_study`,
+    });
   }
 });

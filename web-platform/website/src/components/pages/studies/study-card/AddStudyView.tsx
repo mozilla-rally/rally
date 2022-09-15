@@ -1,4 +1,5 @@
 import { UserDocument } from "@mozilla/rally-shared-types";
+import { logEvent } from "firebase/analytics";
 import { Timestamp } from "firebase/firestore";
 import { useState } from "react";
 import { Button, Col, Container, Modal, Row } from "reactstrap";
@@ -6,6 +7,7 @@ import { style } from "typestyle";
 import { NestedCSSProperties } from "typestyle/lib/types";
 
 import { Strings } from "../../../../resources/Strings";
+import { useFirebase } from "../../../../services/FirebaseService";
 import { useUserDocument } from "../../../../services/UserDocumentService";
 import {
   Colors,
@@ -31,6 +33,8 @@ export function AddStudyView() {
     isUserEnrolled,
     study,
   } = useStudy();
+
+  const { analytics } = useFirebase();
 
   const [browserType] = useState(detectBrowser());
 
@@ -84,6 +88,10 @@ export function AddStudyView() {
                     : study.downloadLink.firefox,
                   "_blank"
                 );
+
+                logEvent(analytics, "select_content", {
+                  content_type: `join_study`,
+                });
               }}
             >
               {strings.addExtension}
@@ -94,7 +102,13 @@ export function AddStudyView() {
             <Button
               className={`fw-bold ps-4 pe-4 pt-2 pb-2 ${TertiaryButton}`}
               outline
-              onClick={() => endStudyEnrollmentToggle()}
+              onClick={() => {
+                endStudyEnrollmentToggle();
+
+                logEvent(analytics, "select_content", {
+                  content_type: `canceled_join_study`,
+                });
+              }}
             >
               {strings.cancel}
             </Button>

@@ -1,10 +1,12 @@
 import { UserDocument } from "@mozilla/rally-shared-types";
+import { logEvent } from "firebase/analytics";
 import { useState } from "react";
 import { Button, Col, Container, Modal, Row } from "reactstrap";
 import { style } from "typestyle";
 import { NestedCSSProperties } from "typestyle/lib/types";
 
 import { Strings } from "../../../../resources/Strings";
+import { useFirebase } from "../../../../services/FirebaseService";
 import { useUserDocument } from "../../../../services/UserDocumentService";
 import {
   Colors,
@@ -29,6 +31,8 @@ export function DontJoinStudyView() {
     isUserEnrolled,
     study,
   } = useStudy();
+
+  const { analytics } = useFirebase();
 
   const [browserType] = useState(detectBrowser());
 
@@ -73,7 +77,13 @@ export function DontJoinStudyView() {
               <Button
                 className={`d-flex fw-bold ps-4 pe-4 pt-2 pb-2 ${TertiaryButton}`}
                 outline
-                onClick={() => endStudyEnrollmentToggle()}
+                onClick={() => {
+                  endStudyEnrollmentToggle();
+
+                  logEvent(analytics, "select_content", {
+                    content_type: `canceled_leave_study`,
+                  });
+                }}
               >
                 {strings.addStudyExtension}
               </Button>
@@ -93,6 +103,10 @@ export function DontJoinStudyView() {
                     },
                   },
                 } as Partial<UserDocument>);
+
+                logEvent(analytics, "select_content", {
+                  content_type: `leave_study`,
+                });
               }}
             >
               {strings.dontJoinStudy}

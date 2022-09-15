@@ -1,14 +1,17 @@
 import { RenderResult, render } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import { logEvent } from "firebase/analytics";
 import { act } from "react-dom/test-utils";
 
 import { Strings } from "../../../../../resources/Strings";
+import { useFirebase } from "../../../../../services/FirebaseService";
 import { useUserDocument } from "../../../../../services/UserDocumentService";
 import { detectBrowser } from "../../../../../utils/BrowserDetector";
 import { BrowserType } from "../../../../../utils/BrowserType";
 import { DontJoinStudyView } from "../DontJoinStudyView";
 import { useStudy } from "../StudyDataContext";
 
+jest.mock("../../../../../services/FirebaseService");
 jest.mock("../../../../../services/UserDocumentService");
 jest.mock("../../../../../utils/BrowserDetector");
 jest.mock("../StudyDataContext");
@@ -30,6 +33,7 @@ describe("DontJoinStudyView tests", () => {
     jest.resetAllMocks();
     jest.resetModules();
 
+    (useFirebase as jest.Mock).mockReturnValue({ analytics: "analytics" });
     (useUserDocument as jest.Mock).mockReturnValue({ updateUserDocument });
     (detectBrowser as jest.Mock).mockReturnValue(BrowserType.Chrome);
   });
@@ -107,6 +111,10 @@ describe("DontJoinStudyView tests", () => {
     });
 
     expect(endStudyEnrollmentToggle).toHaveBeenCalled();
+
+    expect(logEvent).toHaveBeenCalledWith("analytics", "select_content", {
+      content_type: `canceled_leave_study`,
+    });
   });
 
   it("renders correct firefox extension link", async () => {
@@ -127,6 +135,10 @@ describe("DontJoinStudyView tests", () => {
     });
 
     expect(endStudyEnrollmentToggle).toHaveBeenCalled();
+
+    expect(logEvent).toHaveBeenCalledWith("analytics", "select_content", {
+      content_type: `canceled_leave_study`,
+    });
   });
 
   function setupStudy(
@@ -187,5 +199,9 @@ describe("DontJoinStudyView tests", () => {
     });
 
     expect(endStudyEnrollmentToggle).toHaveBeenCalled();
+
+    expect(logEvent).toHaveBeenCalledWith("analytics", "select_content", {
+      content_type: `leave_study`,
+    });
   }
 });
