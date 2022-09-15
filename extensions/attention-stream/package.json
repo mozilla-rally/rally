@@ -1,6 +1,6 @@
 {
   "name": "rally-attention-stream",
-  "version": "0.4.8",
+  "version": "0.5.0",
   "scripts": {
     "config:chrome": "tsx scripts/generate-manifest.ts --browser=chrome --manifest-version=3",
     "config:firefox": "tsx scripts/generate-manifest.ts --browser=firefox --manifest-version=2",
@@ -58,12 +58,13 @@
   },
   "dependencies": {
     "@mozilla/glean": "^1.0.0",
-    "@mozilla/rally-sdk": "^1.0.0",
+    "@mozilla/rally-sdk": "^1.1.0",
     "@mozilla/web-science": "^0.5.3",
     "dexie": "^3.2.2",
     "pako": "^2.0.4",
     "tailwindcss": "^3.0.24",
-    "webextension-polyfill": "^0.8.0"
+    "webextension-polyfill": "^0.8.0",
+    "semver": "~7.3.7"
   },
   "engines": {
     "node": ">=14.0.0"
