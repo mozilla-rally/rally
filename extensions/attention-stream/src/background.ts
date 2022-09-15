@@ -414,11 +414,8 @@ async function stateChangeCallback(newState) {
             // If a POST is detected, collect the form data submitted as well.
             let formData;
             if (details.method === "POST") {
-              if (
-                "requestBody" in details &&
-                "formData" in details.requestBody
-              ) {
-                const rawFormData = details.requestBody.formData;
+              const rawFormData = details.requestBody?.formData;
+              if (rawFormData) {
                 formData = new URLSearchParams(rawFormData).toString();
               }
             }
