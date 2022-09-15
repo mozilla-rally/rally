@@ -47,13 +47,13 @@ export const Strings = {
           },
           links: [
             {
-              text: "Beyond the Paywall",
-              link: "https://rally.mozilla.org/current-studies/beyond-the-paywall/",
+              text: "Attention Stream",
+              link: "https://rally.mozilla.org/current-studies/attention-stream/",
               external: true,
             },
             {
-              text: "Facebook Pixel Hunt",
-              link: "https://rally.mozilla.org/current-studies/facebook-pixel-hunt/",
+              text: "Beyond the Paywall",
+              link: "https://rally.mozilla.org/current-studies/beyond-the-paywall/",
               external: true,
             },
             {
@@ -75,6 +75,16 @@ export const Strings = {
             external: true,
           },
           links: [
+            {
+              text: "Facebook Pixel Hunt",
+              link: "https://rally.mozilla.org/past-studies/facebook-pixel-hunt/",
+              external: true,
+            },
+            {
+              text: "Political and Covid-19 News",
+              link: "https://rally.mozilla.org/current-studies/political-and-covid-19-news-v3/",
+              external: true,
+            },
             {
               text: `Your Time Online and "Doomscrolling"`,
               link: "https://rally.mozilla.org/past-studies/your-time-online-and-doomscrolling/",
