@@ -45,7 +45,7 @@ export const studies = {
     authors: {
       name: "Mozilla Rally",
     },
-    version: "0.5.0",
+    version: "0.4.8",
     firefoxAddonId: "attention-stream@rally.mozilla.org",
     chromeExtensionId: "bahhehaddofgkccippmjcecepdakppme",
     studyId: "attentionStream",
