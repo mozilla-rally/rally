@@ -30,7 +30,11 @@ export function dispose() {
 }
 
 function sendWebCheck() {
-  window.dispatchEvent(new CustomEvent("rally-sdk.web-check", {}));
+  // The Rally extension runs the content script on `document_idle`.
+  // This redundant call can be removed when it has been changed to use `document_start`.
+  window.requestIdleCallback(() =>
+    window.dispatchEvent(new CustomEvent("rally-sdk.web-check", {}))
+  );
 }
 
 function subscribeToEvents() {

@@ -16,6 +16,9 @@ describe("ExtensionsEventService tests", () => {
   describe("initializeExtensionEvents tests", () => {
     beforeEach(() => {
       jest.resetAllMocks();
+      // Call idle callback immediately.
+      window.requestIdleCallback = jest.fn().mockImplementation(cb => cb());
+
       dispose();
     });
 
