@@ -20,21 +20,27 @@ const strings = Strings.components.pages.login.launchCardText;
 export function LoginPageContent() {
   return (
     <Container className={`${styles.container} p-5 mt-5`}>
-      <Row className="content-row mb-5 d-flex">
-        <RenderLaunchText />
-        <Col className="login-col justify-content-center d-flex p-2">
-          <Card className="login-card flex-nowrap">
-            <LoginStateProvider>
+      <Row className="content-row mb-5 d-flex position-relative">
+        <LoginStateProvider>
+          <RenderLaunchText />
+          <Col className="login-col justify-content-center d-flex p-2">
+            <Card className="login-card flex-nowrap">
               <LoginCardFactory />
-            </LoginStateProvider>
-          </Card>
-        </Col>
+            </Card>
+          </Col>
+        </LoginStateProvider>
       </Row>
     </Container>
   );
 }
 
 function RenderLaunchText() {
+  const { loginState } = useLoginDataContext();
+
+  if (loginState !== LoginState.Initial) {
+    return null;
+  }
+
   return (
     <Col className={`${styles.launchTextStyle} p-2 justify-content-center`}>
       <Card className="launch-card flex-nowrap p-5">
