@@ -41,7 +41,7 @@ export function ProfileButtons() {
         <Button
           className={`d-flex fw-bold ps-4 pe-4 pt-2 pb-2 ${TertiaryButton}`}
           outline
-          onClick={async () => {
+          onClick={() => {
             updateUserDocument({
               onboared: true,
             });
