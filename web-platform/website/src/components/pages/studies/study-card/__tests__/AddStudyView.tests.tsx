@@ -1,10 +1,12 @@
 import { RenderResult, render } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import { logEvent } from "firebase/analytics";
 import { Timestamp } from "firebase/firestore";
 import { isValidElement } from "react";
 import { act } from "react-dom/test-utils";
 
 import { Strings } from "../../../../../resources/Strings";
+import { useFirebase } from "../../../../../services/FirebaseService";
 import { useUserDocument } from "../../../../../services/UserDocumentService";
 import { detectBrowser } from "../../../../../utils/BrowserDetector";
 import { BrowserType } from "../../../../../utils/BrowserType";
@@ -12,6 +14,8 @@ import { AddStudyView } from "../AddStudyView";
 import { useStudy } from "../StudyDataContext";
 import { StudyTitle } from "../StudyTitle";
 
+jest.mock("firebase/analytics");
+jest.mock("../../../../../services/FirebaseService");
 jest.mock("../../../../../services/UserDocumentService");
 jest.mock("../../../../../utils/BrowserDetector");
 jest.mock("../StudyDataContext");
@@ -35,6 +39,7 @@ describe("AddStudyView tests", () => {
     jest.resetAllMocks();
     jest.resetModules();
 
+    (useFirebase as jest.Mock).mockReturnValue({ analytics: "analytics" });
     (useUserDocument as jest.Mock).mockReturnValue({ updateUserDocument });
     (detectBrowser as jest.Mock).mockReturnValue(BrowserType.Chrome);
   });
@@ -107,6 +112,10 @@ describe("AddStudyView tests", () => {
     });
 
     expect(endStudyEnrollmentToggle).toHaveBeenCalled();
+
+    expect(logEvent).toHaveBeenCalledWith("analytics", "select_content", {
+      content_type: `canceled_join_study`,
+    });
   });
 
   function setupStudy(
@@ -184,5 +193,9 @@ describe("AddStudyView tests", () => {
         : study.downloadLink.firefox,
       "_blank"
     );
+
+    expect(logEvent).toHaveBeenCalledWith("analytics", "select_content", {
+      content_type: `join_study`,
+    });
   }
 });

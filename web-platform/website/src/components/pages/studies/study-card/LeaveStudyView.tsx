@@ -1,9 +1,11 @@
 import { UserDocument } from "@mozilla/rally-shared-types";
+import { logEvent } from "firebase/analytics";
 import { Button, Col, Container, Modal, Row } from "reactstrap";
 import { style } from "typestyle";
 import { NestedCSSProperties } from "typestyle/lib/types";
 
 import { Strings } from "../../../../resources/Strings";
+import { useFirebase } from "../../../../services/FirebaseService";
 import { useUserDocument } from "../../../../services/UserDocumentService";
 import { AccentButton, TertiaryButton } from "../../../../styles/Buttons";
 import { Colors } from "../../../../styles/Colors";
@@ -24,6 +26,8 @@ export function LeaveStudyView() {
     isInstalledLocally,
     study,
   } = useStudy();
+
+  const { analytics } = useFirebase();
 
   const { updateUserDocument } = useUserDocument();
 
@@ -66,7 +70,13 @@ export function LeaveStudyView() {
             <Button
               className={`d-flex fw-bold ps-4 pe-4 pt-2 pb-2 ${TertiaryButton}`}
               outline
-              onClick={() => endStudyEnrollmentToggle()}
+              onClick={() => {
+                endStudyEnrollmentToggle();
+
+                logEvent(analytics, "select_content", {
+                  content_type: `canceled_leave_study`,
+                });
+              }}
             >
               {strings.cancel}
             </Button>
@@ -85,6 +95,10 @@ export function LeaveStudyView() {
                     },
                   },
                 } as Partial<UserDocument>);
+
+                logEvent(analytics, "select_content", {
+                  content_type: `leave_study`,
+                });
               }}
               outline
             >

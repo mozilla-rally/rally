@@ -1,3 +1,4 @@
+import { logEvent } from "firebase/analytics";
 import {
   User as FirebaseUser,
   UserCredential,
@@ -76,7 +77,7 @@ export function AuthenticationProvider(props: { children: React.ReactNode }) {
   const [isLoggingIn] = useState(false);
   const [isLoaded, setIsLoaded] = useState(false);
 
-  const { auth } = useFirebase();
+  const { auth, analytics } = useFirebase();
 
   useEffect(() => {
     return onAuthStateChanged(auth, (firebaseUser) => {
@@ -93,6 +94,11 @@ export function AuthenticationProvider(props: { children: React.ReactNode }) {
 
       setUser(firebaseUser ? { firebaseUser } : undefined);
       setIsLoaded(true);
+
+      logEvent(
+        analytics,
+        `sign_${firebaseUser && firebaseUser.uid ? "in" : "out"}`
+      );
     });
   }, []);
 

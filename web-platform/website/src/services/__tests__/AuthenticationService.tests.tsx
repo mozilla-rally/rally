@@ -1,4 +1,5 @@
 import { act, render } from "@testing-library/react";
+import { logEvent } from "firebase/analytics";
 import { onAuthStateChanged } from "firebase/auth";
 import { useEffect } from "react";
 
@@ -18,11 +19,17 @@ import {
   signupWithEmail as signupWithEmailFn,
 } from "../UserAccountService";
 
-const auth = { auth: "test" };
+const firebaseResult = {
+  auth: {
+    uid: "uid",
+  },
+  analytics: "analytics",
+};
 
+jest.mock("firebase/analytics");
 jest.mock("firebase/auth");
 jest.mock("../FirebaseService", () => ({
-  useFirebase: jest.fn().mockReturnValue(auth),
+  useFirebase: jest.fn().mockReturnValue(firebaseResult),
 }));
 jest.mock("../UserAccountService");
 
@@ -71,16 +78,19 @@ describe("AuthenticationService tests", () => {
 
     expect(onAuthStateChanged).toHaveBeenCalled();
 
-    expect((onAuthStateChanged as jest.Mock).mock.calls[0][0]).toBe(auth.auth);
+    expect((onAuthStateChanged as jest.Mock).mock.calls[0][0]).toBe(
+      firebaseResult.auth
+    );
   });
 
   it("handles unverified email user", () => {
-    (useFirebase as jest.Mock).mockReturnValue(auth);
+    (useFirebase as jest.Mock).mockReturnValue(firebaseResult);
 
     let isAuthenticated = false;
 
     const unverifiedUser = {
       firebaseUser: {
+        uid: "uid",
         providerData: [
           {
             providerId: "password",
@@ -113,7 +123,9 @@ describe("AuthenticationService tests", () => {
 
     expect(onAuthStateChanged).toHaveBeenCalled();
 
-    expect((onAuthStateChanged as jest.Mock).mock.calls[0][0]).toBe(auth.auth);
+    expect((onAuthStateChanged as jest.Mock).mock.calls[0][0]).toBe(
+      firebaseResult.auth
+    );
 
     // Invoke onAuthStateChanged callback
     isAuthenticated = true;
@@ -122,15 +134,18 @@ describe("AuthenticationService tests", () => {
         unverifiedUser.firebaseUser
       );
     });
+
+    expect(logEvent).toHaveBeenCalledWith("analytics", "sign_in");
   });
 
   it("handles verified email user", () => {
-    (useFirebase as jest.Mock).mockReturnValue(auth);
+    (useFirebase as jest.Mock).mockReturnValue(firebaseResult);
 
     let isAuthenticated = false;
     let isVerified = false;
 
     const verifiedUser = {
+      uid: "uid",
       providerData: [
         {
           providerId: "google.com",
@@ -165,7 +180,9 @@ describe("AuthenticationService tests", () => {
 
     expect(onAuthStateChanged).toHaveBeenCalled();
 
-    expect((onAuthStateChanged as jest.Mock).mock.calls[0][0]).toBe(auth.auth);
+    expect((onAuthStateChanged as jest.Mock).mock.calls[0][0]).toBe(
+      firebaseResult.auth
+    );
 
     // Invoke onAuthStateChanged callback
     isAuthenticated = true;
@@ -173,16 +190,19 @@ describe("AuthenticationService tests", () => {
       (onAuthStateChanged as jest.Mock).mock.calls[0][1](verifiedUser);
     });
 
+    expect(logEvent).toHaveBeenCalledWith("analytics", "sign_in");
+
     expect(isVerified).toBeTruthy();
   });
 
   it("google user is verified", () => {
-    (useFirebase as jest.Mock).mockReturnValue(auth);
+    (useFirebase as jest.Mock).mockReturnValue(firebaseResult);
 
     let isAuthenticated = false;
     let isVerified = false;
 
     const googleUser = {
+      uid: "uid",
       providerData: [
         {
           providerId: "google.com",
@@ -215,24 +235,28 @@ describe("AuthenticationService tests", () => {
 
     expect(onAuthStateChanged).toHaveBeenCalled();
 
-    expect((onAuthStateChanged as jest.Mock).mock.calls[0][0]).toBe(auth.auth);
+    expect((onAuthStateChanged as jest.Mock).mock.calls[0][0]).toBe(
+      firebaseResult.auth
+    );
 
     // Invoke onAuthStateChanged callback
     isAuthenticated = true;
     act(() => {
       (onAuthStateChanged as jest.Mock).mock.calls[0][1](googleUser);
     });
+    expect(logEvent).toHaveBeenCalledWith("analytics", "sign_in");
 
     expect(isVerified).toBeTruthy();
   });
 
   it("logout logs the user out", () => {
-    (useFirebase as jest.Mock).mockReturnValue(auth);
+    (useFirebase as jest.Mock).mockReturnValue(firebaseResult);
 
     let isAuthenticated = false;
     let isVerified = false;
 
     const googleUser = {
+      uid: "uid",
       providerData: [
         {
           providerId: "google.com",
@@ -267,7 +291,9 @@ describe("AuthenticationService tests", () => {
 
     expect(onAuthStateChanged).toHaveBeenCalled();
 
-    expect((onAuthStateChanged as jest.Mock).mock.calls[0][0]).toBe(auth.auth);
+    expect((onAuthStateChanged as jest.Mock).mock.calls[0][0]).toBe(
+      firebaseResult.auth
+    );
 
     // Invoke onAuthStateChanged callback
     isAuthenticated = true;
@@ -279,6 +305,15 @@ describe("AuthenticationService tests", () => {
     expect(isVerified).toBeTruthy();
 
     expect(logout).toHaveBeenCalled();
+
+    // Invoke onAuthStateChanged callback
+    isAuthenticated = false;
+
+    act(() => {
+      (onAuthStateChanged as jest.Mock).mock.calls[0][1](undefined);
+    });
+
+    expect(logEvent).toHaveBeenCalledWith("analytics", "sign_out");
   });
 
   it("signupWithEmail calls firebase correctly", () => {
@@ -294,7 +329,7 @@ describe("AuthenticationService tests", () => {
       return null;
     }
 
-    (useFirebase as jest.Mock).mockReturnValue(auth);
+    (useFirebase as jest.Mock).mockReturnValue(firebaseResult);
 
     render(
       <AuthenticationProvider>
@@ -320,7 +355,7 @@ describe("AuthenticationService tests", () => {
       return null;
     }
 
-    (useFirebase as jest.Mock).mockReturnValue(auth);
+    (useFirebase as jest.Mock).mockReturnValue(firebaseResult);
 
     render(
       <AuthenticationProvider>
@@ -346,7 +381,7 @@ describe("AuthenticationService tests", () => {
       return null;
     }
 
-    (useFirebase as jest.Mock).mockReturnValue(auth);
+    (useFirebase as jest.Mock).mockReturnValue(firebaseResult);
 
     render(
       <AuthenticationProvider>
@@ -360,9 +395,10 @@ describe("AuthenticationService tests", () => {
   });
 
   it("deleteEmailUser correctly calls the firebase function", async () => {
-    (useFirebase as jest.Mock).mockReturnValue(auth);
+    (useFirebase as jest.Mock).mockReturnValue(firebaseResult);
 
     const verifiedUser = {
+      uid: "uid",
       providerData: [
         {
           providerId: "google.com",
@@ -393,7 +429,9 @@ describe("AuthenticationService tests", () => {
 
     expect(onAuthStateChanged).toHaveBeenCalled();
 
-    expect((onAuthStateChanged as jest.Mock).mock.calls[0][0]).toBe(auth.auth);
+    expect((onAuthStateChanged as jest.Mock).mock.calls[0][0]).toBe(
+      firebaseResult.auth
+    );
 
     expect(deleteEmailUserFn).toHaveBeenCalledWith(undefined, password);
 
@@ -403,12 +441,14 @@ describe("AuthenticationService tests", () => {
     });
 
     expect(deleteEmailUserFn).toHaveBeenCalledWith(verifiedUser, password);
+    expect(logEvent).toHaveBeenCalledWith("analytics", "sign_in");
   });
 
   it("deleteGoogleUser correctly calls the firebase function", async () => {
-    (useFirebase as jest.Mock).mockReturnValue(auth);
+    (useFirebase as jest.Mock).mockReturnValue(firebaseResult);
 
     const verifiedUser = {
+      uid: "uid",
       providerData: [
         {
           providerId: "google.com",
@@ -437,7 +477,9 @@ describe("AuthenticationService tests", () => {
 
     expect(onAuthStateChanged).toHaveBeenCalled();
 
-    expect((onAuthStateChanged as jest.Mock).mock.calls[0][0]).toBe(auth.auth);
+    expect((onAuthStateChanged as jest.Mock).mock.calls[0][0]).toBe(
+      firebaseResult.auth
+    );
 
     expect(deleteGoogleUserFn).toHaveBeenCalledWith(undefined);
 
@@ -447,16 +489,19 @@ describe("AuthenticationService tests", () => {
     });
 
     expect(deleteGoogleUserFn).toHaveBeenCalledWith(verifiedUser);
+    expect(logEvent).toHaveBeenCalledWith("analytics", "sign_in");
   });
 
   it("getCurrentUser correctly returns the user", async () => {
-    (useFirebase as jest.Mock).mockReturnValue(auth);
+    (useFirebase as jest.Mock).mockReturnValue(firebaseResult);
 
     const userPromise = getCurrentUser();
 
     expect(onAuthStateChanged).toHaveBeenCalled();
 
-    expect((onAuthStateChanged as jest.Mock).mock.calls[0][0]).toBe(auth.auth);
+    expect((onAuthStateChanged as jest.Mock).mock.calls[0][0]).toBe(
+      firebaseResult.auth
+    );
 
     const user = {
       id: "1234",
