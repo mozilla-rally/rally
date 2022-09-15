@@ -69,7 +69,7 @@ describe("LoginDataContext tests", () => {
       </LoginStateProvider>
     );
 
-    expect(renderCount).toBe(2);
+    expect(renderCount).toBe(1);
   });
 
   it("login state change", () => {
