@@ -24,7 +24,8 @@
       ],
       "js": [
         "dist/main.content.js"
-      ]
+      ],
+      "run_at": "document_start"
     }
   ],
   "incognito": "not_allowed"
