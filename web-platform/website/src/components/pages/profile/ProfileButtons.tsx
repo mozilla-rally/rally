@@ -26,9 +26,8 @@ export function ProfileButtons() {
     <Row>
       <Col className="d-flex justify-content-center">
         <Button
-          className={`d-flex fw-bold ps-4 pe-4 pt-2 pb-2 ${
-            !isValid ? "border-danger text-danger" : SecondaryButton
-          } me-3`}
+          className={`d-flex fw-bold ps-4 pe-4 pt-2 pb-2 ${!isValid ? "border-danger text-danger" : SecondaryButton
+            } me-3`}
           outline={!isValid}
           disabled={!isValid}
           onClick={() => {
@@ -36,7 +35,12 @@ export function ProfileButtons() {
               demographicsData: profileData,
               onboared: true,
             });
-            goToStudiesPage();
+            if (window) {
+              window.scrollTo(0, 0);
+            }
+            setTimeout(() => {
+              router.push("/");
+            }, 500);
           }}
         >
           {strings.saveChanges}
@@ -45,11 +49,18 @@ export function ProfileButtons() {
         <Button
           className={`d-flex fw-bold ps-4 pe-4 pt-2 pb-2 ${TertiaryButton}`}
           outline
-          onClick={() => {
+          onClick={async () => {
             updateUserDocument({
               onboared: true,
             });
-            goToStudiesPage();
+
+            if (window) {
+              window.scrollTo(0, 0);
+            }
+            setTimeout(() => {
+              router.push("/");
+            }, 500);
+        
           }}
         >
           {strings.cancel}

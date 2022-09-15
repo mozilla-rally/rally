@@ -34,7 +34,7 @@ export function LoginStateProvider(props: { children: React.ReactNode }) {
   useEffect(() => {
     // If user is present but not verified we set initial state to login
     // since login view displays user not verified error.
-    if (isLoaded && user && !isUserVerified) {
+    if (isLoaded && user && !isUserVerified && !LoginState.EmailAccountCreated) {
       setLoginStateFn(LoginState.Login);
     }
   }, [user, isLoaded, isUserVerified]);
