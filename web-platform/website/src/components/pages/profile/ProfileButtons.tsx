@@ -13,21 +13,13 @@ export function ProfileButtons() {
   const { profileData, isValid } = useProfileData();
   const router = useRouter();
 
-  const goToStudiesPage = () => {
-    if (window) {
-      window.scrollTo(0, 0);
-      setTimeout(() => {
-        router.push("/");
-      }, 500);
-    }
-  };
-
   return (
     <Row>
       <Col className="d-flex justify-content-center">
         <Button
-          className={`d-flex fw-bold ps-4 pe-4 pt-2 pb-2 ${!isValid ? "border-danger text-danger" : SecondaryButton
-            } me-3`}
+          className={`d-flex fw-bold ps-4 pe-4 pt-2 pb-2 ${
+            !isValid ? "border-danger text-danger" : SecondaryButton
+          } me-3`}
           outline={!isValid}
           disabled={!isValid}
           onClick={() => {
@@ -60,7 +52,6 @@ export function ProfileButtons() {
             setTimeout(() => {
               router.push("/");
             }, 500);
-        
           }}
         >
           {strings.cancel}

@@ -94,7 +94,6 @@ export function EmailSignupView() {
       await signupWithEmail(emailRef.current, passwordRef.current);
       await logout();
       setLoginState(LoginState.EmailAccountCreated);
-      debugger
     } catch (e) {
       setValidationResult({
         email: { error: getFirebaseErrorMessage(e as FirebaseError) },

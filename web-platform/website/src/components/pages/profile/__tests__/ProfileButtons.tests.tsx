@@ -55,7 +55,7 @@ describe("ProfileButtons tests", () => {
     expect(push).not.toHaveBeenCalled();
 
     await userEvent.click(cancelButton);
-  
+
     expect(updateUserDocument).toHaveBeenCalledWith({
       onboared: true,
     });
