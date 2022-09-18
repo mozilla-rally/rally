@@ -72,6 +72,10 @@ async function onUserTokenRequested(e: Event) {
 
   const rallyToken = await getRallyTokenForLoggedInUser(studyId);
 
+  if (!rallyToken) {
+    return;
+  }
+
   window.dispatchEvent(
     // Each study needs its own token. Send to content script.
     new CustomEvent("rally-sdk.complete-signup-response", {
@@ -98,7 +102,9 @@ async function getRallyTokenForLoggedInUser(studyId: string) {
   const { functionsHost } = useFirebase();
 
   const user = await getCurrentUser();
-  assert(user, "Invalid user.");
+  if (!user) {
+    return null;
+  }
 
   const idToken = await user.getIdToken();
   assert(idToken, "Invalid id token.");

@@ -115,30 +115,27 @@ describe("ExtensionsEventService tests", () => {
         ).rejects.toThrow("Invalid complete signup event study id.");
       });
 
-      it("fails when user is invalid", async () => {
+      it("ignores when user is invalid", async () => {
         assertEventSubscriptionsAndWebCheck(
           {} as unknown as IExtensionEventHandler
         );
 
-        (useFirebase as jest.Mock).mockReturnValue({});
-
-        await expect(
-          async () =>
-            await invokeCompleteSignup({
-              type: "rally-sdk.complete-signup",
-              detail: JSON.stringify({ studyId: "studyId" }),
-            } as unknown as CustomEvent)
-        ).rejects.toThrow("Invalid user.");
-
+        (useFirebase as jest.Mock).mockReturnValue({
+          functionsHost: "functionsHost",
+        });
         (getCurrentUser as jest.Mock).mockImplementation(async () => null);
 
-        await expect(
-          async () =>
-            await invokeCompleteSignup({
-              type: "rally-sdk.complete-signup",
-              detail: JSON.stringify({ studyId: "studyId" }),
-            } as unknown as CustomEvent)
-        ).rejects.toThrow("Invalid user.");
+        const numDispatches = (window.dispatchEvent as jest.Mock).mock.calls
+          .length;
+
+        await invokeCompleteSignup({
+          type: "rally-sdk.complete-signup",
+          detail: JSON.stringify({ studyId: "studyId" }),
+        } as unknown as CustomEvent);
+
+        expect((window.dispatchEvent as jest.Mock).mock.calls.length).toBe(
+          numDispatches
+        );
       });
 
       it("fails when user id token is invalid", async () => {
