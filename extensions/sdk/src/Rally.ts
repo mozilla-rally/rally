@@ -301,8 +301,14 @@ export class Rally {
       await browser.tabs.reload();
     } else {
       // Otherwise, open the website.
+      const url = new URL(this._options.rallySite);
+      const attribution = this.getAttributionCodes();
+      ["source", "medium", "campaign", "term", "content"].forEach((key) => {
+        attribution[key] = url.searchParams.set(`utm_${key}`, key);
+      });
+
       loadedTab = await browser.tabs.create({
-        url: this._options.rallySite,
+        url: url.toString()
       });
     }
   }
