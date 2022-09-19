@@ -27,8 +27,12 @@ export function ProfileButtons() {
               demographicsData: profileData,
               onboared: true,
             });
-
-            router.push("/");
+            if (window) {
+              window.scrollTo(0, 0);
+            }
+            setTimeout(() => {
+              router.push("/");
+            }, 500);
           }}
         >
           {strings.saveChanges}
@@ -42,7 +46,12 @@ export function ProfileButtons() {
               onboared: true,
             });
 
-            router.push("/");
+            if (window) {
+              window.scrollTo(0, 0);
+            }
+            setTimeout(() => {
+              router.push("/");
+            }, 500);
           }}
         >
           {strings.cancel}

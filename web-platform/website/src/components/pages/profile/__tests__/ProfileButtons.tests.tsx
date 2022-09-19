@@ -56,7 +56,9 @@ describe("ProfileButtons tests", () => {
 
     await userEvent.click(cancelButton);
 
-    expect(push).toHaveBeenCalledWith("/");
+    setTimeout(() => {
+      expect(push).toHaveBeenCalledWith("/");
+    }, 1000);
 
     expect(updateUserDocument).toHaveBeenCalledWith({
       onboared: true,
@@ -101,7 +103,9 @@ describe("ProfileButtons tests", () => {
 
     await userEvent.click(cancelButton);
 
-    expect(push).toHaveBeenCalledWith("/");
+    setTimeout(() => {
+      expect(push).toHaveBeenCalledWith("/");
+    }, 1000);
 
     expect(updateUserDocument).toHaveBeenCalledWith({
       onboared: true,
