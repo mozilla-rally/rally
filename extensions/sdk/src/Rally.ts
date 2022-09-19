@@ -304,7 +304,7 @@ export class Rally {
       const url = new URL(this._options.rallySite);
       const attribution = this.getAttributionCodes();
       ["source", "medium", "campaign", "term", "content"].forEach((key) => {
-        attribution[key] = url.searchParams.set(`utm_${key}`, key);
+         url.searchParams.set(`utm_${key}`, attribution[key]);
       });
 
       loadedTab = await browser.tabs.create({
