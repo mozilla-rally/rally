@@ -27,6 +27,7 @@ async function main(manifestVersion, browser) {
   switch (manifestVersion) {
     case 2: {
       manifest["browser_action"] = {
+        default_icon: "images/RallyFlag.svg",
         default_title: "Rally Attention Stream",
       };
 
@@ -43,6 +44,9 @@ async function main(manifestVersion, browser) {
 
     case 3: {
       manifest["action"] = {
+        default_icon: {
+          128: "images/RallyFlag.png"
+        },
         default_title: "Rally Attention Stream",
       };
 
