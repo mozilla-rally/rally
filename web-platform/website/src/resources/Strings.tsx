@@ -1031,6 +1031,7 @@ export const Strings = {
           },
           header: {
             addExtension: "Add study extension from the Chrome Web Store.",
+            addExtension_fx: "Add study extension from the Firefox store.",
             participating: "You're participating.",
             notParticipatingYet: "You're not participating yet. ",
             menus: {
@@ -1067,12 +1068,26 @@ export const Strings = {
                   button. This will open up the Chrome Web Store.
                 </>
               ),
+              text_fx: (
+                <>
+                  Click the <b>Join Study</b> button. We'll ask you to confirm
+                  in a pop-up dialog by clicking the <b>Add Study Extension</b>{" "}
+                  button. This will open up the Firefox Adds-ons Store.
+                </>
+              ),
             },
             {
               title: "Add study extension",
               text: (
                 <>
                   In the Chrome Web Store, click on the <b>Add to Chrome</b>{" "}
+                  button. This will add the study's extension to your browser.
+                  You are now participating!
+                </>
+              ),
+              text_fx: (
+                <>
+                  In the Firefox Adds-ons Store, click on the <b>Add to Firefox</b>{" "}
                   button. This will add the study's extension to your browser.
                   You are now participating!
                 </>

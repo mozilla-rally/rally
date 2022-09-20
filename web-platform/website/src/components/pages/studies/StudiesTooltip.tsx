@@ -1,4 +1,4 @@
-import { HTMLAttributes } from "react";
+import { HTMLAttributes, useState } from "react";
 import {
   AccordionBody,
   AccordionHeader,
@@ -15,6 +15,8 @@ import {
   createResponsiveStyle,
 } from "../../../styles";
 import { StandardAccordion } from "../../../styles/Accordions";
+import { detectBrowser } from "../../../utils/BrowserDetector";
+import { BrowserType } from "../../../utils/BrowserType";
 
 const strings = Strings.components.pages.studies.tooltip;
 
@@ -23,6 +25,10 @@ export function StudiesTooltip({
   className,
   ...rest
 }: HTMLAttributes<HTMLDivElement>) {
+
+  const [browserType] = useState(detectBrowser());
+
+
   return (
     <UncontrolledAccordion
       defaultOpen="1"
@@ -36,12 +42,24 @@ export function StudiesTooltip({
         </AccordionHeader>
         <AccordionBody accordionId="1">
           <ol className={styles.tooltips}>
-            {strings.sections.map(({ title, text }, i) => (
-              <li key={i}>
-                <h1>{title}</h1>
-                <p>{text}</p>
-              </li>
-            ))}
+            {
+              browserType === BrowserType.Chrome
+                ?
+                strings.sections.map(({ title, text }, i) => (
+                  <li key={i}>
+                    <h1>{title}</h1>
+                    <p>{text}</p>
+                  </li>
+                ))
+
+                :
+                strings.sections.map(({ title, text, text_fx }, i) => (
+                  <li key={i}>
+                    <h1>{title}</h1>
+                    <p>{i > 0 ? text_fx : text}</p>
+                  </li>
+                ))
+            }
           </ol>
         </AccordionBody>
       </AccordionItem>

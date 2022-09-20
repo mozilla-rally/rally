@@ -42,9 +42,8 @@ export function StudyCardHeader() {
   return (
     <>
       <Container
-        className={`${styles.container} ${
-          isInstalledAndConnected ? "joinAndConnected" : "notJoined"
-        }`}
+        className={`${styles.container} ${isInstalledAndConnected ? "joinAndConnected" : "notJoined"
+          }`}
       >
         <Row className="d-flex align-items-center">
           <Col className="col-auto">
@@ -72,7 +71,10 @@ export function StudyCardHeader() {
                 className="fw-bold"
                 style={{ color: Colors.ColorBlue50 }}
               >
-                {strings.addExtension}
+                {browserType === BrowserType.Chrome
+                  ? strings.addExtension
+                  : strings.addExtension_fx
+                }
               </a>
             ) : (
               <></>
