@@ -17,7 +17,7 @@
     "export-staging": "npm run build-staging && next export"
   },
   "dependencies": {
-    "@mozilla/rally-shared-types": "^0.9.33",
+    "@mozilla/rally-shared-types": "workspace:^0.9.33",
     "assert": "~2.0.0",
     "firebase": "^9.8.3",
     "next": "12.1.6",
