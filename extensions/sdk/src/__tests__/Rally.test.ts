@@ -137,6 +137,8 @@ describe("Rally SDK", function () {
       storeId: "example-study-1",
       firebaseConfig: {},
       enableEmulatorMode: false,
+      functionsHost: new URL("https://example.com")
+
     });
 
     browser.tabs.query = jest.fn().mockReturnValueOnce([]);
@@ -165,6 +167,8 @@ describe("Rally SDK", function () {
       storeId: "example-study-1",
       firebaseConfig: {},
       enableEmulatorMode: false,
+      functionsHost: new URL("https://example.com")
+
     });
 
     browser.tabs.query = jest
@@ -202,6 +206,8 @@ describe("Rally SDK", function () {
       storeId: "example-study-1",
       firebaseConfig: {},
       enableEmulatorMode: false,
+      functionsHost: new URL("https://example.com")
+
     });
 
     assert.equal(rally.state, RunStates.Paused);
@@ -242,6 +248,8 @@ describe("Rally SDK", function () {
       storeId: "example-study-1",
       firebaseConfig: {},
       enableEmulatorMode: false,
+      functionsHost: new URL("https://example.com")
+
     });
 
     const rallyToken = "...";
@@ -394,6 +402,7 @@ describe("Rally SDK", function () {
       storeId: "example-study-1",
       firebaseConfig: {},
       enableEmulatorMode: false,
+      functionsHost: new URL("https://example.com")
     });
 
     await new Promise(process.nextTick);
@@ -438,6 +447,8 @@ describe("Rally SDK", function () {
       storeId: "example-study-1",
       firebaseConfig: {},
       enableEmulatorMode: false,
+      functionsHost: new URL("https://example.com")
+
     });
 
     await new Promise(process.nextTick);
@@ -469,6 +480,8 @@ describe("Rally SDK", function () {
       storeId: "example-study-1",
       firebaseConfig: {},
       enableEmulatorMode: false,
+      functionsHost: new URL("https://example.com")
+
     });
 
     expect(browser.tabs.query).toBeCalledTimes(0);

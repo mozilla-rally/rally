@@ -524,6 +524,7 @@ const rally = new Rally({
   storeId,
   firebaseConfig,
   enableEmulatorMode,
+  functionsHost: new URL(firebaseConfig.functionsHost)
 });
 
 // TODO move to dynamic import, and only load in dev mode.
