@@ -25,9 +25,7 @@ export function StudiesTooltip({
   className,
   ...rest
 }: HTMLAttributes<HTMLDivElement>) {
-
   const [browserType] = useState(detectBrowser());
-
 
   return (
     <UncontrolledAccordion
@@ -42,24 +40,19 @@ export function StudiesTooltip({
         </AccordionHeader>
         <AccordionBody accordionId="1">
           <ol className={styles.tooltips}>
-            {
-              browserType === BrowserType.Chrome
-                ?
-                strings.sections.map(({ title, text }, i) => (
+            {browserType === BrowserType.Chrome
+              ? strings.sections.map(({ title, text }, i) => (
                   <li key={i}>
                     <h1>{title}</h1>
                     <p>{text}</p>
                   </li>
                 ))
-
-                :
-                strings.sections.map(({ title, text, text_fx }, i) => (
+              : strings.sections.map(({ title, text, text_fx }, i) => (
                   <li key={i}>
                     <h1>{title}</h1>
                     <p>{i > 0 ? text_fx : text}</p>
                   </li>
-                ))
-            }
+                ))}
           </ol>
         </AccordionBody>
       </AccordionItem>

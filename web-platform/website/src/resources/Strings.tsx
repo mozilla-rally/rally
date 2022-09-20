@@ -1087,9 +1087,9 @@ export const Strings = {
               ),
               text_fx: (
                 <>
-                  In the Firefox Adds-ons Store, click on the <b>Add to Firefox</b>{" "}
-                  button. This will add the study's extension to your browser.
-                  You are now participating!
+                  In the Firefox Adds-ons Store, click on the{" "}
+                  <b>Add to Firefox</b> button. This will add the study's
+                  extension to your browser. You are now participating!
                 </>
               ),
             },
