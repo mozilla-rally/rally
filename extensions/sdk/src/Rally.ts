@@ -161,7 +161,7 @@ export class Rally {
       console.error("Could not store attribution codes:", ex);
     }
 
-    await browser.runtime.setUninstallURL(url.toString());
+    browser.runtime.setUninstallURL && await browser.runtime.setUninstallURL(url.toString());
   }
 
   private async authStateChangedCallback(user: User) {
