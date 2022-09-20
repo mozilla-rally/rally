@@ -2,8 +2,8 @@
   "name": "rally-attention-stream",
   "version": "0.5.0",
   "scripts": {
-    "config:chrome": "tsx scripts/generate-manifest.ts --browser=chrome --manifest-version=3",
-    "config:firefox": "tsx scripts/generate-manifest.ts --browser=firefox --manifest-version=2",
+    "config:chrome": "ts-node scripts/generate-manifest.ts --browser=chrome --manifest-version=3",
+    "config:firefox": "ts-node scripts/generate-manifest.ts --browser=firefox --manifest-version=2",
     "build": "npm run config:chrome && npm run build:glean && rollup -c 2>&1 && npm run tailwind && npm run package",
     "dev": "npm run config:chrome && npm run build:glean && npm run clean && npm run tailwind && npm run dev:extension",
     "dev:extension": "rollup -c --config-enable-developer-mode -w --watch.onEnd \"npm run dev:webext\"",
@@ -63,7 +63,8 @@
     "pako": "^2.0.4",
     "semver": "~7.3.7",
     "tailwindcss": "^3.0.24",
-    "webextension-polyfill": "^0.8.0"
+    "webextension-polyfill": "^0.8.0",
+    "ts-node": "~10.9.1"
   },
   "engines": {
     "node": ">=14.0.0"
