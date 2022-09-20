@@ -31,7 +31,7 @@ module.exports = {
     "package.json",
     "README.md",
     "rollup.config.*",
-    "web-ext-config.js",
+    "web-ext-config.cjs",
     "public/**/*.map",
     "tsconfig.json",
     "babel.config.cjs",

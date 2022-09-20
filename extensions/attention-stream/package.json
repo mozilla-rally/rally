@@ -1,9 +1,10 @@
 {
   "name": "rally-attention-stream",
   "version": "0.5.0",
+  "type": "module",
   "scripts": {
-    "config:chrome": "tsx scripts/generate-manifest.ts --browser=chrome --manifest-version=3",
-    "config:firefox": "tsx scripts/generate-manifest.ts --browser=firefox --manifest-version=2",
+    "config:chrome": "ts-node-esm scripts/generate-manifest.ts --browser=chrome --manifest-version=3 2>&1",
+    "config:firefox": "ts-node-esm scripts/generate-manifest.ts --browser=firefox --manifest-version=2 2>&1",
     "build": "npm run config:chrome && npm run build:glean && rollup -c 2>&1 && npm run tailwind && npm run package",
     "dev": "npm run config:chrome && npm run build:glean && npm run clean && npm run tailwind && npm run dev:extension",
     "dev:extension": "rollup -c --config-enable-developer-mode -w --watch.onEnd \"npm run dev:webext\"",
@@ -52,7 +53,6 @@
     "rollup-plugin-copy": "^3.4.0",
     "selenium-webdriver": "^4.1.1",
     "ts-jest": "^28.0.2",
-    "tsx": "^3.9.0",
     "typescript": "^4.6.4",
     "web-ext": "^7.0.0"
   },
@@ -62,9 +62,10 @@
     "@mozilla/web-science": "^0.5.3",
     "dexie": "^3.2.2",
     "pako": "^2.0.4",
+    "semver": "~7.3.7",
     "tailwindcss": "^3.0.24",
     "webextension-polyfill": "^0.8.0",
-    "semver": "~7.3.7"
+    "ts-node": "~10.9.1"
   },
   "engines": {
     "node": ">=14.0.0"

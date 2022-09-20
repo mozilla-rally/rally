@@ -1,7 +1,9 @@
-import manifestTemplate from "../manifest-template.json";
+import manifestTemplate from "../manifest-template.json" assert { type: "json" };
 import fs from "fs/promises";
 import minimist from "minimist";
-import { sys } from "typescript";
+import pkg from "typescript";
+const { sys } = pkg;
+
 
 const args = minimist(process.argv.slice(2));
 
