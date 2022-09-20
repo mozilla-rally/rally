@@ -28,8 +28,8 @@
    */
   // "pnpmVersion": "6.7.1",
 
-  "npmVersion": "6.14.15",
-  // "yarnVersion": "1.9.4",
+  // "npmVersion": "6.14.15",
+  "yarnVersion": "1.9.4",
 
   /**
    * Options that are only used when the PNPM package manager is selected
