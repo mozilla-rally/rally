@@ -1,4 +1,4 @@
-import { FirebaseApp, initializeApp } from "@firebase/app";
+import { FirebaseApp, initializeApp } from "firebase/app";
 import assert from "assert";
 import { Analytics, getAnalytics } from "firebase/analytics";
 import { Auth, getAuth } from "firebase/auth";

@@ -1,4 +1,4 @@
-import { FirebaseError } from "@firebase/util";
+import { FirebaseError } from "firebase/util";
 import {
   EmailAuthProvider,
   GoogleAuthProvider,

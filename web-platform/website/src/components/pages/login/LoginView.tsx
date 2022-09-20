@@ -1,4 +1,4 @@
-import { FirebaseError } from "@firebase/util";
+import { FirebaseError } from "firebase/app";
 import { useEffect, useRef, useState } from "react";
 import {
   Col,

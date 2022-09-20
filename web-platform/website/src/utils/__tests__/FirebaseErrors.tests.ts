@@ -1,4 +1,4 @@
-import { FirebaseError } from "@firebase/util";
+import { FirebaseError } from "firebase/util";
 
 import { Strings } from "../../resources/Strings";
 import { getFirebaseErrorMessage } from "../FirebaseErrors";

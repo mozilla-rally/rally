@@ -1,4 +1,4 @@
-import { FirebaseError } from "@firebase/app";
+import { FirebaseError } from "firebase/app";
 import { useRouter } from "next/router";
 import { useState } from "react";
 import { Button, Card, Col, Container, Row } from "reactstrap";
