@@ -1,9 +1,10 @@
 {
   "name": "rally-attention-stream",
   "version": "0.5.0",
+  "type": "module",
   "scripts": {
-    "config:chrome": "ts-node scripts/generate-manifest.ts --browser=chrome --manifest-version=3",
-    "config:firefox": "ts-node scripts/generate-manifest.ts --browser=firefox --manifest-version=2",
+    "config:chrome": "ts-node-esm scripts/generate-manifest.ts --browser=chrome --manifest-version=3 2>&1",
+    "config:firefox": "ts-node-esm scripts/generate-manifest.ts --browser=firefox --manifest-version=2 2>&1",
     "build": "npm run config:chrome && npm run build:glean && rollup -c 2>&1 && npm run tailwind && npm run package",
     "dev": "npm run config:chrome && npm run build:glean && npm run clean && npm run tailwind && npm run dev:extension",
     "dev:extension": "rollup -c --config-enable-developer-mode -w --watch.onEnd \"npm run dev:webext\"",
