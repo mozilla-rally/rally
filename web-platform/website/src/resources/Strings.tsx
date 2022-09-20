@@ -542,7 +542,7 @@ export const Strings = {
                     purpose of the study. Each study description will disclose
                     the particular data collected for that study. This data may
                     include the websites you visit, your search engine results,
-                    and data cookies, pixels and other information set by
+                    data cookies, pixels, ads, and other information set by
                     particular websites.
                   </p>
                 </>
