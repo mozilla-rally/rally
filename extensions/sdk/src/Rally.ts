@@ -302,7 +302,7 @@ export class Rally {
     } else {
       // Otherwise, open the website.
       const url = new URL(this._options.rallySite);
-      const attribution = this.getAttributionCodes();
+      const attribution = await this.getAttributionCodes();
       ["source", "medium", "campaign", "term", "content"].forEach((key) => {
          url.searchParams.set(`utm_${key}`, attribution[key]);
       });
