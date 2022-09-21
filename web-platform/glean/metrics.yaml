@@ -23,6 +23,7 @@ rally:
       - unenrollment
       - study-enrollment
       - study-unenrollment
+      - project-enrollment
       - demographics
       - uninstall-deletion
       - events
@@ -245,4 +246,51 @@ user:
       - https://github.com/mozilla-rally/rally-core-addon/pull/139#issuecomment-736024232
     notification_emails:
       - than@mozilla.com
+    expires: never
+
+project_enrollment_status:
+  project_id:
+    type: string
+    lifetime: ping
+    send_in_pings:
+      - project-enrollment
+    description: |
+      The id of project which data will be filtered into.
+    bugs:
+      - https://github.com/mozilla-rally/rally/issues/123
+    data_reviews: []
+    notification_emails:
+      - than@mozilla.com
+      - aagarwal@mozilla.com
+      - rhelmer@mozilla.com
+    expires: never
+  data_source:
+    type: string
+    lifetime: ping
+    send_in_pings:
+      - project-enrollment
+    description: |
+      The id of the study from which data will be taken from.
+    bugs:
+      - https://github.com/mozilla-rally/rally/issues/123
+    data_reviews: []
+    notification_emails:
+      - than@mozilla.com
+      - aagarwal@mozilla.com
+      - rhelmer@mozilla.com
+    expires: never
+  enrolled:
+    type: boolean
+    lifetime: ping
+    send_in_pings:
+      - project-enrollment
+    description: |
+      Whether the user has opted in or opted out of the project.
+    bugs:
+      - https://github.com/mozilla-rally/rally/issues/123
+    data_reviews: []
+    notification_emails:
+      - than@mozilla.com
+      - aagarwal@mozilla.com
+      - rhelmer@mozilla.com
     expires: never
