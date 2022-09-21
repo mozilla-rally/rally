@@ -13,6 +13,8 @@ admin.initializeApp({
   credential: admin.credential.applicationDefault(),
 });
 
+const OFFBOARD_URL = "https://rally.mozilla.org/leaving-rally/index.html";
+
 export const rallytoken = functions.https.onRequest(async (request, response) =>
   useCors(request, response, async () => {
     await useAuthentication(request, response, async (decodedToken) => {
@@ -396,3 +398,23 @@ const listAllUsers = async (nextPageToken: string | undefined, userCounts: Map<s
     await listAllUsers(listUsersResult.pageToken, userCounts, extensionCounts);
   }
 };
+
+
+/**
+ * Offboarding support for extension uninstalls.
+ */
+export const offboard = functions.https.onRequest(async (request, response) => {
+  const attribution: { [key: string]: any; } = {};
+  ["source", "medium", "campaign", "term", "content"].forEach((key) => {
+    const param = `utm_${key}`;
+    if (request.query && param in request.query) {
+      attribution[key] = request.query[param];
+    }
+  });
+
+  functions.logger.info(`Offboard attribution received:`, {
+    payload: attribution,
+  });
+
+  response.status(301).redirect(OFFBOARD_URL);
+});

@@ -51,4 +51,9 @@ export interface RallyOptions {
    * Note that the firebaseConfig must still be provided.
    */
   readonly enableEmulatorMode: boolean;
+
+  /**
+   * Functions host to use for backend services.
+   */
+  readonly functionsHost: URL;
 }

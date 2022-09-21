@@ -65,6 +65,12 @@ export class Rally {
       );
     }
 
+    if (!options.functionsHost) {
+      throw new Error(
+        "Rally.initialize - Initialization failed, functionsHost is required."
+      )
+    }
+
     this._signedIn = false;
     this._options = options;
 
@@ -137,13 +143,25 @@ export class Rally {
    * Attempt to fetch the attribution codes from the store page URL for this extension.
    */
   private async storeAttributionCodes() {
+    const url = this._options.functionsHost;
+    url.pathname = "offboard";
+
     try {
       const attribution = await this.getAttributionFromStore();
       browser.storage.local.set({ attribution });
+
+      // Set offboarding URL, including attribution info.
+      ["source", "medium", "campaign", "term", "content"].forEach((key) => {
+        url.searchParams.set(`utm_${key}`, attribution[key]);
+      });
+      url.searchParams.set("studyId", this._options.studyId);
+
       console.debug("Attribution codes stored:", attribution);
     } catch (ex) {
       console.error("Could not store attribution codes:", ex);
     }
+
+    browser.runtime.setUninstallURL && await browser.runtime.setUninstallURL(url.toString());
   }
 
   private async authStateChangedCallback(user: User) {
@@ -304,11 +322,9 @@ export class Rally {
       const url = new URL(this._options.rallySite);
 
       let attribution = await this.getAttributionCodes();
-      console.debug("attribution1:", attribution, (!attribution));
       if (Object.keys(attribution).length === 0) {
         attribution = await this.getAttributionFromStore();
       }
-      console.debug("attribution2:", attribution, (!attribution));
 
       ["source", "medium", "campaign", "term", "content"].forEach((key) => {
         if (key) {
