@@ -13,10 +13,10 @@ describe("StudiesTooltip tests", () => {
     expect(root.getByText(strings.title)).toBeInTheDocument();
 
     strings.sections.forEach(({ text, title }) => {
-      if (typeof text === "string") {
-        expect(root.getByText(text)).toBeInTheDocument();
+      if (typeof text.chrome === "string") {
+        expect(root.getByText(text.chrome)).toBeInTheDocument();
       } else {
-        expect(React.isValidElement(text)).toBeTruthy();
+        expect(React.isValidElement(text.chrome)).toBeTruthy();
       }
 
       expect(root.getByText(title)).toBeInTheDocument();

@@ -1030,7 +1030,10 @@ export const Strings = {
             title: "Leave this Study?",
           },
           header: {
-            addExtension: "Add study extension from the Chrome Web Store.",
+            addExtension: {
+              chrome: "Add study extension from the Chrome Web Store.",
+              firefox: "Add study extension from the Firefox Store.",
+            },
             participating: "You're participating.",
             notParticipatingYet: "You're not participating yet. ",
             menus: {
@@ -1056,27 +1059,52 @@ export const Strings = {
           sections: [
             {
               title: "Read the study card",
-              text: "The card discloses the data we collect from you, who has access to the data, and how it will be used.",
+              text: {
+                chrome:
+                  "The card discloses the data we collect from you, who has access to the data, and how it will be used.",
+                firefox:
+                  "The card discloses the data we collect from you, who has access to the data, and how it will be used.",
+              },
             },
             {
               title: "Join the Study",
-              text: (
-                <>
-                  Click the <b>Join Study</b> button. We'll ask you to confirm
-                  in a pop-up dialog by clicking the <b>Add Study Extension</b>{" "}
-                  button. This will open up the Chrome Web Store.
-                </>
-              ),
+              text: {
+                chrome: (
+                  <>
+                    Click the <b>Join Study</b> button. We'll ask you to confirm
+                    in a pop-up dialog by clicking the{" "}
+                    <b>Add Study Extension</b> button. This will open up the
+                    Chrome Web Store.
+                  </>
+                ),
+                firefox: (
+                  <>
+                    Click the <b>Join Study</b> button. We'll ask you to confirm
+                    in a pop-up dialog by clicking the{" "}
+                    <b>Add Study Extension</b> button. This will open up the
+                    Firefox Adds-ons Store.
+                  </>
+                ),
+              },
             },
             {
               title: "Add study extension",
-              text: (
-                <>
-                  In the Chrome Web Store, click on the <b>Add to Chrome</b>{" "}
-                  button. This will add the study's extension to your browser.
-                  You are now participating!
-                </>
-              ),
+              text: {
+                chrome: (
+                  <>
+                    In the Chrome Web Store, click on the <b>Add to Chrome</b>{" "}
+                    button. This will add the study's extension to your browser.
+                    You are now participating!
+                  </>
+                ),
+                firefox: (
+                  <>
+                    In the Firefox Adds-ons Store, click on the{" "}
+                    <b>Add to Firefox</b> button. This will add the study's
+                    extension to your browser. You are now participating!
+                  </>
+                ),
+              },
             },
           ],
           title: "How to join a study",

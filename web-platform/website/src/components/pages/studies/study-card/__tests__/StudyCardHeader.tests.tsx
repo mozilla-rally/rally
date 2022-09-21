@@ -45,10 +45,10 @@ describe("StudyCardHeader tests", () => {
       })
     ).toBeDefined();
 
-    expect(root.getByText(strings.addExtension)).toBeInTheDocument();
+    expect(root.getByText(strings.addExtension.chrome)).toBeInTheDocument();
 
     expect(document.querySelector(`a[href="download.com"]`)?.innerHTML).toBe(
-      strings.addExtension
+      strings.addExtension.chrome
     );
 
     expect(root.getByText(strings.menus.dontJoinStudy)).toBeInTheDocument();
@@ -71,7 +71,7 @@ describe("StudyCardHeader tests", () => {
       })
     ).toBeDefined();
 
-    expect(root.queryByText(strings.addExtension)).not.toBeInTheDocument();
+    expect(root.queryByText(strings.addExtension.chrome)).not.toBeInTheDocument();
 
     expect(
       root.queryByText(strings.menus.dontJoinStudy)
