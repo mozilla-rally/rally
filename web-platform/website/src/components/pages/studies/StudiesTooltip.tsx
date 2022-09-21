@@ -1,4 +1,4 @@
-import { HTMLAttributes, useState } from "react";
+import { HTMLAttributes } from "react";
 import {
   AccordionBody,
   AccordionHeader,
@@ -25,7 +25,7 @@ export function StudiesTooltip({
   className,
   ...rest
 }: HTMLAttributes<HTMLDivElement>) {
-  const [browserType] = useState(detectBrowser());
+  const browserType = detectBrowser();
 
   return (
     <UncontrolledAccordion
@@ -40,19 +40,16 @@ export function StudiesTooltip({
         </AccordionHeader>
         <AccordionBody accordionId="1">
           <ol className={styles.tooltips}>
-            {browserType === BrowserType.Chrome
-              ? strings.sections.map(({ title, text }, i) => (
-                  <li key={i}>
-                    <h1>{title}</h1>
-                    <p>{text}</p>
-                  </li>
-                ))
-              : strings.sections.map(({ title, text, text_fx }, i) => (
-                  <li key={i}>
-                    <h1>{title}</h1>
-                    <p>{i > 0 ? text_fx : text}</p>
-                  </li>
-                ))}
+            {strings.sections.map(({ title, text }, i) => (
+              <li key={i}>
+                <h1>{title}</h1>
+                <p>
+                  {browserType === BrowserType.Chrome
+                    ? text.chrome
+                    : text.firefox}
+                </p>
+              </li>
+            ))}
           </ol>
         </AccordionBody>
       </AccordionItem>

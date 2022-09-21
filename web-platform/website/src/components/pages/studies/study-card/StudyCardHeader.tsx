@@ -73,8 +73,8 @@ export function StudyCardHeader() {
                 style={{ color: Colors.ColorBlue50 }}
               >
                 {browserType === BrowserType.Chrome
-                  ? strings.addExtension
-                  : strings.addExtension_fx}
+                  ? strings.addExtension.chrome
+                  : strings.addExtension.firefox}
               </a>
             ) : (
               <></>
