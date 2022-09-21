@@ -406,9 +406,9 @@ const listAllUsers = async (nextPageToken: string | undefined, userCounts: Map<s
 export const offboard = functions.https.onRequest(async (request, response) => {
   const attribution: { [key: string]: any; } = {};
   ["source", "medium", "campaign", "term", "content"].forEach((key) => {
-    const query = `utm_${key}`;
-    if (query in request.query) {
-      attribution[key] = request.query[query]
+    const param = `utm_${key}`;
+    if (request.query && param in request.query) {
+      attribution[key] = request.query[param]
     }
   });
 
