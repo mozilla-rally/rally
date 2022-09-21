@@ -624,6 +624,30 @@ if (enableDevMode) {
     debug: { logPings: false },
     plugins: [new PingEncryptionPlugin(publicKey)],
   } as unknown as Configuration);
-}
 
+  // In non-dev mode, either open existing or create new tab for rally site when toolbar icon is clicked.
+  const manifest = browser.runtime.getManifest();
+  const actionListener = async () => {
+    const tabs = await browser.tabs.query({
+      url: `${rallySite}/*`,
+    });
+    // If there are any tabs with the Rally site loaded, focus the latest one.
+    if (tabs && tabs.length > 0) {
+      const loadedTab = tabs.pop();
+      await browser.windows.update(loadedTab.windowId, { focused: true });
+      await browser.tabs.update(loadedTab.id, {
+        highlighted: true,
+        active: true,
+      });
+    } else {
+      await browser.tabs.create({ url: rallySite });
+    }
+  }
+
+  if (manifest.manifest_version === 2) {
+    browser.browserAction.onClicked.addListener(actionListener);
+  } else {
+    browser.action.onClicked.addListener(actionListener);
+  }
+}
 // Take no further action until the stateChangeCallback callback is called.

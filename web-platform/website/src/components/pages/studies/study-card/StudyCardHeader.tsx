@@ -72,7 +72,9 @@ export function StudyCardHeader() {
                 className="fw-bold"
                 style={{ color: Colors.ColorBlue50 }}
               >
-                {strings.addExtension}
+                {browserType === BrowserType.Chrome
+                  ? strings.addExtension.chrome
+                  : strings.addExtension.firefox}
               </a>
             ) : (
               <></>

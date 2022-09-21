@@ -15,6 +15,8 @@ import {
   createResponsiveStyle,
 } from "../../../styles";
 import { StandardAccordion } from "../../../styles/Accordions";
+import { detectBrowser } from "../../../utils/BrowserDetector";
+import { BrowserType } from "../../../utils/BrowserType";
 
 const strings = Strings.components.pages.studies.tooltip;
 
@@ -23,6 +25,8 @@ export function StudiesTooltip({
   className,
   ...rest
 }: HTMLAttributes<HTMLDivElement>) {
+  const browserType = detectBrowser();
+
   return (
     <UncontrolledAccordion
       defaultOpen="1"
@@ -39,7 +43,11 @@ export function StudiesTooltip({
             {strings.sections.map(({ title, text }, i) => (
               <li key={i}>
                 <h1>{title}</h1>
-                <p>{text}</p>
+                <p>
+                  {browserType === BrowserType.Chrome
+                    ? text.chrome
+                    : text.firefox}
+                </p>
               </li>
             ))}
           </ol>

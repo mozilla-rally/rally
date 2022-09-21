@@ -320,9 +320,16 @@ export class Rally {
     } else {
       // Otherwise, open the website.
       const url = new URL(this._options.rallySite);
-      const attribution = await this.getAttributionCodes();
+
+      let attribution = await this.getAttributionCodes();
+      if (Object.keys(attribution).length === 0) {
+        attribution = await this.getAttributionFromStore();
+      }
+
       ["source", "medium", "campaign", "term", "content"].forEach((key) => {
-        url.searchParams.set(`utm_${key}`, attribution[key]);
+        if (key) {
+          url.searchParams.set(`utm_${key}`, attribution[key]);
+        }
       });
 
       loadedTab = await browser.tabs.create({
