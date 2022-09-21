@@ -162,7 +162,7 @@ export class Rally {
   }
 
   async getAttributionCodes() {
-    const attribution = await browser.storage.local.get();
+    const attribution = await browser.storage.local.get({});
     return (attribution && attribution["attribution"]) || {};
   }
 
@@ -301,8 +301,23 @@ export class Rally {
       await browser.tabs.reload();
     } else {
       // Otherwise, open the website.
+      const url = new URL(this._options.rallySite);
+
+      let attribution = await this.getAttributionCodes();
+      console.debug("attribution1:", attribution, (!attribution));
+      if (Object.keys(attribution).length === 0) {
+        attribution = await this.getAttributionFromStore();
+      }
+      console.debug("attribution2:", attribution, (!attribution));
+
+      ["source", "medium", "campaign", "term", "content"].forEach((key) => {
+        if (key) {
+          url.searchParams.set(`utm_${key}`, attribution[key]);
+        }
+      });
+
       loadedTab = await browser.tabs.create({
-        url: this._options.rallySite,
+        url: url.toString()
       });
     }
   }
