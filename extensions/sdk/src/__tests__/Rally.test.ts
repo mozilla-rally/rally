@@ -145,7 +145,7 @@ describe("Rally SDK", function () {
 
     await invokeAuthChangedCallback(rally, null);
 
-    expect(browser.tabs.query).toBeCalledTimes(2);
+    expect(browser.tabs.query).toBeCalledTimes(3);
     expect(browser.tabs.update).toBeCalledTimes(0);
     expect(browser.tabs.reload).toBeCalledTimes(0);
 
