@@ -10,6 +10,7 @@ const args = minimist(process.argv.slice(2));
 async function main(manifestVersion, browser) {
   const manifest = manifestTemplate;
   manifest["manifest_version"] = manifestVersion;
+  let iconPath;
 
   if (!["firefox", "chrome"].includes(browser)) {
     throw new Error(`unknown browser: ${browser}`);
@@ -22,12 +23,15 @@ async function main(manifestVersion, browser) {
         strict_min_version: "101.0",
       },
     };
+    iconPath = "images/RallyFlag-green.png";
+  } else if (browser === "chrome") {
+    iconPath = "images/RallyFlag.png";
   }
 
   switch (manifestVersion) {
     case 2: {
       manifest["browser_action"] = {
-        default_icon: "images/RallyFlag-green.png",
+        default_icon: iconPath,
         default_title: "Rally Attention Stream",
       };
 
@@ -45,7 +49,7 @@ async function main(manifestVersion, browser) {
     case 3: {
       manifest["action"] = {
         default_icon: {
-          128: "images/RallyFlag.png"
+          128: iconPath
         },
         default_title: "Rally Attention Stream",
       };
