@@ -6,9 +6,11 @@ import {
   addRallyUserToFirestoreImpl,
   deleteRallyUserImpl,
   loadFirestore,
+  offboard,
   rallytoken,
 } from "../index";
 import { studies } from "../studies";
+import querystring from "querystring";
 
 // Firebase can take longer than default 5 sec timeout for tests
 jest.setTimeout(10000);
@@ -291,6 +293,55 @@ describe("rallytoken tests", () => {
           authorization: `Bearer ${idToken}`,
         },
         body: { idToken, studyId },
+      } as functions.Request<any>, // eslint-disable-line @typescript-eslint/no-explicit-any
+      response
+    );
+  });
+});
+
+describe("offboard tests", () => {
+  const OFFBOARD_URL = "https://rally.mozilla.org/leaving-rally/index.html";
+
+  let redirect: any; // eslint-disable-line @typescript-eslint/no-explicit-any
+  let response: functions.Response<any>; // eslint-disable-line @typescript-eslint/no-explicit-any
+
+  // Set up callbacks inside response.status.send
+  function doAfterResponseRedirect(validateFn: () => void, doneFn: () => void) {
+    redirect = jest.fn().mockImplementation(() => {
+      validateFn(); // Jest assertions
+      doneFn(); // Complete unit test
+    });
+
+    response = {
+      set: jest.fn(),
+      status: jest.fn().mockReturnValue({ redirect }),
+    } as unknown as functions.Response<any>; // eslint-disable-line @typescript-eslint/no-explicit-any
+  }
+
+  it("handles UTM codes in offboard function", (done) => {
+    doAfterResponseRedirect(() => {
+      expect(response.status).toHaveBeenCalledWith(301);
+      expect(redirect).toHaveBeenCalledWith(OFFBOARD_URL);
+    }, done);
+
+    offboard(
+      {
+        method: "GET",
+        query: querystring.parse("?utm_source=1&urm_medium=2&utm_campaign=3&utm_term=4&utm_content=5"),
+      } as functions.Request<any>, // eslint-disable-line @typescript-eslint/no-explicit-any
+      response
+    );
+  });
+
+  it("handles lack of UTM codes in offboard function", (done) => {
+    doAfterResponseRedirect(() => {
+      expect(response.status).toHaveBeenCalledWith(301);
+      expect(redirect).toHaveBeenCalledWith(OFFBOARD_URL);
+    }, done);
+
+    offboard(
+      {
+        method: "GET",
       } as functions.Request<any>, // eslint-disable-line @typescript-eslint/no-explicit-any
       response
     );

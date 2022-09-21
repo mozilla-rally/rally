@@ -408,7 +408,7 @@ export const offboard = functions.https.onRequest(async (request, response) => {
   ["source", "medium", "campaign", "term", "content"].forEach((key) => {
     const param = `utm_${key}`;
     if (request.query && param in request.query) {
-      attribution[key] = request.query[param]
+      attribution[key] = request.query[param];
     }
   });
 
@@ -416,5 +416,5 @@ export const offboard = functions.https.onRequest(async (request, response) => {
     payload: attribution,
   });
 
-  response.redirect(OFFBOARD_URL);
+  response.status(301).redirect(OFFBOARD_URL);
 });
