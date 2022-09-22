@@ -1,4 +1,4 @@
-# Release Process the for Rally Attention Stream browser extension
+# Release Process the for Mozilla Rally browser extension
 
 ## Version bump
 
@@ -12,7 +12,7 @@ Modify these and push to a `release` branch on GitHub. Merge any changes from `m
 
 ## Create a Github release
 
-Create a new github release, prefixing the tag with `v` (`v1.2.3-attention-stream` for version `1.2.3`). Attach the unsigned release XPI that you
+Create a new github release, prefixing the tag with `v` (`v1.2.3-rally-extension` for version `1.2.3`). Attach the unsigned release XPI that you
 built in the previous step.
 
 ## Build extension
@@ -34,7 +34,7 @@ Upload the build logs and `.zip` artifacts to the GitHub releases page.
 
 If there is a previous version of this extension live on AMO, download it and compare to the current package:
 
-https://addons.mozilla.org/en-US/firefox/addon/attention-stream/versions/
+https://addons.mozilla.org/en-US/firefox/addon/mozilla-rally/versions/
 
 ### TODO add Chrome store link
 

@@ -1,5 +1,5 @@
-# Rally Attention Stream
-This is the Rally "Attention Stream" extension, originally based on the [Rally Study Template](https://github.com/mozilla-rally/study-template/).
+# Mozilla Rally extension (f.k.a. Attention Stream)
+This is the Mozilla Rally extension, originally based on the [Rally Study Template](https://github.com/mozilla-rally/study-template/).
 
 ## Getting Started
 
@@ -7,7 +7,7 @@ Prerequisites: current versions of [Firefox](https://www.mozilla.org/firefox/new
 
 Install dependencies:
 ```
-cd extensions/attention-stream
+cd extensions/rally-extension
 npm install
 ```
 

@@ -2,7 +2,7 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/. */
 
-// This is the main background script for the Rally Attention Stream.
+// This is the main background script for the Mozilla Rally extension.
 // The build system will bundle dependencies into this script
 // and output the bundled scripr to dist/background.js.
 
@@ -34,7 +34,7 @@ import * as trackingPixel from "../src/generated/trackingPixel";
 import * as attribution from "../src/generated/attribution";
 
 // Import generated Glean pings.
-import * as attentionStreamPings from "../src/generated/pings";
+import * as rallyExtensionPings from "../src/generated/pings";
 
 import browser from "webextension-polyfill";
 
@@ -59,13 +59,11 @@ const enableDevMode = Boolean(__ENABLE_DEVELOPER_MODE__);
 // eslint-disable-next-line no-undef
 const enableEmulatorMode = Boolean(__ENABLE_EMULATOR_MODE__);
 
-const GLEAN_MAX_URL_LENGTH = 2048;
-
 // The Rally-assigned Study ID.
 let studyId = "attentionStream";
 
 // The "slug" on the extension store.
-let storeId = "rally-attention-stream";
+let storeId = "mozilla-rally";
 
 // The website hosting the Rally UI.
 let rallySite = "https://members.rally.mozilla.org";
@@ -129,14 +127,14 @@ async function stateChangeCallback(newState) {
       if (storage.enrolled !== true) {
         console.info("Recording enrollment.");
         rallyManagementMetrics.id.set(rallyId);
-        attentionStreamPings.studyEnrollment.submit();
+        rallyExtensionPings.studyEnrollment.submit();
 
         // Construct the attribution ping, using UTM codes from the extension store URL.
         const attributionCodes = await rally.getAttributionCodes();
         ["source", "medium", "campaign", "term", "content"].forEach((key) =>
           (key in attribution) && attribution.utmCodes[key].set(attributionCodes[key])
         );
-        attentionStreamPings.attribution.submit();
+        rallyExtensionPings.attribution.submit();
 
         browser.storage.local.set({
           enrolled: true,
@@ -185,7 +183,7 @@ async function stateChangeCallback(newState) {
           userJourney.url.setUrl(pageData.url);
 
           // Submit the metrics constructed above.
-          attentionStreamPings.userJourney.submit();
+          rallyExtensionPings.userJourney.submit();
         };
 
         webScience.pageNavigation.onPageData.addListener(
@@ -219,7 +217,7 @@ async function stateChangeCallback(newState) {
           articleContents.title.set(pageData.title);
           articleContents.textContent.set(pageData.textContent);
 
-          attentionStreamPings.articleContents.submit();
+          rallyExtensionPings.articleContents.submit();
         };
 
         webScience.pageText.onTextParsed.addListener(this.pageTextListener, {
@@ -253,7 +251,7 @@ async function stateChangeCallback(newState) {
           advertisements.body.set(JSON.stringify(adInfo.body));
           advertisements.ads.set(JSON.stringify(adInfo.ads));
 
-          attentionStreamPings.advertisements.submit();
+          rallyExtensionPings.advertisements.submit();
         };
 
         // Handle advertisement callbacks.
@@ -331,7 +329,7 @@ async function stateChangeCallback(newState) {
               console.debug("YouTube: CURRENT VIDEO DETAILS:", message);
               constructAndSendPing(
                 youtubeVideoDetails,
-                attentionStreamPings.youtubeVideoDetails,
+                rallyExtensionPings.youtubeVideoDetails,
                 message
               );
               break;
@@ -340,7 +338,7 @@ async function stateChangeCallback(newState) {
               console.debug("YouTube: VIDEO RECOMMENDATIONS:", message);
               constructAndSendPing(
                 youtubeVideoRecommendations,
-                attentionStreamPings.youtubeVideoRecommendations,
+                rallyExtensionPings.youtubeVideoRecommendations,
                 message
               );
               break;
@@ -352,7 +350,7 @@ async function stateChangeCallback(newState) {
                 ad.url = message.url;
                 constructAndSendPing(
                   youtubeAd,
-                  attentionStreamPings.youtubeAds,
+                  rallyExtensionPings.youtubeAds,
                   ad
                 );
               });
@@ -437,7 +435,7 @@ async function stateChangeCallback(newState) {
             pageId && trackingPixel.pageId.set(pageId);
             formData && trackingPixel.formData.set(formData);
 
-            attentionStreamPings.trackingPixel.submit();
+            rallyExtensionPings.trackingPixel.submit();
           }
         };
 
@@ -541,7 +539,7 @@ class GetPingsUploader extends Uploader {
     const documentId = url.split("/")[7];
     console.debug("tableName:", tableName);
 
-    const db = new Dexie("attention-stream");
+    const db = new Dexie("rally-extension");
 
     const columns = [];
     const entries = {};
