@@ -43,9 +43,9 @@ jobs:
           echo ${{ secrets.GCLOUD_SERVICE_KEY }} | base64 --decode --ignore-garbage > "$HOME"/gcloud.json
           GOOGLE_APPLICATION_CREDENTIALS="$HOME"/gcloud.json web-platform/functions/node_modules/.bin/firebase deploy --only functions,firestore --project ${{secrets.PROJECT_ID_STAGE}} -c web-platform/firebase.json
 
-      - name: Archive Attention Stream zip
+      - name: Archive Rally Extension zip
         uses: actions/upload-artifact@v3
         with:
-          name: attention-stream
+          name: rally-extension
           path: |
-              extensions/attention-stream/web-ext-artifacts/
+              extensions/rally-extension/web-ext-artifacts/

@@ -32,7 +32,7 @@ async function main(manifestVersion, browser) {
     case 2: {
       manifest["browser_action"] = {
         default_icon: iconPath,
-        default_title: "Rally Attention Stream",
+        default_title: "Mozilla Rally",
       };
 
       manifest["background"] = {
@@ -51,7 +51,7 @@ async function main(manifestVersion, browser) {
         default_icon: {
           128: iconPath
         },
-        default_title: "Rally Attention Stream",
+        default_title: "Mozilla Rally",
       };
 
       manifest["background"] = {

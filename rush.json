@@ -423,8 +423,8 @@
       "shouldPublish": false
     },
     {
-      "packageName": "rally-attention-stream",
-      "projectFolder": "extensions/attention-stream",
+      "packageName": "rally-extension",
+      "projectFolder": "extensions/rally-extension",
       "shouldPublish": false
     }
     // {

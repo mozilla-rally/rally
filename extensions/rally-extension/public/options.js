@@ -3,7 +3,7 @@
 const RUNNING = "Running";
 const PAUSED = "Paused";
 
-const DB_NAME = "attention-stream";
+const DB_NAME = "rally-extension";
 
 function changeState(state) {
   if (state === RUNNING) {
@@ -67,7 +67,7 @@ document.getElementById("download").addEventListener("click", async () => {
     downloadLink.setAttribute("href", dataUrl);
     downloadLink.setAttribute(
       "download",
-      `rally-attention-stream-${tableName}.json`
+      `rally-extension-${tableName}.json`
     );
     downloadLink.click();
   }

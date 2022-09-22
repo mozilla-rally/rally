@@ -80,7 +80,7 @@ async function waitForLogs(matches: RegExp[]) {
   await driver.switchTo().window(testWindow);
 }
 
-describe("Rally Attention Stream", function () {
+describe("Mozilla Rally extension", function () {
   beforeAll(async () => {
     server = spawn("http-server", [PATH, "-p", PORT]);
     console.debug(`Test server running on port ${PORT}`);
@@ -115,7 +115,7 @@ describe("Rally Attention Stream", function () {
         }, WAIT_FOR_PROPERTY);
       }
       await driver.switchTo().window((await driver.getAllWindowHandles())[0])
-      await driver.wait(until.titleIs("Rally Attention Stream"), WAIT_FOR_PROPERTY);
+      await driver.wait(until.titleIs("Mozilla Rally extension"), WAIT_FOR_PROPERTY);
     }
   });
 
@@ -191,7 +191,7 @@ describe("Rally Attention Stream", function () {
     await driver.close();
 
     await driver.switchTo().window(originalTab);
-    await driver.wait(until.titleIs("Rally Attention Stream"), WAIT_FOR_PROPERTY);
+    await driver.wait(until.titleIs("Mozilla Rally extension"), WAIT_FOR_PROPERTY);
 
     // Start a page visit, then navigate to a new link without closing the tab.
     // This will end the page visit for the first page. Then navigate back, ending
@@ -207,7 +207,7 @@ describe("Rally Attention Stream", function () {
 
     // TODO add test for scrolling, attention, and audio.
     await driver.switchTo().window(originalTab);
-    await driver.wait(until.titleIs("Rally Attention Stream"), WAIT_FOR_PROPERTY);
+    await driver.wait(until.titleIs("Mozilla Rally extension"), WAIT_FOR_PROPERTY);
 
     await findAndAct(driver, By.id("download"), e => e.click());
 
@@ -217,7 +217,7 @@ describe("Rally Attention Stream", function () {
       WAIT_FOR_PROPERTY
     );
 
-    const reportFilename = `${tmpDir}/rally-attention-stream-user-journey.json`;
+    const reportFilename = `${tmpDir}/rally-extension-user-journey.json`;
     const report = JSON.parse(await fs.promises.readFile(reportFilename, "utf-8"));
 
     // Cleanup any downloaded files. We do this before running tests on the data, so if any
