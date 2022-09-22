@@ -852,22 +852,6 @@ tracking_pixel:
       - than@mozilla.com
     expires: never
 
-  tracking_url_long:
-    type: text
-    description: |
-      Same as "tracking_url", except this is used when the URL
-      is longer than 2048 characters, due to limitations in Glean.
-    lifetime: ping
-    send_in_pings:
-      - tracking-pixel
-    bugs:
-      - https://github.com/mozilla-rally/rally/issues/167
-    data_reviews:
-      - https://bugzilla.mozilla.org/show_bug.cgi?id=1790817
-    notification_emails:
-      - than@mozilla.com
-    expires: never
-
   form_data:
     type: text
     description: |

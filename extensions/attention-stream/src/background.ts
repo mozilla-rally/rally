@@ -432,11 +432,7 @@ async function stateChangeCallback(newState) {
               });
 
             trackingPixel.type.set(pixelType);
-            if (details.url.length < GLEAN_MAX_URL_LENGTH) {
-              trackingPixel.trackingUrl.set(details.url);
-            } else {
-              trackingPixel.trackingUrlLong.set(details.url);
-            }
+            trackingPixel.trackingUrl.set(details.url);
             details.initiator && trackingPixel.originUrl.set(details.initiator);
             pageId && trackingPixel.pageId.set(pageId);
             formData && trackingPixel.formData.set(formData);

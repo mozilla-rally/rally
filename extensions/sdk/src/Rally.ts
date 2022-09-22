@@ -127,8 +127,10 @@ export class Rally {
     }
 
     const tabs = await browser.tabs.query({ url: storeUrl });
-    if (!(tabs.length > 0)) {
-      throw new Error("No store URLs present in open tabs");
+    if (!(tabs && tabs.length > 0)) {
+      console.warn("No store URLs present in open tabs");
+
+      return {};
     }
     const url = new URL(tabs[0].url);
 
