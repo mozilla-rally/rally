@@ -1,7 +1,7 @@
 {
-  "description": "The Mozilla Rally Attention Stream",
+  "description": "The Mozilla Rally extension for data collection",
   "author": "Mozilla",
-  "name": "Rally Attention Stream",
+  "name": "Mozilla Rally",
   "version": "0.5.0",
   "homepage_url": "https://github.com/mozilla-rally/rally",
   "options_ui": {

@@ -31,10 +31,10 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NODE_AUTH_TOKEN }}
 
-      - name: Archive Attention Stream zip
+      - name: Archive Mozilla Rally extension zip
         uses: actions/upload-artifact@v3
         with:
-          name: attention-stream
+          name: rally-extension
           path: |
               extensions/attention-stream/web-ext-artifacts/
 
