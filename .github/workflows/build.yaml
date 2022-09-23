@@ -48,4 +48,4 @@ jobs:
         with:
           name: rally-extension
           path: |
-              extensions/rally-extension/web-ext-artifacts/
+              extensions/attention-stream/web-ext-artifacts/

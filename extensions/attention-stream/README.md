@@ -7,7 +7,7 @@ Prerequisites: current versions of [Firefox](https://www.mozilla.org/firefox/new
 
 Install dependencies:
 ```
-cd extensions/rally-extension
+cd extensions/attention-stream
 npm install
 ```
 
