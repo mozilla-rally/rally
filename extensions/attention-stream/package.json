@@ -21,7 +21,7 @@
     "dev:emulator": "npm-run-all --parallel dev:extension:emulator dev:webext",
     "package": "npm run config:chrome && npm run package:webext -- -n $npm_package_name-$npm_package_version-chrome.zip && npm run config:firefox && npm run package:webext -- -n $npm_package_name-$npm_package_version-firefox.zip",
     "package:developer": "npm run build:developer && npm run package:webext -- -n developer.zip --overwrite-dest",
-    "package:webext": "web-ext build",
+    "package:webext": "web-ext -c web-ext-config.cjs build",
     "start": "npm run build && web-ext run",
     "test:integration": "./scripts/integration-test.sh",
     "test:integration:jest": "jest ./tests/integration/",
