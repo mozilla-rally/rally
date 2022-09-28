@@ -23,13 +23,13 @@ describe("AttributionService tests", () => {
       return null;
     }
 
-    Object.defineProperty(window, 'location', {
+    Object.defineProperty(window, "location", {
       value: {
-        href: `https://example.com/${attributionQueryString}`
-      }
+        href: `https://example.com/${attributionQueryString}`,
+      },
     });
 
-    jest.spyOn(Storage.prototype, 'getItem');
+    jest.spyOn(Storage.prototype, "getItem");
 
     const renderedComponent = (
       <AttributionProvider>
@@ -48,25 +48,23 @@ describe("AttributionService tests", () => {
     // No attribution codes in local storage, should be pulled from the URL in window.location
     const result = attributionContext.setAttributionCodes(testUrl);
     expect(attributionContext).not.toBeNull();
-    expect(result.href).toEqual(`https://example.com/${attributionQueryString}`);
+    expect(result.href).toEqual(
+      `https://example.com/${attributionQueryString}`
+    );
 
     expect(localStorage.getItem).toHaveBeenCalledWith("rally_utm");
 
     // Attribution codes already present in local storage.
-    Storage.prototype.getItem = jest.fn(
-      (name) => {
-        if (name === "rally_utm") {
-          return { utm_source: "test" };
-        }
+    Storage.prototype.getItem = jest.fn((name) => {
+      if (name === "rally_utm") {
+        return { utm_source: "test" };
       }
-    );
+    });
     const result2 = attributionContext.setAttributionCodes(testUrl);
     expect(attributionContext).not.toBeNull();
     expect(result2.href).toEqual(`https://example.com/?utm_source=test`);
 
     expect(localStorage.getItem).toHaveBeenCalledWith("rally_utm");
-
-
 
     await act(async () => {
       root.unmount();

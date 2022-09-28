@@ -65,7 +65,6 @@ export function AttributionProvider(props: { children: React.ReactNode }) {
     }
 
     return returnUrl;
-
   }
 
   useEffect(() => {
@@ -73,7 +72,9 @@ export function AttributionProvider(props: { children: React.ReactNode }) {
   }, []);
 
   return (
-    <AttributionContext.Provider value={{ isLoaded, allAttributionCodes, setAttributionCodes }}>
+    <AttributionContext.Provider
+      value={{ isLoaded, allAttributionCodes, setAttributionCodes }}
+    >
       {props.children}
     </AttributionContext.Provider>
   );

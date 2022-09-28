@@ -2,8 +2,8 @@ import { Study } from "@mozilla/rally-shared-types";
 import { logEvent } from "firebase/analytics";
 import { collection, getDocs } from "firebase/firestore";
 import { createContext, useContext, useEffect, useState } from "react";
-import { useAttribution } from "./AttributionService";
 
+import { useAttribution } from "./AttributionService";
 import { dispose, initializeExtensionEvents } from "./ExtensionsEventService";
 import { useFirebase } from "./FirebaseService";
 
@@ -57,12 +57,18 @@ export function StudiesProvider(props: { children: React.ReactNode }) {
 
     // If any attribution codes are stored in local storage, apply them to these outbound links.
     studies.forEach((study) => {
-      if (!study.downloadLink || !study.downloadLink.chrome || !study.downloadLink.firefox) {
+      if (
+        !study.downloadLink ||
+        !study.downloadLink.chrome ||
+        !study.downloadLink.firefox
+      ) {
         return;
       }
 
       const chromeUrl = setAttributionCodes(new URL(study.downloadLink.chrome));
-      const firefoxUrl = setAttributionCodes(new URL(study.downloadLink.firefox));
+      const firefoxUrl = setAttributionCodes(
+        new URL(study.downloadLink.firefox)
+      );
 
       study.downloadLink.chrome = chromeUrl.toString();
       study.downloadLink.firefox = firefoxUrl.toString();
