@@ -12,3 +12,6 @@ node_modules/
 # generated files.
 .venv
 generated/
+
+# Ignore Firebase emulator secrets file.
+.secret.local

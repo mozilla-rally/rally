@@ -8,6 +8,7 @@ import {
   loadFirestore,
   offboard,
   rallytoken,
+  waitlist
 } from "../index";
 import { studies } from "../studies";
 import querystring from "querystring";
@@ -346,4 +347,34 @@ describe("offboard tests", () => {
       response
     );
   });
+
+  it("handles UTM and userAgent in waitlist function", (done) => {
+    doAfterResponseRedirect(() => {
+      expect(response.status).toHaveBeenCalledWith(301);
+      expect(redirect).toHaveBeenCalledWith(OFFBOARD_URL);
+    }, done);
+
+    waitlist(
+      {
+        method: "POST",
+        query: querystring.parse("?utm_source=1&urm_medium=2&utm_campaign=3&utm_term=4&utm_content=5"),
+      } as functions.Request<any>, // eslint-disable-line @typescript-eslint/no-explicit-any
+      response
+    );
+  });
+
+  it("handles lack of UTM codes in offboard function", (done) => {
+    doAfterResponseRedirect(() => {
+      expect(response.status).toHaveBeenCalledWith(301);
+      expect(redirect).toHaveBeenCalledWith(OFFBOARD_URL);
+    }, done);
+
+    waitlist(
+      {
+        method: "POST",
+      } as functions.Request<any>, // eslint-disable-line @typescript-eslint/no-explicit-any
+      response
+    );
+  });
 });
+

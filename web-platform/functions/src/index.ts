@@ -8,12 +8,14 @@ import { studies } from "./studies";
 import { isDeepStrictEqual } from "util";
 import * as gleanPings from "./glean";
 import assert from "assert";
+import Client from "@sendgrid/client";
 
 admin.initializeApp({
   credential: admin.credential.applicationDefault(),
 });
 
 const OFFBOARD_URL = "https://rally.mozilla.org/offboarding/index.html";
+const UTM_KEYS = ["source", "medium", "campaign", "term", "content"]
 
 export const rallytoken = functions.https.onRequest(async (request, response) =>
   useCors(request, response, async () => {
@@ -399,13 +401,12 @@ const listAllUsers = async (nextPageToken: string | undefined, userCounts: Map<s
   }
 };
 
-
 /**
  * Offboarding support for extension uninstalls.
  */
 export const offboard = functions.https.onRequest(async (request, response) => {
   const attribution: { [key: string]: any; } = {};
-  ["source", "medium", "campaign", "term", "content"].forEach((key) => {
+  UTM_KEYS.forEach((key) => {
     const param = `utm_${key}`;
     if (request.query && param in request.query) {
       attribution[key] = request.query[param];
@@ -418,3 +419,68 @@ export const offboard = functions.https.onRequest(async (request, response) => {
 
   response.status(301).redirect(OFFBOARD_URL);
 });
+
+/**
+ * Waitlist function, to collect user info for Sendgrid.
+ */
+export const waitlist = functions
+  .runWith({ secrets: ["SENDGRID_API_KEY"] })
+  .https.onRequest(async (request, response) => {
+    if (request.method !== "POST") {
+      response.status(500).send("Only POST and OPTIONS methods are allowed.");
+      return;
+    }
+
+    functions.logger.debug(`Waitlist raw payload received`, {
+      payload: request.body,
+    });
+
+    const userAgent = request.body.userAgent ?? "";
+
+    const contact = {
+      "email": request.body.email ?? "",
+      "country": request.body.country ?? "",
+      "platform": userAgent,
+      "browser": userAgent,
+      "utm_source": request.body.utm_source ?? "",
+      "utm_medium": request.body.utm_medium ?? "",
+      "utm_campaign": request.body.utm_campaign ?? "",
+      "utm_term": request.body.utm_term ?? "",
+      "utm_content": request.body.utm_content ?? "",
+    };
+
+    functions.logger.debug(`Waitlist parsed payload received`, {
+      payload: JSON.stringify(contact),
+    });
+
+
+    try {
+      Client.setApiKey(process.env.SENDGRID_API_KEY ?? "");
+      const result = await Client.request({
+        url: "/v3/contactdb/recipients",
+        method: "POST",
+        body: [JSON.stringify(contact)]
+      });
+
+      functions.logger.info("Sendgrid result", {
+        payload: result[0].statusCode,
+      });
+
+      response.status(200).send({
+        "category": "success",
+        "message": "Email contact received.",
+        "status": 200
+      });
+
+    } catch (ex) {
+      functions.logger.error("Sendgrid failed", {
+        payload: ex,
+      });
+
+      response.status(500).send({
+        "category": "failure",
+        "message": "Email contact not saved.",
+        "status": 500
+      });
+    }
+  });
