@@ -4,6 +4,7 @@ import Head from "next/head";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
 
+import { AttributionProvider } from "../services/AttributionService";
 import { AuthenticationProvider } from "../services/AuthenticationService";
 import { useFirebase } from "../services/FirebaseService";
 import { StudiesProvider } from "../services/StudiesService";
@@ -48,13 +49,15 @@ function MyApp({ Component, pageProps }: AppProps) {
           crossOrigin="anonymous"
         />
       </Head>
-      <AuthenticationProvider>
-        <StudiesProvider>
-          <UserDocumentProvider>
-            <Component {...pageProps} />
-          </UserDocumentProvider>
-        </StudiesProvider>
-      </AuthenticationProvider>
+      <AttributionProvider>
+        <AuthenticationProvider>
+          <StudiesProvider>
+            <UserDocumentProvider>
+              <Component {...pageProps} />
+            </UserDocumentProvider>
+          </StudiesProvider>
+        </AuthenticationProvider>
+      </AttributionProvider>
     </>
   );
 }
