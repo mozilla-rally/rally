@@ -2,6 +2,11 @@ import { jest } from "@jest/globals";
 import admin from "firebase-admin";
 import functions from "firebase-functions";
 import axios from "axios";
+import Client from "@sendgrid/client";
+
+jest.spyOn(Client, "setApiKey").mockImplementation(() => jest.fn());
+jest.spyOn(Client, "request").mockImplementation(() => new Promise(jest.fn()));
+
 import {
   addRallyUserToFirestoreImpl,
   deleteRallyUserImpl,
@@ -347,34 +352,113 @@ describe("offboard tests", () => {
       response
     );
   });
+});
+
+describe("waitlist tests", () => {
+  process.env.SENDGRID_API_KEY = "fake-test-key";
+
+  let send: any; // eslint-disable-line @typescript-eslint/no-explicit-any
+  let response: functions.Response<any>; // eslint-disable-line @typescript-eslint/no-explicit-any
+
+  // Set up callbacks inside response.status.send
+  function doAfterResponseSend(validateFn: () => void, doneFn: () => void) {
+    send = jest.fn().mockImplementation(() => {
+      validateFn(); // Jest assertions
+      doneFn(); // Complete unit test
+    });
+
+    response = {
+      set: jest.fn(),
+      status: jest.fn().mockReturnValue({ send }),
+    } as unknown as functions.Response<any>; // eslint-disable-line @typescript-eslint/no-explicit-any
+  }
 
   it("handles UTM and userAgent in waitlist function", (done) => {
-    doAfterResponseRedirect(() => {
-      expect(response.status).toHaveBeenCalledWith(301);
-      expect(redirect).toHaveBeenCalledWith(OFFBOARD_URL);
+    doAfterResponseSend(() => {
+      expect(response.status).toHaveBeenCalledWith(200);
     }, done);
 
     waitlist(
       {
         method: "POST",
-        query: querystring.parse("?utm_source=1&urm_medium=2&utm_campaign=3&utm_term=4&utm_content=5"),
+        body: {
+          email: "test",
+          country: "test-country",
+          userAgent: "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:107.0) Gecko/20100101 Firefox/107.0",
+          utm_source: "test-source",
+          utm_medium: "test-medium",
+          utm_campaign: "test-campaign",
+          utm_term: "test-term",
+          utm_content: "test-content",
+        },
       } as functions.Request<any>, // eslint-disable-line @typescript-eslint/no-explicit-any
       response
     );
+
+    expect(Client.request).toBeCalledWith({
+      body: [
+        {
+          browser: "Firefox",
+          country: "test-country",
+          email: "test",
+          platform: "Mac OS",
+          utm_campaign: "test-campaign",
+          utm_content: "test-content",
+          utm_medium: "test-medium",
+          utm_source: "test-source",
+          utm_term: "test-term",
+        }
+      ],
+      method: "POST",
+      url: "/v3/contactdb/recipients"
+    });
   });
 
-  it("handles lack of UTM codes in offboard function", (done) => {
-    doAfterResponseRedirect(() => {
-      expect(response.status).toHaveBeenCalledWith(301);
-      expect(redirect).toHaveBeenCalledWith(OFFBOARD_URL);
+  it("handles lack of UTM and userAgent in waitlist function", (done) => {
+    doAfterResponseSend(() => {
+      expect(response.status).toHaveBeenCalledWith(200);
     }, done);
 
     waitlist(
       {
         method: "POST",
+        body: { email: "test" },
       } as functions.Request<any>, // eslint-disable-line @typescript-eslint/no-explicit-any
       response
     );
+
+    expect(Client.request).toBeCalledWith({
+      body: [
+        {
+          country: undefined,
+          email: "test",
+          platform: undefined,
+          utm_campaign: undefined,
+          utm_content: undefined,
+          utm_medium: undefined,
+          utm_source: undefined,
+          utm_term: undefined,
+        }
+      ],
+      method: "POST",
+      url: "/v3/contactdb/recipients"
+    });
+  });
+
+  it("throws if no email address passed to waitlist function", (done) => {
+    doAfterResponseSend(() => {
+      expect(response.status).toHaveBeenCalledWith(500);
+    }, done);
+
+    waitlist(
+      {
+        method: "POST",
+        body: { "junk": "1" },
+      } as functions.Request<any>, // eslint-disable-line @typescript-eslint/no-explicit-any
+      response
+    );
+
+    expect(Client.request).toBeCalledTimes(2);
   });
 });
 

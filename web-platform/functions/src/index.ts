@@ -9,6 +9,7 @@ import { isDeepStrictEqual } from "util";
 import * as gleanPings from "./glean";
 import assert from "assert";
 import Client from "@sendgrid/client";
+import UAParser from "ua-parser-js";
 
 admin.initializeApp({
   credential: admin.credential.applicationDefault(),
@@ -435,35 +436,48 @@ export const waitlist = functions
       payload: request.body,
     });
 
-    const userAgent = request.body.userAgent ?? "";
+    if (request.body && !("email" in request.body)) {
+      response.status(500).send("Email address is required.");
+      return;
+    }
+
+    let browser;
+    let platform;
+
+    if (request.body && "userAgent" in request.body) {
+      let parser = new UAParser(request.body.userAgent);
+
+      browser = (parser.getBrowser()).name ?? "";
+      platform = (parser.getOS()).name ?? "";
+    }
 
     const contact = {
-      "email": request.body.email ?? "",
-      "country": request.body.country ?? "",
-      "platform": userAgent,
-      "browser": userAgent,
-      "utm_source": request.body.utm_source ?? "",
-      "utm_medium": request.body.utm_medium ?? "",
-      "utm_campaign": request.body.utm_campaign ?? "",
-      "utm_term": request.body.utm_term ?? "",
-      "utm_content": request.body.utm_content ?? "",
+      "email": request.body.email,
+      "country": request.body.country,
+      "platform": platform,
+      "browser": browser,
+      "utm_source": request.body.utm_source,
+      "utm_medium": request.body.utm_medium,
+      "utm_campaign": request.body.utm_campaign,
+      "utm_term": request.body.utm_term,
+      "utm_content": request.body.utm_content,
     };
 
     functions.logger.debug(`Waitlist parsed payload received`, {
       payload: JSON.stringify(contact),
     });
 
+    assert(
+      process.env.SENDGRID_API_KEY,
+      `Unable to obtain Sendgrid API key, aborting process.`
+    );
 
     try {
-      Client.setApiKey(process.env.SENDGRID_API_KEY ?? "");
-      const result = await Client.request({
+      Client.setApiKey(process.env.SENDGRID_API_KEY);
+      await Client.request({
         url: "/v3/contactdb/recipients",
         method: "POST",
-        body: [JSON.stringify(contact)]
-      });
-
-      functions.logger.info("Sendgrid result", {
-        payload: result[0].statusCode,
+        body: [contact]
       });
 
       response.status(200).send({
