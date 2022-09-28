@@ -71,7 +71,9 @@ describe("StudyCardHeader tests", () => {
       })
     ).toBeDefined();
 
-    expect(root.queryByText(strings.addExtension.chrome)).not.toBeInTheDocument();
+    expect(
+      root.queryByText(strings.addExtension.chrome)
+    ).not.toBeInTheDocument();
 
     expect(
       root.queryByText(strings.menus.dontJoinStudy)

@@ -27,6 +27,7 @@ jest.mock("../PasswordRules");
 jest.mock("../PrivacyNoticeAndLoginLink");
 
 const strings = Strings.components.pages.login.emailSignupView;
+const launchStrings = Strings.components.pages.login.initialLoginView;
 
 describe("EmailSignupView tests", () => {
   const signupWithEmail = jest.fn();
@@ -57,7 +58,9 @@ describe("EmailSignupView tests", () => {
     const root = render(<EmailSignupView />);
 
     expect(Highlighter).toHaveBeenCalled();
-    expect(root.getByText(strings.title)).toBeInTheDocument();
+    expect(
+      root.getByText(launchStrings.launch.extensionTrue.title)
+    ).toBeInTheDocument();
 
     expect(root.getByText(strings.email)).toBeInTheDocument();
     expect(document.querySelector("input#email")).toBeInTheDocument();

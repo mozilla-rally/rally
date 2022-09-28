@@ -64,7 +64,9 @@ describe("InitialLoginView tests", () => {
 
   function assertTitlePresent(root: RenderResult) {
     expect(Highlighter).toHaveBeenCalled();
-    expect(root.getByText(strings.title)).toBeInTheDocument();
+    expect(
+      root.getByText(strings.launch.extensionTrue.title)
+    ).toBeInTheDocument();
   }
 
   function assertSignupWithGooglePresent(root: RenderResult) {
