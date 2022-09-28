@@ -13,7 +13,7 @@ admin.initializeApp({
   credential: admin.credential.applicationDefault(),
 });
 
-const OFFBOARD_URL = "https://rally.mozilla.org/leaving-rally/index.html";
+const OFFBOARD_URL = "https://rally.mozilla.org/offboarding/index.html";
 
 export const rallytoken = functions.https.onRequest(async (request, response) =>
   useCors(request, response, async () => {
