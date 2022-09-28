@@ -300,7 +300,7 @@ describe("rallytoken tests", () => {
 });
 
 describe("offboard tests", () => {
-  const OFFBOARD_URL = "https://rally.mozilla.org/leaving-rally/index.html";
+  const OFFBOARD_URL = "https://rally.mozilla.org/offboarding/index.html";
 
   let redirect: any; // eslint-disable-line @typescript-eslint/no-explicit-any
   let response: functions.Response<any>; // eslint-disable-line @typescript-eslint/no-explicit-any
