@@ -435,7 +435,7 @@ export const waitlist = functions
         return;
       }
 
-      if (!("content-type" in request.headers && request.headers["content-type"]?.startsWith("multipart/form-data"))) {
+      if (!(request.headers && request.headers["content-type"]?.startsWith("multipart/form-data"))) {
         response.status(500).send("Only Content-type: multipart/form-data is allowed.");
         return;
       }
@@ -446,7 +446,18 @@ export const waitlist = functions
       busboy.on("field", (fieldname: string, value: string) => {
         formData.set(fieldname, value);
       });
-      busboy.end(request.rawBody);
+
+      // In production. GCP cloud function receive the raw body as a
+      // Buffer. Unit tests don't have a way to set this independently,
+      // so fall back to looking for the form in the request.body if rawBody is missing.
+      let rawForm;
+      if (request.rawBody) {
+        rawForm = request.rawBody;
+      } else {
+        rawForm = (new TextEncoder()).encode(request.body);
+      }
+
+      busboy.end(rawForm);
 
       busboy.on("finish", async () => {
         functions.logger.debug(`Waitlist raw payload received`, {
@@ -469,12 +480,19 @@ export const waitlist = functions
           platform = (parser.getOS()).name ?? "";
         }
 
-        const contact = Object.fromEntries(formData);
-        contact["platform"] = platform;
-        contact["browser"] = browser;
+        const contact = new Map();
+        contact.set("platform", platform);
+        contact.set("browser", browser);
+
+        ["country", "email", "utm_campaign", "utm_content", "utm_medium",
+          "utm_source", "utm_term"].forEach(key => {
+            if (formData.has(key)) {
+              contact.set(key, formData.get(key));
+            }
+          });
 
         functions.logger.debug(`Waitlist parsed payload received`, {
-          payload: JSON.stringify(contact),
+          payload: JSON.stringify(Object.fromEntries(contact)),
         });
 
         assert(
@@ -484,10 +502,11 @@ export const waitlist = functions
 
         try {
           Client.setApiKey(process.env.SENDGRID_API_KEY);
+          console.debug("contact:", contact);
           await Client.request({
             url: "/v3/contactdb/recipients",
             method: "POST",
-            body: [contact]
+            body: [Object.fromEntries(contact)]
           });
 
           response.status(200).send({

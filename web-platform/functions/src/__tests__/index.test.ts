@@ -376,76 +376,112 @@ describe("waitlist tests", () => {
   it("handles UTM and userAgent in waitlist function", (done) => {
     doAfterResponseSend(() => {
       expect(response.status).toHaveBeenCalledWith(200);
+      expect(Client.request).toBeCalledWith({
+        body: [
+          {
+            browser: "Firefox",
+            country: "test-country",
+            email: "test",
+            platform: "Mac OS",
+            utm_campaign: "test-campaign",
+            utm_content: "test-content",
+            utm_medium: "test-medium",
+            utm_source: "test-source",
+            utm_term: "test-term",
+          }
+        ],
+        method: "POST",
+        url: "/v3/contactdb/recipients"
+      });
     }, done);
 
     waitlist(
       {
         method: "POST",
         headers: {
-          "content-type": "multipart/form-data",
+          "content-type": "multipart/form-data; boundary=-----------------------ef2d424b33c7c14c",
         },
-        body: {
-          email: "test",
-          country: "test-country",
-          userAgent: "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:107.0) Gecko/20100101 Firefox/107.0",
-          utm_source: "test-source",
-          utm_medium: "test-medium",
-          utm_campaign: "test-campaign",
-          utm_term: "test-term",
-          utm_content: "test-content",
-        },
+        body:
+          [
+            '-------------------------ef2d424b33c7c14c',
+            'Content-Disposition: form-data; name="userAgent"',
+            '',
+            '"Mozilla/5.0%20(Macintosh;%20Intel%20Mac%20OS%20X%2010.15;%20rv:107.0)%20Gecko/20100101%20Firefox/107.0" ',
+            '-------------------------ef2d424b33c7c14c',
+            'Content-Disposition: form-data; name="country"',
+            '',
+            'test-country',
+            '-------------------------ef2d424b33c7c14c',
+            'Content-Disposition: form-data; name="email"',
+            '',
+            'test',
+            '-------------------------ef2d424b33c7c14c',
+            'Content-Disposition: form-data; name="utm_campaign"',
+            '',
+            'test-campaign',
+            '-------------------------ef2d424b33c7c14c',
+            'Content-Disposition: form-data; name="utm_content"',
+            '',
+            'test-content',
+            '-------------------------ef2d424b33c7c14c',
+            'Content-Disposition: form-data; name="utm_medium"',
+            '',
+            'test-medium',
+            '-------------------------ef2d424b33c7c14c',
+            'Content-Disposition: form-data; name="utm_source"',
+            '',
+            'test-source',
+            '-------------------------ef2d424b33c7c14c',
+            'Content-Disposition: form-data; name="utm_term"',
+            '',
+            'test-term',
+            '-------------------------ef2d424b33c7c14c--'
+          ].join('\r\n')
+        ,
       } as functions.Request<any>, // eslint-disable-line @typescript-eslint/no-explicit-any
       response
     );
-
-    expect(Client.request).toBeCalledWith({
-      body: [
-        {
-          browser: "Firefox",
-          country: "test-country",
-          email: "test",
-          platform: "Mac OS",
-          utm_campaign: "test-campaign",
-          utm_content: "test-content",
-          utm_medium: "test-medium",
-          utm_source: "test-source",
-          utm_term: "test-term",
-        }
-      ],
-      method: "POST",
-      url: "/v3/contactdb/recipients"
-    });
   });
 
   it("handles lack of UTM and userAgent in waitlist function", (done) => {
     doAfterResponseSend(() => {
       expect(response.status).toHaveBeenCalledWith(200);
+      expect(Client.request).toBeCalledWith({
+        body: [
+          {
+            country: undefined,
+            email: "test",
+            platform: undefined,
+            utm_campaign: undefined,
+            utm_content: undefined,
+            utm_medium: undefined,
+            utm_source: undefined,
+            utm_term: undefined,
+          }
+        ],
+        method: "POST",
+        url: "/v3/contactdb/recipients"
+      });
     }, done);
 
     waitlist(
       {
         method: "POST",
-        body: { email: "test" },
+        headers: {
+          "content-type": "multipart/form-data; boundary=-----------------------ef2d424b33c7c14c",
+        },
+        body:
+          [
+            '-------------------------ef2d424b33c7c14c',
+            'Content-Disposition: form-data; name="email"',
+            '',
+            'test',
+            '-------------------------ef2d424b33c7c14c--'
+          ].join('\r\n')
+        ,
       } as functions.Request<any>, // eslint-disable-line @typescript-eslint/no-explicit-any
       response
     );
-
-    expect(Client.request).toBeCalledWith({
-      body: [
-        {
-          country: undefined,
-          email: "test",
-          platform: undefined,
-          utm_campaign: undefined,
-          utm_content: undefined,
-          utm_medium: undefined,
-          utm_source: undefined,
-          utm_term: undefined,
-        }
-      ],
-      method: "POST",
-      url: "/v3/contactdb/recipients"
-    });
   });
 
   it("throws if no email address passed to waitlist function", (done) => {
@@ -456,7 +492,18 @@ describe("waitlist tests", () => {
     waitlist(
       {
         method: "POST",
-        body: { "junk": "1" },
+        headers: {
+          "content-type": "multipart/form-data; boundary=-----------------------ef2d424b33c7c14c",
+        },
+        body:
+          [
+            '-------------------------ef2d424b33c7c14c',
+            'Content-Disposition: form-data; name="junk"',
+            '',
+            '1',
+            '-------------------------ef2d424b33c7c14c--'
+          ].join('\r\n')
+        ,
       } as functions.Request<any>, // eslint-disable-line @typescript-eslint/no-explicit-any
       response
     );
@@ -464,4 +511,3 @@ describe("waitlist tests", () => {
     expect(Client.request).toBeCalledTimes(2);
   });
 });
-
