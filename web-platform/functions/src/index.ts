@@ -10,6 +10,7 @@ import * as gleanPings from "./glean";
 import assert from "assert";
 import Client from "@sendgrid/client";
 import UAParser from "ua-parser-js";
+import Busboy from "busboy";
 
 admin.initializeApp({
   credential: admin.credential.applicationDefault(),
@@ -427,74 +428,85 @@ export const offboard = functions.https.onRequest(async (request, response) => {
 export const waitlist = functions
   .runWith({ secrets: ["SENDGRID_API_KEY"] })
   .https.onRequest(async (request, response) => {
-    if (request.method !== "POST") {
-      response.status(500).send("Only POST and OPTIONS methods are allowed.");
-      return;
-    }
+    useCors(request, response, async () => {
 
-    functions.logger.debug(`Waitlist raw payload received`, {
-      payload: request.body,
+      if (request.method !== "POST") {
+        response.status(500).send("Only POST and OPTIONS methods are allowed.");
+        return;
+      }
+
+      if (!("content-type" in request.headers && request.headers["content-type"]?.startsWith("multipart/form-data"))) {
+        response.status(500).send("Only Content-type: multipart/form-data is allowed.");
+        return;
+      }
+
+      const busboy = Busboy({ headers: request.headers });
+      let formData = new Map();
+
+      busboy.on("field", (fieldname: string, value: string) => {
+        formData.set(fieldname, value);
+      });
+      busboy.end(request.rawBody);
+
+      busboy.on("finish", async () => {
+        functions.logger.debug(`Waitlist raw payload received`, {
+          payload: formData,
+        });
+
+        if (!formData.has("email")) {
+          response.status(500).send("Email address is required.");
+          return;
+        }
+
+        let browser;
+        let platform;
+
+        if (formData.has("userAgent")) {
+          const decodedUA = decodeURIComponent(formData.get("userAgent"));
+          let parser = new UAParser(decodedUA);
+
+          browser = (parser.getBrowser()).name ?? "";
+          platform = (parser.getOS()).name ?? "";
+        }
+
+        const contact = Object.fromEntries(formData);
+        contact["platform"] = platform;
+        contact["browser"] = browser;
+
+        functions.logger.debug(`Waitlist parsed payload received`, {
+          payload: JSON.stringify(contact),
+        });
+
+        assert(
+          process.env.SENDGRID_API_KEY,
+          `Unable to obtain Sendgrid API key, aborting process.`
+        );
+
+        try {
+          Client.setApiKey(process.env.SENDGRID_API_KEY);
+          await Client.request({
+            url: "/v3/contactdb/recipients",
+            method: "POST",
+            body: [contact]
+          });
+
+          response.status(200).send({
+            "category": "success",
+            "message": "Email contact received.",
+            "status": 200
+          });
+
+        } catch (ex) {
+          functions.logger.error("Sendgrid failed", {
+            payload: ex,
+          });
+
+          response.status(500).send({
+            "category": "failure",
+            "message": "Email contact not saved.",
+            "status": 500
+          });
+        }
+      });
     });
-
-    if (request.body && !("email" in request.body)) {
-      response.status(500).send("Email address is required.");
-      return;
-    }
-
-    let browser;
-    let platform;
-
-    if (request.body && "userAgent" in request.body) {
-      let parser = new UAParser(request.body.userAgent);
-
-      browser = (parser.getBrowser()).name ?? "";
-      platform = (parser.getOS()).name ?? "";
-    }
-
-    const contact = {
-      "email": request.body.email,
-      "country": request.body.country,
-      "platform": platform,
-      "browser": browser,
-      "utm_source": request.body.utm_source,
-      "utm_medium": request.body.utm_medium,
-      "utm_campaign": request.body.utm_campaign,
-      "utm_term": request.body.utm_term,
-      "utm_content": request.body.utm_content,
-    };
-
-    functions.logger.debug(`Waitlist parsed payload received`, {
-      payload: JSON.stringify(contact),
-    });
-
-    assert(
-      process.env.SENDGRID_API_KEY,
-      `Unable to obtain Sendgrid API key, aborting process.`
-    );
-
-    try {
-      Client.setApiKey(process.env.SENDGRID_API_KEY);
-      await Client.request({
-        url: "/v3/contactdb/recipients",
-        method: "POST",
-        body: [contact]
-      });
-
-      response.status(200).send({
-        "category": "success",
-        "message": "Email contact received.",
-        "status": 200
-      });
-
-    } catch (ex) {
-      functions.logger.error("Sendgrid failed", {
-        payload: ex,
-      });
-
-      response.status(500).send({
-        "category": "failure",
-        "message": "Email contact not saved.",
-        "status": 500
-      });
-    }
   });

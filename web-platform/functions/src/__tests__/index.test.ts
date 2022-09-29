@@ -381,6 +381,9 @@ describe("waitlist tests", () => {
     waitlist(
       {
         method: "POST",
+        headers: {
+          "content-type": "multipart/form-data",
+        },
         body: {
           email: "test",
           country: "test-country",
