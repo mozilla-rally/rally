@@ -49,7 +49,7 @@ jobs:
       - uses: marceloprado/has-changed-path@v1
         id: changed-functions
         with:
-          paths: web-platform/functions
+          paths: web-platform/functions web-platform/firebase
 
       - name: Deploy firebase functions to production
         if: steps.changed-functions.outputs.changed == 'true'
