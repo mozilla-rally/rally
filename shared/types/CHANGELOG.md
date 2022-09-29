@@ -1,6 +1,11 @@
 # Change Log - @mozilla/rally-shared-types
 
-This log was last generated on Wed, 28 Sep 2022 23:52:44 GMT and should not be manually modified.
+This log was last generated on Thu, 29 Sep 2022 00:18:33 GMT and should not be manually modified.
+
+## 1.1.4
+Thu, 29 Sep 2022 00:18:33 GMT
+
+_Version update only_
 
 ## 1.1.3
 Wed, 28 Sep 2022 23:52:44 GMT
