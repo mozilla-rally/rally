@@ -7,7 +7,7 @@ export function Highlighter(props: React.HTMLAttributes<HTMLElement>) {
   const { children, className, ...otherProps } = props;
   return (
     <div className={`${styles.container} ${className || ""}`} {...otherProps}>
-      <div className={`${className} highlight`}></div>
+      <div className={`highlight ${className}`}></div>
       <div className="content">{children}</div>
     </div>
   );
@@ -34,6 +34,7 @@ const styles = {
         width: "100%",
       },
       ".highlight-launch": {
+        position: "absolute",
         top: "75%",
         height: "25%",
         width: "75%",
