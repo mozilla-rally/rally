@@ -450,13 +450,8 @@ export const waitlist = functions
       // In production. GCP cloud function receive the raw body as a
       // Buffer. Unit tests don't have a way to set this independently,
       // so fall back to looking for the form in the request.body if rawBody is missing.
-      let rawForm;
-      if (request.rawBody) {
-        rawForm = request.rawBody;
-      } else {
-        rawForm = (new TextEncoder()).encode(request.body);
-      }
 
+      const rawForm = request.rawBody || (new TextEncoder()).encode(request.body)
       busboy.end(rawForm);
 
       busboy.on("finish", async () => {
