@@ -124,7 +124,7 @@ describe("Rally SDK", function () {
 
   it("does not jump to new tab when Rally website is not loaded", async function () {
     // Suppress error printing
-    jest.spyOn(console, "error").mockImplementation(() => {});
+    jest.spyOn(console, "error").mockImplementation(() => { });
 
     const rally = new Rally({
       enableDevMode: false,
@@ -407,16 +407,22 @@ describe("Rally SDK", function () {
 
     await new Promise(process.nextTick);
 
-    expect(browser.storage.local.set).toBeCalledWith({
+    const expectedResult = {
       attribution: {
         campaign: "test_campaign",
         content: "test_content",
         medium: "test_medium",
         source: "test_source",
         term: "test_term",
-      },
-    });
+      }
+    };
+
+    expect(browser.storage.local.set).toBeCalledWith(expectedResult);
     expect(browser.storage.local.set).toBeCalledTimes(1);
+
+    // Ensure that getter returns the correct result as well.
+    const result = await rally.getAttributionCodes();
+    expect(result).toEqual(expectedResult)
 
     rally.shutdown();
   });
@@ -431,7 +437,7 @@ describe("Rally SDK", function () {
     };
 
     // Suppress error printing
-    jest.spyOn(console, "error").mockImplementation(() => {});
+    jest.spyOn(console, "error").mockImplementation(() => { });
 
     browser.tabs.query = jest.fn().mockReturnValueOnce([]);
     browser.storage.local.get = jest.fn().mockReturnValueOnce({ attribution });
