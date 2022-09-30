@@ -8,7 +8,7 @@ import { getFirebaseErrorMessage } from "../../../../utils/FirebaseErrors";
 import { Highlighter } from "../../../Highlighter";
 import { EmailSignupView } from "../EmailSignupView";
 import { LoginButton } from "../LoginButton";
-import { LoginState, useLoginDataContext } from "../LoginDataContext";
+import { LoginState } from "../LoginDataContext";
 import {
   LoginFormValidationResult,
   validateLoginForm,
@@ -21,7 +21,6 @@ jest.mock("../../../../services/AuthenticationService");
 jest.mock("../../../../utils/FirebaseErrors");
 jest.mock("../../../Highlighter");
 jest.mock("../LoginButton");
-jest.mock("../LoginDataContext");
 jest.mock("../LoginFormValidator");
 jest.mock("../PasswordRules");
 jest.mock("../PrivacyNoticeAndLoginLink");
@@ -30,8 +29,6 @@ const strings = Strings.components.pages.login.emailSignupView;
 
 describe("EmailSignupView tests", () => {
   const signupWithEmail = jest.fn();
-  const logout = jest.fn();
-  const setLoginState = jest.fn();
 
   beforeEach(() => {
     jest.resetAllMocks();
@@ -43,11 +40,6 @@ describe("EmailSignupView tests", () => {
 
     (useAuthentication as jest.Mock).mockReturnValue({
       signupWithEmail,
-      logout,
-    });
-
-    (useLoginDataContext as jest.Mock).mockReturnValue({
-      setLoginState,
     });
 
     (validatePasswordRules as jest.Mock).mockReturnValue([]);
@@ -84,7 +76,6 @@ describe("EmailSignupView tests", () => {
     assertPasswordError(undefined);
 
     expect(signupWithEmail).not.toHaveBeenCalled();
-    expect(setLoginState).not.toHaveBeenCalled();
   });
 
   it("displays error for email and password when validation fails", async () => {
@@ -134,7 +125,6 @@ describe("EmailSignupView tests", () => {
     expect(PrivacyNoticeAndLoginLink).toHaveBeenCalled();
 
     expect(signupWithEmail).not.toHaveBeenCalled();
-    expect(setLoginState).not.toHaveBeenCalled();
   });
 
   it("displays firebase error when signup fails", async () => {
@@ -169,8 +159,6 @@ describe("EmailSignupView tests", () => {
     expect(validateLoginForm).toHaveBeenCalledWith("email", "password");
 
     expect(signupWithEmail).toHaveBeenCalledWith("email", "password");
-
-    expect(setLoginState).not.toHaveBeenCalled();
 
     expect(getFirebaseErrorMessage).toHaveBeenCalledWith(thrownError);
 
@@ -212,9 +200,6 @@ describe("EmailSignupView tests", () => {
     );
 
     expect(PrivacyNoticeAndLoginLink).toHaveBeenCalled();
-
-    expect(logout).toHaveBeenCalled();
-    expect(setLoginState).toHaveBeenCalledWith(LoginState.EmailAccountCreated);
   });
 
   async function setEmail(userEvent: UserEvent, email: string) {

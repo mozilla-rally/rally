@@ -4,7 +4,6 @@ import { style } from "typestyle";
 import { Strings } from "../../../resources/Strings";
 import { ScreenSize, Spacing, createResponsiveStyle } from "../../../styles";
 import { FontSizeRaw } from "../../../styles/Fonts";
-import { EmailAccountCreatedView } from "./EmailAccountCreatedView";
 import { EmailSignupView } from "./EmailSignupView";
 import { InitialLoginView } from "./InitialLoginView";
 import {
@@ -65,9 +64,6 @@ function LoginCardFactory() {
   switch (loginState) {
     case LoginState.Initial:
       return <InitialLoginView />;
-
-    case LoginState.EmailAccountCreated:
-      return <EmailAccountCreatedView />;
 
     case LoginState.Login:
       return <LoginView />;

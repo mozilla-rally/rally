@@ -1,5 +1,5 @@
 import { FirebaseError } from "@firebase/util";
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import {
   Col,
   Container,
@@ -25,7 +25,6 @@ import {
   LoginFormValidationResult,
   validateLoginForm,
 } from "./LoginFormValidator";
-import { UnverifiedEmailError } from "./UnverifiedEmailError";
 
 const strings = Strings.components.pages.login.loginView;
 
@@ -34,8 +33,6 @@ export function LoginView() {
   const [password, setPassword] = useState("");
   const [eyeIconVisible, setEyeIconVisible] = useState(false);
   const [passwordVisible, setPasswordVisible] = useState(false);
-  const [showEmailNotVerifiedError, setShowEmailNotVerifiedError] =
-    useState(false);
   const [validationResult, setValidationResult] =
     useState<LoginFormValidationResult>();
 
@@ -57,13 +54,6 @@ export function LoginView() {
 
   const { loginWithEmail, loginWithGoogle, isLoaded, isUserVerified, user } =
     useAuthentication();
-
-  useEffect(() => {
-    if (isLoaded && user && user.firebaseUser && !isUserVerified) {
-      setEmail(user.firebaseUser.email as string);
-      setShowEmailNotVerifiedError(true);
-    }
-  }, [isLoaded, isUserVerified, user]);
 
   async function validateAndLogin() {
     setValidationResult(undefined);
@@ -106,13 +96,6 @@ export function LoginView() {
           </Highlighter>
         </Col>
       </Row>
-      {showEmailNotVerifiedError && (
-        <Row className="mb-3">
-          <Col>
-            <UnverifiedEmailError />
-          </Col>
-        </Row>
-      )}
       <Row className="mb-3">
         <Col>
           <LoginButton

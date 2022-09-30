@@ -130,36 +130,6 @@ describe("AuthenticatedPage tests", () => {
     expect(replace).toHaveBeenCalledWith("/login");
   });
 
-  it("routes to login when user is authenticated but not verified", () => {
-    const replace = jest.fn();
-
-    (useRouter as jest.Mock).mockReturnValue({
-      isReady: true,
-      replace,
-    });
-
-    (useAuthentication as jest.Mock).mockReturnValue({
-      isLoaded: true,
-      user: {},
-      isUserVerified: false,
-    });
-
-    (useUserDocument as jest.Mock).mockReturnValue({
-      isDocumentLoaded: true,
-      userDocument: {},
-    });
-
-    const root = render(
-      <AuthenticatedPage>
-        <div>Test</div>
-      </AuthenticatedPage>
-    );
-
-    expect(root.container.firstChild).toBeNull();
-
-    expect(replace).toHaveBeenCalledWith("/login");
-  });
-
   it("renders the page content when user is authenticated and verified and router is ready", () => {
     const replace = jest.fn();
 
@@ -171,7 +141,6 @@ describe("AuthenticatedPage tests", () => {
     (useAuthentication as jest.Mock).mockReturnValue({
       isLoaded: true,
       user: {},
-      isUserVerified: true,
     });
 
     (useUserDocument as jest.Mock).mockReturnValue({

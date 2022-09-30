@@ -18,17 +18,17 @@ import { MobileMenu } from "./MobileMenu";
 const strings = Strings.components.navigationBar;
 
 export function NavigationBar() {
-  const { isUserVerified } = useAuthentication();
+  const { user } = useAuthentication();
 
   return (
     <Container
       className={`${ContainerSmallerStyles.TopLevelContainer} ${styles.nav} ${
-        isUserVerified ? "" : "border-0"
+        user ? "" : "border-0"
       } border-lg-1 ms-0 me-0`}
     >
       <Row className="align-items-center gx-0 gy-0">
         <Col className={`col-md-auto logo-col ${styles.logoCol}`}>
-          <a href={isUserVerified ? "/" : strings.rallyWebsiteUrl}>
+          <a href={user ? "/" : strings.rallyWebsiteUrl}>
             <img
               src="/img/moz-rally-logo.svg"
               className="logo-large"
@@ -37,7 +37,7 @@ export function NavigationBar() {
           </a>
         </Col>
 
-        {isUserVerified && (
+        {user && (
           <>
             <TopLinks />
             <DropdownMenus />

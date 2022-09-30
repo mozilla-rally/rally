@@ -16,7 +16,7 @@ import {
 const strings = Strings.pages.login;
 
 const LoginPage: NextPage = () => {
-  const { isLoaded, isUserVerified } = useAuthentication();
+  const { isLoaded, user } = useAuthentication();
 
   const router = useRouter();
 
@@ -24,7 +24,7 @@ const LoginPage: NextPage = () => {
     return null;
   }
 
-  if (isUserVerified) {
+  if (user) {
     router.replace("/");
     return null;
   }

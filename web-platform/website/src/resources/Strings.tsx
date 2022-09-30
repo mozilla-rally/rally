@@ -330,20 +330,6 @@ export const Strings = {
         },
       },
       login: {
-        emailAccountCreatedView: {
-          backToSignIn: "Back to Sign In",
-          message:
-            "To finish creating your account with Rally, please check your email inbox and verify your email address.",
-          needHelp: (
-            <>
-              Need additional help?{" "}
-              <a href="https://members.rally.mozilla.org/" className="fw-bold">
-                Contact us
-              </a>
-            </>
-          ),
-          title: "Check Your Mail",
-        },
         emailSignupView: {
           continue: "Continue",
           email: "Email",
@@ -425,12 +411,6 @@ export const Strings = {
             ),
             title: "Check Your Email",
           },
-        },
-        unverifiedEmailError: {
-          activateEmail:
-            "Email account is not verified. Please check your inbox and activate your account.",
-          cantFindEmail: "Can't find the email?",
-          resendEmail: "Resend verification email.",
         },
       },
       privacyPolicy: {

@@ -43,7 +43,7 @@ export function UserDocumentProvider(props: { children: React.ReactNode }) {
   const [isDocumentLoaded, setIsDocumentLoaded] = useState(false);
   const [userDocument, setUserDocument] = useState<UserDocument | null>(null);
 
-  const { user, isLoaded, isUserVerified } = useAuthentication();
+  const { user, isLoaded } = useAuthentication();
   const { db } = useFirebase();
 
   useEffect(() => {
@@ -51,7 +51,7 @@ export function UserDocumentProvider(props: { children: React.ReactNode }) {
       return;
     }
 
-    if (!user || !isUserVerified) {
+    if (!user) {
       setIsDocumentLoaded(true);
       return;
     }
