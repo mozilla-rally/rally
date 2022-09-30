@@ -6,7 +6,6 @@ import {
   doc,
   onSnapshot,
   setDoc,
-  updateDoc,
 } from "firebase/firestore";
 import React from "react";
 import { act } from "react-dom/test-utils";
@@ -69,7 +68,6 @@ describe("UserDocumentService tests", () => {
     (useAuthentication as jest.Mock).mockReturnValue({
       user,
       isLoaded: true,
-      isUserVerified: true,
     });
 
     (useFirebase as jest.Mock).mockReturnValue({ db });
@@ -109,33 +107,6 @@ describe("UserDocumentService tests", () => {
     (useAuthentication as jest.Mock).mockReturnValue({
       user: null,
       isLoaded: true,
-    });
-
-    let obtainedDoc = null;
-    let isDocumentLoaded = false;
-
-    await renderComponent(
-      ({ userDocument, isDocumentLoaded: isLoaded }) => (
-        (obtainedDoc = userDocument), (isDocumentLoaded = isLoaded)
-      ),
-      () => {}
-    );
-
-    expect(useAuthentication).toHaveBeenCalled();
-    expect(useFirebase).toHaveBeenCalled();
-
-    expect(doc).not.toHaveBeenCalled();
-
-    expect(obtainedDoc).toEqual(null);
-    expect(isDocumentLoaded).toBeTruthy();
-    expect(onSnapshotFn).not.toHaveBeenCalled();
-  });
-
-  it("handles unverified user state", async () => {
-    (useAuthentication as jest.Mock).mockReturnValue({
-      user: {},
-      isLoaded: true,
-      isUserVerified: false,
     });
 
     let obtainedDoc = null;

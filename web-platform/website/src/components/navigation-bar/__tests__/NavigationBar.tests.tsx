@@ -16,7 +16,7 @@ const strings = Strings.components.navigationBar;
 describe("NavigationBar tests", () => {
   it("Renders correctly for unauthenticated user", () => {
     (useAuthentication as jest.Mock).mockImplementation(() => ({
-      isUserVerified: false,
+      user: null,
     }));
 
     const root = render(<NavigationBar />);
@@ -29,7 +29,7 @@ describe("NavigationBar tests", () => {
 
   it("Renders top links correctly when user is authenticated", () => {
     (useAuthentication as jest.Mock).mockImplementation(() => ({
-      isUserVerified: true,
+      user: { uid: 123 },
     }));
 
     const root = render(<NavigationBar />);

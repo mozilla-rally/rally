@@ -66,9 +66,9 @@ describe("login page tests", () => {
     expect(Head).not.toHaveBeenCalled();
   });
 
-  it("redirects to homepage when user is verified", () => {
+  it("redirects to homepage when user is present", () => {
     (useAuthentication as jest.Mock).mockReturnValue({
-      isUserVerified: true,
+      user: { uid: 123 },
       isLoaded: true,
     });
 
@@ -92,7 +92,7 @@ describe("login page tests", () => {
 
   it("renders login page content correctly", () => {
     (useAuthentication as jest.Mock).mockReturnValue({
-      isUserVerified: false,
+      user: undefined,
       isLoaded: true,
     });
 

@@ -18,7 +18,6 @@ import { Fonts } from "../../../styles/Fonts";
 import { getFirebaseErrorMessage } from "../../../utils/FirebaseErrors";
 import { Highlighter } from "../../Highlighter";
 import { LoginButton } from "./LoginButton";
-import { LoginState, useLoginDataContext } from "./LoginDataContext";
 import {
   LoginFormValidationResult,
   validateLoginForm,
@@ -69,8 +68,7 @@ export function EmailSignupView() {
     }));
   }, [password]);
 
-  const { signupWithEmail, logout } = useAuthentication();
-  const { setLoginState } = useLoginDataContext();
+  const { signupWithEmail } = useAuthentication();
 
   async function validateAndSignup() {
     setValidationResult(undefined);
@@ -92,8 +90,6 @@ export function EmailSignupView() {
 
     try {
       await signupWithEmail(emailRef.current, passwordRef.current);
-      await logout();
-      setLoginState(LoginState.EmailAccountCreated);
     } catch (e) {
       setValidationResult({
         email: { error: getFirebaseErrorMessage(e as FirebaseError) },

@@ -14,14 +14,12 @@ import {
   validateLoginForm,
 } from "../LoginFormValidator";
 import { LoginView } from "../LoginView";
-import { UnverifiedEmailError } from "../UnverifiedEmailError";
 
 jest.mock("../../../../services/AuthenticationService");
 jest.mock("../../../Highlighter");
 jest.mock("../LoginButton");
 jest.mock("../LoginDataContext");
 jest.mock("../LoginFormValidator");
-jest.mock("../UnverifiedEmailError");
 
 const strings = Strings.components.pages.login.loginView;
 
@@ -62,7 +60,6 @@ describe("LoginView tests", () => {
     assertEmailError(undefined);
     assertPasswordError(undefined);
 
-    expect(UnverifiedEmailError).not.toHaveBeenCalled();
     expect(loginWithEmail).not.toHaveBeenCalled();
     expect(loginWithGoogle).not.toHaveBeenCalled();
   });
@@ -79,7 +76,6 @@ describe("LoginView tests", () => {
     });
 
     expect(loginWithGoogle).toHaveBeenCalled();
-    expect(UnverifiedEmailError).not.toHaveBeenCalled();
   });
 
   it("displays email and password validation errors", async () => {
@@ -107,7 +103,6 @@ describe("LoginView tests", () => {
     assertPasswordError("Password error");
 
     expect(loginWithEmail).not.toHaveBeenCalled();
-    expect(UnverifiedEmailError).not.toHaveBeenCalled();
   });
 
   it("displays password error when loginWithEmail throws a password related error", async () => {
@@ -142,8 +137,6 @@ describe("LoginView tests", () => {
 
     assertEmailError(undefined);
     assertPasswordError(getFirebaseErrorMessage(error as FirebaseError));
-
-    expect(UnverifiedEmailError).not.toHaveBeenCalled();
   });
 
   it("displays email error when loginWithEmail throws a non-password related error", async () => {
@@ -178,8 +171,6 @@ describe("LoginView tests", () => {
 
     assertEmailError(getFirebaseErrorMessage(error as FirebaseError));
     assertPasswordError(undefined);
-
-    expect(UnverifiedEmailError).not.toHaveBeenCalled();
   });
 
   it("successful login", async () => {
@@ -205,8 +196,6 @@ describe("LoginView tests", () => {
 
     assertEmailError(undefined);
     assertPasswordError(undefined);
-
-    expect(UnverifiedEmailError).not.toHaveBeenCalled();
   });
 
   it("sets the login state to initial state when create account is clicked", async () => {
@@ -230,7 +219,6 @@ describe("LoginView tests", () => {
     });
 
     expect(setLoginState).toHaveBeenCalledWith(LoginState.Initial);
-    expect(UnverifiedEmailError).not.toHaveBeenCalled();
   });
 
   it("sets the login state to forget password correctly", async () => {
@@ -245,29 +233,6 @@ describe("LoginView tests", () => {
     });
 
     expect(setLoginState).toHaveBeenCalledWith(LoginState.ResetPassword);
-    expect(UnverifiedEmailError).not.toHaveBeenCalled();
-  });
-
-  it("detects and flags user with unverified email", () => {
-    const email = "abc@def.com";
-
-    (useAuthentication as jest.Mock).mockReturnValue({
-      loginWithEmail,
-      loginWithGoogle,
-      isLoaded: true,
-      isUserVerified: false,
-      user: { firebaseUser: { email } },
-    });
-
-    render(<LoginView />);
-
-    expect(UnverifiedEmailError).toHaveBeenCalled();
-
-    const emailTextBox = document.querySelector(
-      "input#email"
-    ) as HTMLInputElement;
-
-    expect(emailTextBox.value).toBe(email);
   });
 
   async function login() {

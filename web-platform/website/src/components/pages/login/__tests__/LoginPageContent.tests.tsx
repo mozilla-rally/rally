@@ -1,6 +1,5 @@
 import { render } from "@testing-library/react";
 
-import { EmailAccountCreatedView } from "../EmailAccountCreatedView";
 import { EmailSignupView } from "../EmailSignupView";
 import { InitialLoginView } from "../InitialLoginView";
 import {
@@ -12,7 +11,6 @@ import { LoginPageContent } from "../LoginPageContent";
 import { LoginView } from "../LoginView";
 import { ResetPasswordView } from "../ResetPasswordView";
 
-jest.mock("../EmailAccountCreatedView");
 jest.mock("../EmailSignupView");
 jest.mock("../InitialLoginView");
 jest.mock("../LoginDataContext");
@@ -48,16 +46,6 @@ describe("LoginPageContent tests", () => {
 
     expect(useLoginDataContext).toHaveBeenCalled();
     expect(EmailSignupView).toHaveBeenCalled();
-  });
-
-  it("renders email account created view", () => {
-    (useLoginDataContext as jest.Mock).mockImplementation(() => ({
-      loginState: LoginState.EmailAccountCreated,
-    }));
-
-    render(<LoginPageContent />);
-
-    expect(EmailAccountCreatedView).toHaveBeenCalled();
   });
 
   it("renders login view", () => {
