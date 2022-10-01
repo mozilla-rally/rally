@@ -2,6 +2,12 @@
   "name": "@mozilla/rally-functions",
   "entries": [
     {
+      "version": "1.1.6",
+      "tag": "@mozilla/rally-functions_v1.1.6",
+      "date": "Sat, 01 Oct 2022 01:16:40 GMT",
+      "comments": {}
+    },
+    {
       "version": "1.1.5",
       "tag": "@mozilla/rally-functions_v1.1.5",
       "date": "Thu, 29 Sep 2022 20:24:03 GMT",
