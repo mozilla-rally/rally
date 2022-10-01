@@ -2,7 +2,7 @@
   "description": "The Mozilla Rally extension for data collection",
   "author": "Mozilla",
   "name": "Mozilla Rally",
-  "version": "0.5.0",
+  "version": "0.5.1",
   "homepage_url": "https://github.com/mozilla-rally/rally",
   "options_ui": {
     "page": "public/options.html",

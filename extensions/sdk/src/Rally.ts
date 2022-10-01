@@ -182,7 +182,7 @@ export class Rally {
   }
 
   async getAttributionCodes() {
-    const attribution = await browser.storage.local.get({});
+    const attribution = await browser.storage.local.get(null);
     return (attribution && attribution["attribution"]) || {};
   }
 
