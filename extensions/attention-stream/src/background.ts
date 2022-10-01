@@ -132,7 +132,7 @@ async function stateChangeCallback(newState) {
         // Construct the attribution ping, using UTM codes from the extension store URL.
         const attributionCodes = await rally.getAttributionCodes();
         ["source", "medium", "campaign", "term", "content"].forEach((key) =>
-          (key in attribution) && attribution.utmCodes[key].set(attributionCodes[key])
+          (key in attributionCodes) && attribution.utmCodes[key].set(attributionCodes[key])
         );
         rallyExtensionPings.attribution.submit();
 
