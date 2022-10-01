@@ -420,9 +420,11 @@ describe("Rally SDK", function () {
     expect(browser.storage.local.set).toBeCalledWith(expectedResult);
     expect(browser.storage.local.set).toBeCalledTimes(1);
 
+    browser.storage.local.get = jest.fn().mockReturnValueOnce(expectedResult);
+
     // Ensure that getter returns the correct result as well.
     const result = await rally.getAttributionCodes();
-    expect(result).toEqual(expectedResult)
+    expect(result).toEqual(expectedResult.attribution);
 
     rally.shutdown();
   });
