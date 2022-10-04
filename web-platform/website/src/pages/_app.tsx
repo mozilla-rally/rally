@@ -7,6 +7,7 @@ import { useEffect } from "react";
 import { AttributionProvider } from "../services/AttributionService";
 import { AuthenticationProvider } from "../services/AuthenticationService";
 import { useFirebase } from "../services/FirebaseService";
+import { FlagProvider } from "../services/FlagService";
 import { StudiesProvider } from "../services/StudiesService";
 import { UserDocumentProvider } from "../services/UserDocumentService";
 import "../styles";
@@ -49,15 +50,17 @@ function MyApp({ Component, pageProps }: AppProps) {
           crossOrigin="anonymous"
         />
       </Head>
-      <AttributionProvider>
-        <AuthenticationProvider>
-          <StudiesProvider>
-            <UserDocumentProvider>
-              <Component {...pageProps} />
-            </UserDocumentProvider>
-          </StudiesProvider>
-        </AuthenticationProvider>
-      </AttributionProvider>
+      <FlagProvider>
+        <AttributionProvider>
+          <AuthenticationProvider>
+            <StudiesProvider>
+              <UserDocumentProvider>
+                <Component {...pageProps} />
+              </UserDocumentProvider>
+            </StudiesProvider>
+          </AuthenticationProvider>
+        </AttributionProvider>
+      </FlagProvider>
     </>
   );
 }

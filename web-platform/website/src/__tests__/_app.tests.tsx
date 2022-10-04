@@ -5,6 +5,7 @@ import { Router, useRouter } from "next/router";
 import { default as App } from "../pages/_app";
 import { AuthenticationProvider } from "../services/AuthenticationService";
 import { useFirebase } from "../services/FirebaseService";
+import { FlagProvider } from "../services/FlagService";
 import { StudiesProvider } from "../services/StudiesService";
 import { UserDocumentProvider } from "../services/UserDocumentService";
 
@@ -12,6 +13,7 @@ jest.mock("firebase/analytics");
 jest.mock("next/router");
 jest.mock("../services/AuthenticationService");
 jest.mock("../services/FirebaseService");
+jest.mock("../services/FlagService");
 jest.mock("../services/StudiesService");
 jest.mock("../services/UserDocumentService");
 
@@ -19,6 +21,8 @@ describe("App tests", () => {
   const analytics = { analytics: "analytics" };
 
   beforeEach(() => {
+    (FlagProvider as jest.Mock).mockImplementation(({ children }) => children);
+
     (AuthenticationProvider as jest.Mock).mockImplementation(
       ({ children }) => children
     );
@@ -95,6 +99,7 @@ describe("App tests", () => {
 
     expect(root.getByText("Hello World")).toBeInTheDocument();
 
+    expect(FlagProvider).toHaveBeenCalled();
     expect(AuthenticationProvider).toHaveBeenCalled();
     expect(StudiesProvider).toHaveBeenCalled();
     expect(UserDocumentProvider).toHaveBeenCalled();
