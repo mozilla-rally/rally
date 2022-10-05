@@ -85,11 +85,6 @@ describe("StudiesService tests", () => {
 
     expect(studiesContext.installedStudyIds).toEqual([studies[0].studyId]);
 
-    expect(logEvent).toHaveBeenCalledWith(analytics, "activate_extension", {
-      ...attribution,
-      studyId: studies[0].studyId,
-    });
-
     (logEvent as jest.Mock).mockReset();
 
     await act(async () => {
@@ -97,11 +92,6 @@ describe("StudiesService tests", () => {
     });
 
     expect(studiesContext.installedStudyIds).toEqual([studies[0].studyId]);
-
-    expect(logEvent).toHaveBeenCalledWith(analytics, "activate_extension", {
-      ...attribution,
-      studyId: studies[0].studyId,
-    });
 
     (logEvent as jest.Mock).mockReset();
 
@@ -113,11 +103,6 @@ describe("StudiesService tests", () => {
       studies[0].studyId,
       studies[1].studyId,
     ]);
-
-    expect(logEvent).toHaveBeenCalledWith(analytics, "activate_extension", {
-      ...attribution,
-      studyId: studies[1].studyId,
-    });
 
     (logEvent as jest.Mock).mockReset();
 
