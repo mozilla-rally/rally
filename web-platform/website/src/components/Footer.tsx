@@ -10,10 +10,12 @@ import { Spacing } from "../styles/Spacing";
 
 const strings = Strings.components.footer;
 
-export function Footer() {
+export function Footer(props: { className?: string }) {
   return (
     <Container
-      className={`${ContainerSmallerStyles.TopLevelContainer} ${styles.container} g-0`}
+      className={`${ContainerSmallerStyles.TopLevelContainer} ${
+        styles.container
+      } g-0 ${(props && props.className) || ""}`}
     >
       <Row>
         <Col>

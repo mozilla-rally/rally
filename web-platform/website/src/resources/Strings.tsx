@@ -354,6 +354,25 @@ export const Strings = {
             containsDigit: "Use at least 1 number",
           },
         },
+        loginPageContentV2: {
+          titles: {
+            extensionFirst: {
+              subtitle:
+                "Congrats on downloading the extension! Before you can contribute, we need to create an account so you can manage your data.",
+              title: (
+                <>
+                  <div>Now, let's create</div>
+                  <div style={{ textAlign: "initial" }}>your account</div>
+                </>
+              ),
+            },
+          },
+          valuePropositions: {
+            default: {
+              tagline: "Join 10,000+ users on Rally",
+            },
+          },
+        },
         loginView: {
           createAccount: "Create account",
           dontHaveAnAccount: "Don't have an account?",

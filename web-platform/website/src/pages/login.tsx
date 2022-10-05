@@ -5,8 +5,11 @@ import { style } from "typestyle";
 
 import { Layout } from "../components/Layout";
 import { LoginPageContent } from "../components/pages/login/LoginPageContent";
+import { LoginPageContentV2 } from "../components/pages/login/LoginPageContentV2";
+import { Flags } from "../resources/Flags";
 import { Strings } from "../resources/Strings";
 import { useAuthentication } from "../services/AuthenticationService";
+import { useFlagService } from "../services/FlagService";
 import {
   ApplyFullscapePageStyles,
   ScreenSize,
@@ -20,6 +23,8 @@ const LoginPage: NextPage = () => {
 
   const router = useRouter();
 
+  const { isFlagActive } = useFlagService();
+
   if (!isLoaded || !router.isReady) {
     return null;
   }
@@ -27,6 +32,16 @@ const LoginPage: NextPage = () => {
   if (user) {
     router.replace("/");
     return null;
+  }
+
+  if (isFlagActive(Flags.onboardingV2.name)) {
+    return (
+      <LoginPageContentV2>
+        <Head>
+          <title>{strings.title}</title>
+        </Head>
+      </LoginPageContentV2>
+    );
   }
 
   return (

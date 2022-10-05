@@ -171,11 +171,15 @@ export function LoginView() {
                         onChange={(e) => {
                           setPassword(e.target.value);
                           setEyeIconVisible(true);
+
+                          if (validationResult && validationResult.password) {
+                            validationResult.password.error = null;
+                          }
                         }}
                         invalid={isPasswordInvalid}
                       />
 
-                      {eyeIconVisible && !isPasswordInvalid && !isEmailInvalid && (
+                      {eyeIconVisible && !isEmailInvalid && (
                         <InputGroupText className="bg-white">
                           <img
                             className="toggle-password align-self-center"

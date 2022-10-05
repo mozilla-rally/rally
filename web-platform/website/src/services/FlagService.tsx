@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useEffect } from "react";
+import React, { createContext, useContext } from "react";
 
 export interface FlagServiceDataContext {
   isFlagActive(flag: string): boolean;
