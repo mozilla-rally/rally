@@ -17,14 +17,14 @@ import { MobileMenu } from "./MobileMenu";
 
 const strings = Strings.components.navigationBar;
 
-export function NavigationBar() {
+export function NavigationBar(props: { className?: string }) {
   const { user } = useAuthentication();
 
   return (
     <Container
       className={`${ContainerSmallerStyles.TopLevelContainer} ${styles.nav} ${
         user ? "" : "border-0"
-      } border-lg-1 ms-0 me-0`}
+      } border-lg-1 ms-0 me-0 ${(props && props.className) || ""}`}
     >
       <Row className="align-items-center gx-0 gy-0">
         <Col className={`col-md-auto logo-col ${styles.logoCol}`}>

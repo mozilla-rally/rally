@@ -1,7 +1,9 @@
 import { Col, Container, Row } from "reactstrap";
 
+import { Flags } from "../../../resources/Flags";
 import { Strings } from "../../../resources/Strings";
 import { useAuthentication } from "../../../services/AuthenticationService";
+import { useFlagService } from "../../../services/FlagService";
 import { TertiaryButton } from "../../../styles/Buttons";
 import { Fonts } from "../../../styles/Fonts";
 import { Highlighter } from "../../Highlighter";
@@ -15,15 +17,21 @@ export function InitialLoginView() {
   const { setLoginState } = useLoginDataContext();
   const { loginWithGoogle } = useAuthentication();
 
+  const { isFlagActive } = useFlagService();
+
+  const isV2Enabled = isFlagActive(Flags.onboardingV2.name);
+
   return (
     <Container className={`p-0`}>
-      <Row className="mb-4">
-        <Col className="d-flex justify-content-center">
-          <Highlighter>
-            <h1 className={Fonts.Headline}>{strings.title}</h1>
-          </Highlighter>
-        </Col>
-      </Row>
+      {!isV2Enabled && (
+        <Row className="mb-4">
+          <Col className={`d-flex justify-content-center`}>
+            <Highlighter>
+              <h1 className={Fonts.Headline}>{strings.title}</h1>
+            </Highlighter>
+          </Col>
+        </Row>
+      )}
       <Row className="mb-3">
         <Col>
           <LoginButton

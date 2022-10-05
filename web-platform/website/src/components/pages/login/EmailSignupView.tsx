@@ -7,12 +7,16 @@ import {
   FormFeedback,
   FormGroup,
   Input,
+  InputGroup,
+  InputGroupText,
   Label,
   Row,
 } from "reactstrap";
 
+import { Flags } from "../../../resources/Flags";
 import { Strings } from "../../../resources/Strings";
 import { useAuthentication } from "../../../services/AuthenticationService";
+import { useFlagService } from "../../../services/FlagService";
 import { PrimaryButton } from "../../../styles/Buttons";
 import { Fonts } from "../../../styles/Fonts";
 import { getFirebaseErrorMessage } from "../../../utils/FirebaseErrors";
@@ -46,6 +50,10 @@ export function EmailSignupView() {
       validationResult.password &&
       validationResult.password.error
   );
+
+  const { isFlagActive } = useFlagService();
+
+  const isV2Enabled = isFlagActive(Flags.onboardingV2.name);
 
   // Prevents closure in validateAndSignup
 
@@ -102,13 +110,15 @@ export function EmailSignupView() {
 
   return (
     <Container className="p-0">
-      <Row className="mb-4">
-        <Col className="d-flex justify-content-center">
-          <Highlighter>
-            <h1 className={Fonts.Headline}>{strings.title}</h1>
-          </Highlighter>
-        </Col>
-      </Row>
+      {!isV2Enabled && (
+        <Row className="mb-4">
+          <Col className="d-flex justify-content-center">
+            <Highlighter>
+              <h1 className={Fonts.Headline}>{strings.title}</h1>
+            </Highlighter>
+          </Col>
+        </Row>
+      )}
       <Row>
         <Col>
           <Form>
@@ -132,54 +142,58 @@ export function EmailSignupView() {
             </FormGroup>
 
             <FormGroup>
-              <Label for="password" className="fw-bold">
-                {strings.password}
-              </Label>
-              <div className="d-flex flex-row-reverse">
-                <Input
-                  id="password"
-                  type={passwordVisible ? "text" : "password"}
-                  value={password}
-                  onChange={(e) => {
-                    setPassword(e.target.value);
-                    setEyeIconVisible(true);
-                    if (validationResult)
-                      setValidationResult({
-                        ...validationResult,
-                        password: {},
-                      });
-                  }}
-                  invalid={isPasswordInvalid}
-                />
+              <Container className="p-0">
+                <Label for="password" className="fw-bold">
+                  {strings.password}
+                </Label>
+                <Row>
+                  <Col className="position-relative">
+                    <InputGroup>
+                      <Input
+                        id="password"
+                        className="rounded-1"
+                        type={passwordVisible ? "text" : "password"}
+                        value={password}
+                        onChange={(e) => {
+                          setPassword(e.target.value);
+                          setEyeIconVisible(true);
+                        }}
+                        invalid={isPasswordInvalid}
+                      />
 
-                {eyeIconVisible && !isPasswordInvalid && !isEmailInvalid && (
-                  <img
-                    className="toggle-password align-self-center position-absolute m-1"
-                    src={
-                      !passwordVisible
-                        ? "img/icon-password-show.svg"
-                        : "img/icon-password-hide.svg"
-                    }
-                    alt={passwordVisible ? "open eye" : "eye with slash"}
-                    width="24px"
-                    height="24px"
-                    onClick={() => setPasswordVisible(!passwordVisible)}
-                  />
-                )}
-              </div>
+                      {eyeIconVisible && (
+                        <InputGroupText className="bg-white">
+                          <img
+                            className="toggle-password align-self-center"
+                            src={
+                              !passwordVisible
+                                ? "img/icon-password-show.svg"
+                                : "img/icon-password-hide.svg"
+                            }
+                            alt={
+                              passwordVisible ? "open eye" : "eye with slash"
+                            }
+                            onClick={() => setPasswordVisible(!passwordVisible)}
+                          />
+                        </InputGroupText>
+                      )}
+                      {isPasswordInvalid && (
+                        <FormFeedback className="password-error">
+                          {validationResult?.password.error}
+                        </FormFeedback>
+                      )}
+                    </InputGroup>
 
-              {isPasswordInvalid && (
-                <FormFeedback className="password-error">
-                  {validationResult?.password.error}
-                </FormFeedback>
-              )}
-
-              <PasswordRules
-                rules={
-                  (validationResult && validationResult.passwordRules) || []
-                }
-                className="mt-3"
-              />
+                    <PasswordRules
+                      rules={
+                        (validationResult && validationResult.passwordRules) ||
+                        []
+                      }
+                      className="mt-3"
+                    />
+                  </Col>
+                </Row>
+              </Container>
             </FormGroup>
           </Form>
         </Col>

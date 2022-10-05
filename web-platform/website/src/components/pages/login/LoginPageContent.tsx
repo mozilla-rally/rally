@@ -4,15 +4,12 @@ import { style } from "typestyle";
 import { Strings } from "../../../resources/Strings";
 import { ScreenSize, Spacing, createResponsiveStyle } from "../../../styles";
 import { FontSizeRaw } from "../../../styles/Fonts";
-import { EmailSignupView } from "./EmailSignupView";
-import { InitialLoginView } from "./InitialLoginView";
+import { LoginCardFactory } from "./LoginCardFactory";
 import {
   LoginState,
   LoginStateProvider,
   useLoginDataContext,
 } from "./LoginDataContext";
-import { LoginView } from "./LoginView";
-import { ResetPasswordView } from "./ResetPasswordView";
 
 const strings = Strings.components.pages.login.launchCardText;
 
@@ -56,27 +53,6 @@ function RenderLaunchText() {
       </Card>
     </Col>
   );
-}
-
-function LoginCardFactory() {
-  const { loginState } = useLoginDataContext();
-
-  switch (loginState) {
-    case LoginState.Initial:
-      return <InitialLoginView />;
-
-    case LoginState.Login:
-      return <LoginView />;
-
-    case LoginState.ResetPassword:
-      return <ResetPasswordView />;
-
-    case LoginState.SignupWithEmail:
-      return <EmailSignupView />;
-
-    default:
-      throw new Error("Invalid card type.");
-  }
 }
 
 const styles = {

@@ -36,6 +36,11 @@ describe("Footer tests", () => {
     ).toBeInTheDocument();
   });
 
+  it("adds the custom class to the footer", () => {
+    render(<Footer className="custom-class" />);
+    expect(document.querySelector(".custom-class")).toBeInTheDocument();
+  });
+
   function assertLinkExists(link: {
     text: string;
     link: string;

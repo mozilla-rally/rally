@@ -61,6 +61,11 @@ describe("NavigationBar tests", () => {
     expect(MobileMenu).toHaveBeenCalled();
   });
 
+  it("renders the custom class for the navigation bar", () => {
+    render(<NavigationBar className="custom-class" />);
+    expect(document.querySelector(".custom-class")).toBeInTheDocument();
+  });
+
   function assertLogoPresent(root: RenderResult, isUserLoggedIn: boolean) {
     const logoImg = root.getByAltText(strings.a11y.logo);
     expect(logoImg).toBeInTheDocument();
