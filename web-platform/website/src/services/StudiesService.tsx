@@ -34,9 +34,7 @@ export function StudiesProvider(props: { children: React.ReactNode }) {
 
   function subscribeToExtensionEvents() {
     initializeExtensionEvents({
-      onStudyInstalled: (studyId, attribution) => {
-        logStudyInstalled(studyId, attribution);
-
+      onStudyInstalled: (studyId) => {
         setInstalledStudyIds((ids) => {
           if (!ids.includes(studyId)) {
             return [...ids, studyId];
@@ -91,21 +89,4 @@ export function StudiesProvider(props: { children: React.ReactNode }) {
       {props.children}
     </StudiesContext.Provider>
   );
-}
-
-function logStudyInstalled(
-  studyId: string,
-  attribution: Record<string, string>
-) {
-  const { analytics } = useFirebase();
-
-  const eventParams: Record<string, string> = { studyId };
-
-  ["source", "medium", "campaign", "term", "content"].forEach((code) => {
-    if (code in attribution) {
-      eventParams[code] = attribution[code];
-    }
-  });
-
-  logEvent(analytics, "activate_extension", eventParams);
 }
