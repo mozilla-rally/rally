@@ -53,7 +53,7 @@ export function EmailSignupView() {
 
   const { isFlagActive } = useFlagService();
 
-  const isV2Enabled = isFlagActive(Flags.onboardingV2.name);
+  const isV2Enabled = isFlagActive(Flags.onboardingV2);
 
   // Prevents closure in validateAndSignup
 

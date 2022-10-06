@@ -19,7 +19,7 @@ export function InitialLoginView() {
 
   const { isFlagActive } = useFlagService();
 
-  const isV2Enabled = isFlagActive(Flags.onboardingV2.name);
+  const isV2Enabled = isFlagActive(Flags.onboardingV2);
 
   return (
     <Container className={`p-0`}>
