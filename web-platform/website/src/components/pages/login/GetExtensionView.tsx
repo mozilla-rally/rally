@@ -16,9 +16,8 @@ export function GetExtensionView() {
 		<Container className="p-0">
 			<Row className="mb-3">
 				<Col className="d-flex justify-content-center">
-					<h1 className={Fonts.Headline}>{strings.title}</h1>
-					<Highlighter>
-						<h1 className={Fonts.Headline}>{strings.titleHighlight}</h1>
+					<Highlighter className={`w-100 text-left ${styles.v2Highlighter}`}>
+						<h1 className={Fonts.Headline}>{strings.title}</h1>
 					</Highlighter>
 				</Col>
 			</Row>
@@ -71,5 +70,16 @@ const styles = {
 	bulletTitle: style({
 		...FontSizeRaw.Large,
 		color: Colors.ColorMarketingGray70,
+	}),
+
+	v2Highlighter: style({
+		$nest: {
+			".highlight": {
+				width: "40%",
+				top: "50%",
+				height: `${Spacing.Large + 4}px`,
+				left: "59%",
+			},
+		},
 	}),
 };

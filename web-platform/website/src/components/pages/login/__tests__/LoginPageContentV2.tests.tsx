@@ -2,6 +2,7 @@ import { render } from "@testing-library/react";
 import { isValidElement } from "react";
 
 import { Strings } from "../../../../resources/Strings";
+import { useStudies } from "../../../../services/StudiesService";
 import { LoginCardFactory } from "../LoginCardFactory";
 import {
   LoginState,
@@ -11,6 +12,7 @@ import {
 import { LoginPageContentV2 } from "../LoginPageContentV2";
 import { LoginPageLayoutV2 } from "../LoginPageLayoutV2";
 
+jest.mock("../../../../services/StudiesService");
 jest.mock("../LoginCardFactory");
 jest.mock("../LoginDataContext");
 jest.mock("../LoginPageLayoutV2");
@@ -38,9 +40,43 @@ describe("LoginPageContentV2 tests", () => {
     (useLoginDataContext as jest.Mock).mockReturnValue({
       loginState: LoginState.Initial,
     });
+
+    (useStudies as jest.Mock).mockReturnValue({
+      installedStudyIds: [],
+    });
   });
 
-  it("renders initial content correctly", () => {
+  it("renders initial content correctly - account first", () => {
+    const root = render(
+      <LoginPageContentV2>
+        <div>Child content</div>
+      </LoginPageContentV2>
+    );
+
+    expect(LoginStateProvider).toHaveBeenCalled();
+    expect(root.getByText("Child content")).toBeInTheDocument();
+    expect(LoginCardFactory).toHaveBeenCalled();
+
+    expect(isValidElement(strings.titles.accountFirst.title)).toBeTruthy();
+
+    expect(
+      root.getByText(strings.titles.accountFirst.subtitle)
+    ).toBeInTheDocument();
+
+    expect(
+      root.getByText(strings.valuePropositions.default.tagline)
+    ).toBeInTheDocument();
+
+    expect(
+      document.querySelector(`img[src="/img/illustration-group-rally.png"]`)
+    ).toBeInTheDocument();
+  });
+
+  it("renders initial content correctly - extension first", () => {
+    (useStudies as jest.Mock).mockReturnValue({
+      installedStudyIds: ["attention-stream"],
+    });
+
     const root = render(
       <LoginPageContentV2>
         <div>Child content</div>

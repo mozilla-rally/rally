@@ -1,4 +1,5 @@
 import { Strings } from "../../../resources/Strings";
+import { useStudies } from "../../../services/StudiesService";
 import { Fonts } from "../../../styles/Fonts";
 import { Highlighter } from "../../Highlighter";
 import { LoginCardFactory } from "./LoginCardFactory";
@@ -52,6 +53,7 @@ function LoginCards() {
 
 function LoginCardTitle() {
 	const { loginState } = useLoginDataContext();
+	const { installedStudyIds } = useStudies();
 
 	if (
 		loginState === LoginState.Login ||
@@ -61,7 +63,10 @@ function LoginCardTitle() {
 		return null;
 	}
 
-	const { title, subtitle } = strings.titles.extensionFirst;
+	const { title, subtitle } = installedStudyIds.length
+		? strings.titles.extensionFirst
+		: strings.titles.accountFirst;
+
 	return (
 		<>
 			<Row className="mb-4">

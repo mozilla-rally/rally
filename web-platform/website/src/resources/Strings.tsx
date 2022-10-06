@@ -341,13 +341,12 @@ export const Strings = {
 					skip: "Skip for now",
 					subtitle:
 						"Congrats on joining the Rally community! To start contributing, let's add the extension.",
-					title: "Lastly, add the  ",
-					titleHighlight: "extension",
+					title: "Lastly, add the extension",
+
 					bulletTitle: "The extension empowers you to: ",
 					bullets: [
 						"Enable Mozilla Rally's trusted researchers to expose Big Tech's hidden privacy violations and help hold them accountable.",
 					],
-
 					valueProp: {
 						title: "With contributions like yours: ",
 						valueProps: [
@@ -384,6 +383,16 @@ export const Strings = {
 				},
 				loginPageContentV2: {
 					titles: {
+						accountFirst: {
+							subtitle:
+								"To safely contribute and manage your data on Rally, you’ll first need to create an account.",
+							title: (
+								<>
+									<div>Let's Rally. Create</div>
+									<div style={{ textAlign: "initial" }}>your account</div>
+								</>
+							),
+						},
 						extensionFirst: {
 							subtitle:
 								"Congrats on downloading the extension! Before you can contribute, we need to create an account so you can manage your data.",
@@ -753,32 +762,7 @@ export const Strings = {
 								</>
 							),
 						},
-
-						{
-							image: {
-								url: "/img/people-like-you.png",
-								width: 84,
-								alt: "People Like You (only aggregated data).",
-							},
-							text: (
-								<>
-									<b>People Like You (only aggregated data)</b>
-									<p>
-										Our mission is focused on{" "}
-										<b>empowering everyday citizens</b>, not just a select few.
-										To that end, we may release aggregated, de-identified data
-										sets to help further public knowledge on certain issues.
-										These data sets will be{" "}
-										<b>stripped of any identifiable data</b>, and won't reveal
-										anything about individual users.
-									</p>
-								</>
-							),
-						},
 					],
-					tagline:
-						"We may share information with trusted entities that help us fulfill our mission, including:",
-					title: "Who We May Share Information With",
 				},
 				title: {
 					tagline:
