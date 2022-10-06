@@ -1,26 +1,30 @@
 import { EmailSignupView } from "./EmailSignupView";
+import { GetExtensionView } from "./GetExtensionView";
 import { InitialLoginView } from "./InitialLoginView";
 import { LoginState, useLoginDataContext } from "./LoginDataContext";
 import { LoginView } from "./LoginView";
 import { ResetPasswordView } from "./ResetPasswordView";
 
 export function LoginCardFactory() {
-  const { loginState } = useLoginDataContext();
+	const { loginState } = useLoginDataContext();
 
-  switch (loginState) {
-    case LoginState.Initial:
-      return <InitialLoginView />;
+	switch (loginState) {
+		case LoginState.GetExtension:
+			return <GetExtensionView />;
 
-    case LoginState.Login:
-      return <LoginView />;
+		case LoginState.Initial:
+			return <InitialLoginView />;
 
-    case LoginState.ResetPassword:
-      return <ResetPasswordView />;
+		case LoginState.Login:
+			return <LoginView />;
 
-    case LoginState.SignupWithEmail:
-      return <EmailSignupView />;
+		case LoginState.ResetPassword:
+			return <ResetPasswordView />;
 
-    default:
-      throw new Error("Invalid card type.");
-  }
+		case LoginState.SignupWithEmail:
+			return <EmailSignupView />;
+
+		default:
+			throw new Error("Invalid card type.");
+	}
 }
