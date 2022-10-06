@@ -770,6 +770,7 @@ export const Strings = {
 					title: "Our Privacy Notice",
 				},
 			},
+
 			profile: {
 				age: {
 					options: [
