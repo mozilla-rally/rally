@@ -356,6 +356,16 @@ export const Strings = {
         },
         loginPageContentV2: {
           titles: {
+            accountFirst: {
+              subtitle:
+                "To safely contribute and manage your data on Rally, you’ll first need to create an account.",
+              title: (
+                <>
+                  <div>Let's Rally. Create</div>
+                  <div style={{ textAlign: "initial" }}>your account</div>
+                </>
+              ),
+            },
             extensionFirst: {
               subtitle:
                 "Congrats on downloading the extension! Before you can contribute, we need to create an account so you can manage your data.",
