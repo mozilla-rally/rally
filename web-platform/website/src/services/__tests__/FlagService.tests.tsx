@@ -16,17 +16,65 @@ describe("FlagService tests", () => {
 
     const flagContext: FlagServiceDataContext = await getFlagsContext();
 
-    expect(flagContext.isFlagActive("a")).toBeTruthy();
-    expect(flagContext.isFlagActive("b")).toBeTruthy();
-    expect(flagContext.isFlagActive("c")).toBeFalsy();
-    expect(flagContext.isFlagActive("d")).toBeTruthy();
+    expect(
+      flagContext.isFlagActive({
+        name: "a",
+        description: "a",
+        defaultValue: false,
+      })
+    ).toBeTruthy();
+
+    expect(
+      flagContext.isFlagActive({
+        name: "b",
+        description: "b",
+        defaultValue: true,
+      })
+    ).toBeTruthy();
+
+    expect(
+      flagContext.isFlagActive({
+        name: "c",
+        description: "c",
+        defaultValue: true,
+      })
+    ).toBeFalsy();
+
+    expect(
+      flagContext.isFlagActive({
+        name: "d",
+        description: "d",
+        defaultValue: false,
+      })
+    ).toBeTruthy();
   });
 
-  it("non existent flags", async () => {
+  it("non existent flags - default value false", async () => {
     jest.spyOn(Storage.prototype, "getItem").mockReturnValue("  ");
 
     const flagContext: FlagServiceDataContext = await getFlagsContext();
-    expect(flagContext.isFlagActive("a")).toBeFalsy();
+
+    expect(
+      flagContext.isFlagActive({
+        name: "a",
+        description: "a",
+        defaultValue: false,
+      })
+    ).toBeFalsy();
+  });
+
+  it("non existent flags - default value true", async () => {
+    jest.spyOn(Storage.prototype, "getItem").mockReturnValue("  ");
+
+    const flagContext: FlagServiceDataContext = await getFlagsContext();
+
+    expect(
+      flagContext.isFlagActive({
+        name: "a",
+        description: "a",
+        defaultValue: true,
+      })
+    ).toBeTruthy();
   });
 
   it("sets a flag while persisting existing flags", async () => {
@@ -40,8 +88,27 @@ describe("FlagService tests", () => {
 
     const flagContext: FlagServiceDataContext = await getFlagsContext();
 
-    expect(flagContext.setFlag("b", false));
-    expect(flagContext.setFlag("c", true));
+    expect(
+      flagContext.setFlag(
+        {
+          name: "b",
+          description: "b",
+          defaultValue: false,
+        },
+        false
+      )
+    );
+
+    expect(
+      flagContext.setFlag(
+        {
+          name: "c",
+          description: "c",
+          defaultValue: true,
+        },
+        true
+      )
+    );
 
     expect(Storage.prototype.setItem).toHaveBeenCalledWith(
       "flags",

@@ -34,7 +34,7 @@ const LoginPage: NextPage = () => {
     return null;
   }
 
-  if (isFlagActive(Flags.onboardingV2.name)) {
+  if (isFlagActive(Flags.onboardingV2)) {
     return (
       <LoginPageContentV2>
         <Head>

@@ -125,7 +125,7 @@ describe("login page tests", () => {
     render(<LoginPage />);
 
     expect(useFlagService).toHaveBeenCalled();
-    expect(isFlagActive).toHaveBeenCalledWith(Flags.onboardingV2.name);
+    expect(isFlagActive).toHaveBeenCalledWith(Flags.onboardingV2);
 
     expect(replace).not.toHaveBeenCalled();
 
@@ -157,7 +157,7 @@ describe("login page tests", () => {
     render(<LoginPage />);
 
     expect(useFlagService).toHaveBeenCalled();
-    expect(isFlagActive).toHaveBeenCalledWith(Flags.onboardingV2.name);
+    expect(isFlagActive).toHaveBeenCalledWith(Flags.onboardingV2);
 
     expect(replace).not.toHaveBeenCalled();
 
