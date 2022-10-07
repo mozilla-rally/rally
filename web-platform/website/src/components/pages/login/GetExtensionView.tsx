@@ -1,10 +1,15 @@
 import { Strings } from "../../../resources/Strings";
-import { Spacing, Colors } from "../../../styles";
-import { PrimaryButton, LinkButton } from "../../../styles/Buttons";
-import { Fonts, FontSizeRaw } from "../../../styles/Fonts";
+import { useStudies } from "../../../services/StudiesService";
+import { Colors, Spacing } from "../../../styles";
+import { LinkButton, PrimaryButton } from "../../../styles/Buttons";
+import { FontSizeRaw, Fonts } from "../../../styles/Fonts";
+import { detectBrowser } from "../../../utils/BrowserDetector";
+import { BrowserType } from "../../../utils/BrowserType";
 import { Highlighter } from "../../Highlighter";
+import { PrivacyPolicyPageContentV2 } from "../privacy-policy/PrivacyPolicyPageContentV2";
 import { LoginButton } from "./LoginButton";
 import { useRouter } from "next/router";
+import { useState, useEffect } from "react";
 import { Col, Container, Row } from "reactstrap";
 import { style } from "typestyle";
 
@@ -12,6 +17,21 @@ const strings = Strings.components.pages.login.getExtensionView;
 
 export function GetExtensionView() {
 	const router = useRouter();
+	const [showPrivacyDialog, setShowPrivacyDialog] = useState(true);
+	const [browserType] = useState(detectBrowser());
+	const { allStudies } = useStudies();
+	const [chromeLink, setChromelink] = useState("");
+	const [fxLink, setFxlink] = useState("");
+
+	useEffect(() => {
+		allStudies.forEach((study) => {
+			if (study.authors.name === "Mozilla Rally") {
+				setChromelink(study.downloadLink.chrome);
+				setFxlink(study.downloadLink.firefox);
+			}
+		});
+	});
+
 	return (
 		<Container className="p-0">
 			<Row className="mb-3">
@@ -28,21 +48,34 @@ export function GetExtensionView() {
 					</h5>
 				</Col>
 			</Row>
-			<Row className="mb-3">
+			<Row className={`mb-3 ${styles.bulletWrapper}`}>
 				<Col>
-					<h5 className={`${Fonts.Title} ${styles.bulletTitle} text-left`}>
+					<h5 className={`${Fonts.Title} bullet-title text-left`}>
 						{strings.bulletTitle}
 					</h5>
-					<ul>
-						{strings.bullets.map((text) => {
-							return <li>{text}</li>;
+					<ul className="bullet-list">
+						{strings.bullets.map((text, index) => {
+							return <li key={index}>{text}</li>;
 						})}
 					</ul>
 				</Col>
 			</Row>
 			<Row className="mb-3">
 				<Col>
-					<LoginButton className={PrimaryButton}>{strings.getExt}</LoginButton>
+					<LoginButton className={PrimaryButton}>
+						{allStudies && (
+							<a
+								href={browserType === BrowserType.Chrome ? chromeLink : fxLink}
+								target="_blank"
+								rel="noreferrer"
+								onClick={() => {
+									router.push("/");
+								}}
+							>
+								{strings.getExt}
+							</a>
+						)}
+					</LoginButton>
 				</Col>
 			</Row>
 			<Row className="mb-3">
@@ -57,6 +90,12 @@ export function GetExtensionView() {
 					</LoginButton>
 				</Col>
 			</Row>
+			{showPrivacyDialog && (
+				<PrivacyPolicyPageContentV2
+					closeModal={() => setShowPrivacyDialog(false)}
+					isOpen={showPrivacyDialog}
+				/>
+			)}
 		</Container>
 	);
 }
@@ -67,9 +106,16 @@ const styles = {
 		lineHeight: `${Spacing.Micro * 7}px`,
 	}),
 
-	bulletTitle: style({
-		...FontSizeRaw.Large,
-		color: Colors.ColorMarketingGray70,
+	bulletWrapper: style({
+		$nest: {
+			".bullet-title": {
+				...FontSizeRaw.Large,
+				color: Colors.ColorMarketingGray70,
+			},
+			".bullet-list": {
+				paddingLeft: "17px",
+			},
+		},
 	}),
 
 	v2Highlighter: style({

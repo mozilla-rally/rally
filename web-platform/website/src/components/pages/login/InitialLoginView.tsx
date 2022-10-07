@@ -15,14 +15,13 @@ const strings = Strings.components.pages.login.initialLoginView;
 export function InitialLoginView() {
 	const { setLoginState } = useLoginDataContext();
 	const { loginWithGoogle } = useAuthentication();
-
 	const { isFlagActive } = useFlagService();
-
 	const isV2Enabled = isFlagActive(Flags.onboardingV2.name);
+	const isPrivacyV2Enabled = isFlagActive(Flags.privacyV2.name);
 
 	return (
 		<Container className={`p-0`}>
-			{!isV2Enabled && (
+			{!isV2Enabled && !isPrivacyV2Enabled && (
 				<Row className="mb-4">
 					<Col className={`d-flex justify-content-center`}>
 						<Highlighter>
@@ -57,13 +56,6 @@ export function InitialLoginView() {
 			</Row>
 			<Row>
 				<PrivacyNoticeAndLoginLink />
-			</Row>
-
-			{/* for PR testing purposes, will delete before checking in */}
-			<Row className="my-5 text-bold text-align-center">
-				<button onClick={() => setLoginState(LoginState.GetExtension)}>
-					show add extension view
-				</button>
 			</Row>
 		</Container>
 	);

@@ -469,11 +469,22 @@ export const Strings = {
 					},
 				},
 			},
+
 			privacyPolicy: {
 				buttons: {
-					acceptAndEnroll: "Accept & Enroll",
-					decline: "Decline",
+					initial: {
+						acceptAndEnroll: "Accept & Enroll",
+						decline: "Decline",
+					},
+
+					v2: {
+						agree: "Agree",
+						back: "Back",
+					},
 				},
+
+				modalHeader: "Our privacy policy and your data consent",
+
 				dataCollectionTypes: {
 					sections: [
 						{
@@ -763,6 +774,9 @@ export const Strings = {
 							),
 						},
 					],
+					tagline:
+						"We may share information with trusted entities that help us fulfill our mission, including:",
+					title: "Who We May Share Information With",
 				},
 				title: {
 					tagline:
