@@ -1,8 +1,10 @@
 import React, { createContext, useContext } from "react";
 
+import { Flag } from "./Flag";
+
 export interface FlagServiceDataContext {
-  isFlagActive(flag: string): boolean;
-  setFlag(flag: string, isActive: boolean): void;
+  isFlagActive(flag: Flag): boolean;
+  setFlag(flag: Flag, isActive: boolean): void;
 }
 
 const FlagContext = createContext<FlagServiceDataContext>(
@@ -14,28 +16,30 @@ export function useFlagService() {
 }
 
 export function FlagProvider(props: { children: React.ReactNode }) {
-  function isFlagActive(flag: string): boolean {
+  function isFlagActive(flag: Flag): boolean {
     const flagsStr = localStorage.getItem("flags");
 
     if (!flagsStr || !flagsStr.trim()) {
-      return false;
+      return flag.defaultValue;
     }
 
     const parsedFlags: Record<string, boolean> = JSON.parse(flagsStr) || {};
 
-    return parsedFlags && parsedFlags[flag];
+    const presentValue = parsedFlags[flag.name];
+
+    return presentValue !== undefined ? presentValue : flag.defaultValue;
   }
 
-  function setFlag(flag: string, isActive: boolean): void {
+  function setFlag(flag: Flag, isActive: boolean): void {
     const flagsStr = localStorage.getItem("flags");
 
     const parsedFlags: Record<string, boolean> =
       flagsStr && flagsStr.trim() ? JSON.parse(flagsStr) : {};
 
     if (isActive) {
-      parsedFlags[flag] = true;
+      parsedFlags[flag.name] = true;
     } else {
-      delete parsedFlags[flag];
+      delete parsedFlags[flag.name];
     }
 
     localStorage.setItem("flags", JSON.stringify(parsedFlags));

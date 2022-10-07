@@ -31,7 +31,7 @@ const LoginPage: NextPage = () => {
     return null;
   }
 
-  if (isFlagActive(Flags.onboardingV2.name)) {
+  if (isFlagActive(Flags.onboardingV2)) {
     if (user && installedStudyIds.length > 0) {
       router.replace("/");
       return null;
@@ -43,10 +43,7 @@ const LoginPage: NextPage = () => {
     }
   }
 
-  if (
-    isFlagActive(Flags.onboardingV2.name) ||
-    isFlagActive(Flags.privacyV2.name)
-  ) {
+  if (isFlagActive(Flags.onboardingV2)) {
     return (
       <LoginPageContentV2>
         <Head>

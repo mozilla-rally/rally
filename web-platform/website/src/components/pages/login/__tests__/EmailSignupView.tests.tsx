@@ -61,7 +61,7 @@ describe("EmailSignupView tests", () => {
     const root = render(<EmailSignupView />);
 
     expect(useFlagService).toHaveBeenCalled();
-    expect(isFlagActive).toHaveBeenCalledWith(Flags.onboardingV2.name);
+    expect(isFlagActive).toHaveBeenCalledWith(Flags.onboardingV2);
 
     expect(Highlighter).toHaveBeenCalled();
     expect(root.getByText(strings.title)).toBeInTheDocument();
@@ -99,7 +99,7 @@ describe("EmailSignupView tests", () => {
     const root = render(<EmailSignupView />);
 
     expect(useFlagService).toHaveBeenCalled();
-    expect(isFlagActive).toHaveBeenCalledWith(Flags.onboardingV2.name);
+    expect(isFlagActive).toHaveBeenCalledWith(Flags.onboardingV2);
 
     // Headless mode - no highlighter or title should be shown
     expect(Highlighter).not.toHaveBeenCalled();

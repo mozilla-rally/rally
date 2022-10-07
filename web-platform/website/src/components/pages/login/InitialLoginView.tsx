@@ -17,12 +17,12 @@ export function InitialLoginView() {
   const { setLoginState } = useLoginDataContext();
   const { loginWithGoogle } = useAuthentication();
   const { isFlagActive } = useFlagService();
-  const isV2Enabled = isFlagActive(Flags.onboardingV2.name);
-  const isPrivacyV2Enabled = isFlagActive(Flags.privacyV2.name);
+
+  const isV2Enabled = isFlagActive(Flags.onboardingV2);
 
   return (
     <Container className={`p-0`}>
-      {!isV2Enabled && !isPrivacyV2Enabled && (
+      {!isV2Enabled && (
         <Row className="mb-4">
           <Col className={`d-flex justify-content-center`}>
             <Highlighter>

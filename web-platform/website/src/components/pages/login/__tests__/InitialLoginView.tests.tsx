@@ -45,7 +45,7 @@ describe("InitialLoginView tests", () => {
     assertSignupWithEmailPresent(root);
 
     expect(useFlagService).toHaveBeenCalled();
-    expect(isFlagActive).toHaveBeenCalledWith(Flags.onboardingV2.name);
+    expect(isFlagActive).toHaveBeenCalledWith(Flags.onboardingV2);
 
     expect(useAuthentication).toHaveBeenCalled();
     expect(useLoginDataContext).toHaveBeenCalled();
@@ -61,7 +61,7 @@ describe("InitialLoginView tests", () => {
     assertSignupWithEmailPresent(root);
 
     expect(useFlagService).toHaveBeenCalled();
-    expect(isFlagActive).toHaveBeenCalledWith(Flags.onboardingV2.name);
+    expect(isFlagActive).toHaveBeenCalledWith(Flags.onboardingV2);
 
     expect(useAuthentication).toHaveBeenCalled();
     expect(useLoginDataContext).toHaveBeenCalled();
