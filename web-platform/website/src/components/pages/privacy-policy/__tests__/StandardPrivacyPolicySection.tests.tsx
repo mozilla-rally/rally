@@ -2,6 +2,8 @@ import { render } from "@testing-library/react";
 
 import { StandardPrivacyPolicySection } from "../StandardPrivacyPolicySection";
 
+jest.mock("../../../../services/FlagService");
+
 describe("StandardPrivacyPolicySection tests", () => {
   it("renders title and tagline along with empty sections", () => {
     const root = render(

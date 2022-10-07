@@ -28,7 +28,7 @@ describe("PrivacyPolicyButtons tests", () => {
     const root = render(<PrivacyPolicyButtons />);
 
     await act(async () => {
-      await events.click(root.getByText(strings.decline));
+      await events.click(root.getByText(strings.initial.decline));
     });
 
     expect(logout).toHaveBeenCalled();
@@ -50,7 +50,7 @@ describe("PrivacyPolicyButtons tests", () => {
     const root = render(<PrivacyPolicyButtons />);
 
     await act(async () => {
-      await events.click(root.getByText(strings.acceptAndEnroll));
+      await events.click(root.getByText(strings.initial.acceptAndEnroll));
     });
 
     expect(updateUserDocument).toHaveBeenCalledWith({ enrolled: true });
@@ -73,7 +73,7 @@ describe("PrivacyPolicyButtons tests", () => {
     const root = render(<PrivacyPolicyButtons />);
 
     await act(async () => {
-      await events.click(root.getByText(strings.acceptAndEnroll));
+      await events.click(root.getByText(strings.initial.acceptAndEnroll));
     });
 
     expect(updateUserDocument).toHaveBeenCalledWith({

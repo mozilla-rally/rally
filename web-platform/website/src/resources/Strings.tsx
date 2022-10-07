@@ -339,11 +339,11 @@ export const Strings = {
 				getExtensionView: {
 					getExt: "Add the extension",
 					skip: "Skip for now",
-					subtitle:
+					subTitle:
 						"Congrats on joining the Rally community! To start contributing, let's add the extension.",
 					title: "Lastly, add the extension",
 
-					bulletTitle: "The extension empowers you to: ",
+					bulletTitle: "The extension empowers you to:",
 					bullets: [
 						"Enable Mozilla Rally's trusted researchers to expose Big Tech's hidden privacy violations and help hold them accountable.",
 					],
