@@ -131,8 +131,10 @@ async function stateChangeCallback(newState) {
 
         // Construct the attribution ping, using UTM codes from the extension store URL.
         const attributionCodes = await rally.getAttributionCodes();
-        ["source", "medium", "campaign", "term", "content"].forEach((key) =>
-          (key in attributionCodes) && attribution.utmCodes[key].set(attributionCodes[key])
+        ["source", "medium", "campaign", "term", "content"].forEach(
+          (key) =>
+            key in attributionCodes &&
+            attribution.utmCodes[key].set(attributionCodes[key])
         );
         rallyExtensionPings.attribution.submit();
 
@@ -409,31 +411,47 @@ async function stateChangeCallback(newState) {
             }
 
             // Pixels may be either HTTP GET requests for an image, or a POST from JS.
-            // If a POST is detected, collect the form data submitted as well.
+            // If a POST is detected, collect the form data
+            // or raw request body submitted as well.
             let formData;
+            let rawRequestBody;
             if (details.method === "POST") {
               const rawFormData = details.requestBody?.formData;
+              const rawRequestData = details.requestBody?.raw;
               if (rawFormData) {
                 formData = new URLSearchParams(rawFormData).toString();
+              }
+              if (rawRequestData) {
+                // Assume that pixels are not POSTing multi-part data
+                const rawRequestBytes = rawRequestData[0]?.bytes;
+                if (rawRequestBytes) {
+                  const dec = new TextDecoder("utf-8");
+                  rawRequestBody = dec.decode(rawRequestBytes);
+                }
               }
             }
 
             // Grab the WebScience page_id from the content script
-            const [{ result: pageId = undefined } = {}] =
+            const [{ result: pageInfo = undefined } = {}] =
               await browser.scripting.executeScript({
                 target: {
                   tabId,
                 },
                 func: () => {
-                  return window?.webScience?.pageManager?.pageId;
+                  return {
+                    pageId: window?.webScience?.pageManager?.pageId,
+                    originUrl: window?.location?.href,
+                  };
                 },
               });
 
             trackingPixel.type.set(pixelType);
             trackingPixel.trackingUrl.set(details.url);
-            details.initiator && trackingPixel.originUrl.set(details.initiator);
-            pageId && trackingPixel.pageId.set(pageId);
+            pageInfo.originUrl &&
+              trackingPixel.originUrl.set(pageInfo.originUrl);
+            pageInfo.pageId && trackingPixel.pageId.set(pageInfo.pageId);
             formData && trackingPixel.formData.set(formData);
+            rawRequestBody && trackingPixel.rawRequestBody.set(rawRequestBody);
 
             rallyExtensionPings.trackingPixel.submit();
           }
@@ -518,7 +536,7 @@ const rally = new Rally({
   storeId,
   firebaseConfig,
   enableEmulatorMode,
-  functionsHost: new URL(firebaseConfig.functionsHost)
+  functionsHost: new URL(firebaseConfig.functionsHost),
 });
 
 // TODO move to dynamic import, and only load in dev mode.
@@ -561,7 +579,7 @@ class GetPingsUploader extends Uploader {
       "youtube-video-recommendations": "id",
       "youtube-ads": "id",
       "tracking-pixel": "id",
-      "attribution": "id"
+      attribution: "id",
     });
 
     await db.open();
@@ -636,7 +654,7 @@ if (enableDevMode) {
     } else {
       await browser.tabs.create({ url: rallySite });
     }
-  }
+  };
 
   if (manifest.manifest_version === 2) {
     browser.browserAction.onClicked.addListener(actionListener);
