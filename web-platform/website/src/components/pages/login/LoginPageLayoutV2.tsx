@@ -16,7 +16,7 @@ export function LoginPageLayoutV2(props: { children?: React.ReactNode }) {
 	let leftContent: JSX.Element | null = null;
 	let rightContent: JSX.Element | null = null;
 	const { loginState } = useLoginDataContext();
-	let isExtensionView = loginState === "GetExtension" ? true : false;
+	let isExtensionView: boolean = loginState === "GetExtension" ? true : false;
 
 	React.Children.forEach(props.children, (c) => {
 		const child = React.isValidElement(c) ? (c as JSX.Element) : null;
