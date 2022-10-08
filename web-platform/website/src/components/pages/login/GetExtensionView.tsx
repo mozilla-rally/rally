@@ -27,7 +27,6 @@ export function GetExtensionView() {
 	useEffect(() => {
 		allStudies.forEach((study) => {
 			if (study.authors.name === "Mozilla Rally") {
-				console.log(study.downloadLink);
 				setChromelink(study.downloadLink.chrome);
 				setFxlink(study.downloadLink.firefox);
 			}
@@ -87,6 +86,7 @@ export function GetExtensionView() {
 					<LoginButton
 						onClick={() => {
 							router.push("/");
+							localStorage.removeItem("isExtensionView");
 						}}
 						className={LinkButton}
 					>

@@ -101,6 +101,10 @@ export function EmailSignupView() {
 
 		try {
 			await signupWithEmail(emailRef.current, passwordRef.current);
+			if (installedStudyIds.length < 1 && isV2Enabled) {
+				setLoginState(LoginState.GetExtension);
+				localStorage.setItem("isExtensionView", "isExtensionView");
+			}
 		} catch (e) {
 			setValidationResult({
 				email: { error: getFirebaseErrorMessage(e as FirebaseError) },
@@ -108,10 +112,6 @@ export function EmailSignupView() {
 				passwordRules: [],
 				valid: false,
 			});
-		}
-		if (installedStudyIds.length < 1 && isV2Enabled) {
-			setLoginState(LoginState.GetExtension);
-			localStorage.setItem("isExtensionView", "isExtensionView");
 		}
 	}
 

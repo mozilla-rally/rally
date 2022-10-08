@@ -1,20 +1,18 @@
 import { Strings } from "../../../resources/Strings";
-import { useAuthentication } from "../../../services/AuthenticationService";
 import { useUserDocument } from "../../../services/UserDocumentService";
+import { Spacing } from "../../../styles";
 import { SecondaryButton, TertiaryButton } from "../../../styles/Buttons";
 import { Colors } from "../../../styles/Colors";
 import { FullscapePageContainer } from "../../../styles/DocumentStyles";
-import { Fonts } from "../../../styles/Fonts";
+import { Fonts, FontSizeRaw } from "../../../styles/Fonts";
 import { createResponsiveStyle } from "../../../styles/ResponsiveStyle";
 import { ScreenSize } from "../../../styles/ScreenSize";
-import { Spacing } from "../../../styles/Spacing";
 import { PrivacyPolicyDataCollectionTypes } from "./PrivacyPolicyDataCollectionTypes";
 import { PrivacyPolicyInformationUse } from "./PrivacyPolicyInformationUse";
 import { PrivacyPolicyIntroduction } from "./PrivacyPolicyIntroduction";
 import { PrivacyPolicyManageData } from "./PrivacyPolicyManageData";
 import { PrivacyPolicySharing } from "./PrivacyPolicySharing";
 import { UserDocument } from "@mozilla/rally-shared-types/dist";
-import { useRouter } from "next/router";
 import { Container, Modal, ModalHeader } from "reactstrap";
 import { Button, Col, Row } from "reactstrap";
 import { style } from "typestyle";
@@ -27,9 +25,7 @@ export function PrivacyPolicyPageContentV2(props: {
 	closeModal: object;
 	isOpen: boolean;
 }) {
-	const { logout } = useAuthentication();
 	const { updateUserDocument, userDocument } = useUserDocument();
-	const router = useRouter();
 
 	return (
 		<Modal
@@ -89,7 +85,7 @@ const smallModalStyle: NestedCSSProperties = {
 
 const styles = {
 	button: style({
-		marginRight: "12px",
+		marginRight: Spacing.Medium,
 	}),
 	modal: style(
 		createResponsiveStyle(ScreenSize.ExtraSmall, smallModalStyle),
@@ -98,10 +94,10 @@ const styles = {
 			maxWidth: "unset",
 			$nest: {
 				".modal-header": {
+					...FontSizeRaw.xLarge,
 					borderBottom: "none",
-					fontSize: "20px",
-					lineHeight: "24px",
-					paddingBottom: "32px",
+					lineHeight: Spacing.xLarge,
+					paddingBottom: Spacing.xxLarge,
 					color: Colors.ColorDarkGray90,
 				},
 				".modal-title": {
@@ -116,7 +112,7 @@ const styles = {
 		padding: Spacing.xLarge,
 		maxHeight: 495,
 		overflow: "auto",
-		marginBottom: "24px",
+		marginBottom: Spacing.xLarge,
 		$nest: {
 			h2: {
 				color: Colors.ColorMarketingGray70,
@@ -132,7 +128,7 @@ const styles = {
 		}),
 		{
 			width: 852,
-			maxHeight: "635px",
+			maxHeight: 635,
 			boxSizing: "content-box",
 			maxWidth: "unset",
 			padding: "20px 20px 48px",

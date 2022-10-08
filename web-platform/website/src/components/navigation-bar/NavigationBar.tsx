@@ -11,25 +11,21 @@ import { LinkStyles } from "../../styles/LinkStyles";
 import { DesktopMenu } from "./DesktopMenu";
 import { MobileMenu } from "./MobileMenu";
 import Link from "next/link";
-import { useEffect, useState } from "react";
 import { Col, Container, Row } from "reactstrap";
 import { style } from "typestyle";
 
 const strings = Strings.components.navigationBar;
 
-export function NavigationBar(props: { className?: string }) {
+export function NavigationBar(props: {
+	className?: string;
+	isExtensionView: boolean;
+}) {
 	const { user } = useAuthentication();
-	const [isExtensionView, setView] = useState<boolean>(false);
-
-	useEffect(() => {
-		const isItemThere = localStorage.getItem("isExtensionView");
-		isItemThere ? setView(true) : setView(false);
-	}, [isExtensionView]);
 
 	return (
 		<Container
 			className={`${ContainerSmallerStyles.TopLevelContainer} ${styles.nav} ${
-				user && !isExtensionView ? "" : "border-0"
+				user && !props.isExtensionView ? "" : "border-0"
 			} border-lg-1 ms-0 me-0 ${(props && props.className) || ""}`}
 		>
 			<Row className="align-items-center gx-0 gy-0">
@@ -43,7 +39,7 @@ export function NavigationBar(props: { className?: string }) {
 					</a>
 				</Col>
 
-				{user && !isExtensionView && (
+				{user && !props.isExtensionView && (
 					<>
 						<TopLinks />
 						<DropdownMenus />
