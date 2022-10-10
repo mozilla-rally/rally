@@ -14,6 +14,17 @@ export const PrimaryButton = style({
   },
 });
 
+export const PrimaryButtonInAction = style({
+  color: Colors.ColorBlack,
+  backgroundColor: Colors.ColorGreen100,
+  $nest: {
+    "&:hover, &:active, &:focus": {
+      color: Colors.ColorBlack,
+      backgroundColor: Colors.ColorGreen100,
+    },
+  },
+});
+
 export const SecondaryButton = style({
   backgroundColor: Colors.ColorLink,
   borderColor: Colors.ColorTransparent,

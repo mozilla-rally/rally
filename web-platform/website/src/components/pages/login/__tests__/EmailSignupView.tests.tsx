@@ -1,4 +1,4 @@
-import { act, render } from "@testing-library/react";
+import { RenderResult, act, render } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { UserEvent } from "@testing-library/user-event/dist/types/setup";
 
@@ -43,7 +43,7 @@ describe("EmailSignupView tests", () => {
     });
 
     (Highlighter as jest.Mock).mockImplementation(({ children }) => children);
-    (LoginButton as jest.Mock).mockImplementation(() => null);
+    (LoginButton as jest.Mock).mockImplementation(({ children }) => children);
     (PasswordRules as jest.Mock).mockImplementation(() => null);
     (PrivacyNoticeAndLoginLink as jest.Mock).mockImplementation(() => null);
 
@@ -231,12 +231,20 @@ describe("EmailSignupView tests", () => {
 
     const user = userEvent.setup();
 
-    render(<EmailSignupView />);
+    const root = render(<EmailSignupView />);
 
     await setEmail(user, "email");
     await setPassword(user, "password");
 
+    createSignupWithEmail(root);
+
+    expect(root.getByText(strings.continue)).toBeInTheDocument();
+    expect(root.queryByText(strings.creatingAccount)).not.toBeInTheDocument();
+
     await signup();
+
+    expect(root.queryByText(strings.continue)).not.toBeInTheDocument();
+    expect(root.getByText(strings.creatingAccount)).toBeInTheDocument();
 
     expect(validateLoginForm).toHaveBeenCalledWith("email", "password");
 
@@ -279,6 +287,12 @@ describe("EmailSignupView tests", () => {
 
     await act(() => {
       onClick();
+    });
+  }
+
+  function createSignupWithEmail(root: RenderResult) {
+    signupWithEmail.mockImplementation(async () => {
+      expect(root.getByText(strings.creatingAccount)).toBeInTheDocument();
     });
   }
 
