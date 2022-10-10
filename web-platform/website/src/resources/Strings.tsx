@@ -1142,6 +1142,9 @@ export const Strings = {
     accountSettings: {
       title: "Account Settings | Mozilla Rally",
     },
+    getExtension: {
+      title: "Get Extension | Mozilla Rally",
+    },
     index: {
       title: "Studies | Mozilla Rally",
     },
