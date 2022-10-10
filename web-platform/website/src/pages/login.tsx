@@ -34,7 +34,9 @@ const LoginPage: NextPage = () => {
       router.replace("/get-extension");
       return null;
     }
-  } else if (user) {
+  }
+
+  if (user) {
     router.replace("/");
     return null;
   }

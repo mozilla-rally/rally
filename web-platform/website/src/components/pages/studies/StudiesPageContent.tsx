@@ -1,15 +1,27 @@
+import { useEffect, useState } from "react";
 import { Col, Container, Row } from "reactstrap";
 import { style } from "typestyle";
 
+import { useUserDocument } from "../../../services/UserDocumentService";
 import { ScreenSize, Spacing, createResponsiveStyle } from "../../../styles";
 import { ContainerSmallerStyles } from "../../../styles/ContainerStyles";
 import { Layout } from "../../Layout";
+import { PrivacyPolicyPageContentV2 } from "../privacy-policy/PrivacyPolicyPageContentV2";
 import { StudiesBackground } from "./StudiesBackground";
 import { StudiesTitle } from "./StudiesTitle";
 import { StudiesTooltip } from "./StudiesTooltip";
 import { StudyList } from "./StudyList";
 
 export function StudiesPageContent() {
+  const [showPrivacyDialog, setShowPrivacyDialog] = useState<boolean>(false);
+
+  const { userDocument } = useUserDocument();
+
+  useEffect(() => {
+    if (userDocument && !userDocument.enrolled) {
+      setShowPrivacyDialog(true);
+    }
+  }, [userDocument]);
   return (
     <Layout>
       <StudiesBackground>
@@ -24,6 +36,12 @@ export function StudiesPageContent() {
               <StudyList />
             </Col>
           </Row>
+          {showPrivacyDialog && (
+            <PrivacyPolicyPageContentV2
+              closeModal={() => setShowPrivacyDialog(false)}
+              isOpen={showPrivacyDialog}
+            />
+          )}
         </Container>
       </StudiesBackground>
     </Layout>
