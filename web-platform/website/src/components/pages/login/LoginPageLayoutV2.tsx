@@ -43,7 +43,7 @@ export function LoginPageLayoutV2(props: {
               <Row>
                 <Col>
                   <NavigationBar
-                    isExtensionView={isExtensionView}
+                    displayInCollapsedMode={isExtensionView}
                     className="ps-5"
                   />
                 </Col>

@@ -20,19 +20,19 @@ const strings = Strings.components.navigationBar;
 
 export function NavigationBar(props: {
   className?: string;
-  isExtensionView?: boolean | null;
+  displayInCollapsedMode?: boolean;
 }) {
   const { user } = useAuthentication();
-  const [displayInCollapseMode, setMode] = useState<boolean | null>(true);
 
-  useEffect(() => {
-    props.isExtensionView ? setMode(null) : setMode(true);
-  }, [props.isExtensionView]);
+  const displayInCollapseMode =
+    props.displayInCollapsedMode !== undefined
+      ? props.displayInCollapsedMode
+      : false;
 
   return (
     <Container
       className={`${ContainerSmallerStyles.TopLevelContainer} ${styles.nav} ${
-        user && displayInCollapseMode ? "" : "border-0"
+        user && !displayInCollapseMode ? "" : "border-0"
       } border-lg-1 ms-0 me-0 ${(props && props.className) || ""}`}
     >
       <Row className="align-items-center gx-0 gy-0">
@@ -46,7 +46,7 @@ export function NavigationBar(props: {
           </a>
         </Col>
 
-        {user && displayInCollapseMode && (
+        {user && !displayInCollapseMode && (
           <>
             <TopLinks />
             <DropdownMenus />
