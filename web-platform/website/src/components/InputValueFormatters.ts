@@ -83,7 +83,7 @@ export const CurrencyFormatter: IFormatter = {
     const numStringValue = NumberFormatter.getFormattedValue(editableValue);
 
     return numStringValue
-      ? toCurrency.format(parseInt(numStringValue, 10))
+      ? toCurrency.format(parseInt(numStringValue, 10) || 0)
       : "";
   },
 };

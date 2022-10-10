@@ -1,6 +1,8 @@
 import { useRouter } from "next/router";
 
+import { Flags } from "../resources/Flags";
 import { useAuthentication } from "../services/AuthenticationService";
+import { useFlagService } from "../services/FlagService";
 import { useUserDocument } from "../services/UserDocumentService";
 
 export function AuthenticatedPage(props: {
@@ -10,6 +12,7 @@ export function AuthenticatedPage(props: {
 
   const { isLoaded, user } = useAuthentication();
   const { isDocumentLoaded, userDocument } = useUserDocument();
+  const { isFlagActive } = useFlagService();
 
   if (!router.isReady || !isLoaded || !isDocumentLoaded) {
     return null;
@@ -22,7 +25,8 @@ export function AuthenticatedPage(props: {
 
   if (
     router.pathname !== "/privacy-policy" &&
-    (!userDocument || !userDocument.enrolled)
+    (!userDocument || !userDocument.enrolled) &&
+    !isFlagActive(Flags.onboardingV2)
   ) {
     router.replace(`/privacy-policy`);
     return null;
@@ -32,7 +36,8 @@ export function AuthenticatedPage(props: {
     router.pathname !== "/profile" &&
     userDocument &&
     userDocument.enrolled &&
-    !userDocument.onboared
+    !userDocument.onboared &&
+    !isFlagActive(Flags.onboardingV2)
   ) {
     router.replace("/profile");
     return null;

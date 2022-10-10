@@ -13,7 +13,7 @@ export function PrivacyPolicyButtons() {
   const { updateUserDocument, userDocument } = useUserDocument();
 
   return (
-    <Row className="g-0 position-fixed bottom-0 start-0 w-100 py-2 bg-light">
+    <Row className="g-0 bottom-0 start-0 w-100 py-2 bg-light position-fixed">
       <Col className="d-flex justify-content-center">
         <Button
           className={`d-flex fw-bold ps-4 pe-4 pt-2 pb-2 ${SecondaryButton} me-3`}
@@ -24,14 +24,14 @@ export function PrivacyPolicyButtons() {
             })
           }
         >
-          {strings.acceptAndEnroll}
+          {strings.initial.acceptAndEnroll}
         </Button>
         <Button
           className={`d-flex fw-bold ps-4 pe-4 pt-2 pb-2 ${TertiaryButton}`}
           outline
           onClick={() => logout()}
         >
-          {strings.decline}
+          {strings.initial.decline}
         </Button>
       </Col>
     </Row>

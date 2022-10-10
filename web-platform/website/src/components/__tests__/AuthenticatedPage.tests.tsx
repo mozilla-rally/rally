@@ -2,16 +2,22 @@ import { render } from "@testing-library/react";
 import { useRouter } from "next/router";
 
 import { useAuthentication } from "../../services/AuthenticationService";
+import { useFlagService } from "../../services/FlagService";
 import { useUserDocument } from "../../services/UserDocumentService";
 import { AuthenticatedPage } from "../AuthenticatedPage";
 
 jest.mock("next/router");
 jest.mock("../../services/AuthenticationService");
 jest.mock("../../services/UserDocumentService");
+jest.mock("../../services/FlagService");
 
 describe("AuthenticatedPage tests", () => {
+  const isFlagActive = jest.fn();
   beforeEach(() => {
     jest.resetAllMocks();
+    (useFlagService as jest.Mock).mockReturnValue({
+      isFlagActive,
+    });
   });
 
   it("renders null when router is not ready despite loading user", () => {
@@ -187,6 +193,7 @@ describe("AuthenticatedPage tests", () => {
     expect(root.container.firstChild).toBeNull();
 
     expect(replace).toHaveBeenCalledWith("/privacy-policy");
+    expect(useFlagService).toHaveBeenCalled();
   });
 
   it("routes to privacy policy when user is not enrolled and current path is not privacy policy", () => {
@@ -217,6 +224,7 @@ describe("AuthenticatedPage tests", () => {
     expect(root.container.firstChild).toBeNull();
 
     expect(replace).toHaveBeenCalledWith("/privacy-policy");
+    expect(useFlagService).toHaveBeenCalled();
   });
 
   it("renders the privacy policy when user is not enrolled", () => {

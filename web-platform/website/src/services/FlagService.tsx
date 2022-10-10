@@ -17,6 +17,11 @@ export function useFlagService() {
 
 export function FlagProvider(props: { children: React.ReactNode }) {
   function isFlagActive(flag: Flag): boolean {
+    // Note: This check is required for static build where localStorage is not defined
+    if (typeof localStorage === "undefined") {
+      return flag.defaultValue;
+    }
+
     const flagsStr = localStorage.getItem("flags");
 
     if (!flagsStr || !flagsStr.trim()) {

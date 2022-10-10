@@ -20,6 +20,7 @@ export enum Colors {
   ColorBlue70 = "#054096",
   ColorBlue80 = "#073072",
   ColorBlue90 = "#09204d",
+  ColorLightBlue = "#60ccde",
   ColorViolet05 = "#e7dfff",
   ColorViolet10 = "#d9bfff",
   ColorViolet20 = "#cb9eff",

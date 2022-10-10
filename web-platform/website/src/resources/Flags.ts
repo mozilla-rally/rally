@@ -1,4 +1,8 @@
-import { Flag } from "../services/Flag";
+export interface Flag {
+  name: string;
+  description: string;
+  defaultValue: boolean;
+}
 
 export const Flags: Record<string, Flag> = {
   onboardingV2: {

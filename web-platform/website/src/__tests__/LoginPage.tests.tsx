@@ -98,7 +98,6 @@ describe("login page tests", () => {
     const root = render(<LoginPage />);
 
     expect(useFlagService).toHaveBeenCalled();
-    expect(isFlagActive).not.toHaveBeenCalled();
 
     expect(replace).toHaveBeenCalledWith("/");
 

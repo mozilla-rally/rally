@@ -1,27 +1,32 @@
 import { style } from "typestyle";
-import {Colors} from "./Colors"
+
+import { Colors } from "./Colors";
 
 export const FontsRaw = {
   Headline: {
     fontFamily: `"Zilla Slab", Inter, X-LocaleSpecific, sans-serif`,
     fontWeight: 700,
   },
-  MediumBodySM:{
-    fontFamily: 'Inter',
+  Title: {
+    fontFamily: "Inter",
+    fontWeight: 700,
+  },
+  MediumBodySM: {
+    fontFamily: "Inter",
     fontStyle: "normal",
     fontWeight: "500",
   },
-  Labels:{
-    color: Colors.ColorMarketingGray70
-  }
+  Labels: {
+    color: Colors.ColorMarketingGray70,
+  },
 };
 
 export const Fonts = {
   Headline: style(FontsRaw.Headline),
   MediumBodySM: style(FontsRaw.MediumBodySM),
-  Labels: style(FontsRaw.Labels)
+  Labels: style(FontsRaw.Labels),
+  Title: style(FontsRaw.Title),
 };
-
 
 export const FontSizeRaw = {
   xSmall: {

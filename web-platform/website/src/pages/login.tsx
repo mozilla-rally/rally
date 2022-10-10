@@ -10,6 +10,7 @@ import { Flags } from "../resources/Flags";
 import { Strings } from "../resources/Strings";
 import { useAuthentication } from "../services/AuthenticationService";
 import { useFlagService } from "../services/FlagService";
+import { useStudies } from "../services/StudiesService";
 import {
   ApplyFullscapePageStyles,
   ScreenSize,
@@ -20,16 +21,20 @@ const strings = Strings.pages.login;
 
 const LoginPage: NextPage = () => {
   const { isLoaded, user } = useAuthentication();
-
   const router = useRouter();
-
   const { isFlagActive } = useFlagService();
+  const { installedStudyIds } = useStudies();
 
   if (!isLoaded || !router.isReady) {
     return null;
   }
 
-  if (user) {
+  if (isFlagActive(Flags.onboardingV2)) {
+    if (user && !installedStudyIds.length) {
+      router.replace("/get-extension");
+      return null;
+    }
+  } else if (user) {
     router.replace("/");
     return null;
   }

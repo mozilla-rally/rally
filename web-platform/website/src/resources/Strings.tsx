@@ -337,6 +337,33 @@ export const Strings = {
           password: "Password",
           title: "Create Account",
         },
+        getExtensionView: {
+          getExt: "Add the extension",
+          skip: "Skip for now",
+          subTitle:
+            "Congrats on joining the Rally community! To start contributing, let's add the extension.",
+          title: "Lastly, add the extension",
+
+          bulletTitle: "The extension empowers you to:",
+          bullets: [
+            "Enable Mozilla Rally's trusted researchers to expose Big Tech's hidden privacy violations and help hold them accountable.",
+          ],
+          valueProp: {
+            title: "With contributions like yours: ",
+            valueProps: [
+              {
+                valueText:
+                  "class actions lawsuits were filed regarding Facebook and Meta",
+                valueIcon: "5",
+              },
+              {
+                valueText:
+                  "patients of Novant Health were sent data breach notifications",
+                valueIcon: "1.3m",
+              },
+            ],
+          },
+        },
         launchCardText: {
           headline: "Use your data to build a better internet",
           bullets: [
@@ -443,11 +470,22 @@ export const Strings = {
           },
         },
       },
+
       privacyPolicy: {
         buttons: {
-          acceptAndEnroll: "Accept & Enroll",
-          decline: "Decline",
+          initial: {
+            acceptAndEnroll: "Accept & Enroll",
+            decline: "Decline",
+          },
+
+          v2: {
+            agree: "Agree",
+            back: "Back",
+          },
         },
+
+        modalHeader: "Our privacy policy and your data consent",
+
         dataCollectionTypes: {
           sections: [
             {
@@ -736,28 +774,6 @@ export const Strings = {
                 </>
               ),
             },
-
-            {
-              image: {
-                url: "/img/people-like-you.png",
-                width: 84,
-                alt: "People Like You (only aggregated data).",
-              },
-              text: (
-                <>
-                  <b>People Like You (only aggregated data)</b>
-                  <p>
-                    Our mission is focused on{" "}
-                    <b>empowering everyday citizens</b>, not just a select few.
-                    To that end, we may release aggregated, de-identified data
-                    sets to help further public knowledge on certain issues.
-                    These data sets will be{" "}
-                    <b>stripped of any identifiable data</b>, and won't reveal
-                    anything about individual users.
-                  </p>
-                </>
-              ),
-            },
           ],
           tagline:
             "We may share information with trusted entities that help us fulfill our mission, including:",
@@ -769,6 +785,7 @@ export const Strings = {
           title: "Our Privacy Notice",
         },
       },
+
       profile: {
         age: {
           options: [
@@ -1125,6 +1142,9 @@ export const Strings = {
   pages: {
     accountSettings: {
       title: "Account Settings | Mozilla Rally",
+    },
+    getExtension: {
+      title: "Get Extension | Mozilla Rally",
     },
     index: {
       title: "Studies | Mozilla Rally",

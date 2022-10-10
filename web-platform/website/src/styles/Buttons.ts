@@ -80,12 +80,26 @@ export const TransparentButton = style({
   ...FontsRaw.MediumBodySM,
   color: Colors.ColorMarketingGray70,
   border: "none",
-  fontSize: FontSizeRaw.Small.fontSize,
   $nest: {
     "&:hover": {
       backgroundColor: Colors.ColorTransparent,
       color: Colors.ColorMarketingGray70,
       textDecoration: "underline",
+    },
+  },
+});
+
+export const LinkButton = style({
+  ...FontsRaw.MediumBodySM,
+  ...FontSizeRaw.Normal,
+  color: "#000000",
+  border: "none",
+  backgroundColor: Colors.ColorTransparent,
+  $nest: {
+    "&:hover": {
+      backgroundColor: Colors.ColorTransparent,
+      textDecoration: "underline",
+      color: "#000000",
     },
   },
 });

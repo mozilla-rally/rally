@@ -1,6 +1,7 @@
 import { createContext, useContext, useState } from "react";
 
 export enum LoginState {
+  GetExtension = "GetExtension",
   Initial = "Initial",
   Login = "Login",
   ResetPassword = "ResetPassword",

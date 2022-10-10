@@ -21,7 +21,7 @@ export function LoginPageContentV2(props: { children: React.ReactNode }) {
     <LoginStateProvider>
       <>
         {props.children}
-        <LoginPageLayoutV2>
+        <LoginPageLayoutV2 isExtensionView={false}>
           <LoginPageLayoutV2.LeftContent>
             <LoginCards />
           </LoginPageLayoutV2.LeftContent>
@@ -90,7 +90,10 @@ function ValueProposition() {
             {strings.valuePropositions.default.tagline}
           </div>
 
-          <img src="/img/illustration-group-rally.png" alt="" />
+          <img
+            src="/img/illustration-group-rally.png"
+            alt="a group of people with flags"
+          />
         </Col>
       </Row>
     </Container>

@@ -16,7 +16,6 @@ const strings = Strings.components.pages.login.initialLoginView;
 export function InitialLoginView() {
   const { setLoginState } = useLoginDataContext();
   const { loginWithGoogle } = useAuthentication();
-
   const { isFlagActive } = useFlagService();
 
   const isV2Enabled = isFlagActive(Flags.onboardingV2);

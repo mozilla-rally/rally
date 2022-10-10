@@ -12,9 +12,13 @@ import { ContainerStyles } from "../../../styles/ContainerStyles";
 import { Footer } from "../../Footer";
 import { NavigationBar } from "../../navigation-bar";
 
-export function LoginPageLayoutV2(props: { children?: React.ReactNode }) {
+export function LoginPageLayoutV2(props: {
+  children?: React.ReactNode;
+  isExtensionView: boolean;
+}) {
   let leftContent: JSX.Element | null = null;
   let rightContent: JSX.Element | null = null;
+  const isExtensionView = props.isExtensionView;
 
   React.Children.forEach(props.children, (c) => {
     const child = React.isValidElement(c) ? (c as JSX.Element) : null;
@@ -38,7 +42,10 @@ export function LoginPageLayoutV2(props: { children?: React.ReactNode }) {
             >
               <Row>
                 <Col>
-                  <NavigationBar className="ps-5" />
+                  <NavigationBar
+                    displayInCollapsedMode={isExtensionView}
+                    className="ps-5"
+                  />
                 </Col>
               </Row>
               <Row>

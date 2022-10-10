@@ -6,6 +6,7 @@ import { Flags } from "../../../../resources/Flags";
 import { Strings } from "../../../../resources/Strings";
 import { useAuthentication } from "../../../../services/AuthenticationService";
 import { useFlagService } from "../../../../services/FlagService";
+import { useStudies } from "../../../../services/StudiesService";
 import { getFirebaseErrorMessage } from "../../../../utils/FirebaseErrors";
 import { Highlighter } from "../../../Highlighter";
 import { EmailSignupView } from "../EmailSignupView";
@@ -20,6 +21,7 @@ import { PrivacyNoticeAndLoginLink } from "../PrivacyNoticeAndLoginLink";
 
 jest.mock("../../../../services/AuthenticationService");
 jest.mock("../../../../services/FlagService");
+jest.mock("../../../../services/StudiesService");
 jest.mock("../../../../utils/FirebaseErrors");
 jest.mock("../../../Highlighter");
 jest.mock("../LoginButton");
@@ -50,6 +52,9 @@ describe("EmailSignupView tests", () => {
     });
 
     (validatePasswordRules as jest.Mock).mockReturnValue([]);
+    (useStudies as jest.Mock).mockReturnValue({
+      installedStudyIds: [],
+    });
   });
 
   it("zero state", () => {
