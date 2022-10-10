@@ -10,4 +10,5 @@ export interface UserDocument {
   createdOn: Timestamp;
   demographicsData: UserDemographicsData;
   studies: Record<string, UserStudyRecord>;
+  subscribedToEmail: boolean;
 }
