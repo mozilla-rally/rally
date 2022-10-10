@@ -1,6 +1,7 @@
 import { style } from "typestyle";
+
 import { Colors } from "./Colors";
-import { FontsRaw, FontSizeRaw } from "./Fonts";
+import { FontSizeRaw, FontsRaw } from "./Fonts";
 
 export const PrimaryButton = style({
   color: Colors.ColorWhite,
@@ -9,6 +10,17 @@ export const PrimaryButton = style({
     "&:hover": {
       color: Colors.ColorBlack,
       backgroundColor: Colors.ColorMarketingGray20,
+    },
+  },
+});
+
+export const PrimaryButtonInAction = style({
+  color: Colors.ColorBlack,
+  backgroundColor: Colors.ColorGreen100,
+  $nest: {
+    "&:hover, &:active, &:focus": {
+      color: Colors.ColorBlack,
+      backgroundColor: Colors.ColorGreen100,
     },
   },
 });
@@ -73,7 +85,7 @@ export const TransparentButton = style({
     "&:hover": {
       backgroundColor: Colors.ColorTransparent,
       color: Colors.ColorMarketingGray70,
-      textDecoration: "underline"
-    }
+      textDecoration: "underline",
+    },
   },
 });

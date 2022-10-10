@@ -17,7 +17,7 @@ import { Flags } from "../../../resources/Flags";
 import { Strings } from "../../../resources/Strings";
 import { useAuthentication } from "../../../services/AuthenticationService";
 import { useFlagService } from "../../../services/FlagService";
-import { PrimaryButton } from "../../../styles/Buttons";
+import { PrimaryButton, PrimaryButtonInAction } from "../../../styles/Buttons";
 import { Fonts } from "../../../styles/Fonts";
 import { getFirebaseErrorMessage } from "../../../utils/FirebaseErrors";
 import { Highlighter } from "../../Highlighter";
@@ -40,6 +40,7 @@ export function EmailSignupView() {
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [validationResult, setValidationResult] =
     useState<LoginFormValidationResult>();
+  const [isSignupInProgress, setIsSignupInProgress] = useState(false);
 
   const isEmailInvalid = Boolean(
     validationResult && validationResult.email && validationResult.email.error
@@ -79,7 +80,12 @@ export function EmailSignupView() {
   const { signupWithEmail } = useAuthentication();
 
   async function validateAndSignup() {
+    if (isSignupInProgress) {
+      return;
+    }
+
     setValidationResult(undefined);
+    setIsSignupInProgress(true);
 
     const validationResult = validateLoginForm(
       emailRef.current,
@@ -93,6 +99,7 @@ export function EmailSignupView() {
         ...validationResult,
         password: { error: passwordErrorStrings.passwordError },
       });
+      setIsSignupInProgress(false);
       return;
     }
 
@@ -106,6 +113,8 @@ export function EmailSignupView() {
         valid: false,
       });
     }
+
+    setIsSignupInProgress(false);
   }
 
   return (
@@ -201,10 +210,12 @@ export function EmailSignupView() {
       <Row className="mb-3">
         <Col>
           <LoginButton
-            className={PrimaryButton}
+            className={
+              isSignupInProgress ? PrimaryButtonInAction : PrimaryButton
+            }
             onClick={() => validateAndSignup()}
           >
-            {strings.continue}
+            {isSignupInProgress ? strings.creatingAccount : strings.continue}
           </LoginButton>
         </Col>
       </Row>

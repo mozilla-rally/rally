@@ -332,6 +332,7 @@ export const Strings = {
       login: {
         emailSignupView: {
           continue: "Continue",
+          creatingAccount: "Creating account...",
           email: "Email",
           password: "Password",
           title: "Create Account",
