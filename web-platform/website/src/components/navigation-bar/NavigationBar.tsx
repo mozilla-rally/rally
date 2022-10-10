@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { useEffect, useState } from "react";
 import { Col, Container, Row } from "reactstrap";
 import { style } from "typestyle";
 
