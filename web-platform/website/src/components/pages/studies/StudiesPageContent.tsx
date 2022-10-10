@@ -6,7 +6,6 @@ import { ContainerSmallerStyles } from "../../../styles/ContainerStyles";
 import { Layout } from "../../Layout";
 import { StudiesBackground } from "./StudiesBackground";
 import { StudiesTitle } from "./StudiesTitle";
-import { StudiesTooltip } from "./StudiesTooltip";
 import { StudyList } from "./StudyList";
 
 export function StudiesPageContent() {
@@ -19,8 +18,7 @@ export function StudiesPageContent() {
           <Row className={`g-0 ${styles.row}`}>
             <Col className={`col-auto ${styles.nav}`} />
             <Col>
-              <StudiesTitle className="title" />
-              <StudiesTooltip className="mb-5" />
+              <StudiesTitle className="title mb-5" />
               <StudyList />
             </Col>
           </Row>
