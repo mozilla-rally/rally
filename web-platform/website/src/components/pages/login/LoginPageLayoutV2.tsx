@@ -11,13 +11,14 @@ import {
 import { ContainerStyles } from "../../../styles/ContainerStyles";
 import { Footer } from "../../Footer";
 import { NavigationBar } from "../../navigation-bar";
-import { useLoginDataContext } from "./LoginDataContext";
 
-export function LoginPageLayoutV2(props: { children?: React.ReactNode }) {
+export function LoginPageLayoutV2(props: {
+  children?: React.ReactNode;
+  isExtensionView: boolean;
+}) {
   let leftContent: JSX.Element | null = null;
   let rightContent: JSX.Element | null = null;
-  const { loginState } = useLoginDataContext();
-  let isExtensionView: boolean = loginState === "GetExtension" ? true : false;
+  const isExtensionView = props.isExtensionView;
 
   React.Children.forEach(props.children, (c) => {
     const child = React.isValidElement(c) ? (c as JSX.Element) : null;

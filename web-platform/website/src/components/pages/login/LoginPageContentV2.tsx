@@ -13,10 +13,6 @@ import {
   useLoginDataContext,
 } from "./LoginDataContext";
 import { LoginPageLayoutV2 } from "./LoginPageLayoutV2";
-import {
-  ValuePropositionInitial,
-  ValuePropositionNoExtension,
-} from "./ValuePropView";
 
 const strings = Strings.components.pages.login.loginPageContentV2;
 
@@ -25,7 +21,7 @@ export function LoginPageContentV2(props: { children: React.ReactNode }) {
     <LoginStateProvider>
       <>
         {props.children}
-        <LoginPageLayoutV2>
+        <LoginPageLayoutV2 isExtensionView={false}>
           <LoginPageLayoutV2.LeftContent>
             <LoginCards />
           </LoginPageLayoutV2.LeftContent>
@@ -58,8 +54,7 @@ function LoginCardTitle() {
 
   if (
     loginState === LoginState.Login ||
-    loginState === LoginState.ResetPassword ||
-    loginState === LoginState.GetExtension
+    loginState === LoginState.ResetPassword
   ) {
     return null;
   }
@@ -87,12 +82,22 @@ function LoginCardTitle() {
 }
 
 function ValueProposition() {
-  const { loginState } = useLoginDataContext();
-  if (loginState === LoginState.GetExtension) {
-    return <ValuePropositionNoExtension />;
-  } else {
-    return <ValuePropositionInitial />;
-  }
+  return (
+    <Container>
+      <Row>
+        <Col>
+          <div className={`${Fonts.Headline} tagline font-weight-bold mb-4`}>
+            {strings.valuePropositions.default.tagline}
+          </div>
+
+          <img
+            src="/img/illustration-group-rally.png"
+            alt="a group of people with flags"
+          />
+        </Col>
+      </Row>
+    </Container>
+  );
 }
 
 const styles = {

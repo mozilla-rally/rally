@@ -12,8 +12,8 @@ import { LinkStyles } from "../../../styles/LinkStyles";
 import { detectBrowser } from "../../../utils/BrowserDetector";
 import { BrowserType } from "../../../utils/BrowserType";
 import { Highlighter } from "../../Highlighter";
+import { LoginButton } from "../login/LoginButton";
 import { PrivacyPolicyPageContentV2 } from "../privacy-policy/PrivacyPolicyPageContentV2";
-import { LoginButton } from "./LoginButton";
 
 const strings = Strings.components.pages.login.getExtensionView;
 
@@ -72,7 +72,6 @@ export function GetExtensionView() {
                 target="_blank"
                 rel="noreferrer"
                 onClick={() => {
-                  localStorage.removeItem("isExtensionView");
                   router.push("/");
                 }}
               >
@@ -87,7 +86,6 @@ export function GetExtensionView() {
           <LoginButton
             onClick={() => {
               router.push("/");
-              localStorage.removeItem("isExtensionView");
             }}
             className={LinkButton}
           >

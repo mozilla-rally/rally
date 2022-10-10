@@ -1,5 +1,4 @@
 import { EmailSignupView } from "./EmailSignupView";
-import { GetExtensionView } from "./GetExtensionView";
 import { InitialLoginView } from "./InitialLoginView";
 import { LoginState, useLoginDataContext } from "./LoginDataContext";
 import { LoginView } from "./LoginView";
@@ -9,9 +8,6 @@ export function LoginCardFactory() {
   const { loginState } = useLoginDataContext();
 
   switch (loginState) {
-    case LoginState.GetExtension:
-      return <GetExtensionView />;
-
     case LoginState.Initial:
       return <InitialLoginView />;
 

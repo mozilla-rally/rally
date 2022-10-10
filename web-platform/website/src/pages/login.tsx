@@ -30,8 +30,8 @@ const LoginPage: NextPage = () => {
   }
 
   if (isFlagActive(Flags.onboardingV2)) {
-    if (user && installedStudyIds.length > 0) {
-      router.replace("/");
+    if (user && !installedStudyIds.length) {
+      router.replace("/get-extension");
       return null;
     }
   } else if (user) {

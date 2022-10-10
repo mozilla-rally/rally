@@ -1,5 +1,7 @@
 import { Col, Container, Row } from "reactstrap";
 
+import { Flags } from "../../../resources/Flags";
+import { useFlagService } from "../../../services/FlagService";
 import { Fonts } from "../../../styles/Fonts";
 
 export interface StandardPrivacyPolicySectionProps {
@@ -16,7 +18,8 @@ export function StandardPrivacyPolicySection({
   tagline,
   sections,
 }: StandardPrivacyPolicySectionProps) {
-  const isExtensionView = localStorage.getItem("isExtensionView");
+  const { isFlagActive } = useFlagService();
+  const isV2Enabled = isFlagActive(Flags.onboardingV2);
 
   return (
     <>
@@ -25,22 +28,22 @@ export function StandardPrivacyPolicySection({
           <h2 className={`${Fonts.Headline}`}>{title}</h2>
         </Col>
       </Row>
-      <Row className={`${!isExtensionView ? "mb-4" : ""}`}>
+      <Row className={`${!isV2Enabled ? "mb-4" : ""}`}>
         <Col>
           <p>{tagline}</p>
         </Col>
       </Row>
-      <Row className={`${!isExtensionView ? "mb-4" : ""}`}>
+      <Row className={`${!isV2Enabled ? "mb-4" : ""}`}>
         <Col>
           <Container className="p-0 g-5">
             {sections.map(({ image, text }, i) => (
               <Row
                 className={`d-flex align-items-center ${
-                  !isExtensionView ? "mb-4" : ""
+                  !isV2Enabled ? "mb-4" : ""
                 }`}
                 key={i}
               >
-                {!isExtensionView && image && (
+                {!isV2Enabled && image && (
                   <Col className="col-12 col-sm-2 mb-4 text-center">
                     <img
                       width={image.width}

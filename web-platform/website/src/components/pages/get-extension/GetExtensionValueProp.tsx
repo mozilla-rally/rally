@@ -6,9 +6,8 @@ import { Colors, Spacing } from "../../../styles";
 import { FontSizeRaw, Fonts } from "../../../styles/Fonts";
 
 const strings = Strings.components.pages.login.getExtensionView;
-const loginStrings = Strings.components.pages.login.loginPageContentV2;
 
-export function ValuePropositionNoExtension() {
+export function GetExtensionValueProp() {
   return (
     <Container>
       <Row>
@@ -43,25 +42,6 @@ export function ValuePropositionNoExtension() {
               );
             })}
           </ul>
-        </Col>
-      </Row>
-    </Container>
-  );
-}
-
-export function ValuePropositionInitial() {
-  return (
-    <Container>
-      <Row>
-        <Col>
-          <div className={`${Fonts.Headline} tagline font-weight-bold mb-4`}>
-            {loginStrings.valuePropositions.default.tagline}
-          </div>
-
-          <img
-            src="/img/illustration-group-rally.png"
-            alt="a group of people with flags"
-          />
         </Col>
       </Row>
     </Container>
