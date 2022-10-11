@@ -355,6 +355,8 @@ export const Strings = {
           continue: "Continue",
           creatingAccount: "Creating account...",
           email: "Email",
+          emailSubscription:
+            "Send me occasional updates and communications from Rally",
           password: "Password",
           title: "Create Account",
         },

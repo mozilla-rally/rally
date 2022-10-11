@@ -2,8 +2,8 @@
   "description": "The Mozilla Rally extension for data collection",
   "author": "Mozilla",
   "name": "Mozilla Rally",
-  "version": "0.5.1",
-  "homepage_url": "https://github.com/mozilla-rally/rally",
+  "version": "0.5.2",
+  "homepage_url": "https://members.rally.mozilla.org/",
   "options_ui": {
     "page": "public/options.html",
     "open_in_tab": true

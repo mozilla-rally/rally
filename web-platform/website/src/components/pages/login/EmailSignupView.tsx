@@ -21,6 +21,7 @@ import { PrimaryButton, PrimaryButtonInAction } from "../../../styles/Buttons";
 import { Fonts } from "../../../styles/Fonts";
 import { getFirebaseErrorMessage } from "../../../utils/FirebaseErrors";
 import { Highlighter } from "../../Highlighter";
+import { InputControl } from "../../InputControl";
 import { LoginButton } from "./LoginButton";
 import {
   LoginFormValidationResult,
@@ -41,6 +42,7 @@ export function EmailSignupView() {
   const [validationResult, setValidationResult] =
     useState<LoginFormValidationResult>();
   const [isSignupInProgress, setIsSignupInProgress] = useState(false);
+  const [emailSubscription, setEmailSubscription] = useState(false);
 
   const isEmailInvalid = Boolean(
     validationResult && validationResult.email && validationResult.email.error
@@ -103,6 +105,10 @@ export function EmailSignupView() {
       return;
     }
 
+    if (emailSubscription) {
+      window.sessionStorage.setItem("subscribedToEmail", "true");
+    }
+
     try {
       await signupWithEmail(emailRef.current, passwordRef.current);
     } catch (e) {
@@ -138,6 +144,7 @@ export function EmailSignupView() {
               <Input
                 id="email"
                 type="email"
+                disabled={isSignupInProgress}
                 autoFocus={true}
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
@@ -162,6 +169,7 @@ export function EmailSignupView() {
                         id="password"
                         className="rounded-1"
                         type={passwordVisible ? "text" : "password"}
+                        disabled={isSignupInProgress}
                         value={password}
                         onChange={(e) => {
                           setPassword(e.target.value);
@@ -207,6 +215,24 @@ export function EmailSignupView() {
           </Form>
         </Col>
       </Row>
+      {isV2Enabled && (
+        <Row className="mb-3">
+          <Col>
+            <InputControl
+              title={strings.emailSubscription}
+              name={strings.emailSubscription}
+              type="checkbox"
+              checked={emailSubscription}
+              className="me-3"
+              key={strings.emailSubscription}
+              value={""}
+              onChange={(event) => {
+                setEmailSubscription(event.target.checked);
+              }}
+            />
+          </Col>
+        </Row>
+      )}
       <Row className="mb-3">
         <Col>
           <LoginButton

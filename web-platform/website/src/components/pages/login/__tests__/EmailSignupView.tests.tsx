@@ -231,6 +231,10 @@ describe("EmailSignupView tests", () => {
 
     const user = userEvent.setup();
 
+    isFlagActive.mockReturnValue(true);
+
+    jest.spyOn(Storage.prototype, "setItem");
+
     const root = render(<EmailSignupView />);
 
     await setEmail(user, "email");
@@ -241,10 +245,23 @@ describe("EmailSignupView tests", () => {
     expect(root.getByText(strings.continue)).toBeInTheDocument();
     expect(root.queryByText(strings.creatingAccount)).not.toBeInTheDocument();
 
+    await act(async () => {
+      const checkBox = document.querySelector(
+        `input[type="checkbox"]`
+      ) as HTMLInputElement;
+
+      checkBox.click();
+    });
+
     await signup();
 
-    expect(root.queryByText(strings.continue)).not.toBeInTheDocument();
-    expect(root.getByText(strings.creatingAccount)).toBeInTheDocument();
+    expect(sessionStorage.setItem).toHaveBeenCalledWith(
+      "subscribedToEmail",
+      "true"
+    );
+
+    expect(root.getByText(strings.continue)).toBeInTheDocument();
+    expect(root.queryByText(strings.creatingAccount)).not.toBeInTheDocument();
 
     expect(validateLoginForm).toHaveBeenCalledWith("email", "password");
 
@@ -283,7 +300,8 @@ describe("EmailSignupView tests", () => {
   async function signup() {
     expect(LoginButton).toHaveBeenCalled();
 
-    const onClick = (LoginButton as jest.Mock).mock.calls[0][0].onClick;
+    const calls = (LoginButton as jest.Mock).mock.calls;
+    const onClick = calls[calls.length - 1][0].onClick;
 
     await act(() => {
       onClick();
