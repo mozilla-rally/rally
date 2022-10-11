@@ -1,3 +1,4 @@
+import { UserDocument } from "@mozilla/rally-shared-types";
 import type { NextPage } from "next";
 import Head from "next/head";
 import { useRouter } from "next/router";
@@ -11,6 +12,7 @@ import { Strings } from "../resources/Strings";
 import { useAuthentication } from "../services/AuthenticationService";
 import { useFlagService } from "../services/FlagService";
 import { useStudies } from "../services/StudiesService";
+import { useUserDocument } from "../services/UserDocumentService";
 import {
   ApplyFullscapePageStyles,
   ScreenSize,
@@ -25,17 +27,29 @@ const LoginPage: NextPage = () => {
   const { isFlagActive } = useFlagService();
   const { installedStudyIds } = useStudies();
 
+  const { updateUserDocument } = useUserDocument();
+
   if (!isLoaded || !router.isReady) {
     return null;
   }
 
-  if (isFlagActive(Flags.onboardingV2)) {
-    if (user && !installedStudyIds.length) {
-      router.replace("/get-extension");
-      return null;
+  async function saveEmailSubscriptionBeforeRedirecting(url: string) {
+    if (window.sessionStorage.getItem("subscribedToEmail") === "true") {
+      window.sessionStorage.removeItem("subscribedToEmail");
+      try {
+        await updateUserDocument({ subscribedToEmail: true } as UserDocument);
+      } catch (e) {} // eslint-disable-line no-empty
     }
-  } else if (user) {
-    router.replace("/");
+
+    router.replace(url);
+  }
+
+  if (user) {
+    const redirectUrl =
+      isFlagActive(Flags.onboardingV2) && !installedStudyIds.length
+        ? "/get-extension"
+        : "/";
+    saveEmailSubscriptionBeforeRedirecting(redirectUrl);
     return null;
   }
 
