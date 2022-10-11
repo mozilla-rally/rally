@@ -96,7 +96,6 @@ export function GetExtensionView() {
       {showPrivacyDialog && (
         <PrivacyPolicyPageContentV2
           closeModal={() => setShowPrivacyDialog(false)}
-          isOpen={showPrivacyDialog}
         />
       )}
     </Container>

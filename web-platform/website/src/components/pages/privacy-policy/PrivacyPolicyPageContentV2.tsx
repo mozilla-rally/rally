@@ -22,10 +22,7 @@ import { PrivacyPolicySharing } from "./PrivacyPolicySharing";
 const strings = Strings.components.pages.privacyPolicy;
 const btnStrings = Strings.components.pages.privacyPolicy.buttons;
 
-export function PrivacyPolicyPageContentV2(props: {
-  closeModal: object;
-  isOpen: boolean;
-}) {
+export function PrivacyPolicyPageContentV2(props: { closeModal: object }) {
   const { updateUserDocument, userDocument } = useUserDocument();
 
   return (
