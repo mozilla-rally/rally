@@ -10,6 +10,7 @@ import {
 import { style } from "typestyle";
 
 import { Strings } from "../../../resources/Strings";
+import { Spacing } from "../../../styles";
 import { FontSize, Fonts } from "../../../styles/Fonts";
 import { LinkStyles } from "../../../styles/LinkStyles";
 import { Highlighter } from "../../Highlighter";
@@ -98,7 +99,7 @@ const styles = {
     $nest: {
       ".card-top": {
         height: 36,
-        padding: "0px 0px 12px",
+        padding: `0px 0px ${Spacing.Medium}px`,
       },
 
       ".btn": {
