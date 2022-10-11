@@ -5,7 +5,7 @@ export const Strings = {
         type: "Verify email",
         text: "Please check your email and verify your account.",
         button: "Resend",
-        icon: "/img/icon-info-warning.svg",
+        icon: "/img/warning.svg",
         close: "/img/close.svg",
         modal: {
           title: "Check your email",
