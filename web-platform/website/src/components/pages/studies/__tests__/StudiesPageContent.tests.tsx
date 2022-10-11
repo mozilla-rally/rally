@@ -4,13 +4,11 @@ import { Layout } from "../../../Layout";
 import { StudiesBackground } from "../StudiesBackground";
 import { StudiesPageContent } from "../StudiesPageContent";
 import { StudiesTitle } from "../StudiesTitle";
-import { StudiesTooltip } from "../StudiesTooltip";
 import { StudyList } from "../StudyList";
 
 jest.mock("../../../Layout");
 jest.mock("../StudiesBackground");
 jest.mock("../StudiesTitle");
-jest.mock("../StudiesTooltip");
 jest.mock("../StudyList");
 
 describe("StudiesPageContent tests", () => {
@@ -22,9 +20,6 @@ describe("StudiesPageContent tests", () => {
       ({ children }) => children
     );
     (StudiesTitle as jest.Mock).mockImplementation(({ children }) => children);
-    (StudiesTooltip as jest.Mock).mockImplementation(
-      ({ children }) => children
-    );
     (StudyList as jest.Mock).mockImplementation(({ children }) => children);
   });
 
@@ -34,7 +29,6 @@ describe("StudiesPageContent tests", () => {
     expect(Layout).toHaveBeenCalled();
     expect(StudiesBackground).toHaveBeenCalled();
     expect(StudiesTitle).toHaveBeenCalled();
-    expect(StudiesTooltip).toHaveBeenCalled();
     expect(StudyList).toHaveBeenCalled();
   });
 });
