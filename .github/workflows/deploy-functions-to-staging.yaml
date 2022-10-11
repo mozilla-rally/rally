@@ -1,0 +1,36 @@
+name: Deploy Firebase Function to staging
+on:
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 2
+      # Setup .npmrc file to publish to GitHub Packages
+      - uses: actions/setup-node@v2
+        with:
+          node-version: "16.x"
+          registry-url: "https://registry.npmjs.org"
+          # Defaults to the user or organization that owns the workflow file
+          scope: "mozilla"
+      - run: npm install -g @microsoft/rush
+      - run: rush update
+      - run: rush install -t @mozilla/rally-functions
+      - run: rush build -t @mozilla/rally-functions
+      - run: rush test -t @mozilla/rally-functions
+
+      - name: Deploy firebase functions to staging
+        run: |
+          cp web-platform/firebase/firebase.config.rally-web-stage.json web-platform/firebase.config.json
+          cp web-platform/firebase/firestore.rules web-platform/firestore.rules
+          cp web-platform/firebase/firebase.json web-platform/firebase.json
+          sed -i 's/\.\.\/functions/functions/g' web-platform/firebase.json
+          echo ${{ secrets.GCLOUD_SERVICE_KEY }} | base64 --decode --ignore-garbage > "$HOME"/gcloud.json
+          GOOGLE_APPLICATION_CREDENTIALS="$HOME"/gcloud.json web-platform/functions/node_modules/.bin/firebase deploy --only functions,firestore --project ${{secrets.PROJECT_ID_STAGE}} -c web-platform/firebase.json
