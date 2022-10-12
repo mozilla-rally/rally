@@ -6,13 +6,11 @@ import { useAuthentication } from "../services/AuthenticationService";
 import { useFlagService } from "../services/FlagService";
 import { useUserDocument } from "../services/UserDocumentService";
 
-
-
 export function AuthenticatedPage(props: {
   children?: JSX.Element | (JSX.Element | undefined)[];
 }) {
   const router = useRouter();
-  const { getAttributionCodes } = useAttribution();
+  const { isAttributionLoaded, getAttributionCodes } = useAttribution();
 
   const { isLoaded, user } = useAuthentication();
   const { isDocumentLoaded, userDocument } = useUserDocument();
@@ -22,13 +20,16 @@ export function AuthenticatedPage(props: {
     return null;
   }
 
-  if (!user) {
-    const searchParams = getAttributionCodes();
-    const search = searchParams.toString();
-
+  if (!user && typeof window !== undefined) {
     let route = "/login";
-    if (search) {
-      route += `?${search}`;
+
+    if (isAttributionLoaded) {
+      const searchParams = getAttributionCodes();
+      const search = searchParams.toString();
+
+      if (search) {
+        route += `?${search}`;
+      }
     }
 
     router.replace(route);

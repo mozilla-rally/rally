@@ -5,7 +5,7 @@ export interface AttributionDataContext {
   allAttributionCodes: URLSearchParams;
 
   // Loading flag for all attribution info.
-  isLoaded: boolean;
+  isAttributionLoaded: boolean;
 
   // Get current attribution codes as URLSearchParams.
   getAttributionCodes(): URLSearchParams;
@@ -23,7 +23,7 @@ export function useAttribution() {
 }
 
 export function AttributionProvider(props: { children: React.ReactNode }) {
-  const [isLoaded, setIsLoaded] = useState(false);
+  const [isAttributionLoaded, setIsLoaded] = useState(false);
   const [allAttributionCodes, setAllAttributionCodes] =
     useState<URLSearchParams>(new URLSearchParams());
 
@@ -83,7 +83,12 @@ export function AttributionProvider(props: { children: React.ReactNode }) {
 
   return (
     <AttributionContext.Provider
-      value={{ isLoaded, allAttributionCodes, setAttributionCodes, getAttributionCodes }}
+      value={{
+        isAttributionLoaded,
+        allAttributionCodes,
+        setAttributionCodes,
+        getAttributionCodes,
+      }}
     >
       {props.children}
     </AttributionContext.Provider>
