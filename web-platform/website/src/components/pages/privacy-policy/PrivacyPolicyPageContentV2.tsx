@@ -25,7 +25,7 @@ const btnStrings = Strings.components.pages.privacyPolicy.buttons;
 
 export function PrivacyPolicyPageContentV2() {
   const { updateUserDocument, userDocument } = useUserDocument();
-  const [isOpen, setIsOPen] = useState(true);
+  const [isOpen, setIsOpen] = useState(true);
 
   return (
     <Modal
@@ -58,7 +58,7 @@ export function PrivacyPolicyPageContentV2() {
                 enrolled: true,
               });
 
-              setIsOPen(false);
+              setIsOpen(false);
             }}
           >
             {btnStrings.v2.agree}
@@ -67,7 +67,7 @@ export function PrivacyPolicyPageContentV2() {
             className={`d-flex fw-bold ps-4 pe-4 pt-2 pb-2 ${TertiaryButton} ${styles.button}`}
             outline
             onClick={() => {
-              setIsOPen(false);
+              setIsOpen(false);
             }}
           >
             {btnStrings.v2.back}
