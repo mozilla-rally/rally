@@ -3,9 +3,11 @@ import { Container, Modal, ModalHeader } from "reactstrap";
 import { Button, Col, Row } from "reactstrap";
 import { style } from "typestyle";
 import { NestedCSSProperties } from "typestyle/lib/types";
+import { Timestamp } from "firebase/firestore";
 
 import { Strings } from "../../../resources/Strings";
 import { useUserDocument } from "../../../services/UserDocumentService";
+import { useStudies } from "../../../services/StudiesService";
 import { Spacing } from "../../../styles";
 import { SecondaryButton, TertiaryButton } from "../../../styles/Buttons";
 import { Colors } from "../../../styles/Colors";
@@ -26,7 +28,12 @@ export function PrivacyPolicyPageContentV2(props: {
   closeModal: object;
   isOpen: boolean;
 }) {
-  const { updateUserDocument, userDocument } = useUserDocument();
+  const { updateUserDocument } = useUserDocument();
+  const { isLoaded, rallyExtensionStudy } = useStudies();
+
+  if (!isLoaded) {
+    return null;
+  }
 
   return (
     <Modal
@@ -54,10 +61,21 @@ export function PrivacyPolicyPageContentV2(props: {
           <Button
             className={`d-flex fw-bold ps-4 pe-4 pt-2 pb-2 ${SecondaryButton} me-3`}
             onClick={async () => {
-              await updateUserDocument({
-                ...((userDocument || {}) as UserDocument),
+              const newUserDoc: Partial <UserDocument> = {
                 enrolled: true,
-              });
+              };
+
+              if (rallyExtensionStudy) {
+                newUserDoc.studies = {
+                  [rallyExtensionStudy.studyId]: {
+                    studyId: rallyExtensionStudy.studyId,
+                    version: rallyExtensionStudy.version,
+                    enrolled: true,
+                    joinedOn: Timestamp.now(),
+                  },
+                }
+              }
+              await updateUserDocument(newUserDoc);
 
               props && props.closeModal && (props.closeModal as () => void)();
             }}

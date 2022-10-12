@@ -254,7 +254,6 @@ describe("UserDocumentService tests", () => {
       studies: {
         studyA: {
           studyId: "study-A",
-          attached: false,
           enrolled: false,
           joinedOn: "Fake" as unknown as Timestamp,
         },
