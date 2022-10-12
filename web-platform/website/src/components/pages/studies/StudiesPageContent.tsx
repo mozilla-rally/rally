@@ -24,7 +24,7 @@ export function StudiesPageContent() {
 
   useEffect(() => {
     if (userDocument && !userDocument.enrolled) {
-      setShowPrivacyDialog(false);
+      setShowPrivacyDialog(true);
     }
   }, [userDocument]);
   return (
@@ -33,6 +33,9 @@ export function StudiesPageContent() {
         <ProductToasts
           openModal={() => {
             setShowEmailDialog(true);
+          }}
+          openPrivacyModal={() => {
+            setShowPrivacyDialog(true);
           }}
         />
         <Container

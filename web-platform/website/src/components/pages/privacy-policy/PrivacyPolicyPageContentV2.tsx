@@ -29,6 +29,7 @@ export function PrivacyPolicyPageContentV2(props: { closeModal: object }) {
     <Modal
       className={styles.modal}
       contentClassName={styles.modalContent}
+      isOpen={true}
       {...props}
     >
       <ModalHeader className={Fonts.Title}>{strings.modalHeader}</ModalHeader>

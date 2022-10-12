@@ -15,7 +15,7 @@ import { FontSize, Fonts } from "../../../styles/Fonts";
 import { LinkStyles } from "../../../styles/LinkStyles";
 import { Highlighter } from "../../Highlighter";
 
-const strings = Strings.components.alerts.verifyEmail.modal;
+const strings = Strings.components.pages.studies.alerts.verifyEmail.modal;
 
 export function ProductCheckEmailDialog(props: { closeModal: object }) {
   return (

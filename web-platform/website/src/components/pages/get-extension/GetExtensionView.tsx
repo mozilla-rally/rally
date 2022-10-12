@@ -5,6 +5,7 @@ import { style } from "typestyle";
 
 import { Strings } from "../../../resources/Strings";
 import { useStudies } from "../../../services/StudiesService";
+import { useUserDocument } from "../../../services/UserDocumentService";
 import { Colors, Spacing } from "../../../styles";
 import { LinkButton, PrimaryButton } from "../../../styles/Buttons";
 import { FontSizeRaw, Fonts } from "../../../styles/Fonts";
@@ -20,10 +21,11 @@ const strings = Strings.components.pages.login.getExtensionView;
 export function GetExtensionView() {
   const router = useRouter();
   const [showPrivacyDialog, setShowPrivacyDialog] = useState(true);
-  const [browserType] = useState(detectBrowser());
-  const { allStudies } = useStudies();
   const [chromeLink, setChromelink] = useState("");
   const [fxLink, setFxlink] = useState("");
+  const { userDocument } = useUserDocument();
+  const [browserType] = useState(detectBrowser());
+  const { allStudies } = useStudies();
 
   useEffect(() => {
     allStudies.forEach((study) => {
@@ -31,8 +33,12 @@ export function GetExtensionView() {
         setChromelink(study.downloadLink.chrome);
         setFxlink(study.downloadLink.firefox);
       }
+
+      if (userDocument && userDocument.enrolled) {
+        setShowPrivacyDialog(false);
+      }
     });
-  }, [chromeLink, fxLink]);
+  }, [chromeLink, fxLink, userDocument]);
 
   return (
     <Container className="p-0">
