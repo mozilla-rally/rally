@@ -977,7 +977,7 @@ export const Strings = {
             close: "/img/close.svg",
             modal: {
               title: "Check your email",
-              img: "/img/illustration-email.png",
+              img: "/img/your-contact-data.png",
               close: "/img/close.svg",
               text: "To finish creating your account with Rally, please check your meail inbox and verify your email address",
               help: "Need help?",
@@ -992,14 +992,14 @@ export const Strings = {
             type: "privacy-policy",
             text: "Please agree to our privacy policy. Required to start contributing.",
             button: "Review privacy policy",
-            icon: "/img/critical.svg",
+            icon: "/img/error.svg",
           },
 
           addExtension: {
             type: "add-extension",
             text: "Please add the extension. Required to start contributing.",
             button: "Add extension",
-            icon: "/img/critical.svg",
+            icon: "/img/error.svg",
           },
         },
         studyCard: {

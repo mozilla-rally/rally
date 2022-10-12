@@ -1,3 +1,4 @@
+import { useState } from "react";
 import {
   Button,
   Card,
@@ -10,6 +11,7 @@ import {
 import { style } from "typestyle";
 
 import { Strings } from "../../../resources/Strings";
+import { useAuthentication } from "../../../services/AuthenticationService";
 import { Spacing } from "../../../styles";
 import { FontSize, Fonts } from "../../../styles/Fonts";
 import { LinkStyles } from "../../../styles/LinkStyles";
@@ -17,19 +19,21 @@ import { Highlighter } from "../../Highlighter";
 
 const strings = Strings.components.pages.studies.alerts.verifyEmail.modal;
 
-export function ProductCheckEmailDialog(props: { closeModal: object }) {
+export function ProductCheckEmailDialog() {
+  const [isOpen, setIsOpen] = useState(true);
+  const { logout } = useAuthentication();
+
   return (
-    <Modal {...props} isOpen={true} className={styles.modal}>
+    <Modal isOpen={isOpen} className={styles.modal}>
       <ModalBody>
         <Card className="border-0">
           <Container className="p-0">
             <Row className="card-top">
               <Col className="d-flex justify-content-end">
                 <Button
-                  onClick={() => {
-                    props &&
-                      props.closeModal &&
-                      (props.closeModal as () => void)();
+                  onClick={async () => {
+                    setIsOpen(false);
+                    await logout();
                   }}
                 >
                   <img

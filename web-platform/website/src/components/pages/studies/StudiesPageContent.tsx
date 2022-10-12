@@ -2,13 +2,11 @@ import { useEffect, useState } from "react";
 import { Col, Container, Row } from "reactstrap";
 import { style } from "typestyle";
 
-import { useAuthentication } from "../../../services/AuthenticationService";
 import { useUserDocument } from "../../../services/UserDocumentService";
 import { ScreenSize, Spacing, createResponsiveStyle } from "../../../styles";
 import { ContainerSmallerStyles } from "../../../styles/ContainerStyles";
 import { Layout } from "../../Layout";
 import { PrivacyPolicyPageContentV2 } from "../privacy-policy/PrivacyPolicyPageContentV2";
-import { ProductCheckEmailDialog } from "./ProductCheckEmailDialog";
 import { ProductToasts } from "./ProductToasts";
 import { StudiesBackground } from "./StudiesBackground";
 import { StudiesTitle } from "./StudiesTitle";
@@ -17,8 +15,6 @@ import { StudyList } from "./StudyList";
 
 export function StudiesPageContent() {
   const [showPrivacyDialog, setShowPrivacyDialog] = useState<boolean>(false);
-  const [showEmailDialog, setShowEmailDialog] = useState<boolean>(false);
-  const { logout } = useAuthentication();
 
   const { userDocument } = useUserDocument();
 
@@ -30,14 +26,7 @@ export function StudiesPageContent() {
   return (
     <Layout>
       <StudiesBackground>
-        <ProductToasts
-          openModal={() => {
-            setShowEmailDialog(true);
-          }}
-          openPrivacyModal={() => {
-            setShowPrivacyDialog(true);
-          }}
-        />
+        <ProductToasts />
         <Container
           className={`${ContainerSmallerStyles.TopLevelContainer} ${styles.marginStyle} pt-md-5 pt-0 pb-5 g-0`}
         >
@@ -49,19 +38,7 @@ export function StudiesPageContent() {
               <StudyList />
             </Col>
           </Row>
-          {showPrivacyDialog && (
-            <PrivacyPolicyPageContentV2
-              closeModal={() => setShowPrivacyDialog(false)}
-            />
-          )}
-          {showEmailDialog && (
-            <ProductCheckEmailDialog
-              closeModal={async () => {
-                setShowEmailDialog(false);
-                await logout();
-              }}
-            />
-          )}
+          {showPrivacyDialog && <PrivacyPolicyPageContentV2 />}
         </Container>
       </StudiesBackground>
     </Layout>
@@ -69,9 +46,6 @@ export function StudiesPageContent() {
 }
 
 const styles = {
-  alert: style({
-    position: "absolute",
-  }),
   marginStyle: style(
     {
       margin: "auto",

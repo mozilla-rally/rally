@@ -24,7 +24,7 @@ export function GetExtensionView() {
   const [chromeLink, setChromelink] = useState("");
   const [fxLink, setFxlink] = useState("");
   const { userDocument } = useUserDocument();
-  const [browserType] = useState(detectBrowser());
+  const browserType = detectBrowser();
   const { allStudies } = useStudies();
 
   useEffect(() => {
@@ -33,12 +33,14 @@ export function GetExtensionView() {
         setChromelink(study.downloadLink.chrome);
         setFxlink(study.downloadLink.firefox);
       }
-
-      if (userDocument && userDocument.enrolled) {
-        setShowPrivacyDialog(false);
-      }
     });
-  }, [chromeLink, fxLink, userDocument]);
+  }, [chromeLink, fxLink]);
+
+  useEffect(() => {
+    if (userDocument && userDocument.enrolled) {
+      setShowPrivacyDialog(false);
+    }
+  }, [userDocument]);
 
   return (
     <Container className="p-0">
@@ -99,11 +101,7 @@ export function GetExtensionView() {
           </LoginButton>
         </Col>
       </Row>
-      {showPrivacyDialog && (
-        <PrivacyPolicyPageContentV2
-          closeModal={() => setShowPrivacyDialog(false)}
-        />
-      )}
+      {showPrivacyDialog && <PrivacyPolicyPageContentV2 />}
     </Container>
   );
 }
