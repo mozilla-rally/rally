@@ -1,5 +1,6 @@
 import { render } from "@testing-library/react";
 
+import { useStudies } from "../../../../services/StudiesService";
 import { Layout } from "../../../Layout";
 import { StudiesBackground } from "../StudiesBackground";
 import { StudiesPageContent } from "../StudiesPageContent";
@@ -12,6 +13,7 @@ jest.mock("../StudiesBackground");
 jest.mock("../StudiesTitle");
 jest.mock("../StudiesTooltip");
 jest.mock("../StudyList");
+jest.mock("../../../../services/StudiesService");
 
 describe("StudiesPageContent tests", () => {
   beforeEach(() => {
@@ -26,6 +28,10 @@ describe("StudiesPageContent tests", () => {
       ({ children }) => children
     );
     (StudyList as jest.Mock).mockImplementation(({ children }) => children);
+    (useStudies as jest.Mock).mockReturnValue({
+      installedStudyIds: [],
+      allStudies: [],
+    });
   });
 
   it("renders content correctly", () => {

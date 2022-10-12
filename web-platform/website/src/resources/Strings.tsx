@@ -968,6 +968,40 @@ export const Strings = {
         },
       },
       studies: {
+        alerts: {
+          verifyEmail: {
+            type: "verify-email",
+            text: "Please check your email and verify your account.",
+            button: "Resend",
+            icon: "/img/warning.svg",
+            close: "/img/close.svg",
+            modal: {
+              title: "Check your email",
+              img: "/img/your-contact-data.png",
+              close: "/img/close.svg",
+              text: "To finish creating your account with Rally, please check your meail inbox and verify your email address",
+              help: "Need help?",
+              link: {
+                text: "Contact us",
+                address: "mailto:contact@rally.mozilla.org",
+                external: true,
+              },
+            },
+          },
+          privacyPolicy: {
+            type: "privacy-policy",
+            text: "Please agree to our privacy policy. Required to start contributing.",
+            button: "Review privacy policy",
+            icon: "/img/error.svg",
+          },
+
+          addExtension: {
+            type: "add-extension",
+            text: "Please add the extension. Required to start contributing.",
+            button: "Add extension",
+            icon: "/img/error.svg",
+          },
+        },
         studyCard: {
           description: {
             aboutThisStudy: "About this study",

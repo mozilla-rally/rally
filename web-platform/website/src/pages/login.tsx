@@ -40,7 +40,6 @@ const LoginPage: NextPage = () => {
         await updateUserDocument({ subscribedToEmail: true } as UserDocument);
       } catch (e) {} // eslint-disable-line no-empty
     }
-
     router.replace(url);
   }
 
