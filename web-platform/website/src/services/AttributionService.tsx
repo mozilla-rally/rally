@@ -5,7 +5,10 @@ export interface AttributionDataContext {
   allAttributionCodes: URLSearchParams;
 
   // Loading flag for all attribution info.
-  isLoaded: boolean;
+  isAttributionLoaded: boolean;
+
+  // Get current attribution codes as URLSearchParams.
+  getAttributionCodes(): URLSearchParams;
 
   // Set attribution codes in query string of a provided URL.
   setAttributionCodes(url: URL): URL;
@@ -20,7 +23,7 @@ export function useAttribution() {
 }
 
 export function AttributionProvider(props: { children: React.ReactNode }) {
-  const [isLoaded, setIsLoaded] = useState(false);
+  const [isAttributionLoaded, setIsLoaded] = useState(false);
   const [allAttributionCodes, setAllAttributionCodes] =
     useState<URLSearchParams>(new URLSearchParams());
 
@@ -49,6 +52,13 @@ export function AttributionProvider(props: { children: React.ReactNode }) {
     setIsLoaded(true);
   }
 
+  function getAttributionCodes() {
+    const search = window.localStorage.getItem("rally_utm") ?? "";
+    const searchParams = new URLSearchParams(search);
+
+    return searchParams;
+  }
+
   function setAttributionCodes(url: URL) {
     const returnUrl = new URL(url.href);
 
@@ -73,7 +83,12 @@ export function AttributionProvider(props: { children: React.ReactNode }) {
 
   return (
     <AttributionContext.Provider
-      value={{ isLoaded, allAttributionCodes, setAttributionCodes }}
+      value={{
+        isAttributionLoaded,
+        allAttributionCodes,
+        setAttributionCodes,
+        getAttributionCodes,
+      }}
     >
       {props.children}
     </AttributionContext.Provider>
