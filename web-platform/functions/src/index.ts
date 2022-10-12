@@ -303,16 +303,7 @@ export async function handleUserStudyChangesImpl(
     `Couldn't find Glean schemaNamespace for user ID ${userID} and Firebase study ID ${firebaseStudyID}. Aborting Glean ping process.`
   );
 
-  if (!newStudy || (oldStudy && oldStudy.enrolled && !newStudy.enrolled)) {
-    // User unenrolled from study
-    functions.logger.info(
-      `Sending unenrollment ping for study with user ID ${userID} with study ID ${studyID}`
-    );
-    await gleanPings.studyUnenrollment(rallyID, studyID, schemaNamespace);
-    return true;
-  }
-
-  if ((!oldStudy || !oldStudy.enrolled) && newStudy.enrolled) {
+  if ((!oldStudy || !oldStudy.enrolled) && newStudy?.enrolled) {
     // User just enrolled in this study
     functions.logger.info(
       `Sending enrollment ping for study with user ID ${userID} with study ID ${studyID}`
