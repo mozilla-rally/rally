@@ -21,7 +21,6 @@ const strings = Strings.components.pages.studies.alerts.verifyEmail.modal;
 
 export function ProductCheckEmailDialog() {
   const [isOpen, setIsOpen] = useState(true);
-  const { logout } = useAuthentication();
 
   return (
     <Modal isOpen={isOpen} className={styles.modal}>
@@ -33,7 +32,6 @@ export function ProductCheckEmailDialog() {
                 <Button
                   onClick={async () => {
                     setIsOpen(false);
-                    await logout();
                   }}
                 >
                   <img
