@@ -87,8 +87,7 @@ export function ProductToasts() {
 
 const styles = {
   container: style({
-    position: "absolute",
-    top: Spacing.Medium,
+    marginTop: Spacing.Medium,
     width: "1226px",
     zIndex: 100,
   }),
