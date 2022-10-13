@@ -42,7 +42,7 @@ describe("AuthenticationService tests", () => {
         user,
         isLoaded,
         isLoggingIn,
-        getIsUserVerified,
+        isUserVerified,
         userType,
         deleteGoogleUser,
       } = useAuthentication();
@@ -56,9 +56,7 @@ describe("AuthenticationService tests", () => {
       }
 
       expect(isLoggingIn).toBeFalsy();
-      getIsUserVerified().then((isUserVerified) => {
-        expect(isUserVerified).toBeFalsy();
-      });
+      expect(isUserVerified).toBeFalsy();
       expect(userType).toBeNull();
 
       deleteGoogleUser();
@@ -103,7 +101,7 @@ describe("AuthenticationService tests", () => {
     };
 
     function Component() {
-      const { user, getIsUserVerified, userType } = useAuthentication();
+      const { user, isUserVerified, userType } = useAuthentication();
 
       if (!isAuthenticated) {
         expect(user).toBeUndefined();
@@ -112,9 +110,7 @@ describe("AuthenticationService tests", () => {
         expect(userType).toBe(UserType.Email);
       }
 
-      getIsUserVerified().then((isUserVerified) => {
-        expect(isUserVerified).toBeFalsy();
-      });
+      expect(isUserVerified).toBeFalsy();
 
       return null;
     }
@@ -142,10 +138,11 @@ describe("AuthenticationService tests", () => {
     expect(logEvent).toHaveBeenCalledWith("analytics", "sign_in");
   });
 
-  it("handles verified email user", async () => {
+  it("handles verified email user", () => {
     (useFirebase as jest.Mock).mockReturnValue(firebaseResult);
 
     let isAuthenticated = false;
+    let isVerified = false;
 
     const verifiedUser = {
       uid: "uid",
@@ -158,20 +155,18 @@ describe("AuthenticationService tests", () => {
     };
 
     function Component() {
-      const { user, getIsUserVerified, userType } = useAuthentication();
+      const { user, isUserVerified, userType } = useAuthentication();
 
       if (!isAuthenticated) {
         expect(user).toBeUndefined();
-        getIsUserVerified().then((isUserVerified) => {
-          expect(isUserVerified).toBeFalsy();
-        });
+        expect(isUserVerified).toBeFalsy();
       } else {
         expect(user).toEqual({ firebaseUser: verifiedUser });
         expect(userType).toBe(UserType.Google);
 
-        getIsUserVerified().then((isUserVerified) => {
-          expect(isUserVerified).toBeTruthy();
-        });
+        // Because user and isUserVerified are updated in different batches
+        // we cannot test isUserVerified here.
+        isVerified = isUserVerified;
       }
 
       return null;
@@ -196,12 +191,15 @@ describe("AuthenticationService tests", () => {
     });
 
     expect(logEvent).toHaveBeenCalledWith("analytics", "sign_in");
+
+    expect(isVerified).toBeTruthy();
   });
 
   it("google user is verified", () => {
     (useFirebase as jest.Mock).mockReturnValue(firebaseResult);
 
     let isAuthenticated = false;
+    let isVerified = false;
 
     const googleUser = {
       uid: "uid",
@@ -213,19 +211,17 @@ describe("AuthenticationService tests", () => {
     };
 
     function Component() {
-      const { user, getIsUserVerified } = useAuthentication();
+      const { user, isUserVerified } = useAuthentication();
 
       if (!isAuthenticated) {
         expect(user).toBeUndefined();
-        getIsUserVerified().then((isUserVerified) => {
-          expect(isUserVerified).toBeFalsy();
-        });
+        expect(isUserVerified).toBeFalsy();
       } else {
         expect(user).toEqual({ firebaseUser: googleUser });
 
-        getIsUserVerified().then((isUserVerified) => {
-          expect(isUserVerified).toBeTruthy();
-        });
+        // Because user and isUserVerified are updated in different batches
+        // we cannot test isUserVerified here.
+        isVerified = isUserVerified;
       }
 
       return null;
@@ -249,12 +245,15 @@ describe("AuthenticationService tests", () => {
       (onAuthStateChanged as jest.Mock).mock.calls[0][1](googleUser);
     });
     expect(logEvent).toHaveBeenCalledWith("analytics", "sign_in");
+
+    expect(isVerified).toBeTruthy();
   });
 
   it("logout logs the user out", () => {
     (useFirebase as jest.Mock).mockReturnValue(firebaseResult);
 
     let isAuthenticated = false;
+    let isVerified = false;
 
     const googleUser = {
       uid: "uid",
@@ -266,19 +265,17 @@ describe("AuthenticationService tests", () => {
     };
 
     function Component() {
-      const { user, getIsUserVerified, logout } = useAuthentication();
+      const { user, isUserVerified, logout } = useAuthentication();
 
       if (!isAuthenticated) {
         expect(user).toBeUndefined();
-        getIsUserVerified().then((isUserVerified) => {
-          expect(isUserVerified).toBeFalsy();
-        });
+        expect(isUserVerified).toBeFalsy();
       } else {
         expect(user).toEqual({ firebaseUser: googleUser });
 
-        getIsUserVerified().then((isUserVerified) => {
-          expect(isUserVerified).toBeTruthy();
-        });
+        // Because user and isUserVerified are updated in different batches
+        // we cannot test isUserVerified here.
+        isVerified = isUserVerified;
 
         logout();
       }
@@ -304,6 +301,8 @@ describe("AuthenticationService tests", () => {
     act(() => {
       (onAuthStateChanged as jest.Mock).mock.calls[0][1](googleUser);
     });
+
+    expect(isVerified).toBeTruthy();
 
     expect(logout).toHaveBeenCalled();
 

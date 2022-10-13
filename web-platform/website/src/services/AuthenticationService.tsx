@@ -1,11 +1,3 @@
-import { logEvent } from "firebase/analytics";
-import {
-  User as FirebaseUser,
-  UserCredential,
-  onAuthStateChanged,
-} from "firebase/auth";
-import { createContext, useContext, useEffect, useState } from "react";
-
 import { User } from "../models/User";
 import { useFirebase } from "./FirebaseService";
 import {
@@ -20,6 +12,13 @@ import {
   sendPasswordResetEmail as sendPasswordResetEmailFn,
   signupWithEmail as signupWithEmailFn,
 } from "./UserAccountService";
+import { logEvent } from "firebase/analytics";
+import {
+  User as FirebaseUser,
+  UserCredential,
+  onAuthStateChanged,
+} from "firebase/auth";
+import { createContext, useContext, useEffect, useState } from "react";
 
 export enum UserType {
   Google = "google",
@@ -36,10 +35,11 @@ export interface UserDataContext {
   deleteEmailUser: (password: string) => Promise<boolean>;
   isLoaded: boolean;
   isLoggingIn: boolean;
-  getIsUserVerified: () => Promise<boolean>;
+  isUserVerified: boolean;
   loginWithEmail: (email: string, password: string) => Promise<UserCredential>;
   loginWithGoogle: () => Promise<void>;
   logout: () => Promise<void>;
+  reloadUser: () => Promise<void>;
   sendEmailVerification: () => Promise<void>;
   signupWithEmail(email: string, password: string): Promise<UserCredential>;
   sendPasswordResetEmail(email: string): Promise<void>;
@@ -51,6 +51,7 @@ const AuthenticationContext = createContext<UserDataContext>({
   isLoaded: false,
   user: undefined,
   isLoggingIn: false,
+  isUserVerified: false,
 } as UserDataContext);
 
 export function useAuthentication() {
@@ -72,14 +73,29 @@ export async function getCurrentUser() {
 
 export function AuthenticationProvider(props: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | undefined>();
+  const [isUserVerified, setIsUserVerified] = useState(false);
   const [isLoggingIn] = useState(false);
   const [isLoaded, setIsLoaded] = useState(false);
 
   const { auth, analytics } = useFirebase();
 
+  function updateUserVerificationState(firebaseUser: FirebaseUser | null) {
+    setIsUserVerified(
+      Boolean(
+        firebaseUser &&
+          firebaseUser.providerData &&
+          firebaseUser.providerData.length &&
+          ((firebaseUser.providerData[0].providerId === "password" &&
+            firebaseUser.emailVerified) ||
+            firebaseUser.providerData[0].providerId === "google.com")
+      )
+    );
+  }
+
   useEffect(() => {
     return onAuthStateChanged(auth, (firebaseUser) => {
       setUser(firebaseUser ? { firebaseUser } : undefined);
+      updateUserVerificationState(firebaseUser);
       setIsLoaded(true);
 
       logEvent(
@@ -95,19 +111,13 @@ export function AuthenticationProvider(props: { children: React.ReactNode }) {
         user,
         isLoaded,
         isLoggingIn,
-        getIsUserVerified: async () => {
-          const firebaseUser = auth.currentUser || user?.firebaseUser;
-          if (firebaseUser?.reload) {
-            await firebaseUser.reload();
+        isUserVerified,
+        reloadUser: async () => {
+          if (!user || !user.firebaseUser) {
+            return;
           }
-          return Boolean(
-            firebaseUser &&
-              firebaseUser.providerData &&
-              firebaseUser.providerData.length &&
-              ((firebaseUser.providerData[0].providerId === "password" &&
-                firebaseUser.emailVerified) ||
-                firebaseUser.providerData[0].providerId === "google.com")
-          );
+          await user.firebaseUser.reload();
+          updateUserVerificationState(user.firebaseUser);
         },
         loginWithEmail: loginWithEmailFn,
         loginWithGoogle: loginWithGoogleFn,

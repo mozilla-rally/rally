@@ -176,6 +176,7 @@ describe("AuthenticatedPage tests", () => {
     (useAuthentication as jest.Mock).mockReturnValue({
       isLoaded: true,
       user: {},
+      isUserVerified: true,
     });
 
     (useUserDocument as jest.Mock).mockReturnValue({
@@ -206,6 +207,7 @@ describe("AuthenticatedPage tests", () => {
     (useAuthentication as jest.Mock).mockReturnValue({
       isLoaded: true,
       user: {},
+      isUserVerified: true,
     });
 
     (useUserDocument as jest.Mock).mockReturnValue({
@@ -237,6 +239,7 @@ describe("AuthenticatedPage tests", () => {
     (useAuthentication as jest.Mock).mockReturnValue({
       isLoaded: true,
       user: {},
+      isUserVerified: true,
     });
 
     (useUserDocument as jest.Mock).mockReturnValue({
@@ -267,6 +270,7 @@ describe("AuthenticatedPage tests", () => {
     (useAuthentication as jest.Mock).mockReturnValue({
       isLoaded: true,
       user: {},
+      isUserVerified: true,
     });
 
     (useUserDocument as jest.Mock).mockReturnValue({
