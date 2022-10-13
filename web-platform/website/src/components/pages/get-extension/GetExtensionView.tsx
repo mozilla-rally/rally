@@ -34,7 +34,7 @@ export function GetExtensionView() {
         setFxlink(study.downloadLink.firefox);
       }
     });
-  }, [chromeLink, fxLink]);
+  }, [allStudies]);
 
   useEffect(() => {
     if (userDocument && userDocument.enrolled) {

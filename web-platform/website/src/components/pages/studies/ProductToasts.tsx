@@ -25,26 +25,24 @@ export function ProductToasts() {
   const [showEmailDialog, setShowEmailDialog] = useState<boolean>(false);
   const [showPrivacyDialog, setShowPrivacyDialog] = useState<boolean>(false);
 
-  const { user, getIsUserVerified } = useAuthentication();
+  const { getIsUserVerified } = useAuthentication();
   const { installedStudyIds, rallyExtensionStudy } = useStudies();
   const { userDocument } = useUserDocument();
 
-  if (!user) {
-    return null;
-  }
-
   useEffect(() => {
-    getIsUserVerified().then(isUserVerified => {
+    getIsUserVerified().then((isUserVerified) => {
       setShowEmailNotVerifiedToast(!isUserVerified);
-    })
-  }, []);
+    });
+  }, [getIsUserVerified]);
 
   useEffect(() => {
     if (!rallyExtensionStudy?.studyId) {
       return;
     }
-    setShowAddExtenionToast(!installedStudyIds.includes(rallyExtensionStudy.studyId))
-  }, [installedStudyIds]);
+    setShowAddExtenionToast(
+      !installedStudyIds.includes(rallyExtensionStudy.studyId)
+    );
+  }, [installedStudyIds, rallyExtensionStudy]);
 
   useEffect(() => {
     if (!userDocument) {

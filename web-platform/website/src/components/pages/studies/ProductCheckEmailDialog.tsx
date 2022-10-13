@@ -11,7 +11,6 @@ import {
 import { style } from "typestyle";
 
 import { Strings } from "../../../resources/Strings";
-import { useAuthentication } from "../../../services/AuthenticationService";
 import { Spacing } from "../../../styles";
 import { FontSize, Fonts } from "../../../styles/Fonts";
 import { LinkStyles } from "../../../styles/LinkStyles";

@@ -47,7 +47,7 @@ export function ToastComponent({
         setFxlink(study.downloadLink.firefox);
       }
     });
-  }, [chromeLink, fxLink]);
+  }, [allStudies]);
 
   return (
     <Container className={styles.alert}>
@@ -71,7 +71,10 @@ export function ToastComponent({
                   try {
                     await sendEmailVerification();
                   } catch (e) {
-                    console.error("Error when trying to resend email verification:", e);
+                    console.error(
+                      "Error when trying to resend email verification:",
+                      e
+                    );
                   }
                   (openEmailModal as () => void)();
                   setToastVisibility(false);

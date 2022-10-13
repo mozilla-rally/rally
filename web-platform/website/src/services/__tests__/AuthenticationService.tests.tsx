@@ -56,7 +56,7 @@ describe("AuthenticationService tests", () => {
       }
 
       expect(isLoggingIn).toBeFalsy();
-      getIsUserVerified().then(isUserVerified => {
+      getIsUserVerified().then((isUserVerified) => {
         expect(isUserVerified).toBeFalsy();
       });
       expect(userType).toBeNull();
@@ -112,7 +112,7 @@ describe("AuthenticationService tests", () => {
         expect(userType).toBe(UserType.Email);
       }
 
-      getIsUserVerified().then(isUserVerified => {
+      getIsUserVerified().then((isUserVerified) => {
         expect(isUserVerified).toBeFalsy();
       });
 
@@ -162,14 +162,14 @@ describe("AuthenticationService tests", () => {
 
       if (!isAuthenticated) {
         expect(user).toBeUndefined();
-        getIsUserVerified().then(isUserVerified => {
+        getIsUserVerified().then((isUserVerified) => {
           expect(isUserVerified).toBeFalsy();
         });
       } else {
         expect(user).toEqual({ firebaseUser: verifiedUser });
         expect(userType).toBe(UserType.Google);
 
-        getIsUserVerified().then(isUserVerified => {
+        getIsUserVerified().then((isUserVerified) => {
           expect(isUserVerified).toBeTruthy();
         });
       }
@@ -217,13 +217,13 @@ describe("AuthenticationService tests", () => {
 
       if (!isAuthenticated) {
         expect(user).toBeUndefined();
-        getIsUserVerified().then(isUserVerified => {
+        getIsUserVerified().then((isUserVerified) => {
           expect(isUserVerified).toBeFalsy();
         });
       } else {
         expect(user).toEqual({ firebaseUser: googleUser });
 
-        getIsUserVerified().then(isUserVerified => {
+        getIsUserVerified().then((isUserVerified) => {
           expect(isUserVerified).toBeTruthy();
         });
       }
@@ -270,13 +270,13 @@ describe("AuthenticationService tests", () => {
 
       if (!isAuthenticated) {
         expect(user).toBeUndefined();
-        getIsUserVerified().then(isUserVerified => {
+        getIsUserVerified().then((isUserVerified) => {
           expect(isUserVerified).toBeFalsy();
         });
       } else {
         expect(user).toEqual({ firebaseUser: googleUser });
 
-        getIsUserVerified().then(isUserVerified => {
+        getIsUserVerified().then((isUserVerified) => {
           expect(isUserVerified).toBeTruthy();
         });
 

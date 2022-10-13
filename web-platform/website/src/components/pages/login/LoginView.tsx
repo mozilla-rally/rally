@@ -52,8 +52,7 @@ export function LoginView() {
   const passwordRef = useRef(password);
   passwordRef.current = password;
 
-  const { loginWithEmail, loginWithGoogle } =
-    useAuthentication();
+  const { loginWithEmail, loginWithGoogle } = useAuthentication();
 
   async function validateAndLogin() {
     setValidationResult(undefined);
