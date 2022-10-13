@@ -97,7 +97,11 @@ function onUserDocumentChanges(
   let userDoc = null as UserDocument | null;
 
   const userUnsubscribe = onSnapshot(refs.userRef, (doc) => {
+    const existingStudies = userDoc?.studies;
     userDoc = doc && (doc.data() as UserDocument);
+    if (userDoc && existingStudies) {
+      userDoc.studies = existingStudies;
+    }
 
     // Shallow spread is necessary so that React treats this as a new object
     // since it does not detect mutations within the same object
