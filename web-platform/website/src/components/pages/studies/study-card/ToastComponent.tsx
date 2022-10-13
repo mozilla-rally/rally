@@ -16,9 +16,10 @@ interface ToastProps {
   button: string;
   type: string;
   close?: string;
-  openModal?: () => void;
+  openEmailModal?: () => void;
   openPrivacyModal?: () => void;
   link?: boolean;
+  dismissable?: boolean;
 }
 
 export function ToastComponent({
@@ -27,9 +28,10 @@ export function ToastComponent({
   button,
   close,
   type,
-  openModal,
+  openEmailModal,
   openPrivacyModal,
   link,
+  dismissable,
 }: ToastProps) {
   const { sendEmailVerification } = useAuthentication();
   const [toastVisible, setToastVisibility] = useState<boolean>(true);
@@ -65,10 +67,17 @@ export function ToastComponent({
           <div className="right d-flex align-items-center">
             <Button
               onClick={async () => {
-                openModal ? await sendEmailVerification() : null;
-                openModal && (openModal as () => void)();
-                openPrivacyModal && (openPrivacyModal as () => void)();
-                setToastVisibility(false);
+                if (openEmailModal) {
+                  try {
+                    await sendEmailVerification();
+                  } catch (e) {
+                    console.error("Error when trying to resend email verification:", e);
+                  }
+                  (openEmailModal as () => void)();
+                  setToastVisibility(false);
+                } else if (openPrivacyModal) {
+                  (openPrivacyModal as () => void)();
+                }
               }}
               className={`${ProductButton} toast-btn`}
             >
@@ -87,7 +96,7 @@ export function ToastComponent({
                 button
               )}
             </Button>
-            {close && (
+            {dismissable && close && (
               <img
                 onClick={() => setToastVisibility(false)}
                 className="close-icon"

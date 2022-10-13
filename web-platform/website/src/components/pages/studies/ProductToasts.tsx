@@ -25,23 +25,27 @@ export function ProductToasts() {
   const [showEmailDialog, setShowEmailDialog] = useState<boolean>(false);
   const [showPrivacyDialog, setShowPrivacyDialog] = useState<boolean>(false);
 
-  const { isUserVerified, user } = useAuthentication();
-  const { installedStudyIds } = useStudies();
+  const { isUserVerified } = useAuthentication();
+  const { installedStudyIds, rallyExtensionStudy } = useStudies();
   const { userDocument } = useUserDocument();
 
   useEffect(() => {
-    if (user && user.firebaseUser && !isUserVerified) {
-      setShowEmailNotVerifiedToast(true);
-    }
+    setShowEmailNotVerifiedToast(!isUserVerified);
+  }, [isUserVerified]);
 
-    if (!installedStudyIds.length) {
-      setShowAddExtenionToast(true);
+  useEffect(() => {
+    if (!rallyExtensionStudy?.studyId) {
+      return;
     }
+    setShowAddExtenionToast(!installedStudyIds.includes(rallyExtensionStudy.studyId))
+  }, [installedStudyIds]);
 
-    if (userDocument && !userDocument.enrolled) {
-      setShowAddPrivacyToast(true);
+  useEffect(() => {
+    if (!userDocument) {
+      return;
     }
-  }, [isUserVerified, user, installedStudyIds]);
+    setShowAddPrivacyToast(!userDocument.enrolled);
+  }, [userDocument]);
 
   return (
     <Container className={styles.container}>
@@ -59,7 +63,8 @@ export function ProductToasts() {
       {showEmailNotVerifiedToast && (
         <ToastComponent
           {...emailStrings}
-          openModal={() => setShowEmailDialog(true)}
+          dismissable={true}
+          openEmailModal={() => setShowEmailDialog(true)}
         />
       )}
 
