@@ -79,7 +79,6 @@ export function AuthenticationProvider(props: { children: React.ReactNode }) {
 
   useEffect(() => {
     return onAuthStateChanged(auth, (firebaseUser) => {
-      console.log(1, firebaseUser);
       setUser(firebaseUser ? { firebaseUser } : undefined);
       setIsLoaded(true);
 
