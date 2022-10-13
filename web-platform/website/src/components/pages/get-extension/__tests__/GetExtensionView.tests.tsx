@@ -1,9 +1,7 @@
 import { render } from "@testing-library/react";
 import { useRouter } from "next/router";
 
-import { Flags } from "../../../../resources/Flags";
 import { Strings } from "../../../../resources/Strings";
-import { useFlagService } from "../../../../services/FlagService";
 import { useStudies } from "../../../../services/StudiesService";
 import { detectBrowser } from "../../../../utils/BrowserDetector";
 import { BrowserType } from "../../../../utils/BrowserType";
@@ -19,15 +17,13 @@ jest.mock("../../../../services/FlagService");
 const strings = Strings.components.pages.login.getExtensionView;
 
 describe("GetExtensionView tests", () => {
-  const isFlagActive = jest.fn();
-  (Highlighter as jest.Mock).mockImplementation(({ children }) => children);
-  (useStudies as jest.Mock).mockReturnValue({
-    allStudies: [],
-  });
   beforeEach(() => {
-    (useFlagService as jest.Mock).mockReturnValue({
-      isFlagActive,
+    (Highlighter as jest.Mock).mockImplementation(({ children }) => children);
+
+    (useStudies as jest.Mock).mockReturnValue({
+      allStudies: [],
     });
+
     (detectBrowser as jest.Mock).mockReturnValue(BrowserType.Chrome);
   });
 
@@ -57,7 +53,5 @@ describe("GetExtensionView tests", () => {
     expect(root.getByText(strings.bulletTitle)).toBeInTheDocument();
 
     expect(root.getByText(strings.getExt)).toBeInTheDocument();
-    expect(useFlagService).toHaveBeenCalled();
-    expect(isFlagActive).toHaveBeenCalledWith(Flags.onboardingV2);
   });
 });

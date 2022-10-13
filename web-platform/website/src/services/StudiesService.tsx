@@ -1,5 +1,4 @@
 import { Study } from "@mozilla/rally-shared-types";
-import { logEvent } from "firebase/analytics";
 import { collection, getDocs } from "firebase/firestore";
 import { createContext, useContext, useEffect, useState } from "react";
 
@@ -16,7 +15,12 @@ export interface StudiesDataContext {
 
   // Loading flag for all studies
   isLoaded: boolean;
+
+  // Specific study object for the Rally Extension
+  rallyExtensionStudy: Study | undefined;
 }
+
+const RALLY_EXTENSION_STUDY_ID = "attentionStream";
 
 const StudiesContext = createContext<StudiesDataContext>(
   {} as StudiesDataContext
@@ -30,6 +34,7 @@ export function StudiesProvider(props: { children: React.ReactNode }) {
   const [isLoaded, setIsLoaded] = useState(false);
   const [allStudies, setAllStudies] = useState<Study[]>([]);
   const [installedStudyIds, setInstalledStudyIds] = useState<string[]>([]);
+  const [rallyExtensionStudy, setRallyExtensionStudy] = useState<Study>();
   const { db } = useFirebase();
 
   function subscribeToExtensionEvents() {
@@ -55,6 +60,9 @@ export function StudiesProvider(props: { children: React.ReactNode }) {
 
     // If any attribution codes are stored in local storage, apply them to these outbound links.
     studies.forEach((study) => {
+      if (study.studyId === RALLY_EXTENSION_STUDY_ID) {
+        setRallyExtensionStudy(study);
+      }
       if (
         !study.downloadLink ||
         !study.downloadLink.chrome ||
@@ -84,7 +92,7 @@ export function StudiesProvider(props: { children: React.ReactNode }) {
 
   return (
     <StudiesContext.Provider
-      value={{ isLoaded, allStudies, installedStudyIds }}
+      value={{ isLoaded, allStudies, installedStudyIds, rallyExtensionStudy }}
     >
       {props.children}
     </StudiesContext.Provider>

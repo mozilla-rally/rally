@@ -1,11 +1,12 @@
 import { UserDocument } from "@mozilla/rally-shared-types/dist";
+import { Timestamp } from "firebase/firestore";
 import { useState } from "react";
-import { Container, Modal, ModalHeader } from "reactstrap";
-import { Button, Col, Row } from "reactstrap";
+import { Button, Col, Container, Modal, ModalHeader, Row } from "reactstrap";
 import { style } from "typestyle";
 import { NestedCSSProperties } from "typestyle/lib/types";
 
 import { Strings } from "../../../resources/Strings";
+import { useStudies } from "../../../services/StudiesService";
 import { useUserDocument } from "../../../services/UserDocumentService";
 import { Spacing } from "../../../styles";
 import { SecondaryButton, TertiaryButton } from "../../../styles/Buttons";
@@ -24,8 +25,13 @@ const strings = Strings.components.pages.privacyPolicy;
 const btnStrings = Strings.components.pages.privacyPolicy.buttons;
 
 export function PrivacyPolicyPageContentV2() {
-  const { updateUserDocument, userDocument } = useUserDocument();
+  const { updateUserDocument } = useUserDocument();
   const [isOpen, setIsOpen] = useState(true);
+  const { isLoaded, rallyExtensionStudy } = useStudies();
+
+  if (!isLoaded) {
+    return null;
+  }
 
   return (
     <Modal
@@ -53,10 +59,21 @@ export function PrivacyPolicyPageContentV2() {
           <Button
             className={`d-flex fw-bold ps-4 pe-4 pt-2 pb-2 ${SecondaryButton} me-3`}
             onClick={async () => {
-              await updateUserDocument({
-                ...((userDocument || {}) as UserDocument),
+              const newUserDoc: Partial<UserDocument> = {
                 enrolled: true,
-              });
+              };
+
+              if (rallyExtensionStudy) {
+                newUserDoc.studies = {
+                  [rallyExtensionStudy.studyId]: {
+                    studyId: rallyExtensionStudy.studyId,
+                    version: rallyExtensionStudy.version,
+                    enrolled: true,
+                    joinedOn: Timestamp.now(),
+                  },
+                };
+              }
+              await updateUserDocument(newUserDoc);
 
               setIsOpen(false);
             }}
