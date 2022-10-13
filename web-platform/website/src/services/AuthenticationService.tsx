@@ -36,7 +36,7 @@ export interface UserDataContext {
   deleteEmailUser: (password: string) => Promise<boolean>;
   isLoaded: boolean;
   isLoggingIn: boolean;
-  isUserVerified: boolean;
+  getIsUserVerified: () => Promise<boolean>;
   loginWithEmail: (email: string, password: string) => Promise<UserCredential>;
   loginWithGoogle: () => Promise<void>;
   logout: () => Promise<void>;
@@ -51,7 +51,6 @@ const AuthenticationContext = createContext<UserDataContext>({
   isLoaded: false,
   user: undefined,
   isLoggingIn: false,
-  isUserVerified: false,
 } as UserDataContext);
 
 export function useAuthentication() {
@@ -73,7 +72,6 @@ export async function getCurrentUser() {
 
 export function AuthenticationProvider(props: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | undefined>();
-  const [isUserVerified, setIsUserVerified] = useState(false);
   const [isLoggingIn] = useState(false);
   const [isLoaded, setIsLoaded] = useState(false);
 
@@ -81,17 +79,7 @@ export function AuthenticationProvider(props: { children: React.ReactNode }) {
 
   useEffect(() => {
     return onAuthStateChanged(auth, (firebaseUser) => {
-      setIsUserVerified(
-        Boolean(
-          firebaseUser &&
-            firebaseUser.providerData &&
-            firebaseUser.providerData.length &&
-            ((firebaseUser.providerData[0].providerId === "password" &&
-              firebaseUser.emailVerified) ||
-              firebaseUser.providerData[0].providerId === "google.com")
-        )
-      );
-
+      console.log(1, firebaseUser);
       setUser(firebaseUser ? { firebaseUser } : undefined);
       setIsLoaded(true);
 
@@ -108,7 +96,20 @@ export function AuthenticationProvider(props: { children: React.ReactNode }) {
         user,
         isLoaded,
         isLoggingIn,
-        isUserVerified,
+        getIsUserVerified: async () => {
+          const firebaseUser = auth.currentUser || user?.firebaseUser;
+          if (firebaseUser?.reload) {
+            await firebaseUser.reload();
+          }
+          return Boolean(
+            firebaseUser &&
+              firebaseUser.providerData &&
+              firebaseUser.providerData.length &&
+              ((firebaseUser.providerData[0].providerId === "password" &&
+                firebaseUser.emailVerified) ||
+                firebaseUser.providerData[0].providerId === "google.com")
+          );
+        },
         loginWithEmail: loginWithEmailFn,
         loginWithGoogle: loginWithGoogleFn,
         logout: logoutFn,

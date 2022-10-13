@@ -42,7 +42,6 @@ describe("login page tests", () => {
   it("renders null when user is not loaded yet", () => {
     (useAuthentication as jest.Mock).mockReturnValue({
       isLoaded: false,
-      isUserVerified: false,
     });
 
     const replace = jest.fn();
@@ -68,7 +67,6 @@ describe("login page tests", () => {
   it("renders null when router is not loaded yet", () => {
     (useAuthentication as jest.Mock).mockReturnValue({
       isLoaded: true,
-      isUserVerified: false,
     });
 
     const replace = jest.fn();

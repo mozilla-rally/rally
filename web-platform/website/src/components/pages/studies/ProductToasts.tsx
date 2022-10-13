@@ -25,13 +25,19 @@ export function ProductToasts() {
   const [showEmailDialog, setShowEmailDialog] = useState<boolean>(false);
   const [showPrivacyDialog, setShowPrivacyDialog] = useState<boolean>(false);
 
-  const { isUserVerified } = useAuthentication();
+  const { user, getIsUserVerified } = useAuthentication();
   const { installedStudyIds, rallyExtensionStudy } = useStudies();
   const { userDocument } = useUserDocument();
 
+  if (!user) {
+    return null;
+  }
+
   useEffect(() => {
-    setShowEmailNotVerifiedToast(!isUserVerified);
-  }, [isUserVerified]);
+    getIsUserVerified().then(isUserVerified => {
+      setShowEmailNotVerifiedToast(!isUserVerified);
+    })
+  }, []);
 
   useEffect(() => {
     if (!rallyExtensionStudy?.studyId) {
