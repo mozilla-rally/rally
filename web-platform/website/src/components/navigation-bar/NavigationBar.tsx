@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { HTMLAttributes } from "react";
 import { Col, Container, Row } from "reactstrap";
 import { style } from "typestyle";
 
@@ -17,13 +18,14 @@ import { MobileMenu } from "./MobileMenu";
 
 const strings = Strings.components.navigationBar;
 
-export function NavigationBar(props: {
-  className?: string;
+export interface NavigationBarProps extends HTMLAttributes<HTMLDivElement> {
   displayInCollapsedMode?: boolean;
-}) {
+}
+
+export function NavigationBar(props: NavigationBarProps) {
   const { user } = useAuthentication();
 
-  const displayInCollapseMode =
+  const displayInCollapsedMode =
     props.displayInCollapsedMode !== undefined
       ? props.displayInCollapsedMode
       : false;
@@ -31,7 +33,7 @@ export function NavigationBar(props: {
   return (
     <Container
       className={`${ContainerSmallerStyles.TopLevelContainer} ${styles.nav} ${
-        user && !displayInCollapseMode ? "" : "border-0"
+        user && !displayInCollapsedMode ? "" : "border-0"
       } border-lg-1 ms-0 me-0 ${(props && props.className) || ""}`}
     >
       <Row className="align-items-center gx-0 gy-0">
@@ -45,7 +47,7 @@ export function NavigationBar(props: {
           </a>
         </Col>
 
-        {user && !displayInCollapseMode && (
+        {user && !displayInCollapsedMode && (
           <>
             <TopLinks />
             <DropdownMenus />

@@ -10,7 +10,7 @@ export function GetExtensionContent(props: { children: React.ReactNode }) {
   return (
     <>
       {props.children}
-      <LoginPageLayoutV2 isExtensionView={true}>
+      <LoginPageLayoutV2 displayInCollapsedMode={true}>
         <LoginPageLayoutV2.LeftContent>
           <ExtensionCard />
         </LoginPageLayoutV2.LeftContent>

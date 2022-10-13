@@ -1,7 +1,5 @@
 import { Col, Container, Row } from "reactstrap";
 
-import { Flags } from "../../../resources/Flags";
-import { useFlagService } from "../../../services/FlagService";
 import { Fonts } from "../../../styles/Fonts";
 
 export interface StandardPrivacyPolicySectionProps {
@@ -18,9 +16,6 @@ export function StandardPrivacyPolicySection({
   tagline,
   sections,
 }: StandardPrivacyPolicySectionProps) {
-  const { isFlagActive } = useFlagService();
-  const isV2Enabled = isFlagActive(Flags.onboardingV2);
-
   return (
     <>
       <Row>
@@ -28,30 +23,16 @@ export function StandardPrivacyPolicySection({
           <h2 className={`${Fonts.Headline}`}>{title}</h2>
         </Col>
       </Row>
-      <Row className={`${!isV2Enabled ? "mb-4" : ""}`}>
+      <Row>
         <Col>
           <p>{tagline}</p>
         </Col>
       </Row>
-      <Row className={`${!isV2Enabled ? "mb-4" : ""}`}>
+      <Row>
         <Col>
           <Container className="p-0 g-5">
-            {sections.map(({ image, text }, i) => (
-              <Row
-                className={`d-flex align-items-center ${
-                  !isV2Enabled ? "mb-4" : ""
-                }`}
-                key={i}
-              >
-                {!isV2Enabled && image && (
-                  <Col className="col-12 col-sm-2 mb-4 text-center">
-                    <img
-                      width={image.width}
-                      src={image.url}
-                      alt={image.alt}
-                    ></img>
-                  </Col>
-                )}
+            {sections.map(({ text }, i) => (
+              <Row className={`d-flex align-items-center`} key={i}>
                 <Col>{text}</Col>
               </Row>
             ))}

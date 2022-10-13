@@ -13,14 +13,10 @@ import {
   Row,
 } from "reactstrap";
 
-import { Flags } from "../../../resources/Flags";
 import { Strings } from "../../../resources/Strings";
 import { useAuthentication } from "../../../services/AuthenticationService";
-import { useFlagService } from "../../../services/FlagService";
 import { PrimaryButton, PrimaryButtonInAction } from "../../../styles/Buttons";
-import { Fonts } from "../../../styles/Fonts";
 import { getFirebaseErrorMessage } from "../../../utils/FirebaseErrors";
-import { Highlighter } from "../../Highlighter";
 import { InputControl } from "../../InputControl";
 import { LoginButton } from "./LoginButton";
 import {
@@ -53,10 +49,6 @@ export function EmailSignupView() {
       validationResult.password &&
       validationResult.password.error
   );
-
-  const { isFlagActive } = useFlagService();
-
-  const isV2Enabled = isFlagActive(Flags.onboardingV2);
 
   // Prevents closure in validateAndSignup
 
@@ -125,15 +117,6 @@ export function EmailSignupView() {
 
   return (
     <Container className="p-0">
-      {!isV2Enabled && (
-        <Row className="mb-4">
-          <Col className="d-flex justify-content-center">
-            <Highlighter>
-              <h1 className={Fonts.Headline}>{strings.title}</h1>
-            </Highlighter>
-          </Col>
-        </Row>
-      )}
       <Row>
         <Col>
           <Form>
@@ -215,24 +198,22 @@ export function EmailSignupView() {
           </Form>
         </Col>
       </Row>
-      {isV2Enabled && (
-        <Row className="mb-3">
-          <Col>
-            <InputControl
-              title={strings.emailSubscription}
-              name={strings.emailSubscription}
-              type="checkbox"
-              checked={emailSubscription}
-              className="me-3"
-              key={strings.emailSubscription}
-              value={""}
-              onChange={(event) => {
-                setEmailSubscription(event.target.checked);
-              }}
-            />
-          </Col>
-        </Row>
-      )}
+      <Row className="mb-3">
+        <Col>
+          <InputControl
+            title={strings.emailSubscription}
+            name={strings.emailSubscription}
+            type="checkbox"
+            checked={emailSubscription}
+            className="me-3"
+            key={strings.emailSubscription}
+            value={""}
+            onChange={(event) => {
+              setEmailSubscription(event.target.checked);
+            }}
+          />
+        </Col>
+      </Row>
       <Row className="mb-3">
         <Col>
           <LoginButton

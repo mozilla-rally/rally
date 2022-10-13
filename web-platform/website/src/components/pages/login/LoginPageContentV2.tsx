@@ -21,7 +21,7 @@ export function LoginPageContentV2(props: { children: React.ReactNode }) {
     <LoginStateProvider>
       <>
         {props.children}
-        <LoginPageLayoutV2 isExtensionView={false}>
+        <LoginPageLayoutV2 displayInCollapsedMode={true}>
           <LoginPageLayoutV2.LeftContent>
             <LoginCards />
           </LoginPageLayoutV2.LeftContent>
