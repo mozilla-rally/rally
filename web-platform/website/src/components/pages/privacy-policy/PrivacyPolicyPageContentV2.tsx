@@ -1,8 +1,7 @@
 import { UserDocument } from "@mozilla/rally-shared-types/dist";
 import { Timestamp } from "firebase/firestore";
 import { useState } from "react";
-import { Container, Modal, ModalHeader } from "reactstrap";
-import { Button, Col, Row } from "reactstrap";
+import { Button, Col, Container, Modal, ModalHeader, Row } from "reactstrap";
 import { style } from "typestyle";
 import { NestedCSSProperties } from "typestyle/lib/types";
 
@@ -26,8 +25,8 @@ const strings = Strings.components.pages.privacyPolicy;
 const btnStrings = Strings.components.pages.privacyPolicy.buttons;
 
 export function PrivacyPolicyPageContentV2() {
-  const { updateUserDocument, userDocument } = useUserDocument();
-  const [ isOpen, setIsOpen ] = useState(true);
+  const { updateUserDocument } = useUserDocument();
+  const [isOpen, setIsOpen] = useState(true);
   const { isLoaded, rallyExtensionStudy } = useStudies();
 
   if (!isLoaded) {
