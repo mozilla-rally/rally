@@ -28,6 +28,21 @@ jobs:
       - run: rush build
       - run: rush test
 
+      - uses: marceloprado/has-changed-path@v1
+        id: changed-functions
+        with:
+          paths: web-platform/functions web-platform/firebase
+
+      - name: Deploy firebase functions to staging
+        if: steps.changed-functions.outputs.changed == 'true'
+        run: |
+          cp web-platform/firebase/firebase.config.rally-web-stage.json web-platform/firebase.config.json
+          cp web-platform/firebase/firestore.rules web-platform/firestore.rules
+          cp web-platform/firebase/firebase.json web-platform/firebase.json
+          sed -i 's/\.\.\/functions/functions/g' web-platform/firebase.json
+          echo ${{ secrets.GCLOUD_SERVICE_KEY }} | base64 --decode --ignore-garbage > "$HOME"/gcloud.json
+          GOOGLE_APPLICATION_CREDENTIALS="$HOME"/gcloud.json web-platform/functions/node_modules/.bin/firebase deploy --only functions,firestore --project ${{secrets.PROJECT_ID_STAGE}} -c web-platform/firebase.json
+
       - name: Archive Mozilla Rally extension zip
         uses: actions/upload-artifact@v3
         with:
