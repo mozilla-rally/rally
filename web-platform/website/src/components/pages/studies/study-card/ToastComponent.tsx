@@ -9,6 +9,9 @@ import { ProductButton } from "../../../../styles/Buttons";
 import { LinkStyles } from "../../../../styles/LinkStyles";
 import { detectBrowser } from "../../../../utils/BrowserDetector";
 import { BrowserType } from "../../../../utils/BrowserType";
+import { Strings } from "../../../../resources/Strings";
+
+const strings = Strings.components.pages.studies.alerts;
 
 interface ToastProps {
   icon: string;
@@ -16,8 +19,7 @@ interface ToastProps {
   button: string;
   type: string;
   close?: string;
-  openEmailModal?: () => void;
-  openPrivacyModal?: () => void;
+  onOpenModal?: () => void;
   link?: boolean;
   dismissable?: boolean;
 }
@@ -28,8 +30,7 @@ export function ToastComponent({
   button,
   close,
   type,
-  openEmailModal,
-  openPrivacyModal,
+  onOpenModal,
   link,
   dismissable,
 }: ToastProps) {
@@ -67,7 +68,7 @@ export function ToastComponent({
           <div className="right d-flex align-items-center">
             <Button
               onClick={async () => {
-                if (openEmailModal) {
+                if (type === strings.verifyEmail.type) {
                   try {
                     await sendEmailVerification();
                   } catch (e) {
@@ -76,10 +77,10 @@ export function ToastComponent({
                       e
                     );
                   }
-                  (openEmailModal as () => void)();
+                  (onOpenModal as () => void)();
                   setToastVisibility(false);
-                } else if (openPrivacyModal) {
-                  (openPrivacyModal as () => void)();
+                } else if (type === strings.privacyPolicy.type) {
+                  (onOpenModal as () => void)();
                 }
               }}
               className={`${ProductButton} toast-btn`}

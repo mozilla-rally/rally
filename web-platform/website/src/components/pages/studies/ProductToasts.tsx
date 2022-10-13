@@ -65,7 +65,7 @@ export function ProductToasts() {
       {showAddPrivacyToast && (
         <ToastComponent
           {...privacyStrings}
-          openPrivacyModal={() => setShowPrivacyDialog(true)}
+          onOpenModal={() => setShowPrivacyDialog(true)}
         />
       )}
 
@@ -77,7 +77,7 @@ export function ProductToasts() {
         <ToastComponent
           {...emailStrings}
           dismissable={true}
-          openEmailModal={() => setShowEmailDialog(true)}
+          onOpenModal={() => setShowEmailDialog(true)}
         />
       )}
 
