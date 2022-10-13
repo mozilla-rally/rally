@@ -5,19 +5,878 @@
     <meta content="text/html;charset=utf-8" http-equiv="Content-Type">
     <meta content="utf-8" http-equiv="encoding">
     <link rel="stylesheet" href="/dist/tailwind.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
 
     <title>Mozilla Rally extension</title>
     <style>
+        :root {
+            --content-width: 700px;
+        }
+
+        html,
+        body {
+            -webkit-font-smoothing: antialiased;
+            font-family: Inter, X-LocaleSpecific, sans-serif;
+            margin: 0;
+            padding: 0
+        }
+
+        html,
+        body #__next {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh
+        }
+
+        a,
+        a:hover {
+            color: inherit
+        }
+
+        @font-face {
+            font-display: swap;
+            font-family: Inter;
+            font-style: normal;
+            font-weight: normal;
+            src: url('fonts/Inter-Regular.woff2') format('woff2')
+        }
+
+        @font-face {
+            font-display: swap;
+            font-family: Inter;
+            font-style: normal;
+            font-weight: bold;
+            src: url('fonts/Inter-Bold.woff2') format('woff2')
+        }
+
+        @font-face {
+            font-display: swap;
+            font-family: Inter;
+            font-style: italic;
+            font-weight: normal;
+            src: url('fonts/Inter-Italic.woff2') format('woff2')
+        }
+
+        @font-face {
+            font-display: swap;
+            font-family: Inter;
+            font-style: italic;
+            font-weight: bold;
+            src: url('fonts/Inter-BoldItalic.woff2') format('woff2')
+        }
+
+        @font-face {
+            font-display: swap;
+            font-family: Zilla Slab;
+            font-style: normal;
+            font-weight: normal;
+            src: url('fonts/ZillaSlab-Regular.woff2') format('woff2')
+        }
+
+        @font-face {
+            font-display: swap;
+            font-family: Zilla Slab;
+            font-style: normal;
+            font-weight: bold;
+            src: url('fonts/ZillaSlab-Bold.woff2') format('woff2')
+        }
+
+        .fnwt2w8 {
+            color: #5e5e72;
+            padding-bottom: 200px;
+            padding-top: 80px;
+            width: 688px
+        }
+
+        .fnwt2w8 h1,
+        h2,
+        h3,
+        h4 {
+            color: #000000;
+            margin-bottom: 32px
+        }
+
+        .fnwt2w8 h1 {
+            font-size: 2.375rem
+        }
+
+        .fnwt2w8 h2 {
+            font-size: 1.5rem
+        }
+
+        .fnwt2w8 hr {
+            margin-bottom: 24px;
+            margin-top: 24px
+        }
+
+        @media (max-width: 575.9999px) {
+            .fnwt2w8 {
+                padding-left: 32px;
+                padding-right: 32px;
+                padding-top: 40px;
+                width: 100%
+            }
+        }
+
+        @media (min-width: 576px) and (max-width: 767.99999px) {
+            .fnwt2w8 {
+                padding-left: 32px;
+                padding-right: 32px;
+                padding-top: 40px;
+                width: 100%
+            }
+        }
+
+        @media (min-width: 768px) and (max-width: 991.99999px) {
+            .fnwt2w8 {
+                padding-left: 32px;
+                padding-right: 32px;
+                padding-top: 40px;
+                width: 100%
+            }
+        }
+
+        .modal-backdrop.show {
+            opacity: 0.8
+        }
+
+        .f1c1v4v9 {
+            padding-bottom: 24px;
+            padding-left: 40px;
+            padding-right: 40px;
+            padding-top: 24px
+        }
+
+        @media (min-width: 992px) {
+            .f1c1v4v9 {
+                padding-left: 180px;
+                padding-right: 180px
+            }
+        }
+
+        .f3teegr,
+        .f3teegr .row .col {
+            padding: 0
+        }
+
+        .f3teegr .row {
+            margin: 0
+        }
+
+        .fwty8fb {
+            padding-bottom: 24px;
+            padding-left: 12px;
+            padding-right: 12px;
+            padding-top: 24px
+        }
+
+        @media (min-width: 1200px) {
+            .fwty8fb {
+                padding-left: 120px;
+                padding-right: 120px
+            }
+        }
+
+        @media (min-width: 1400px) {
+            .fwty8fb {
+                padding-left: 180px;
+                padding-right: 180px
+            }
+        }
+
+        .f1hkyppp {
+            font-family: "Zilla Slab", Inter, X-LocaleSpecific, sans-serif;
+            font-weight: 700
+        }
+
+        .f1huwm9u {
+            font-family: Inter;
+            font-style: normal;
+            font-weight: 500
+        }
+
+        .f1piwjhg {
+            color: #5e5e72
+        }
+
+        .fkzkx7f {
+            font-family: Inter;
+            font-weight: 700
+        }
+
+        .fq5j3k2 {
+            font-size: 0.75rem
+        }
+
+        .f7opyze {
+            font-size: 0.875rem
+        }
+
+        .f6irgbz {
+            font-size: 1rem
+        }
+
+        .fm56xh3 {
+            font-size: 1.125rem
+        }
+
+        .fx9d58m {
+            font-size: 1.25rem
+        }
+
+        .fawm0c4 {
+            font-size: 1.5rem
+        }
+
+        .f1xrk2yb {
+            text-decoration: none
+        }
+
+        .f1xrk2yb:hover {
+            text-decoration: underline
+        }
+
+        .f1eminoz {
+            text-decoration: underline
+        }
+
+        .f1eminoz:hover {
+            text-decoration: none
+        }
+
+        .fecf97t {
+            background-color: #000000;
+            color: #ffffff;
+            max-width: unset;
+            padding-bottom: 40px;
+            padding-top: 40px
+        }
+
+        .fecf97t .logo-large {
+            margin-right: 32px;
+            padding-bottom: 72px;
+            width: 200px
+        }
+
+        .f1twl1vk .dropdown-menu {
+            margin-right: 8px
+        }
+
+        .f1twl1vk .menu-button,
+        .f1twl1vk .menu-button:hover,
+        .f1twl1vk .menu-button:focus {
+            background-color: transparent;
+            border: none;
+            box-shadow: none
+        }
+
+        .f1twl1vk .menu-icon:hover {
+            background-color: #ededf0;
+            border-radius: 50%
+        }
+
+        .f1twl1vk .dropdown-item {
+            font-size: 14px;
+            min-width: 16rem
+        }
+
+        .f1twl1vk hr {
+            margin-bottom: 4px;
+            margin-top: 4px
+        }
+
+        .f1tzt3m4 hr {
+            margin: 0;
+            margin-bottom: 8px
+        }
+
+        .f1tzt3m4 a {
+            font-size: unset;
+            font-weight: 400
+        }
+
+        .f1tzt3m4 .mobile-menu-button {
+            background-color: transparent;
+            border: none;
+            box-shadow: none;
+            cursor: pointer;
+            height: 32px;
+            padding: 0;
+            width: 32px
+        }
+
+        .f1tzt3m4 .mobile-menu-button:hover,
+        .f1tzt3m4 .mobile-menu-button:focus {
+            background-color: unset;
+            border: none;
+            box-shadow: none
+        }
+
+        .f1tzt3m4 .mobile-menu-button .mobile-menu-icon {
+            background-color: #20123a;
+            border-radius: 10px;
+            display: inline-block;
+            height: 4px;
+            margin-bottom: 8px;
+            margin-top: 8px;
+            position: relative;
+            transition: 0.2s;
+            transition-property: background- color, transform;
+            vertical-align: middle;
+            width: 100%
+        }
+
+        .f1tzt3m4 .mobile-menu-button .mobile-menu-icon:before,
+        .f1tzt3m4 .mobile-menu-button .mobile-menu-icon:after {
+            background-color: #20123a;
+            border-radius: 10px;
+            content: '';
+            height: 4px;
+            left: 0;
+            position: absolute;
+            transition: 0.2s;
+            transition-property: background- color, transform;
+            width: 100%
+        }
+
+        .f1tzt3m4 .mobile-menu-button .mobile-menu-icon:before {
+            top: -10px
+        }
+
+        .f1tzt3m4 .mobile-menu-button .mobile-menu-icon:after {
+            top: 10px
+        }
+
+        .f1tzt3m4 .mobile-menu-button[aria-expanded='true'] {
+            background-color: transparent;
+            border: none;
+            box-shadow: none
+        }
+
+        .f1tzt3m4 .mobile-menu-button[aria-expanded='true'] .mobile-menu-icon {
+            background-color: transparent
+        }
+
+        .f1tzt3m4 .mobile-menu-button[aria-expanded='true'] .mobile-menu-icon:before {
+            transform: translateY(10px) rotate(45deg)
+        }
+
+        .f1tzt3m4 .mobile-menu-button[aria-expanded='true'] .mobile-menu-icon:after {
+            transform: translateY(-10px) rotate(-45deg)
+        }
+
+        .f1tzt3m4 .dropdown.show {
+            position: initial
+        }
+
+        .f1tzt3m4 .dropdown.show .dropdown-menu {
+            border: none;
+            border-bottom: 1px solid #cdcdd4;
+            border-radius: 4px;
+            transform: none;
+            width: 100%
+        }
+
+        .f12t2m70 {
+            border-color: #cdcdd4;
+            border-style: solid;
+            border-width: 1px;
+            line-height: 32px;
+            max-width: unset
+        }
+
+        .f12t2m70 .row {
+            flex-wrap: nowrap;
+            margin: 0;
+            max-width: unset
+        }
+
+        .f12t2m70 .row .col-links {
+            margin-right: 40px
+        }
+
+        .f12t2m70 .row .logo-col {
+            height: 32px
+        }
+
+        .f12t2m70 .logo-large {
+            margin-right: 32px;
+            width: 200px
+        }
+
+        .f12t2m70 .top-link {
+            font-size: 18px;
+            font-weight: 700;
+            text-decoration: none
+        }
+
+        @media (max-width: 575.9999px) {
+            .f12t2m70 {
+                border: none
+            }
+        }
+
+        @media (min-width: 576px) and (max-width: 767.99999px) {
+            .f12t2m70 {
+                border: none
+            }
+        }
+
+        @media (min-width: 768px) and (max-width: 991.99999px) {
+            .f12t2m70 {
+                border: none
+            }
+        }
+
+        .f1ebeedy {
+            margin-right: 0
+        }
+
+        @media (min-width: 768px) {
+            .f1ebeedy {
+                margin-right: 40px
+            }
+        }
+
+        .ffqkt55 {
+            background-color: #000000;
+            color: #ffffff
+        }
+
+        .ffqkt55:hover {
+            background-color: #ededf0;
+            color: #000000
+        }
+
+        .fresidb,
+        .fresidb:hover,
+        .fresidb:active,
+        .fresidb:focus {
+            background-color: #66FFCD;
+            color: #000000
+        }
+
+        .fse2n18 {
+            background-color: #0060df;
+            border-color: transparent
+        }
+
+        .fse2n18:hover {
+            background-color: #0250bb;
+            border-color: transparent
+        }
+
+        .f96z3oe {
+            border-color: #cdcdd4;
+            color: #5e5e72
+        }
+
+        .f96z3oe:hover {
+            background-color: #ededf0;
+            color: #000000
+        }
+
+        .fjzuxol {
+            border-color: #e22850;
+            color: #e22850
+        }
+
+        .fjzuxol:hover {
+            background-color: #e22850;
+            color: #ffffff
+        }
+
+        .f68u6sm {
+            background-color: #0060df;
+            border-color: #0060df;
+            color: #ffffff
+        }
+
+        .f68u6sm:hover {
+            background-color: #0250bb;
+            color: #ffffff
+        }
+
+        .f18h5adg {
+            background-color: #0090ed !important;
+            border-color: #0090ed !important;
+            color: #ffffff !important
+        }
+
+        .f1bj8bpk {
+            border: none;
+            color: #5e5e72;
+            font-family: Inter;
+            font-style: normal;
+            font-weight: 500
+        }
+
+        .f1bj8bpk:hover {
+            background-color: transparent;
+            color: #5e5e72;
+            text-decoration: underline
+        }
+
+        .f3h6cu8 {
+            background-color: transparent;
+            border: none;
+            color: #000000;
+            font-family: Inter;
+            font-size: 1rem;
+            font-style: normal;
+            font-weight: 500
+        }
+
+        .f3h6cu8:hover {
+            background-color: transparent;
+            color: #000000;
+            text-decoration: underline
+        }
+
+        .f81g5dz {
+            margin-right: 12px
+        }
+
+        .fihv7zc {
+            max-width: unset
+        }
+
+        .fihv7zc .modal-header {
+            border-bottom: none;
+            color: #15141a;
+            font-size: 1.25rem;
+            line-height: 24;
+            padding-bottom: 32px
+        }
+
+        .fihv7zc .modal-title {
+            font-weight: 700
+        }
+
+        @media (max-width: 575.9999px) {
+            .fihv7zc {
+                margin: 0;
+                width: 100%
+            }
+        }
+
+        @media (min-width: 576px) and (max-width: 767.99999px) {
+            .fihv7zc {
+                margin: 0;
+                width: 100%
+            }
+        }
+
+        .fa2zlr7 {
+            background-color: #f0f0f4;
+            margin-bottom: 24px;
+            max-height: 495px;
+            overflow: auto;
+            padding: 24px;
+            width: 860px
+        }
+
+        .fa2zlr7 h2,
+        .fa2zlr7 p {
+            color: #5e5e72
+        }
+
+        .f1afv9o0 {
+            box-sizing: content-box;
+            margin-left: auto;
+            margin-right: auto;
+            max-height: 635px;
+            max-width: unset;
+            padding: 20px 20px 48px;
+            width: 852px
+        }
+
+        @media (min-width: 576px) and (max-width: 767.99999px) {
+            .f1afv9o0 {
+                width: unset
+            }
+        }
+
+        .f11wm2od {
+            position: relative
+        }
+
+        .f11wm2od .content {
+            display: inline-block;
+            margin-left: 4px;
+            margin-right: 4px;
+            position: relative;
+            text-align: center;
+            z-index: 1
+        }
+
+        .f11wm2od .highlight {
+            background-color: #f9cd34;
+            border-radius: 4px;
+            height: 30%;
+            position: absolute;
+            top: 50%;
+            width: 100%
+        }
+
+        .f1yqbr68 {
+            width: 432px
+        }
+
+        .f1yqbr68 .card-top {
+            height: 36px;
+            padding: 0px 0px 12px
+        }
+
+        .f1yqbr68 .btn {
+            background-color: transparent;
+            border: none
+        }
+
+        .f1yqbr68 .modal-body {
+            padding: 20px 32px 44px
+        }
+
+        .f1yqbr68 .img-wrapper {
+            width: 153px
+        }
+
+        .f1abyyeo {
+            color: #000000
+        }
+
+        .f1abyyeo alert-success {
+            background-color: none
+        }
+
+        .f1abyyeo .verify-email {
+            background-color: #ffdb80
+        }
+
+        .f1abyyeo .privacy-policy,
+        .add-extension {
+            background-color: #ffe0e8
+        }
+
+        .f1abyyeo .warning-icon,
+        .toast-btn {
+            margin-right: 6px
+        }
+
+        .f1abyyeo .close-icon {
+            cursor: pointer;
+            height: 24px;
+            width: 24px
+        }
+
+        .f13hlx1d {
+            position: absolute;
+            top: 12px;
+            width: 1226px;
+            z-index: 100
+        }
+
+        .f123i9fb {
+            background-attachment: fixed;
+            background-image: linear-gradient(to left,
+                    rgba(248, 248, 250, var(--o1, 1)),
+                    rgba(248, 248, 250, var(--o1, 1))),
+                url("/images/data1-bg.png"),
+                url("/images/data2-bg.png"),
+                url("/images/cards1-bg.png"),
+                url("/images/cards2-bg.png");
+            background-position: left top,
+                calc(15rem + var(--content-width) * 0.85) var(--data1, 0),
+                calc(15rem + var(--content-width) * 0.85) var(--data2, 0),
+                calc(15rem + var(--content-width) * 0.85) var(--card1, 0),
+                calc(15rem + var(--content-width) * 0.85) var(--card2, 0);
+            background-repeat: no-repeat;
+            background-size: auto 900px;
+            height: 100%
+        }
+
+        .fae7m9o {
+            border-top-left-radius: 4px;
+            border-top-right-radius: 4px;
+            padding-bottom: 12px;
+            padding-left: 24px;
+            padding-right: 24px;
+            padding-top: 12px
+        }
+
+        .fae7m9o.joinAndConnected {
+            background-color: #D6FFF2
+        }
+
+        .fae7m9o.notJoined {
+            background-color: #ffe3c2
+        }
+
+        .fae7m9o .dropdown .dropdown-item {
+            padding-left: 16px;
+            padding-right: 16px
+        }
+
+        .fae7m9o .dropdown>button {
+            background-color: unset;
+            border-radius: 50%;
+            border-width: 0;
+            box-shadow: none;
+            height: 28px;
+            padding: 0;
+            text-decoration: none;
+            width: 28px
+        }
+
+        .fae7m9o .dropdown>button:hover {
+            background-color: #cdcdd4
+        }
+
+        .fae7m9o .dropdown>button[aria-expanded=true] {
+            background-color: #b1b1bc
+        }
+
+        .f1fee45z .accordion-item {
+            background-color: transparent;
+            border: none
+        }
+
+        .f1fee45z .accordion-button {
+            background-color: transparent;
+            box-shadow: none;
+            color: #000000;
+            font-weight: 700;
+            padding: 0
+        }
+
+        .f1fee45z .accordion-button:after {
+            background-image: url("/images/caret.svg");
+            height: 16px;
+            margin-left: 4px;
+            width: 16px
+        }
+
+        .f1fee45z .accordion-button:not(.collapsed) {
+            background-color: unset
+        }
+
+        .f1fee45z .accordion-button:not(.collapsed):after {
+            transform: rotate(90deg)
+        }
+
+        .f1fee45z .accordion-body {
+            padding: 0
+        }
+
+        .f1j8z9cn {
+            background-color: #E0ECEC
+        }
+
+        .f1j5ja2p {
+            background-color: #D98FFF
+        }
+
+        .fym5zy3 {
+            background-color: #D9BFFF
+        }
+
+        .f1pqxqnp {
+            background-color: #B6F4F7
+        }
+
+        .f1ytnr1v {
+            background-color: #FFB4DC
+        }
+
+        .fnouzb7 {
+            background-color: #FFD5B2
+        }
+
+        .fctrozp {
+            background-color: #F5F1BA
+        }
+
+        .fmwixx0 .study-name {
+            font-size: 20px
+        }
+
+        .fmwixx0 .join-button {
+            background-color: #0060df;
+            border-radius: 4px;
+            padding-left: 24px;
+            padding-right: 24px
+        }
+
+        .fmwixx0 .join-button:hover {
+            background-color: #0250bb
+        }
+
+        .f1qr6nd4 {
+            flex-direction: row
+        }
+
+        @media (max-width: 575.9999px) {
+            .f1qr6nd4 {
+                flex-direction: column
+            }
+        }
+
+        .f1ppsme0 {
+            background-color: #ffffff;
+            border-radius: 4px;
+            box-shadow: 0 5px 10px rgba(14, 13, 26, 0.12), 0 3px 16px rgba(14, 13, 26, 0.12);
+            box-sizing: border-box
+        }
+
+        .foyajry {
+            margin: auto
+        }
+
+        @media (min-width: 992px) {
+            .foyajry {
+                margin: 0
+            }
+        }
+
+        .fzvhdzn {
+            display: block
+        }
+
+        @media (min-width: 768px) {
+            .fzvhdzn {
+                display: flex !important
+            }
+        }
+
+        .f1xensde {
+            display: none;
+            margin-right: 0;
+            width: 232px
+        }
+
+        @media (min-width: 992px) {
+            .f1xensde {
+                display: block;
+                margin-right: 40px
+            }
+        }
+    </style>
+    <style>
         input:checked~.dot {
             transform: translateX(100%);
+        }
+
+        body {
+            min-width: 400px;
         }
     </style>
 </head>
 
 <body>
-    <div class="my-12 flex">
+    <div class="my-1 flex">
         <div class="flex-grow"></div>
-        <div class="w-40 flex-shrink">
+        <div class="w-2 flex-shrink">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 204.24 28.4" preserveAspectRatio="xMidYMid meet">
                 <path class="mozilla"
                     d="M99.07.03v28.32H0V.03h99.07zM37 9.9a6.22 6.22 0 00-6.63 6.62c0 3.95 2.64 6.29 6.47 6.29 3.83 0 6.81-2.5 6.81-6.46A6.09 6.09 0 0037 9.9zm46 1.16l-.48 2.86 2.83.3.39-1.39a3.94 3.94 0 011.91-.4c1.867 0 1.991 1.315 2 2.515v.675a15.26 15.26 0 00-2-.11c-2.83 0-5.76.71-5.76 3.76a3.5 3.5 0 003.49 3.52h.32a4.47 4.47 0 004-2.48 2.54 2.54 0 002.59 2.48h.14a4.69 4.69 0 002.22-.59l-.04-1.84a1.76 1.76 0 01-.51.09c-.59 0-.86-.26-.86-1V14.1c0-2.83-2.25-4.2-4.92-4.2A11.84 11.84 0 0083 11.06zm-.76-7.43h-3.49l-5.37 18.9h3.51l5.35-18.9zm-7.2 0h-3.48l-5.38 18.9h3.51l5.35-18.9zM23.057 9.881l-.227.009a4.14 4.14 0 00-4 2.66 4 4 0 00-4-2.66A4.09 4.09 0 0011.07 12v-1.91H5.84v2.68h1.69v7H5.84v2.66h7.63v-2.69h-2.34v-4.31c0-1.77.63-2.93 2.34-2.93 1.4 0 2.11.86 2.11 3v7h5.24v-2.72h-1.65v-4.32c0-1.76.64-2.93 2.34-2.93 1.4 0 2.11.86 2.11 3v7h5.19v-2.69h-1.65l-.07.04v-5.71c.01-.18.01-.36 0-.54a4 4 0 00-4.26-3.74zM63.88 18.03h-3.7v4.45h3.7v-4.45zm-7.09-7.94H45.88l-.44 4.4 2.56.28.57-1.93h3.84l-6.81 7.83.4 1.81h10.81l.76-4.33-2.79-.28-.6 1.93h-4l6.87-7.8-.26-1.91zm31.1 7.05c.6.021 1.197.078 1.79.17a2.77 2.77 0 01-2.55 3l-.13-.02a1.3 1.3 0 01-1.45-1.44c0-1.34 1.1-1.71 2.34-1.71zM37 12.62c1.82 0 3 1.17 3 3.62s-1.23 3.85-3.07 3.85h-.02c-1.91 0-2.91-1.65-2.91-3.8 0-2.29 1.18-3.67 3-3.67zm26.88-2.53h-3.7v4.46h3.7v-4.46z">
@@ -33,36 +892,145 @@
         <div class="flex-grow"></div>
     </div>
     <div
-        class="p-12 max-w-xl mx-auto bg-white rounded-lg border border-gray-300 space-y-2 sm:py-4 sm:flex sm:align-middle sm:space-y-0 sm:space-x-6">
+        class="p-4 max-w-xl mx-auto bg-white rounded-lg border border-gray-300 space-y-2 sm:py-4 sm:flex sm:align-middle sm:space-y-0 sm:space-x-6">
 
-        <div class="text-left p-8">
-            <div class="flex flex-wrap p-4">
-                <p class="text-lg text-left text-black font-semibold flex-grow">
-                    Mozilla Rally extension
-                </p>
-                <p id="status" class="flex-grow-0 border border-black rounded-full p-1"></p>
+        <div>
+            <div class="f1ppsme0 f7opyze p-0 mb-5 container">
+                <div class="fae7m9o joinAndConnected container">
+                    <div class="d-flex align-items-center row">
+                        <div class="col-auto col"><img src="/images/check-circle.svg" alt=""
+                                style="width: 16px; height: 16px;"></div>
+                        <div class="col">You're contributing</div>
+                        <div class="col-auto col">
+                            <div class="dropdown"><button type="button" aria-haspopup="true" aria-expanded="false"
+                                    class="btn btn-secondary"><img src="//images/overflow-ellipsis.svg" alt=""></button>
+                                <div tabindex="-1" role="menu" aria-hidden="true" class="dropdown-menu"><button
+                                        type="button" tabindex="0" role="menuitem" class="f7opyze dropdown-item">Stop
+                                        contributing</button></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <hr class="m-0">
+                <div class="p-4">
+                    <div class="fmwixx0 container">
+                        <div class="f1qr6nd4 row">
+                            <div class="col">
+                                <div class="p-0 container">
+                                    <div class="row">
+                                        <div class="col-auto ps-0 me-4 col"><img src="/images/icon-mozilla-64x64.png"
+                                                alt="" style="min-width: 60px; width: 60px;"></div>
+                                        <div class="me-4 g-0 col">
+                                            <div class="p-0 container">
+                                                <div class="row">
+                                                    <div class="col"><span
+                                                            class="study-name text-body fw-bold">Attention Stream</span>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col">Ongoing</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-auto g-0 col"></div>
+                        </div>
+                        <div class="py-3 row">
+                            <hr class="m-0">
+                        </div>
+                    </div>
+                    <div class="f1fee45z accordion">
+                        <div class="accordion-item">
+                            <h2 class="accordion-header"><button type="button" class="accordion-button collapsed">About
+                                    your contribution</button></h2>
+                            <div class="accordion-collapse collapse" style="">
+                                <div class="accordion-body">
+                                    <div class="p-0 container">
+                                        <div class="row">
+                                            <div class="mt-3 mb-3 col">Join the Mozilla Rally community and help Rally
+                                                and our partners build a user-centric understanding of what’s happening
+                                                online! The Attention Stream provides a picture of how information
+                                                spreads across the web and big tech platforms, where people spend their
+                                                time, and how these platforms influence people. Rally and our partners
+                                                will publicly share research findings and any discoveries that could
+                                                enable more privacy and control in consumer products. We will always
+                                                inform you of which partners have access to the Attention Stream and
+                                                whenever new partners join. We also will always disclose if research
+                                                partners compensate Mozilla for access to Attention Stream data. </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="f6irgbz fw-bold text-body col">Data collected</div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col">
+                                                <ul>
+                                                    <li class="mt-1">Visits to web page URLs</li>
+                                                    <li class="mt-1">Time spent on urls</li>
+                                                    <li class="mt-1">Time spent playing media on each webpage</li>
+                                                    <li class="mt-1">Your Rally demographics</li>
+                                                    <li class="mt-1">On certain news pages the full text of the article
+                                                        and the size of ads on the article’s webpage</li>
+                                                    <li class="mt-1">On certain media platforms, metadata about the
+                                                        content you view and algorithmic content recommendations you
+                                                        receive*</li>
+                                                    <li class="mt-1">The content and metadata of ads you are shown
+                                                        across the web*</li>
+                                                    <li class="mt-1">The data sent through various tracking pixels from
+                                                        the websites you visit*</li>
+                                                    <li class="mt-1">*If you joined prior to 9/23/2022, these
+                                                        measurements are excluded</li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col">
+                                                <hr class="mt-0 mb-3">
+                                            </div>
+                                        </div>
+                                        <div class="d-flex flex-row-reverse align-items-center row">
+                                            <div
+                                                class="d-flex justify-content-sm-left justify-content-md-end col-sm-12 col-md-auto flex-grow-1 col">
+                                                <a class="f7opyze p-1"
+                                                    href="https://chrome.google.com/webstore/detail/mozilla-rally/bahhehaddofgkccippmjcecepdakppme?utm_source=test100&amp;utm_medium=sideloaded&amp;utm_campaign=test100&amp;utm_term=sideloaded&amp;utm_content=sideloaded"
+                                                    target="_blank" rel="noreferrer">View full study details <img
+                                                        src="//images/open-external.svg" class="ms-1 mb-2" alt=""></a>
+                                            </div>
+                                            <div
+                                                class="col-auto text-uppercase fw-bold fq5j3k2 text-body flex-sm-grow-1 col">
+                                                <span class=" p-1">media monitoring</span>
+                                            </div>
+                                            <div class="col-auto text-uppercase fw-bold fq5j3k2 text-body  col"><span
+                                                    class="fctrozp p-1">social media</span></div>
+                                            <div class="col-auto text-uppercase fw-bold fq5j3k2 text-body  col"><span
+                                                    class=" p-1">transparency</span></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div class="rounded-lg flex flex-wrap border border-gray-500 space-y-2 p-8">
-                <p class="p-2.5 inline-flex flex-grow">Pause or resume data collection</p>
-                <p class="p-2.5 inline-flex flex-grow-0"></p>
-                <div class="flex-grow-0">
+        </div>
+        <div class="text-left p-3">
+            <div class="text-justify space-y-1 py-3">
+                <div class="rounded-lg flex flex-wrap border border-gray-500 space-y-1 p-1">
+                    <p class="p-2.5 inline-flex flex-grow">Collect social media contents</p>
                     <label for="toggleEnabled" class="flex-grow-0 items-center cursor-pointer">
                         <div class="relative">
                             <input type="checkbox" id="toggleEnabled" class="sr-only">
                             <div class="block bg-gray-600 w-10 h-6 rounded-full"></div>
-                            <div class="dot absolute left-1 top-1 bg-white w-4 h-4 rounded-full transition">
-                            </div>
+                            <div class="dot absolute left-1 top-1 bg-white w-4 h-4 rounded-full transition"></div>
                         </div>
                     </label>
                 </div>
-                <p class="flex-grow p-2.5 text-left bg-white">Studies are paused by default. Data is not collected when
-                    studies are paused.</p>
             </div>
 
-            <div class="text-justify space-y-1 py-12">
-                <div class="rounded-lg flex flex-wrap border border-gray-500 space-y-1 p-8">
+            <div class="text-justify space-y-1 py-3">
+                <div class="rounded-lg flex flex-wrap border border-gray-500 space-y-1 p-1">
                     <p class="p-2.5 inline-flex flex-grow">Data Export</p>
-                    <p class="p-2.5 inline-flex flex-grow-0"></p>
                     <button id="download"
                         class="bg-blue-500 border hover:bg-blue-900 text-white font-bold p-2 h-10 w-30 rounded inline-flex">
                         <svg class="fill-current w-4 h-4 mr-2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
@@ -70,26 +1038,11 @@
                         </svg>
                         <span>Download</span>
                     </button>
-                    <p class="flex-grow p-2.5 bg-white">Download an export of all of the data this study has
-                        collected locally.</p>
-                </div>
-            </div>
-
-            <div class="text-justify">
-                <div class="rounded-lg flex flex-wrap border border-gray-500 space-y-1 p-8">
-                    <p class="p-2.5 inline-flex flex-grow">Danger Zone</p>
-                    <p class="p-2.5 inline-flex flex-grow-0"></p>
-                    <button id="clear-database"
-                        class="bg-red-500 border hover:bg-red-900 text-white font-bold p-2 h-10 w-30 rounded inline-flex">
-                        <span>Clear Database</span>
-                    </button>
-                    <p class="flex-grow p-2.5 bg-white">Clear the local IndexedDB database.</p>
                 </div>
             </div>
         </div>
-    </div>
 
-    <a id="downloadLink" style="display:none"></a>
+        <a id="downloadLink" style="display:none"></a>
 </body>
 
 <script src="/dist/dexie.min.js"></script>

@@ -33,6 +33,7 @@ async function main(manifestVersion, browser) {
       manifest["browser_action"] = {
         default_icon: iconPath,
         default_title: "Mozilla Rally",
+        default_popup: "public/options.html",
       };
 
       manifest["background"] = {
@@ -52,6 +53,7 @@ async function main(manifestVersion, browser) {
           128: iconPath
         },
         default_title: "Mozilla Rally",
+        default_popup: "public/options.html",
       };
 
       manifest["background"] = {
