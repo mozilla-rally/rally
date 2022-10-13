@@ -26,30 +26,8 @@ const study = {
 };
 
 describe("StudyDescription tests", () => {
-  it("renders study correctly when enrolled", async () => {
-    (useStudy as jest.Mock).mockReturnValue({ study, isUserEnrolled: true });
-    (StudyTag as jest.Mock).mockImplementation(({ children }) => children);
-    (detectBrowser as jest.Mock).mockReturnValue(BrowserType.Chrome);
-
-    userEvent.setup();
-
-    verifyStudyRenderedCorrectly();
-
-    const accordion = document.querySelector(
-      "button.accordion-button.collapsed"
-    ) as Element;
-
-    expect(accordion).toBeInTheDocument();
-
-    await userEvent.click(accordion);
-
-    expect(
-      document.querySelector("button.accordion-button.collapsed")
-    ).toBeNull();
-  });
-
-  it("renders study correctly when not enrolled", async () => {
-    (useStudy as jest.Mock).mockReturnValue({ study, isUserEnrolled: false });
+  it("renders study correctly", async () => {
+    (useStudy as jest.Mock).mockReturnValue({ study });
     (StudyTag as jest.Mock).mockImplementation(({ children }) => children);
     (detectBrowser as jest.Mock).mockReturnValue(BrowserType.FireFox);
 
@@ -86,13 +64,6 @@ describe("StudyDescription tests", () => {
     study.dataCollectionDetails.forEach((d) =>
       expect(root.getByText(d)).toBeInTheDocument()
     );
-
-    const link =
-      detectBrowser() === BrowserType.Chrome
-        ? study.downloadLink.chrome
-        : study.downloadLink.firefox;
-
-    expect(document.querySelector(`a[href="${link}"]`)).toBeInTheDocument();
 
     expect(root.getByText(strings.viewFullStudyDetails)).toBeInTheDocument();
 

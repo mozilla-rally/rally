@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import {
   Accordion,
   AccordionBody,
@@ -20,14 +20,10 @@ import { StudyTag } from "./StudyTag";
 const strings = Strings.components.pages.studies.studyCard.description;
 
 export function StudyDescription() {
-  const { study, isUserEnrolled } = useStudy();
-  const [isExpanded, setIsExpanded] = useState(!isUserEnrolled);
+  const { study } = useStudy();
+  const [isExpanded, setIsExpanded] = useState(true);
 
   const [browserType] = useState(detectBrowser());
-
-  useEffect(() => {
-    setIsExpanded(!isUserEnrolled);
-  }, [isUserEnrolled]);
 
   return (
     <Accordion // eslint-disable-next-line @typescript-eslint/ban-ts-comment

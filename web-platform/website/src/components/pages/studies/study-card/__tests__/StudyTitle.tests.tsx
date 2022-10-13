@@ -5,7 +5,7 @@ import { StudyTitle } from "../StudyTitle";
 
 jest.mock("../StudyDataContext");
 
-describe("StudyTopDetails tests", () => {
+describe("StudyTitle tests", () => {
   it("no icon available, date ongoing", () => {
     (useStudy as jest.Mock).mockReturnValue({
       isUserEnrolled: false,
@@ -26,7 +26,7 @@ describe("StudyTopDetails tests", () => {
       document.querySelector(`img[src="img/default-study-icon.png"]`)
     ).toBeInTheDocument();
 
-    expect(root.getByText("Test author | Ongoing")).toBeInTheDocument();
+    expect(root.getByText("Ongoing")).toBeInTheDocument();
   });
 
   it("custom icon, expiry date", () => {
@@ -52,8 +52,6 @@ describe("StudyTopDetails tests", () => {
       document.querySelector(`img[src="img/custom-icon.png"]`)
     ).toBeInTheDocument();
 
-    expect(
-      root.getByText("Test author | Ends: Mon Jan 06 2020")
-    ).toBeInTheDocument();
+    expect(root.getByText("Ends: Mon Jan 06 2020")).toBeInTheDocument();
   });
 });

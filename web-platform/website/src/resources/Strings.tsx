@@ -150,7 +150,7 @@ export const Strings = {
               href: "/profile",
             },
             {
-              text: "Studies",
+              text: "Home",
               href: "/",
             },
             {
@@ -183,7 +183,7 @@ export const Strings = {
       ],
       topLinks: [
         {
-          title: "Current Studies",
+          title: "Home",
           href: "/",
           external: false,
         },
@@ -1004,173 +1004,27 @@ export const Strings = {
         },
         studyCard: {
           description: {
-            aboutThisStudy: "About this study",
-            keyDataCollected: "Key Data Collected",
-            viewFullStudyDetails: "View Full Study Details",
-          },
-          addStudy: {
-            addExtension: "Add Study Extension",
-            cancel: "Cancel",
-            enrollText: (
-              <>
-                <h1>Rally Study Consent Notice</h1>
-                <p>
-                  Data will be collected through a custom browser web extension
-                  developed by the Rally team. We will install the web extension
-                  and data will be collected through browser data after you
-                  opt-in. Mozilla will store the data on Google Cloud where all
-                  analysis will be conducted. This server is restricted to the
-                  study researchers and is encrypted. Data will be transferred
-                  by TLS between the participant's browser and the Mozilla
-                  analysis database. TLS stands for "transport layer security"
-                  which encrypts browser data.
-                </p>
-                <h2>Leaving the Study</h2>
-                <p>
-                  You can leave the study at any time from the Mozilla Rally
-                  options page. To access the page, click on the Rally button
-                  rally icon{" "}
-                  <img
-                    src="/favicon.svg"
-                    height="16"
-                    width="16"
-                    alt="rally icon"
-                    style={{ margin: "0px 4px" }}
-                  />{" "}
-                  in your browser toolbar. The button is usually near the top
-                  right of the browser window. If you have removed the Rally
-                  button from your toolbar, you can also access the Rally
-                  options page from the browser’s Add-ons settings. The Rally
-                  options page will show you a list of studies that you are
-                  currently enrolled in. You can leave this study by clicking
-                  the “Leave Study” button on the associated study card. If you
-                  leave the study, the study’s browser extension will be
-                  automatically uninstalled, removing the study code and data
-                  from your browser. We will also automatically delete the data
-                  that your browser has submitted for the study, unless you
-                  allow us to retain that data. You may not be able to rejoin
-                  the study if you leave. If you leave Rally, you will also
-                  leave the studies that you are enrolled in, including this
-                  study.
-                </p>
-              </>
-            ),
-          },
-          dontJoinStudy: {
-            addStudyExtension: "Add study extension",
-            dontJoinStudy: "Don't join this study",
-            tagline:
-              "You previously started to join this study, but didn’t finish the process by installing the study extension from the Chrome Web Store.",
-            title: "Confirm if you want to join this study or not",
-          },
-          leaveStudy: {
-            cancel: "Cancel",
-            leaveStudy: "Leave Study",
-            tagline: "You’re free to come and go as you please.",
-            text: (
-              <>
-                <p>
-                  <b>Leaving a study means:</b>
-                </p>
-                <ul>
-                  <li>
-                    <b>You will only be leaving this specific study</b>. You
-                    will continue contributing your browsing data to any other
-                    studies you've joined.
-                  </li>
-                  <li>
-                    <b>
-                      You will stop contributing browsing data to this study
-                    </b>{" "}
-                    and the researchers leading this study.
-                  </li>
-                  <li>
-                    <b>Rally will delete all your data from this study.</b>
-                  </li>
-                </ul>
-              </>
-            ),
-            title: "Leave this Study?",
+            aboutThisStudy: "About your contribution",
+            keyDataCollected: "Data collected",
+            viewFullStudyDetails: "View full study details",
           },
           header: {
-            addExtension: {
-              chrome: "Add study extension from the Chrome Web Store.",
-              firefox: "Add study extension from the Firefox Store.",
-            },
-            participating: "You're participating.",
-            notParticipatingYet: "You're not participating yet. ",
+            participating: "You're contributing",
+            notParticipatingYet: "You're not contributing yet",
             menus: {
-              addExtension: "Add study extension",
-              dontJoinStudy: "Don't join this study",
-              leaveStudy: "Leave study",
+              leaveStudy: "Stop contributing",
             },
           },
           title: {
             ends: "Ends: {expiry}",
-            taglineFormat: "{publisher} | {expiry}",
+            taglineFormat: "{expiry}",
           },
           topDetails: {
-            joinStudy: "Join Study",
+            reactivateStudy: "Reactivate",
           },
         },
         title: {
-          tagline:
-            "Browse available studies and find the choice (or choices) that feel right to you.",
-          title: "Current Studies",
-        },
-        tooltip: {
-          sections: [
-            {
-              title: "Read the study card",
-              text: {
-                chrome:
-                  "The card discloses the data we collect from you, who has access to the data, and how it will be used.",
-                firefox:
-                  "The card discloses the data we collect from you, who has access to the data, and how it will be used.",
-              },
-            },
-            {
-              title: "Join the Study",
-              text: {
-                chrome: (
-                  <>
-                    Click the <b>Join Study</b> button. We'll ask you to confirm
-                    in a pop-up dialog by clicking the{" "}
-                    <b>Add Study Extension</b> button. This will open up the
-                    Chrome Web Store.
-                  </>
-                ),
-                firefox: (
-                  <>
-                    Click the <b>Join Study</b> button. We'll ask you to confirm
-                    in a pop-up dialog by clicking the{" "}
-                    <b>Add Study Extension</b> button. This will open up the
-                    Firefox Adds-ons Store.
-                  </>
-                ),
-              },
-            },
-            {
-              title: "Add study extension",
-              text: {
-                chrome: (
-                  <>
-                    In the Chrome Web Store, click on the <b>Add to Chrome</b>{" "}
-                    button. This will add the study's extension to your browser.
-                    You are now participating!
-                  </>
-                ),
-                firefox: (
-                  <>
-                    In the Firefox Adds-ons Store, click on the{" "}
-                    <b>Add to Firefox</b> button. This will add the study's
-                    extension to your browser. You are now participating!
-                  </>
-                ),
-              },
-            },
-          ],
-          title: "How to join a study",
+          title: "Welcome to Rally",
         },
       },
     },
@@ -1183,7 +1037,7 @@ export const Strings = {
       title: "Get Extension | Mozilla Rally",
     },
     index: {
-      title: "Studies | Mozilla Rally",
+      title: "Home | Mozilla Rally",
     },
     login: {
       title: "Sign Up | Mozilla Rally",

@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { UserDocument } from "@mozilla/rally-shared-types";
+import { logEvent } from "firebase/analytics";
 import {
   Col,
   Container,
@@ -11,31 +12,24 @@ import {
 import { style } from "typestyle";
 
 import { Strings } from "../../../../resources/Strings";
+import { useFirebase } from "../../../../services/FirebaseService";
+import { useUserDocument } from "../../../../services/UserDocumentService";
 import { Colors, Spacing } from "../../../../styles";
 import { FontSize } from "../../../../styles/Fonts";
-import { detectBrowser } from "../../../../utils/BrowserDetector";
-import { BrowserType } from "../../../../utils/BrowserType";
 import { useStudy } from "./StudyDataContext";
 
 const strings = Strings.components.pages.studies.studyCard.header;
 
 export function StudyCardHeader() {
-  const {
-    isInstalledLocally,
-    isUserEnrolled,
-    startStudyEnrollmentToggle,
-    study,
-  } = useStudy();
-  const [browserType] = useState(detectBrowser());
-
-  if (!isUserEnrolled && !isInstalledLocally) {
-    return null;
-  }
-
+  const { isInstalledLocally, isUserEnrolled, study } = useStudy();
   const message =
     isUserEnrolled && isInstalledLocally
       ? strings.participating
       : strings.notParticipatingYet;
+
+  const { analytics } = useFirebase();
+
+  const { updateUserDocument } = useUserDocument();
 
   const isInstalledAndConnected = isInstalledLocally && isUserEnrolled;
 
@@ -58,59 +52,32 @@ export function StudyCardHeader() {
               alt=""
             />
           </Col>
-          <Col>
-            {message}
-            {!isInstalledLocally ? (
-              <a
-                href={
-                  browserType === BrowserType.Chrome
-                    ? study.downloadLink.chrome
-                    : study.downloadLink.firefox
-                }
-                target="_blank"
-                rel="noreferrer"
-                className="fw-bold"
-                style={{ color: Colors.ColorBlue50 }}
-              >
-                {browserType === BrowserType.Chrome
-                  ? strings.addExtension.chrome
-                  : strings.addExtension.firefox}
-              </a>
-            ) : (
-              <></>
-            )}
-          </Col>
-          {(!isInstalledLocally || isUserEnrolled) && (
+          <Col>{message}</Col>
+          {isInstalledAndConnected && (
             <Col className="col-auto">
               <UncontrolledDropdown>
                 <DropdownToggle>
                   <img src="/img/overflow-ellipsis.svg" alt="" />
                 </DropdownToggle>
                 <DropdownMenu>
-                  {!isInstalledLocally ? (
-                    <DropdownItem className={FontSize.Small}>
-                      <a
-                        href={
-                          browserType === BrowserType.Chrome
-                            ? study.downloadLink.chrome
-                            : study.downloadLink.firefox
-                        }
-                        target="_blank"
-                        rel="noreferrer"
-                        className="text-decoration-none"
-                      >
-                        {strings.menus.addExtension}
-                      </a>
-                    </DropdownItem>
-                  ) : null}
-
                   <DropdownItem
                     className={FontSize.Small}
-                    onClick={() => startStudyEnrollmentToggle()}
+                    onClick={async () => {
+                      await updateUserDocument({
+                        studies: {
+                          [study.studyId]: {
+                            studyId: study.studyId,
+                            enrolled: false,
+                          },
+                        },
+                      } as Partial<UserDocument>);
+
+                      logEvent(analytics, "select_content", {
+                        content_type: `leave_study`,
+                      });
+                    }}
                   >
-                    {isInstalledAndConnected
-                      ? strings.menus.leaveStudy
-                      : strings.menus.dontJoinStudy}
+                    {strings.menus.leaveStudy}
                   </DropdownItem>
                 </DropdownMenu>
               </UncontrolledDropdown>

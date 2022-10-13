@@ -18,9 +18,6 @@ export function StudiesTitle({
           <h1 className={`${Fonts.Headline} mb-2`}>{strings.title}</h1>
         </Col>
       </Row>
-      <Row>
-        <Col>{strings.tagline}</Col>
-      </Row>
     </Container>
   );
 }

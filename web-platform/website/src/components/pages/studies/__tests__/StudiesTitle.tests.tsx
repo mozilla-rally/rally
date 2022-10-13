@@ -10,7 +10,6 @@ describe("StudiesTitle tests", () => {
     const root = render(<StudiesTitle />);
 
     expect(root.getByText(strings.title)).toBeInTheDocument();
-    expect(root.getByText(strings.tagline)).toBeInTheDocument();
   });
 
   it("applies html properties to container", () => {

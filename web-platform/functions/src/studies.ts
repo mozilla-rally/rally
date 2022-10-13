@@ -16,8 +16,10 @@ export const studies = {
     studyId: "facebookPixelHunt",
     schemaNamespace: "rally-markup-fb-pixel-hunt",
     downloadLink: {
-      chrome: "https://chrome.google.com/webstore/detail/facebook-pixel-hunt/pbeklachfkbjddmglcccopmknmpfchdm",
-      firefox: "https://addons.mozilla.org/en-US/firefox/addon/facebook-pixel-hunt/",
+      chrome:
+        "https://chrome.google.com/webstore/detail/facebook-pixel-hunt/pbeklachfkbjddmglcccopmknmpfchdm",
+      firefox:
+        "https://addons.mozilla.org/en-US/firefox/addon/facebook-pixel-hunt/",
     },
     endDate: "2022-07-13",
     studyEnded: false,
@@ -36,11 +38,12 @@ export const studies = {
     tags: ["social media"],
   },
   attentionStream: {
-    name: "Attention Stream",
+    name: "Mozilla Rally",
     icons: {
-      "32": "/img/icon-mozilla-32x32.png",
-      "64": "/img/icon-mozilla-64x64.png",
-      "128": "/img/icon-mozilla-128x128.png",
+      "32": "https://addons.mozilla.org/user-media/addon_icons/2760/2760080-32.png",
+      "64": "https://addons.mozilla.org/user-media/addon_icons/2760/2760080-64.png",
+      "128":
+        "https://addons.mozilla.org/user-media/addon_icons/2760/2760080-128.png",
     },
     authors: {
       name: "Mozilla Rally",
@@ -51,22 +54,23 @@ export const studies = {
     studyId: "attentionStream",
     schemaNamespace: "rally-attention-stream",
     downloadLink: {
-      chrome: "https://chrome.google.com/webstore/detail/mozilla-rally/bahhehaddofgkccippmjcecepdakppme",
+      chrome:
+        "https://chrome.google.com/webstore/detail/mozilla-rally/bahhehaddofgkccippmjcecepdakppme",
       firefox: "https://addons.mozilla.org/en-US/firefox/addon/mozilla-rally",
     },
     endDate: "Ongoing",
     studyEnded: false,
     studyPaused: false,
     description:
-      "Join the Mozilla Rally community and help Rally and our partners build a user-centric understanding of what’s happening online! The Attention Stream provides a picture of how information spreads across the web and big tech platforms, where people spend their time, and how these platforms influence people. Rally and our partners will publicly share research findings and any discoveries that could enable more privacy and control in consumer products. We will always inform you of which partners have access to the Attention Stream and whenever new partners join. We also will always disclose if research partners compensate Mozilla for access to Attention Stream data. ",
+      "Your data contributions provide Rally and our research partners a cross-website view of the internet.  These contributions shed light on how information spreads, where people spend their time, and how tech platforms interact and recommend content to the Rally community.\n\nThe results will help Rally and our research partners understand users’ experiences, build better products, and gather evidence on how the web is working for users.  We will publicly share research findings and any discoveries that could enable more privacy and control in consumer products.\n\nWe will always inform you of which research partners have access to Rally data and whenever new partners join.  Some research partners compensate Rally for access to our infrastructure and data.  We will always disclose if research partners compensate Mozilla for access to Rally data.",
     studyDetailsLink:
       "https://rally.mozilla.org/current-studies/attention-stream/index.html",
     dataCollectionDetails: [
       "Visits to web page URLs",
-      "Time spent on urls",
+      "Time spent on URLs",
       "Time spent playing media on each webpage",
       "Your Rally demographics",
-      "On certain news pages the full text of the article and the size of ads on the article’s webpage",
+      "On certain news pages the full text of the article and the size of ads on the article's webpage",
       "On certain media platforms, metadata about the content you view and algorithmic content recommendations you receive*",
       "The content and metadata of ads you are shown across the web*",
       "The data sent through various tracking pixels from the websites you visit*",

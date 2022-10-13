@@ -8,9 +8,6 @@ export interface StudyDataContext {
   study: Study;
   isInstalledLocally: boolean;
   isUserEnrolled: boolean;
-  isStudyEnrollmentInProgress: boolean;
-  startStudyEnrollmentToggle(): void;
-  endStudyEnrollmentToggle(): void;
 }
 
 const StudyContext = createContext<StudyDataContext>(
@@ -28,8 +25,6 @@ export function StudyProvider(props: {
   const [study] = useState(props.study);
   const { installedStudyIds } = useStudies();
   const { userDocument } = useUserDocument();
-  const [isStudyEnrollmentInProgress, setIsStudyEnrollmentInProgress] =
-    useState(false);
 
   const studyId = study.studyId;
 
@@ -44,9 +39,6 @@ export function StudyProvider(props: {
             userDocument.studies[studyId] &&
             userDocument.studies[studyId].enrolled
         ),
-        isStudyEnrollmentInProgress,
-        startStudyEnrollmentToggle: () => setIsStudyEnrollmentInProgress(true),
-        endStudyEnrollmentToggle: () => setIsStudyEnrollmentInProgress(false),
       }}
     >
       {props.children}
