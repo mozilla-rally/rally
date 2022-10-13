@@ -9,4 +9,12 @@ export const LinkStyles = {
       },
     },
   }),
+  Underline: style({
+    textDecoration: "underline",
+    $nest: {
+      "&:hover": {
+        textDecoration: "none",
+      },
+    },
+  }),
 };

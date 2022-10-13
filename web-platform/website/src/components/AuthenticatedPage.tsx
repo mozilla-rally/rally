@@ -1,6 +1,7 @@
 import { useRouter } from "next/router";
 
 import { Flags } from "../resources/Flags";
+import { useAttribution } from "../services/AttributionService";
 import { useAuthentication } from "../services/AuthenticationService";
 import { useFlagService } from "../services/FlagService";
 import { useUserDocument } from "../services/UserDocumentService";
@@ -9,6 +10,7 @@ export function AuthenticatedPage(props: {
   children?: JSX.Element | (JSX.Element | undefined)[];
 }) {
   const router = useRouter();
+  const { isAttributionLoaded, getAttributionCodes } = useAttribution();
 
   const { isLoaded, user } = useAuthentication();
   const { isDocumentLoaded, userDocument } = useUserDocument();
@@ -18,8 +20,19 @@ export function AuthenticatedPage(props: {
     return null;
   }
 
-  if (!user) {
-    router.replace(`/login`);
+  if (!user && typeof window !== undefined) {
+    let route = "/login";
+
+    if (isAttributionLoaded) {
+      const searchParams = getAttributionCodes();
+      const search = searchParams.toString();
+
+      if (search) {
+        route += `?${search}`;
+      }
+    }
+
+    router.replace(route);
     return null;
   }
 

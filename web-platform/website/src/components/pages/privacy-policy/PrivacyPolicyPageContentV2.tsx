@@ -1,5 +1,6 @@
 import { UserDocument } from "@mozilla/rally-shared-types/dist";
 import { Timestamp } from "firebase/firestore";
+import { useState } from "react";
 import { Container, Modal, ModalHeader } from "reactstrap";
 import { Button, Col, Row } from "reactstrap";
 import { style } from "typestyle";
@@ -24,11 +25,9 @@ import { PrivacyPolicySharing } from "./PrivacyPolicySharing";
 const strings = Strings.components.pages.privacyPolicy;
 const btnStrings = Strings.components.pages.privacyPolicy.buttons;
 
-export function PrivacyPolicyPageContentV2(props: {
-  closeModal: object;
-  isOpen: boolean;
-}) {
-  const { updateUserDocument } = useUserDocument();
+export function PrivacyPolicyPageContentV2() {
+  const { updateUserDocument, userDocument } = useUserDocument();
+  const [ isOpen, setIsOpen ] = useState(true);
   const { isLoaded, rallyExtensionStudy } = useStudies();
 
   if (!isLoaded) {
@@ -39,7 +38,7 @@ export function PrivacyPolicyPageContentV2(props: {
     <Modal
       className={styles.modal}
       contentClassName={styles.modalContent}
-      {...props}
+      isOpen={isOpen}
     >
       <ModalHeader className={Fonts.Title}>{strings.modalHeader}</ModalHeader>
       <Container
@@ -77,7 +76,7 @@ export function PrivacyPolicyPageContentV2(props: {
               }
               await updateUserDocument(newUserDoc);
 
-              props && props.closeModal && (props.closeModal as () => void)();
+              setIsOpen(false);
             }}
           >
             {btnStrings.v2.agree}
@@ -86,7 +85,7 @@ export function PrivacyPolicyPageContentV2(props: {
             className={`d-flex fw-bold ps-4 pe-4 pt-2 pb-2 ${TertiaryButton} ${styles.button}`}
             outline
             onClick={() => {
-              props && props.closeModal && (props.closeModal as () => void)();
+              setIsOpen(false);
             }}
           >
             {btnStrings.v2.back}
