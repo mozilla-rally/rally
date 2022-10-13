@@ -1,13 +1,14 @@
+import { act, render } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
+import { logEvent } from "firebase/analytics";
+import { Timestamp } from "firebase/firestore";
+
 import { Strings } from "../../../../../resources/Strings";
 import { useFirebase } from "../../../../../services/FirebaseService";
 import { useUserDocument } from "../../../../../services/UserDocumentService";
 import { useStudy } from "../StudyDataContext";
 import { StudyTitle } from "../StudyTitle";
 import { StudyTopDetails } from "../StudyTopDetails";
-import { act, render } from "@testing-library/react";
-import userEvent from "@testing-library/user-event";
-import { logEvent } from "firebase/analytics";
-import { Timestamp } from "firebase/firestore";
 
 jest.mock("firebase/analytics");
 jest.mock("../../../../../services/FirebaseService");
@@ -31,7 +32,7 @@ describe("StudyTopDetails tests", () => {
     (useUserDocument as jest.Mock).mockReturnValue({
       userDocument: {
         enrolled: false,
-        updateUserDocument
+        updateUserDocument,
       },
     });
 
@@ -58,7 +59,7 @@ describe("StudyTopDetails tests", () => {
     (useUserDocument as jest.Mock).mockReturnValue({
       userDocument: {
         enrolled: true,
-        updateUserDocument
+        updateUserDocument,
       },
     });
 
@@ -89,7 +90,7 @@ describe("StudyTopDetails tests", () => {
     (useUserDocument as jest.Mock).mockReturnValue({
       userDocument: {
         enrolled: true,
-        updateUserDocument
+        updateUserDocument,
       },
     });
 

@@ -1,9 +1,3 @@
-import { Strings } from "../../../../resources/Strings";
-import { useFirebase } from "../../../../services/FirebaseService";
-import { useUserDocument } from "../../../../services/UserDocumentService";
-import { Colors, Spacing } from "../../../../styles";
-import { FontSize } from "../../../../styles/Fonts";
-import { useStudy } from "./StudyDataContext";
 import { UserDocument } from "@mozilla/rally-shared-types";
 import { logEvent } from "firebase/analytics";
 import {
@@ -16,6 +10,13 @@ import {
   UncontrolledDropdown,
 } from "reactstrap";
 import { style } from "typestyle";
+
+import { Strings } from "../../../../resources/Strings";
+import { useFirebase } from "../../../../services/FirebaseService";
+import { useUserDocument } from "../../../../services/UserDocumentService";
+import { Colors, Spacing } from "../../../../styles";
+import { FontSize } from "../../../../styles/Fonts";
+import { useStudy } from "./StudyDataContext";
 
 const strings = Strings.components.pages.studies.studyCard.header;
 

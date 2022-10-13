@@ -52,8 +52,6 @@ describe("StudyTitle tests", () => {
       document.querySelector(`img[src="img/custom-icon.png"]`)
     ).toBeInTheDocument();
 
-    expect(
-      root.getByText("Ends: Mon Jan 06 2020")
-    ).toBeInTheDocument();
+    expect(root.getByText("Ends: Mon Jan 06 2020")).toBeInTheDocument();
   });
 });

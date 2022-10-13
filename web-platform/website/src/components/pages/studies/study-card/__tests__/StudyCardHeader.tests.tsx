@@ -1,12 +1,13 @@
+import { render } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
+import { logEvent } from "firebase/analytics";
+import { act } from "react-dom/test-utils";
+
 import { Strings } from "../../../../../resources/Strings";
 import { useFirebase } from "../../../../../services/FirebaseService";
 import { useUserDocument } from "../../../../../services/UserDocumentService";
 import { StudyCardHeader } from "../StudyCardHeader";
 import { useStudy } from "../StudyDataContext";
-import { render } from "@testing-library/react";
-import userEvent from "@testing-library/user-event";
-import { logEvent } from "firebase/analytics";
-import { act } from "react-dom/test-utils";
 
 jest.mock("firebase/analytics");
 jest.mock("../../../../../services/FirebaseService");

@@ -1,3 +1,9 @@
+import { UserDocument } from "@mozilla/rally-shared-types";
+import { logEvent } from "firebase/analytics";
+import { Timestamp } from "firebase/firestore";
+import { Button, Col, Container, Row } from "reactstrap";
+import { style } from "typestyle";
+
 import { Strings } from "../../../../resources/Strings";
 import { useFirebase } from "../../../../services/FirebaseService";
 import { useUserDocument } from "../../../../services/UserDocumentService";
@@ -6,11 +12,6 @@ import { Colors, ScreenSize, Spacing } from "../../../../styles";
 import { FontSize } from "../../../../styles/Fonts";
 import { useStudy } from "./StudyDataContext";
 import { StudyTitle } from "./StudyTitle";
-import { UserDocument } from "@mozilla/rally-shared-types";
-import { logEvent } from "firebase/analytics";
-import { Timestamp } from "firebase/firestore";
-import { Button, Col, Container, Row } from "reactstrap";
-import { style } from "typestyle";
 
 const strings = Strings.components.pages.studies.studyCard.topDetails;
 
