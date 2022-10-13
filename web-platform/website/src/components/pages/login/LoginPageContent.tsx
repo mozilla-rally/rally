@@ -6,30 +6,30 @@ import { Strings } from "../../../resources/Strings";
 import { useStudies } from "../../../services/StudiesService";
 import { Fonts } from "../../../styles/Fonts";
 import { Highlighter } from "../../Highlighter";
+import { TwoColumnLayout } from "../../TwoColumnLayout";
 import { LoginCardFactory } from "./LoginCardFactory";
 import {
   LoginState,
   LoginStateProvider,
   useLoginDataContext,
 } from "./LoginDataContext";
-import { LoginPageLayoutV2 } from "./LoginPageLayoutV2";
 
 const strings = Strings.components.pages.login.loginPageContentV2;
 
-export function LoginPageContentV2(props: { children: React.ReactNode }) {
+export function LoginPageContent(props: { children: React.ReactNode }) {
   return (
     <LoginStateProvider>
       <>
         {props.children}
-        <LoginPageLayoutV2 displayInCollapsedMode={true}>
-          <LoginPageLayoutV2.LeftContent>
+        <TwoColumnLayout displayInCollapsedMode={true}>
+          <TwoColumnLayout.LeftContent>
             <LoginCards />
-          </LoginPageLayoutV2.LeftContent>
+          </TwoColumnLayout.LeftContent>
 
-          <LoginPageLayoutV2.RightContent>
+          <TwoColumnLayout.RightContent>
             <ValueProposition />
-          </LoginPageLayoutV2.RightContent>
-        </LoginPageLayoutV2>
+          </TwoColumnLayout.RightContent>
+        </TwoColumnLayout>
       </>
     </LoginStateProvider>
   );

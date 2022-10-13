@@ -2,7 +2,7 @@ import React from "react";
 import { Col, Container, Row } from "reactstrap";
 import { style } from "typestyle";
 
-import { LoginPageLayoutV2 } from "../login/LoginPageLayoutV2";
+import { TwoColumnLayout } from "../../TwoColumnLayout";
 import { GetExtensionValueProp } from "./GetExtensionValueProp";
 import { GetExtensionView } from "./GetExtensionView";
 
@@ -10,15 +10,15 @@ export function GetExtensionContent(props: { children: React.ReactNode }) {
   return (
     <>
       {props.children}
-      <LoginPageLayoutV2 displayInCollapsedMode={true}>
-        <LoginPageLayoutV2.LeftContent>
+      <TwoColumnLayout displayInCollapsedMode={true}>
+        <TwoColumnLayout.LeftContent>
           <ExtensionCard />
-        </LoginPageLayoutV2.LeftContent>
+        </TwoColumnLayout.LeftContent>
 
-        <LoginPageLayoutV2.RightContent>
+        <TwoColumnLayout.RightContent>
           <GetExtensionValueProp />
-        </LoginPageLayoutV2.RightContent>
-      </LoginPageLayoutV2>
+        </TwoColumnLayout.RightContent>
+      </TwoColumnLayout>
     </>
   );
 }

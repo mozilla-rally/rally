@@ -2,17 +2,12 @@ import React from "react";
 import { Col, Container, Row } from "reactstrap";
 import { style } from "typestyle";
 
-import {
-  Colors,
-  ScreenSize,
-  Spacing,
-  createResponsiveStyle,
-} from "../../../styles";
-import { ContainerStyles } from "../../../styles/ContainerStyles";
-import { Footer } from "../../Footer";
-import { NavigationBar, NavigationBarProps } from "../../navigation-bar";
+import { Colors, ScreenSize, Spacing, createResponsiveStyle } from "../styles";
+import { ContainerStyles } from "../styles/ContainerStyles";
+import { Footer } from "./Footer";
+import { NavigationBar, NavigationBarProps } from "./navigation-bar";
 
-export function LoginPageLayoutV2(props: NavigationBarProps) {
+export function TwoColumnLayout(props: NavigationBarProps) {
   let leftContent: JSX.Element | null = null;
   let rightContent: JSX.Element | null = null;
   const displayInCollapsedMode = !!props.displayInCollapsedMode;
@@ -20,11 +15,11 @@ export function LoginPageLayoutV2(props: NavigationBarProps) {
   React.Children.forEach(props.children, (c) => {
     const child = React.isValidElement(c) ? (c as JSX.Element) : null;
 
-    if (child && child.type === LoginPageLayoutV2.LeftContent) {
+    if (child && child.type === TwoColumnLayout.LeftContent) {
       leftContent = child;
     }
 
-    if (child && child.type === LoginPageLayoutV2.RightContent) {
+    if (child && child.type === TwoColumnLayout.RightContent) {
       rightContent = child;
     }
   });
@@ -67,12 +62,12 @@ export function LoginPageLayoutV2(props: NavigationBarProps) {
 }
 
 // eslint-disable-next-line react/display-name
-LoginPageLayoutV2.LeftContent = function (props: { children?: JSX.Element }) {
+TwoColumnLayout.LeftContent = function (props: { children?: JSX.Element }) {
   return props.children || null;
 };
 
 // eslint-disable-next-line react/display-name
-LoginPageLayoutV2.RightContent = function (props: { children?: JSX.Element }) {
+TwoColumnLayout.RightContent = function (props: { children?: JSX.Element }) {
   return props.children || null;
 };
 

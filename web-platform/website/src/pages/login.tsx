@@ -3,7 +3,7 @@ import type { NextPage } from "next";
 import Head from "next/head";
 import { useRouter } from "next/router";
 
-import { LoginPageContentV2 } from "../components/pages/login/LoginPageContentV2";
+import { LoginPageContent } from "../components/pages/login/LoginPageContent";
 import { Strings } from "../resources/Strings";
 import { useAuthentication } from "../services/AuthenticationService";
 import { useStudies } from "../services/StudiesService";
@@ -41,11 +41,11 @@ const LoginPage: NextPage = () => {
   }
 
   return (
-    <LoginPageContentV2>
+    <LoginPageContent>
       <Head>
         <title>{strings.title}</title>
       </Head>
-    </LoginPageContentV2>
+    </LoginPageContent>
   );
 };
 

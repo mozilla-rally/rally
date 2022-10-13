@@ -2,7 +2,7 @@ import { render } from "@testing-library/react";
 import Head from "next/head";
 import { useRouter } from "next/router";
 
-import { LoginPageContentV2 } from "../components/pages/login/LoginPageContentV2";
+import { LoginPageContent } from "../components/pages/login/LoginPageContent";
 import { default as LoginPage } from "../pages/login";
 import { Strings } from "../resources/Strings";
 import { useAuthentication } from "../services/AuthenticationService";
@@ -11,7 +11,7 @@ import { useStudies } from "../services/StudiesService";
 jest.mock("next/head");
 jest.mock("next/router");
 
-jest.mock("../components/pages/login/LoginPageContentV2");
+jest.mock("../components/pages/login/LoginPageContent");
 jest.mock("../services/AuthenticationService");
 jest.mock("../services/StudiesService");
 
@@ -20,7 +20,7 @@ describe("login page tests", () => {
     jest.resetAllMocks();
 
     (Head as jest.Mock).mockImplementation(({ children }) => children);
-    (LoginPageContentV2 as jest.Mock).mockImplementation(
+    (LoginPageContent as jest.Mock).mockImplementation(
       ({ children }) => children
     );
     (useStudies as jest.Mock).mockReturnValue({ installedStudyIds: [] });
@@ -43,7 +43,7 @@ describe("login page tests", () => {
     expect(useRouter).toHaveBeenCalled();
     expect(replace).not.toHaveBeenCalled();
 
-    expect(LoginPageContentV2).not.toHaveBeenCalled();
+    expect(LoginPageContent).not.toHaveBeenCalled();
     expect(Head).not.toHaveBeenCalled();
   });
 
@@ -64,7 +64,7 @@ describe("login page tests", () => {
     expect(useRouter).toHaveBeenCalled();
     expect(replace).not.toHaveBeenCalled();
 
-    expect(LoginPageContentV2).not.toHaveBeenCalled();
+    expect(LoginPageContent).not.toHaveBeenCalled();
     expect(Head).not.toHaveBeenCalled();
   });
 
@@ -88,7 +88,7 @@ describe("login page tests", () => {
     expect(useAuthentication).toHaveBeenCalled();
     expect(useRouter).toHaveBeenCalled();
 
-    expect(LoginPageContentV2).not.toHaveBeenCalled();
+    expect(LoginPageContent).not.toHaveBeenCalled();
     expect(Head).not.toHaveBeenCalled();
   });
 
@@ -110,7 +110,7 @@ describe("login page tests", () => {
     expect(useAuthentication).toHaveBeenCalled();
     expect(useRouter).toHaveBeenCalled();
 
-    expect(LoginPageContentV2).not.toHaveBeenCalled();
+    expect(LoginPageContent).not.toHaveBeenCalled();
   });
 
   it("renders login page content correctly", () => {
@@ -131,7 +131,7 @@ describe("login page tests", () => {
 
     expect(Head).toHaveBeenCalled();
 
-    expect(LoginPageContentV2).toHaveBeenCalled();
+    expect(LoginPageContent).toHaveBeenCalled();
 
     expect(document.title).toBe(Strings.pages.login.title);
   });
@@ -164,7 +164,7 @@ describe("login page tests", () => {
     expect(useAuthentication).toHaveBeenCalled();
     expect(useRouter).toHaveBeenCalled();
 
-    expect(LoginPageContentV2).not.toHaveBeenCalled();
+    expect(LoginPageContent).not.toHaveBeenCalled();
 
     expect(sessionStorage.getItem).toHaveBeenCalledWith("subscribedToEmail");
 

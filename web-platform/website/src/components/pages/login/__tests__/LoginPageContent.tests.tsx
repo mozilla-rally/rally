@@ -3,33 +3,33 @@ import { isValidElement } from "react";
 
 import { Strings } from "../../../../resources/Strings";
 import { useStudies } from "../../../../services/StudiesService";
+import { TwoColumnLayout } from "../../../TwoColumnLayout";
 import { LoginCardFactory } from "../LoginCardFactory";
 import {
   LoginState,
   LoginStateProvider,
   useLoginDataContext,
 } from "../LoginDataContext";
-import { LoginPageContentV2 } from "../LoginPageContentV2";
-import { LoginPageLayoutV2 } from "../LoginPageLayoutV2";
+import { LoginPageContent } from "../LoginPageContent";
 
 jest.mock("../../../../services/StudiesService");
+jest.mock("../../../TwoColumnLayout");
 jest.mock("../LoginCardFactory");
 jest.mock("../LoginDataContext");
-jest.mock("../LoginPageLayoutV2");
 
 const strings = Strings.components.pages.login.loginPageContentV2;
 
-describe("LoginPageContentV2 tests", () => {
+describe("LoginPageContent tests", () => {
   beforeEach(() => {
-    (LoginPageLayoutV2 as unknown as jest.Mock).mockImplementation(
+    (TwoColumnLayout as unknown as jest.Mock).mockImplementation(
       ({ children }) => children
     );
 
-    (LoginPageLayoutV2.LeftContent as jest.Mock).mockImplementation(
+    (TwoColumnLayout.LeftContent as jest.Mock).mockImplementation(
       ({ children }) => children
     );
 
-    (LoginPageLayoutV2.RightContent as jest.Mock).mockImplementation(
+    (TwoColumnLayout.RightContent as jest.Mock).mockImplementation(
       ({ children }) => children
     );
 
@@ -48,9 +48,9 @@ describe("LoginPageContentV2 tests", () => {
 
   it("renders initial content correctly - account first", () => {
     const root = render(
-      <LoginPageContentV2>
+      <LoginPageContent>
         <div>Child content</div>
-      </LoginPageContentV2>
+      </LoginPageContent>
     );
 
     expect(LoginStateProvider).toHaveBeenCalled();
@@ -78,9 +78,9 @@ describe("LoginPageContentV2 tests", () => {
     });
 
     const root = render(
-      <LoginPageContentV2>
+      <LoginPageContent>
         <div>Child content</div>
-      </LoginPageContentV2>
+      </LoginPageContent>
     );
 
     expect(LoginStateProvider).toHaveBeenCalled();
@@ -120,9 +120,9 @@ describe("LoginPageContentV2 tests", () => {
 
   function assertNoHeaderTextState() {
     const root = render(
-      <LoginPageContentV2>
+      <LoginPageContent>
         <div>Child content</div>
-      </LoginPageContentV2>
+      </LoginPageContent>
     );
 
     expect(LoginStateProvider).toHaveBeenCalled();

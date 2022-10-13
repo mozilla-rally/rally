@@ -1,15 +1,15 @@
 import { render } from "@testing-library/react";
 
-import { Footer } from "../../../Footer";
-import { NavigationBar } from "../../../navigation-bar";
-import { LoginPageLayoutV2 } from "../LoginPageLayoutV2";
+import { Footer } from "../Footer";
+import { TwoColumnLayout } from "../TwoColumnLayout";
+import { NavigationBar } from "../navigation-bar";
 
-jest.mock("../../../Footer");
-jest.mock("../../../navigation-bar");
+jest.mock("../Footer");
+jest.mock("../navigation-bar");
 
-describe("LoginPageLayoutV2 tests", () => {
+describe("TwoColumnLayout tests", () => {
   it("displays zero content", () => {
-    render(<LoginPageLayoutV2 />);
+    render(<TwoColumnLayout />);
 
     expect(NavigationBar).toHaveBeenCalled();
     expect(Footer).toHaveBeenCalled();
@@ -17,11 +17,11 @@ describe("LoginPageLayoutV2 tests", () => {
 
   it("displays left content", () => {
     const root = render(
-      <LoginPageLayoutV2>
-        <LoginPageLayoutV2.LeftContent>
+      <TwoColumnLayout>
+        <TwoColumnLayout.LeftContent>
           <div>Left Content</div>
-        </LoginPageLayoutV2.LeftContent>
-      </LoginPageLayoutV2>
+        </TwoColumnLayout.LeftContent>
+      </TwoColumnLayout>
     );
 
     expect(root.getByText("Left Content")).toBeInTheDocument();
@@ -31,11 +31,11 @@ describe("LoginPageLayoutV2 tests", () => {
 
   it("displays right content", () => {
     const root = render(
-      <LoginPageLayoutV2>
-        <LoginPageLayoutV2.RightContent>
+      <TwoColumnLayout>
+        <TwoColumnLayout.RightContent>
           <div>Right Content</div>
-        </LoginPageLayoutV2.RightContent>
-      </LoginPageLayoutV2>
+        </TwoColumnLayout.RightContent>
+      </TwoColumnLayout>
     );
 
     expect(root.getByText("Right Content")).toBeInTheDocument();
@@ -45,14 +45,14 @@ describe("LoginPageLayoutV2 tests", () => {
 
   it("displays both left and right content", () => {
     const root = render(
-      <LoginPageLayoutV2>
-        <LoginPageLayoutV2.LeftContent>
+      <TwoColumnLayout>
+        <TwoColumnLayout.LeftContent>
           <div>Left Content</div>
-        </LoginPageLayoutV2.LeftContent>
-        <LoginPageLayoutV2.RightContent>
+        </TwoColumnLayout.LeftContent>
+        <TwoColumnLayout.RightContent>
           <div>Right Content</div>
-        </LoginPageLayoutV2.RightContent>
-      </LoginPageLayoutV2>
+        </TwoColumnLayout.RightContent>
+      </TwoColumnLayout>
     );
 
     expect(root.getByText("Left Content")).toBeInTheDocument();
