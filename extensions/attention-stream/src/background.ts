@@ -32,6 +32,8 @@ import * as youtubeVideoRecommendations from "../src/generated/youtubeVideoRecom
 import * as youtubeAd from "../src/generated/youtubeAd";
 import * as trackingPixel from "../src/generated/trackingPixel";
 import * as attribution from "../src/generated/attribution";
+// import * as socialMediaSharing from "../src/generated/socialMediaSharing";
+// import * as socialMediaActivity from "../src/generated/socialMediaActivity";
 
 // Import generated Glean pings.
 import * as rallyExtensionPings from "../src/generated/pings";
@@ -464,6 +466,49 @@ async function stateChangeCallback(newState) {
           { urls: trackingPixelUrls },
           ["requestBody"]
         );
+
+        /**
+         * Callback for social media link share events. Stores the event.
+         * @param {Object} shareData - Information about the link share event.
+         * @param {string} shareData.type - Indicates whether the event represents a tracked or
+         *   untracked share.
+         * @param {string} shareData.url - For a tracked share event, the URL of the shared page.j
+         * @param {number} shareData.untrackedCount - For an untracked share event, the number of
+         *   untracked URLs that were shared.
+         */
+        this.linkShareListener = (async (shareData) => {
+          if (shareData.type == "tracked") {
+            shareData.url = webScience.matching.normalizeUrl(shareData.url);
+            const historyVisits = await browser.history.search({
+              text: shareData.url,
+              startTime: 0, //search all history
+              endTime: shareData.shareTime
+            });
+            shareData.visitPresentInHistory = historyVisits.length > 0;
+          }
+          if (shareData.type == "tracked" ||
+            (shareData.type == "untracked" && shareData.untrackedCount > 0)) {
+            console.debug("social media sharing:", shareData);
+          }
+        });
+
+        // Register listener for shares of links to tracked domains on Facebook, Twitter, and Reddit.
+        webScience.socialMediaLinkSharing.onShare.addListener(this.linkShareListener, {
+          destinationMatchPatterns: webScience.matching.domainsToMatchPatterns(["<all_urls"], true),
+          facebook: true,
+          twitter: true,
+          reddit: true
+        });
+
+        this.socialMediaActivityListener = (async (details) => {
+          console.debug("Social media activity details:", details);
+        });
+        
+        webScience.socialMediaActivity.registerFacebookActivityTracker(this.socialMediaActivityListener, ["post", "reshare"]);
+        webScience.socialMediaActivity.registerRedditActivityTracker(this.socialMediaActivityListener, ["post"]);
+        webScience.socialMediaActivity.registerTwitterActivityTracker(this.socialMediaActivityListener, ["tweet", "retweet", "favorite"]);
+
+
       }
 
       break;
