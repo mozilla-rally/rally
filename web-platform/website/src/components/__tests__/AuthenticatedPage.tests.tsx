@@ -1,5 +1,6 @@
 import { render } from "@testing-library/react";
 import { useRouter } from "next/router";
+import { useAttribution } from "../../services/AttributionService";
 
 import { useAuthentication } from "../../services/AuthenticationService";
 import { useUserDocument } from "../../services/UserDocumentService";
@@ -8,6 +9,7 @@ import { AuthenticatedPage } from "../AuthenticatedPage";
 jest.mock("next/router");
 jest.mock("../../services/AuthenticationService");
 jest.mock("../../services/UserDocumentService");
+jest.mock("../../services/AttributionService");
 
 describe("AuthenticatedPage tests", () => {
   beforeEach(() => {
@@ -31,6 +33,11 @@ describe("AuthenticatedPage tests", () => {
       isDocumentLoaded: true,
       userDocument: {},
     });
+
+    (useAttribution as jest.Mock).mockReturnValue({
+      isAttributionLoaded: true,
+      getAttributionCodes: () => new URLSearchParams(),
+    })
 
     const root = render(
       <AuthenticatedPage>
@@ -61,6 +68,11 @@ describe("AuthenticatedPage tests", () => {
       userDocument: {},
     });
 
+    (useAttribution as jest.Mock).mockReturnValue({
+      isAttributionLoaded: true,
+      getAttributionCodes: () => new URLSearchParams(),
+    })
+
     const root = render(
       <AuthenticatedPage>
         <div>Test</div>
@@ -89,6 +101,11 @@ describe("AuthenticatedPage tests", () => {
       isDocumentLoaded: false,
       userDocument: {},
     });
+
+    (useAttribution as jest.Mock).mockReturnValue({
+      isAttributionLoaded: true,
+      getAttributionCodes: () => new URLSearchParams(),
+    })
 
     const root = render(
       <AuthenticatedPage>
@@ -119,6 +136,11 @@ describe("AuthenticatedPage tests", () => {
       userDocument: {},
     });
 
+    (useAttribution as jest.Mock).mockReturnValue({
+      isAttributionLoaded: true,
+      getAttributionCodes: () => new URLSearchParams(),
+    })
+
     const root = render(
       <AuthenticatedPage>
         <div>Test</div>
@@ -127,7 +149,10 @@ describe("AuthenticatedPage tests", () => {
 
     expect(root.container.firstChild).toBeNull();
 
-    expect(replace).toHaveBeenCalledWith("/login");
+    expect(replace).toHaveBeenCalledWith({
+      pathname: "/login",
+      query: "",
+    });
   });
 
   it("renders the page content when user is authenticated and verified and router is ready", () => {
@@ -147,6 +172,11 @@ describe("AuthenticatedPage tests", () => {
       isDocumentLoaded: true,
       userDocument: { enrolled: true, onboared: true },
     });
+
+    (useAttribution as jest.Mock).mockReturnValue({
+      isAttributionLoaded: true,
+      getAttributionCodes: () => new URLSearchParams(),
+    })
 
     const root = render(
       <AuthenticatedPage>

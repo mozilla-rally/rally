@@ -51,15 +51,15 @@ function MyApp({ Component, pageProps }: AppProps) {
         />
       </Head>
       <FlagProvider>
-        <AttributionProvider>
-          <AuthenticationProvider>
-            <StudiesProvider>
-              <UserDocumentProvider>
+        <AuthenticationProvider>
+          <UserDocumentProvider>
+            <AttributionProvider>
+              <StudiesProvider>
                 <Component {...pageProps} />
-              </UserDocumentProvider>
-            </StudiesProvider>
-          </AuthenticationProvider>
-        </AttributionProvider>
+              </StudiesProvider>
+            </AttributionProvider>
+          </UserDocumentProvider>
+        </AuthenticationProvider>
       </FlagProvider>
     </>
   );

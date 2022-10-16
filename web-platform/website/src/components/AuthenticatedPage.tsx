@@ -13,23 +13,17 @@ export function AuthenticatedPage(props: {
   const { isLoaded, user } = useAuthentication();
   const { isDocumentLoaded } = useUserDocument();
 
-  if (!router.isReady || !isLoaded || !isDocumentLoaded) {
+  if (!router.isReady || !isLoaded || !isDocumentLoaded || !isAttributionLoaded) {
     return null;
   }
 
   if (!user && typeof window !== undefined) {
-    let route = "/login";
+    const pathname = "/login";
 
-    if (isAttributionLoaded) {
-      const searchParams = getAttributionCodes();
-      const search = searchParams.toString();
+    const params = getAttributionCodes();
+    const query = (params && params.toString()) || "";
 
-      if (search) {
-        route += `?${search}`;
-      }
-    }
-
-    router.replace(route);
+    router.replace({ pathname, query });
     return null;
   }
 

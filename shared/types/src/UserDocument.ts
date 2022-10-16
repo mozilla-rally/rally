@@ -11,4 +11,5 @@ export interface UserDocument {
   demographicsData: UserDemographicsData;
   studies: Record<string, UserStudyRecord>;
   subscribedToEmail: boolean;
+  attribution: Record<string, string>;
 }
