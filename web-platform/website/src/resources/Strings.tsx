@@ -337,7 +337,6 @@ export const Strings = {
           emailSubscription:
             "Send me occasional updates and communications from Rally",
           password: "Password",
-          title: "Create Account",
         },
         getExtensionView: {
           getExt: "Add the extension",
@@ -427,7 +426,6 @@ export const Strings = {
         initialLoginView: {
           signInWithEmail: "Sign up with Email",
           signInWithGoogle: "Sign up with Google",
-          title: "Join Rally",
         },
         privacyNoticeAndLoginLink: {
           accountExists: (
@@ -491,11 +489,6 @@ export const Strings = {
         dataCollectionTypes: {
           sections: [
             {
-              image: {
-                url: "/img/your-demographic-data.png",
-                width: 84,
-                alt: "Your Demographic Data.",
-              },
               text: (
                 <>
                   <b>Your Demographic Data</b>
@@ -513,11 +506,6 @@ export const Strings = {
               ),
             },
             {
-              image: {
-                url: "/img/your-technical-data.png",
-                width: 84,
-                alt: "Your Device's Technical Data.",
-              },
               text: (
                 <>
                   <b>Your Device's Technical Data</b>
@@ -529,11 +517,6 @@ export const Strings = {
               ),
             },
             {
-              image: {
-                url: "/img/your-interaction-data.png",
-                width: 84,
-                alt: "Your interaction data.",
-              },
               text: (
                 <>
                   <b>Your Interaction Data</b>
@@ -550,11 +533,6 @@ export const Strings = {
               ),
             },
             {
-              image: {
-                url: "/img/your-contact-data.png",
-                width: 84,
-                alt: "Your Contact Data.",
-              },
               text: (
                 <>
                   <b>Your Contact Data</b>
@@ -568,11 +546,6 @@ export const Strings = {
               ),
             },
             {
-              image: {
-                url: "/img/your-location-data.png",
-                width: 84,
-                alt: "Your Location Data.",
-              },
               text: (
                 <>
                   <b>Your Location Data</b>

@@ -5,9 +5,10 @@ export interface Flag {
 }
 
 export const Flags: Record<string, Flag> = {
+  /* Example:
   onboardingV2: {
     name: "onboardingV2",
     description: "Enables new onboarding experience.",
     defaultValue: true,
-  },
+  },*/
 };

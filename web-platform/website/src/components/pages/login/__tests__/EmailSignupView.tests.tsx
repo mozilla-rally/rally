@@ -2,10 +2,8 @@ import { RenderResult, act, render } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { UserEvent } from "@testing-library/user-event/dist/types/setup";
 
-import { Flags } from "../../../../resources/Flags";
 import { Strings } from "../../../../resources/Strings";
 import { useAuthentication } from "../../../../services/AuthenticationService";
-import { useFlagService } from "../../../../services/FlagService";
 import { useStudies } from "../../../../services/StudiesService";
 import { getFirebaseErrorMessage } from "../../../../utils/FirebaseErrors";
 import { Highlighter } from "../../../Highlighter";
@@ -20,7 +18,6 @@ import { PasswordRules } from "../PasswordRules";
 import { PrivacyNoticeAndLoginLink } from "../PrivacyNoticeAndLoginLink";
 
 jest.mock("../../../../services/AuthenticationService");
-jest.mock("../../../../services/FlagService");
 jest.mock("../../../../services/StudiesService");
 jest.mock("../../../../utils/FirebaseErrors");
 jest.mock("../../../Highlighter");
@@ -33,14 +30,9 @@ const strings = Strings.components.pages.login.emailSignupView;
 
 describe("EmailSignupView tests", () => {
   const signupWithEmail = jest.fn();
-  const isFlagActive = jest.fn();
 
   beforeEach(() => {
     jest.resetAllMocks();
-
-    (useFlagService as jest.Mock).mockReturnValue({
-      isFlagActive,
-    });
 
     (Highlighter as jest.Mock).mockImplementation(({ children }) => children);
     (LoginButton as jest.Mock).mockImplementation(({ children }) => children);
@@ -60,50 +52,8 @@ describe("EmailSignupView tests", () => {
   it("zero state", () => {
     const root = render(<EmailSignupView />);
 
-    expect(useFlagService).toHaveBeenCalled();
-    expect(isFlagActive).toHaveBeenCalledWith(Flags.onboardingV2);
-
-    expect(Highlighter).toHaveBeenCalled();
-    expect(root.getByText(strings.title)).toBeInTheDocument();
-
-    expect(root.getByText(strings.email)).toBeInTheDocument();
-    expect(document.querySelector("input#email")).toBeInTheDocument();
-    expect(document.querySelector(".email-error")).not.toBeInTheDocument();
-
-    expect(root.getByText(strings.password)).toBeInTheDocument();
-    expect(document.querySelector("input#password")).toBeInTheDocument();
-    expect(document.querySelector(".password-error")).not.toBeInTheDocument();
-
-    expect(PasswordRules).toHaveBeenCalledWith(
-      {
-        className: "mt-3",
-        rules: [],
-      },
-      {}
-    );
-
-    expect(LoginButton).toHaveBeenCalled();
-    expect(PrivacyNoticeAndLoginLink).toHaveBeenCalled();
-
-    expect(validateLoginForm).not.toHaveBeenCalled();
-
-    assertEmailError(undefined);
-    assertPasswordError(undefined);
-
-    expect(signupWithEmail).not.toHaveBeenCalled();
-  });
-
-  it("zero state - v2 enabled", () => {
-    isFlagActive.mockReturnValue(true);
-
-    const root = render(<EmailSignupView />);
-
-    expect(useFlagService).toHaveBeenCalled();
-    expect(isFlagActive).toHaveBeenCalledWith(Flags.onboardingV2);
-
     // Headless mode - no highlighter or title should be shown
     expect(Highlighter).not.toHaveBeenCalled();
-    expect(root.queryByText(strings.title)).not.toBeInTheDocument();
 
     expect(root.getByText(strings.email)).toBeInTheDocument();
     expect(document.querySelector("input#email")).toBeInTheDocument();
@@ -230,8 +180,6 @@ describe("EmailSignupView tests", () => {
     (validateLoginForm as jest.Mock).mockImplementation(() => validationResult);
 
     const user = userEvent.setup();
-
-    isFlagActive.mockReturnValue(true);
 
     jest.spyOn(Storage.prototype, "setItem");
 
