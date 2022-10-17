@@ -25,40 +25,27 @@ export function ProductToasts() {
   const [showEmailDialog, setShowEmailDialog] = useState<boolean>(false);
   const [showPrivacyDialog, setShowPrivacyDialog] = useState<boolean>(false);
 
-  const { user, isUserVerified, reloadUser } = useAuthentication();
+  const { isUserVerified, reloadUser } = useAuthentication();
   const { installedStudyIds, rallyExtensionStudy } = useStudies();
   const { userDocument } = useUserDocument();
 
   useEffect(() => {
-    if (!reloadUser) {
-      return;
-    }
     reloadUser();
-  }, [user, reloadUser]);
+  }, []);
 
   useEffect(() => {
     setShowEmailNotVerifiedToast(!isUserVerified);
   }, [isUserVerified]);
 
   useEffect(() => {
-    if (!rallyExtensionStudy?.studyId) {
-      return;
-    }
     setShowAddExtenionToast(
-      !installedStudyIds.includes(rallyExtensionStudy.studyId)
+      !installedStudyIds.includes(rallyExtensionStudy?.studyId || "")
     );
   }, [installedStudyIds, rallyExtensionStudy]);
 
   useEffect(() => {
-    if (!userDocument) {
-      return;
-    }
-    setShowAddPrivacyToast(!userDocument.enrolled);
+    setShowAddPrivacyToast((userDocument && !userDocument.enrolled) ?? false);
   }, [userDocument]);
-
-  if (!user) {
-    return null;
-  }
 
   return (
     <Container className={styles.container}>
