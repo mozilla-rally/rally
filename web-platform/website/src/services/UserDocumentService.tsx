@@ -136,6 +136,10 @@ async function updateUserDocument(
   partialDocument: Partial<UserDocument>
 ): Promise<void> {
   assert(partialDocument, "Invalid user document.");
+  assert(
+    firebaseUid,
+    "Attempt to update user document when no user is logged in."
+  );
 
   const { studies, ...others } = partialDocument;
 

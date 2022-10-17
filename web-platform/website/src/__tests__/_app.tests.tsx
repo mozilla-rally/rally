@@ -3,6 +3,7 @@ import { logEvent } from "firebase/analytics";
 import { Router, useRouter } from "next/router";
 
 import { default as App } from "../pages/_app";
+import { AttributionProvider } from "../services/AttributionService";
 import { AuthenticationProvider } from "../services/AuthenticationService";
 import { useFirebase } from "../services/FirebaseService";
 import { FlagProvider } from "../services/FlagService";
@@ -16,6 +17,7 @@ jest.mock("../services/FirebaseService");
 jest.mock("../services/FlagService");
 jest.mock("../services/StudiesService");
 jest.mock("../services/UserDocumentService");
+jest.mock("../services/AttributionService");
 
 describe("App tests", () => {
   const analytics = { analytics: "analytics" };
@@ -32,6 +34,10 @@ describe("App tests", () => {
     );
 
     (UserDocumentProvider as jest.Mock).mockImplementation(
+      ({ children }) => children
+    );
+
+    (AttributionProvider as jest.Mock).mockImplementation(
       ({ children }) => children
     );
 
@@ -101,8 +107,9 @@ describe("App tests", () => {
 
     expect(FlagProvider).toHaveBeenCalled();
     expect(AuthenticationProvider).toHaveBeenCalled();
-    expect(StudiesProvider).toHaveBeenCalled();
     expect(UserDocumentProvider).toHaveBeenCalled();
+    expect(AttributionProvider).toHaveBeenCalled();
+    expect(StudiesProvider).toHaveBeenCalled();
 
     expect(useFirebase).toHaveBeenCalled();
     expect(useRouter).toHaveBeenCalled();

@@ -1,4 +1,16 @@
+import { UserDocument } from "@mozilla/rally-shared-types/dist/UserDocument";
 import { createContext, useContext, useEffect, useState } from "react";
+
+import { useAuthentication } from "./AuthenticationService";
+import { useUserDocument } from "./UserDocumentService";
+
+const utmKeys = [
+  "utm_source",
+  "utm_medium",
+  "utm_campaign",
+  "utm_term",
+  "utm_content",
+];
 
 export interface AttributionDataContext {
   // Attribution codes from local storage.
@@ -8,7 +20,7 @@ export interface AttributionDataContext {
   isAttributionLoaded: boolean;
 
   // Get current attribution codes as URLSearchParams.
-  getAttributionCodes(): URLSearchParams;
+  getAttributionCodes(): URLSearchParams | undefined;
 
   // Set attribution codes in query string of a provided URL.
   setAttributionCodes(url: URL): URL;
@@ -27,32 +39,84 @@ export function AttributionProvider(props: { children: React.ReactNode }) {
   const [allAttributionCodes, setAllAttributionCodes] =
     useState<URLSearchParams>(new URLSearchParams());
 
-  async function loadAllAttributionCodes() {
-    // Add UTM codes to store links, if present.
-    let utmParams = new URLSearchParams();
-    if (typeof window !== "undefined") {
-      const utmKeys = ["source", "medium", "campaign", "term", "content"];
+  const { userDocument, updateUserDocument, isDocumentLoaded } =
+    useUserDocument();
+  const { user } = useAuthentication();
 
-      // Use "last-click" attribution, overwriting any stored UTM codes if new ones are encountered.
-      const storedParams = window.localStorage.getItem("rally_utm");
-      if (storedParams) {
-        utmParams = new URLSearchParams(storedParams);
+  function loadAllAttributionCodes() {
+    function updateUserAttribution(document: Record<string, string>) {
+      if (!user) {
+        return;
       }
 
-      const searchParams = new URL(window.location.href).searchParams;
-      utmKeys.forEach((key) => {
-        const utmKey = `utm_${key}`;
-        searchParams.has(utmKey) &&
-          utmParams.set(utmKey, searchParams.get(utmKey) ?? "");
-      });
-      window.localStorage.setItem("rally_utm", utmParams.toString());
+      updateUserDocument({
+        attribution: document,
+      } as Partial<UserDocument>);
     }
-    setAllAttributionCodes(utmParams);
+
+    /**
+     * Returns attribution (UTM) codes from the query string or local storage,
+     * preferring local storage.
+     *
+     * @returns <URLSearchParams> Attribution query string
+     */
+    function loadFromLocalStorageOrQueryString() {
+      // Add UTM codes to store links, if present.
+      let utmParams = new URLSearchParams();
+
+      if (typeof window !== "undefined") {
+        // Use "first-click" attribution, keeping any stored UTM codes if new ones are encountered.
+        const searchParams = new URL(window.location.href).searchParams;
+        utmKeys.forEach((key) => {
+          searchParams.has(key) &&
+            utmParams.set(key, searchParams.get(key) ?? "");
+        });
+
+        const storedParams = new URLSearchParams(
+          window.localStorage.getItem("rally_utm") || ""
+        );
+        if (storedParams) {
+          utmKeys.forEach((key) => {
+            storedParams.has(key) &&
+              utmParams.set(key, storedParams.get(key) ?? "");
+          });
+        }
+      }
+
+      return utmParams;
+    }
+
+    let attribution = new URLSearchParams();
+
+    if (userDocument && userDocument.attribution) {
+      for (const utmKey in userDocument.attribution) {
+        attribution.set(utmKey, userDocument.attribution[utmKey]);
+      }
+
+      // Ensure that local storage is set to match firestore.
+      window.localStorage.setItem("rally_utm", attribution.toString());
+    } else {
+      attribution = loadFromLocalStorageOrQueryString();
+      const attributionDoc: any = {};
+      attribution.forEach((value, key) => {
+        attributionDoc[key] = value;
+      });
+
+      updateUserAttribution(attributionDoc);
+
+      // Ensure that local storage is set to the query string.
+      window.localStorage.setItem("rally_utm", attribution.toString());
+    }
+
+    setAllAttributionCodes(attribution);
 
     setIsLoaded(true);
   }
 
   function getAttributionCodes() {
+    if (!isAttributionLoaded) {
+      return;
+    }
     const search = window.localStorage.getItem("rally_utm") ?? "";
     const searchParams = new URLSearchParams(search);
 
@@ -63,13 +127,12 @@ export function AttributionProvider(props: { children: React.ReactNode }) {
     const returnUrl = new URL(url.href);
 
     if (typeof window !== "undefined") {
-      const utmParams = new URLSearchParams(
+      const storedParams = new URLSearchParams(
         window.localStorage.getItem("rally_utm") ?? ""
       );
-      ["source", "medium", "campaign", "term", "content"].forEach((key) => {
-        const utmKey = `utm_${key}`;
-        if (utmParams.has(utmKey)) {
-          returnUrl.searchParams.set(utmKey, utmParams.get(utmKey) ?? "");
+      utmKeys.forEach((key) => {
+        if (storedParams.has(key)) {
+          returnUrl.searchParams.set(key, storedParams.get(key) ?? "");
         }
       });
     }
@@ -78,8 +141,10 @@ export function AttributionProvider(props: { children: React.ReactNode }) {
   }
 
   useEffect(() => {
-    loadAllAttributionCodes();
-  }, []);
+    if (isDocumentLoaded) {
+      loadAllAttributionCodes();
+    }
+  }, [isDocumentLoaded]);
 
   return (
     <AttributionContext.Provider
