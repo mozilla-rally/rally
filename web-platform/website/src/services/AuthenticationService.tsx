@@ -1,3 +1,11 @@
+import { logEvent } from "firebase/analytics";
+import {
+  User as FirebaseUser,
+  UserCredential,
+  onAuthStateChanged,
+} from "firebase/auth";
+import { createContext, useContext, useEffect, useState } from "react";
+
 import { User } from "../models/User";
 import { useFirebase } from "./FirebaseService";
 import {
@@ -12,13 +20,6 @@ import {
   sendPasswordResetEmail as sendPasswordResetEmailFn,
   signupWithEmail as signupWithEmailFn,
 } from "./UserAccountService";
-import { logEvent } from "firebase/analytics";
-import {
-  User as FirebaseUser,
-  UserCredential,
-  onAuthStateChanged,
-} from "firebase/auth";
-import { createContext, useContext, useEffect, useState } from "react";
 
 export enum UserType {
   Google = "google",
