@@ -1,58 +1,40 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Alert, Button, Container } from "reactstrap";
 import { style } from "typestyle";
 
-import { useAuthentication } from "../../../../services/AuthenticationService";
-import { useStudies } from "../../../../services/StudiesService";
+import { Strings } from "../../../../resources/Strings";
 import { Colors, Spacing } from "../../../../styles";
 import { ProductButton } from "../../../../styles/Buttons";
 import { LinkStyles } from "../../../../styles/LinkStyles";
-import { detectBrowser } from "../../../../utils/BrowserDetector";
-import { BrowserType } from "../../../../utils/BrowserType";
-import { Strings } from "../../../../resources/Strings";
 
-const strings = Strings.components.pages.studies.alerts;
+const closeIcon = Strings.components.pages.studies.alerts.closeIcon;
 
 interface ToastProps {
   icon: string;
   text: string;
   button: string;
   type: string;
-  close?: string;
-  onOpenModal?: () => void;
-  link?: boolean;
-  dismissable?: boolean;
+  isShown: boolean;
+  onTakeAction?: () => void;
+  link?: string;
+  isDismissable?: boolean;
 }
 
 export function ToastComponent({
   icon,
   text,
   button,
-  close,
   type,
-  onOpenModal,
+  isShown,
+  onTakeAction,
   link,
-  dismissable,
+  isDismissable,
 }: ToastProps) {
-  const { sendEmailVerification } = useAuthentication();
-  const [toastVisible, setToastVisibility] = useState<boolean>(true);
-  const [chromeLink, setChromelink] = useState("");
-  const [fxLink, setFxlink] = useState("");
-  const [browserType] = useState(detectBrowser());
-  const { allStudies } = useStudies();
-
-  useEffect(() => {
-    allStudies.forEach((study) => {
-      if (study.authors.name === "Mozilla Rally") {
-        setChromelink(study.downloadLink.chrome);
-        setFxlink(study.downloadLink.firefox);
-      }
-    });
-  }, [allStudies]);
+  const [isDismissed, setIsDismissed] = useState<boolean>(false);
 
   return (
     <Container className={styles.alert}>
-      <Alert className={`${type} `} isOpen={toastVisible}>
+      <Alert className={`${type} `} isOpen={isShown && !isDismissed}>
         <div className={`d-flex align-items-center justify-content-between `}>
           <div className="left d-flex">
             <img
@@ -68,29 +50,14 @@ export function ToastComponent({
           <div className="right d-flex align-items-center">
             <Button
               onClick={async () => {
-                if (type === strings.verifyEmail.type) {
-                  try {
-                    await sendEmailVerification();
-                  } catch (e) {
-                    console.error(
-                      "Error when trying to resend email verification:",
-                      e
-                    );
-                  }
-                  (onOpenModal as () => void)();
-                  setToastVisibility(false);
-                } else if (type === strings.privacyPolicy.type) {
-                  (onOpenModal as () => void)();
-                }
+                onTakeAction && onTakeAction();
               }}
               className={`${ProductButton} toast-btn`}
             >
               {link ? (
                 <a
                   className={LinkStyles.NoUnderline}
-                  href={
-                    browserType === BrowserType.Chrome ? chromeLink : fxLink
-                  }
+                  href={link}
                   target="_blank"
                   rel="noreferrer"
                 >
@@ -100,11 +67,11 @@ export function ToastComponent({
                 button
               )}
             </Button>
-            {dismissable && close && (
+            {isDismissable && (
               <img
-                onClick={() => setToastVisibility(false)}
+                onClick={() => setIsDismissed(true)}
                 className="close-icon"
-                src={close}
+                src={closeIcon}
                 alt="x icon"
               />
             )}
