@@ -1,5 +1,6 @@
 import { render } from "@testing-library/react";
 
+import { useAuthentication } from "../../../../services/AuthenticationService";
 import { useStudies } from "../../../../services/StudiesService";
 import { Layout } from "../../../Layout";
 import { StudiesBackground } from "../StudiesBackground";
@@ -12,6 +13,7 @@ jest.mock("../StudiesBackground");
 jest.mock("../StudiesTitle");
 jest.mock("../StudyList");
 jest.mock("../../../../services/StudiesService");
+jest.mock("../../../../services/AuthenticationService");
 
 describe("StudiesPageContent tests", () => {
   beforeEach(() => {
@@ -26,6 +28,9 @@ describe("StudiesPageContent tests", () => {
     (useStudies as jest.Mock).mockReturnValue({
       installedStudyIds: [],
       allStudies: [],
+    });
+    (useAuthentication as jest.Mock).mockReturnValue({
+      reloadUser: jest.fn(),
     });
   });
 
