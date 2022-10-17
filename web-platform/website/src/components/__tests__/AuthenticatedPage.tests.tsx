@@ -1,7 +1,7 @@
 import { render } from "@testing-library/react";
 import { useRouter } from "next/router";
-import { useAttribution } from "../../services/AttributionService";
 
+import { useAttribution } from "../../services/AttributionService";
 import { useAuthentication } from "../../services/AuthenticationService";
 import { useUserDocument } from "../../services/UserDocumentService";
 import { AuthenticatedPage } from "../AuthenticatedPage";
@@ -37,7 +37,7 @@ describe("AuthenticatedPage tests", () => {
     (useAttribution as jest.Mock).mockReturnValue({
       isAttributionLoaded: true,
       getAttributionCodes: () => new URLSearchParams(),
-    })
+    });
 
     const root = render(
       <AuthenticatedPage>
@@ -71,7 +71,7 @@ describe("AuthenticatedPage tests", () => {
     (useAttribution as jest.Mock).mockReturnValue({
       isAttributionLoaded: true,
       getAttributionCodes: () => new URLSearchParams(),
-    })
+    });
 
     const root = render(
       <AuthenticatedPage>
@@ -105,7 +105,7 @@ describe("AuthenticatedPage tests", () => {
     (useAttribution as jest.Mock).mockReturnValue({
       isAttributionLoaded: true,
       getAttributionCodes: () => new URLSearchParams(),
-    })
+    });
 
     const root = render(
       <AuthenticatedPage>
@@ -139,7 +139,7 @@ describe("AuthenticatedPage tests", () => {
     (useAttribution as jest.Mock).mockReturnValue({
       isAttributionLoaded: true,
       getAttributionCodes: () => new URLSearchParams(),
-    })
+    });
 
     const root = render(
       <AuthenticatedPage>
@@ -176,7 +176,7 @@ describe("AuthenticatedPage tests", () => {
     (useAttribution as jest.Mock).mockReturnValue({
       isAttributionLoaded: true,
       getAttributionCodes: () => new URLSearchParams(),
-    })
+    });
 
     const root = render(
       <AuthenticatedPage>

@@ -13,7 +13,12 @@ export function AuthenticatedPage(props: {
   const { isLoaded, user } = useAuthentication();
   const { isDocumentLoaded } = useUserDocument();
 
-  if (!router.isReady || !isLoaded || !isDocumentLoaded || !isAttributionLoaded) {
+  if (
+    !router.isReady ||
+    !isLoaded ||
+    !isDocumentLoaded ||
+    !isAttributionLoaded
+  ) {
     return null;
   }
 

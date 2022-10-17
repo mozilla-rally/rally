@@ -2,6 +2,12 @@
   "name": "@mozilla/rally-shared-types",
   "entries": [
     {
+      "version": "1.1.8",
+      "tag": "@mozilla/rally-shared-types_v1.1.8",
+      "date": "Mon, 17 Oct 2022 18:14:40 GMT",
+      "comments": {}
+    },
+    {
       "version": "1.1.7",
       "tag": "@mozilla/rally-shared-types_v1.1.7",
       "date": "Sat, 01 Oct 2022 02:04:08 GMT",

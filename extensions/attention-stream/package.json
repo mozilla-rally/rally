@@ -57,7 +57,7 @@
     "web-ext": "^7.0.0"
   },
   "dependencies": {
-    "@mozilla/rally-sdk": "^1.1.7",
+    "@mozilla/rally-sdk": "^1.1.8",
     "@mozilla/glean": "^1.2.0",
     "@mozilla/web-science": "^0.5.3",
     "dexie": "^3.2.2",
