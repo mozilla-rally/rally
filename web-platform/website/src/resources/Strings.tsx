@@ -942,17 +942,17 @@ export const Strings = {
       },
       studies: {
         alerts: {
+          closeIcon: "/img/close.svg",
           verifyEmail: {
             type: "verify-email",
             text: "Please check your email and verify your account.",
             button: "Resend",
             icon: "/img/warning.svg",
-            close: "/img/close.svg",
             modal: {
               title: "Check your email",
               img: "/img/your-contact-data.png",
               close: "/img/close.svg",
-              text: "To finish creating your account with Rally, please check your meail inbox and verify your email address",
+              text: "To finish creating your account with Rally, please check your email inbox and verify your email address",
               help: "Need help?",
               link: {
                 text: "Contact us",

@@ -11,7 +11,6 @@ import {
 import { style } from "typestyle";
 
 import { Strings } from "../../../resources/Strings";
-import { useAuthentication } from "../../../services/AuthenticationService";
 import { Spacing } from "../../../styles";
 import { FontSize, Fonts } from "../../../styles/Fonts";
 import { LinkStyles } from "../../../styles/LinkStyles";
@@ -21,7 +20,6 @@ const strings = Strings.components.pages.studies.alerts.verifyEmail.modal;
 
 export function ProductCheckEmailDialog() {
   const [isOpen, setIsOpen] = useState(true);
-  const { logout } = useAuthentication();
 
   return (
     <Modal isOpen={isOpen} className={styles.modal}>
@@ -33,7 +31,6 @@ export function ProductCheckEmailDialog() {
                 <Button
                   onClick={async () => {
                     setIsOpen(false);
-                    await logout();
                   }}
                 >
                   <img

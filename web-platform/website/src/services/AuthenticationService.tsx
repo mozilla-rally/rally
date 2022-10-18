@@ -40,6 +40,7 @@ export interface UserDataContext {
   loginWithEmail: (email: string, password: string) => Promise<UserCredential>;
   loginWithGoogle: () => Promise<void>;
   logout: () => Promise<void>;
+  reloadUser: () => Promise<void>;
   sendEmailVerification: () => Promise<void>;
   signupWithEmail(email: string, password: string): Promise<UserCredential>;
   sendPasswordResetEmail(email: string): Promise<void>;
@@ -79,20 +80,23 @@ export function AuthenticationProvider(props: { children: React.ReactNode }) {
 
   const { auth, analytics } = useFirebase();
 
+  function updateUserVerificationState(firebaseUser: FirebaseUser | null) {
+    setIsUserVerified(
+      Boolean(
+        firebaseUser &&
+          firebaseUser.providerData &&
+          firebaseUser.providerData.length &&
+          ((firebaseUser.providerData[0].providerId === "password" &&
+            firebaseUser.emailVerified) ||
+            firebaseUser.providerData[0].providerId === "google.com")
+      )
+    );
+  }
+
   useEffect(() => {
     return onAuthStateChanged(auth, (firebaseUser) => {
-      setIsUserVerified(
-        Boolean(
-          firebaseUser &&
-            firebaseUser.providerData &&
-            firebaseUser.providerData.length &&
-            ((firebaseUser.providerData[0].providerId === "password" &&
-              firebaseUser.emailVerified) ||
-              firebaseUser.providerData[0].providerId === "google.com")
-        )
-      );
-
       setUser(firebaseUser ? { firebaseUser } : undefined);
+      updateUserVerificationState(firebaseUser);
       setIsLoaded(true);
 
       logEvent(
@@ -109,6 +113,13 @@ export function AuthenticationProvider(props: { children: React.ReactNode }) {
         isLoaded,
         isLoggingIn,
         isUserVerified,
+        reloadUser: async () => {
+          if (!user || !user.firebaseUser) {
+            return;
+          }
+          await user.firebaseUser.reload();
+          updateUserVerificationState(user.firebaseUser);
+        },
         loginWithEmail: loginWithEmailFn,
         loginWithGoogle: loginWithGoogleFn,
         logout: logoutFn,

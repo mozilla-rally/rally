@@ -1,55 +1,40 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Alert, Button, Container } from "reactstrap";
 import { style } from "typestyle";
 
-import { useAuthentication } from "../../../../services/AuthenticationService";
-import { useStudies } from "../../../../services/StudiesService";
+import { Strings } from "../../../../resources/Strings";
 import { Colors, Spacing } from "../../../../styles";
 import { ProductButton } from "../../../../styles/Buttons";
 import { LinkStyles } from "../../../../styles/LinkStyles";
-import { detectBrowser } from "../../../../utils/BrowserDetector";
-import { BrowserType } from "../../../../utils/BrowserType";
+
+const closeIcon = Strings.components.pages.studies.alerts.closeIcon;
 
 interface ToastProps {
   icon: string;
   text: string;
   button: string;
   type: string;
-  close?: string;
-  openModal?: () => void;
-  openPrivacyModal?: () => void;
-  link?: boolean;
+  isShown: boolean;
+  onTakeAction?: () => void;
+  link?: string;
+  isDismissable?: boolean;
 }
 
 export function ToastComponent({
   icon,
   text,
   button,
-  close,
   type,
-  openModal,
-  openPrivacyModal,
+  isShown,
+  onTakeAction,
   link,
+  isDismissable,
 }: ToastProps) {
-  const { sendEmailVerification } = useAuthentication();
-  const [toastVisible, setToastVisibility] = useState<boolean>(true);
-  const [chromeLink, setChromelink] = useState("");
-  const [fxLink, setFxlink] = useState("");
-  const [browserType] = useState(detectBrowser());
-  const { allStudies } = useStudies();
-
-  useEffect(() => {
-    allStudies.forEach((study) => {
-      if (study.authors.name === "Mozilla Rally") {
-        setChromelink(study.downloadLink.chrome);
-        setFxlink(study.downloadLink.firefox);
-      }
-    });
-  }, [chromeLink, fxLink]);
+  const [isDismissed, setIsDismissed] = useState<boolean>(false);
 
   return (
     <Container className={styles.alert}>
-      <Alert className={`${type} `} isOpen={toastVisible}>
+      <Alert className={`${type} `} isOpen={isShown && !isDismissed}>
         <div className={`d-flex align-items-center justify-content-between `}>
           <div className="left d-flex">
             <img
@@ -65,19 +50,14 @@ export function ToastComponent({
           <div className="right d-flex align-items-center">
             <Button
               onClick={async () => {
-                openModal ? await sendEmailVerification() : null;
-                openModal && (openModal as () => void)();
-                openPrivacyModal && (openPrivacyModal as () => void)();
-                setToastVisibility(false);
+                onTakeAction && onTakeAction();
               }}
               className={`${ProductButton} toast-btn`}
             >
               {link ? (
                 <a
                   className={LinkStyles.NoUnderline}
-                  href={
-                    browserType === BrowserType.Chrome ? chromeLink : fxLink
-                  }
+                  href={link}
                   target="_blank"
                   rel="noreferrer"
                 >
@@ -87,11 +67,11 @@ export function ToastComponent({
                 button
               )}
             </Button>
-            {close && (
+            {isDismissable && (
               <img
-                onClick={() => setToastVisibility(false)}
+                onClick={() => setIsDismissed(true)}
                 className="close-icon"
-                src={close}
+                src={closeIcon}
                 alt="x icon"
               />
             )}

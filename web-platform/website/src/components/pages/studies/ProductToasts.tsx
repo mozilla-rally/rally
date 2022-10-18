@@ -7,6 +7,8 @@ import { useAuthentication } from "../../../services/AuthenticationService";
 import { useStudies } from "../../../services/StudiesService";
 import { useUserDocument } from "../../../services/UserDocumentService";
 import { Spacing } from "../../../styles";
+import { detectBrowser } from "../../../utils/BrowserDetector";
+import { BrowserType } from "../../../utils/BrowserType";
 import { PrivacyPolicyPageContentV2 } from "../privacy-policy/PrivacyPolicyPageContentV2";
 import { ProductCheckEmailDialog } from "./ProductCheckEmailDialog";
 import { ToastComponent } from "./study-card/ToastComponent";
@@ -24,44 +26,65 @@ export function ProductToasts() {
     useState<boolean>(false);
   const [showEmailDialog, setShowEmailDialog] = useState<boolean>(false);
   const [showPrivacyDialog, setShowPrivacyDialog] = useState<boolean>(false);
+  const [browserType] = useState(detectBrowser());
 
-  const { isUserVerified, user } = useAuthentication();
-  const { installedStudyIds } = useStudies();
+  const { isUserVerified, reloadUser, sendEmailVerification } =
+    useAuthentication();
+  const { installedStudyIds, rallyExtensionStudy } = useStudies();
   const { userDocument } = useUserDocument();
 
   useEffect(() => {
-    if (user && user.firebaseUser && !isUserVerified) {
-      setShowEmailNotVerifiedToast(true);
-    }
+    reloadUser();
+  }, []);
 
-    if (!installedStudyIds.length) {
-      setShowAddExtenionToast(true);
-    }
+  useEffect(() => {
+    setShowEmailNotVerifiedToast(!isUserVerified);
+  }, [isUserVerified]);
 
-    if (userDocument && !userDocument.enrolled) {
-      setShowAddPrivacyToast(true);
-    }
-  }, [isUserVerified, user, installedStudyIds]);
+  useEffect(() => {
+    setShowAddExtenionToast(
+      !installedStudyIds.includes(rallyExtensionStudy?.studyId || "")
+    );
+  }, [installedStudyIds, rallyExtensionStudy]);
+
+  useEffect(() => {
+    setShowAddPrivacyToast((userDocument && !userDocument.enrolled) ?? false);
+  }, [userDocument]);
 
   return (
     <Container className={styles.container}>
-      {showAddPrivacyToast && (
-        <ToastComponent
-          {...privacyStrings}
-          openPrivacyModal={() => setShowPrivacyDialog(true)}
-        />
-      )}
+      <ToastComponent
+        {...privacyStrings}
+        isShown={showAddPrivacyToast}
+        onTakeAction={() => {
+          setShowPrivacyDialog(true);
+        }}
+      />
 
-      {showAddExtensionToast && (
-        <ToastComponent {...extensionStrings} link={true} />
-      )}
+      <ToastComponent
+        {...extensionStrings}
+        isShown={showAddExtensionToast}
+        link={
+          browserType === BrowserType.Chrome
+            ? rallyExtensionStudy?.downloadLink.chrome
+            : rallyExtensionStudy?.downloadLink.firefox
+        }
+      />
 
-      {showEmailNotVerifiedToast && (
-        <ToastComponent
-          {...emailStrings}
-          openModal={() => setShowEmailDialog(true)}
-        />
-      )}
+      <ToastComponent
+        {...emailStrings}
+        isShown={showEmailNotVerifiedToast}
+        isDismissable={true}
+        onTakeAction={async () => {
+          try {
+            await sendEmailVerification();
+          } catch (e) {
+            console.error("Error when trying to resend email verification:", e);
+          }
+          setShowEmailNotVerifiedToast(false);
+          setShowEmailDialog(true);
+        }}
+      />
 
       {showEmailDialog && <ProductCheckEmailDialog />}
       {showPrivacyDialog && <PrivacyPolicyPageContentV2 />}
@@ -71,8 +94,7 @@ export function ProductToasts() {
 
 const styles = {
   container: style({
-    position: "absolute",
-    top: Spacing.Medium,
+    marginTop: Spacing.Medium,
     width: "1226px",
     zIndex: 100,
   }),
