@@ -8,6 +8,7 @@ import { AttributionProvider } from "../services/AttributionService";
 import { AuthenticationProvider } from "../services/AuthenticationService";
 import { useFirebase } from "../services/FirebaseService";
 import { FlagProvider } from "../services/FlagService";
+import { useReCaptcha } from "../services/reCaptchaService";
 import { StudiesProvider } from "../services/StudiesService";
 import { UserDocumentProvider } from "../services/UserDocumentService";
 import "../styles";
@@ -15,6 +16,7 @@ import "../styles";
 function MyApp({ Component, pageProps }: AppProps) {
   const router = useRouter();
   const { analytics } = useFirebase();
+  useReCaptcha();
 
   useEffect(() => {
     if (router.isReady) {
