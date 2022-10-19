@@ -14,7 +14,7 @@ import { detectBrowser } from "../../../utils/BrowserDetector";
 import { BrowserType } from "../../../utils/BrowserType";
 import { Highlighter } from "../../Highlighter";
 import { LoginButton } from "../login/LoginButton";
-import { PrivacyPolicyPageContentV2 } from "../privacy-policy/PrivacyPolicyPageContentV2";
+import { PrivacyPolicyModal } from "../privacy-policy/PrivacyPolicyModal";
 
 const strings = Strings.components.pages.login.getExtensionView;
 
@@ -101,7 +101,7 @@ export function GetExtensionView() {
           </LoginButton>
         </Col>
       </Row>
-      {showPrivacyDialog && <PrivacyPolicyPageContentV2 />}
+      {showPrivacyDialog && <PrivacyPolicyModal />}
     </Container>
   );
 }

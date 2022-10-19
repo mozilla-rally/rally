@@ -6,7 +6,7 @@ import { useUserDocument } from "../../../services/UserDocumentService";
 import { ScreenSize, Spacing, createResponsiveStyle } from "../../../styles";
 import { ContainerSmallerStyles } from "../../../styles/ContainerStyles";
 import { Layout } from "../../Layout";
-import { PrivacyPolicyPageContentV2 } from "../privacy-policy/PrivacyPolicyPageContentV2";
+import { PrivacyPolicyModal } from "../privacy-policy/PrivacyPolicyModal";
 import { ProductToasts } from "./ProductToasts";
 import { StudiesBackground } from "./StudiesBackground";
 import { StudiesTitle } from "./StudiesTitle";
@@ -36,7 +36,7 @@ export function StudiesPageContent() {
               <StudyList />
             </Col>
           </Row>
-          {showPrivacyDialog && <PrivacyPolicyPageContentV2 />}
+          {showPrivacyDialog && <PrivacyPolicyModal />}
         </Container>
       </StudiesBackground>
     </Layout>

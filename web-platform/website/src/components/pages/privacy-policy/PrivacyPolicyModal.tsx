@@ -16,15 +16,18 @@ import { FontSizeRaw, Fonts } from "../../../styles/Fonts";
 import { createResponsiveStyle } from "../../../styles/ResponsiveStyle";
 import { ScreenSize } from "../../../styles/ScreenSize";
 import { PrivacyPolicyDataCollectionTypes } from "./PrivacyPolicyDataCollectionTypes";
+import { PrivacyPolicyHowDataIsUsed } from "./PrivacyPolicyHowDataIsUsed";
 import { PrivacyPolicyInformationUse } from "./PrivacyPolicyInformationUse";
 import { PrivacyPolicyIntroduction } from "./PrivacyPolicyIntroduction";
 import { PrivacyPolicyManageData } from "./PrivacyPolicyManageData";
+import { PrivacyPolicyReadyToRally } from "./PrivacyPolicyReadyToRally";
 import { PrivacyPolicySharing } from "./PrivacyPolicySharing";
+import { PrivacyPolicyYourContributions } from "./PrivacyPolicyYourContributions";
 
 const strings = Strings.components.pages.privacyPolicy;
 const btnStrings = Strings.components.pages.privacyPolicy.buttons;
 
-export function PrivacyPolicyPageContentV2() {
+export function PrivacyPolicyModal() {
   const { updateUserDocument } = useUserDocument();
   const [isOpen, setIsOpen] = useState(true);
   const { isLoaded, rallyExtensionStudy } = useStudies();
@@ -45,6 +48,10 @@ export function PrivacyPolicyPageContentV2() {
       >
         <PrivacyPolicyIntroduction />
         <hr />
+        <PrivacyPolicyHowDataIsUsed />
+        <hr />
+        <PrivacyPolicyYourContributions />
+        <hr />
         <PrivacyPolicyDataCollectionTypes />
         <hr />
         <PrivacyPolicyInformationUse />
@@ -52,6 +59,8 @@ export function PrivacyPolicyPageContentV2() {
         <PrivacyPolicySharing />
         <hr />
         <PrivacyPolicyManageData />
+        <hr />
+        <PrivacyPolicyReadyToRally />
       </Container>
 
       <Row className="g-0 bottom-0 start-0 w-100 py-2">
@@ -136,6 +145,9 @@ const styles = {
       },
       p: {
         color: Colors.ColorMarketingGray70,
+      },
+      ".image-section": {
+        display: "none", // hide images within modal content
       },
     },
   }),
