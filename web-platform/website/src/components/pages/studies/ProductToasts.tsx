@@ -9,7 +9,7 @@ import { useUserDocument } from "../../../services/UserDocumentService";
 import { Spacing } from "../../../styles";
 import { detectBrowser } from "../../../utils/BrowserDetector";
 import { BrowserType } from "../../../utils/BrowserType";
-import { PrivacyPolicyPageContentV2 } from "../privacy-policy/PrivacyPolicyPageContentV2";
+import { PrivacyPolicyModal } from "../privacy-policy/PrivacyPolicyModal";
 import { ProductCheckEmailDialog } from "./ProductCheckEmailDialog";
 import { ToastComponent } from "./study-card/ToastComponent";
 
@@ -87,7 +87,7 @@ export function ProductToasts() {
       />
 
       {showEmailDialog && <ProductCheckEmailDialog />}
-      {showPrivacyDialog && <PrivacyPolicyPageContentV2 />}
+      {showPrivacyDialog && <PrivacyPolicyModal />}
     </Container>
   );
 }

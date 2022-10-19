@@ -2,20 +2,26 @@ import { render } from "@testing-library/react";
 
 import { PrivacyPolicyButtons } from "../PrivacyPolicyButtons";
 import { PrivacyPolicyDataCollectionTypes } from "../PrivacyPolicyDataCollectionTypes";
+import { PrivacyPolicyHowDataIsUsed } from "../PrivacyPolicyHowDataIsUsed";
 import { PrivacyPolicyInformationUse } from "../PrivacyPolicyInformationUse";
 import { PrivacyPolicyIntroduction } from "../PrivacyPolicyIntroduction";
 import { PrivacyPolicyManageData } from "../PrivacyPolicyManageData";
 import { PrivacyPolicyPageContent } from "../PrivacyPolicyPageContent";
+import { PrivacyPolicyReadyToRally } from "../PrivacyPolicyReadyToRally";
 import { PrivacyPolicySharing } from "../PrivacyPolicySharing";
 import { PrivacyPolicyTitle } from "../PrivacyPolicyTitle";
+import { PrivacyPolicyYourContributions } from "../PrivacyPolicyYourContributions";
 
 jest.mock("../PrivacyPolicyButtons");
 jest.mock("../PrivacyPolicyDataCollectionTypes");
+jest.mock("../PrivacyPolicyHowDataIsUsed");
 jest.mock("../PrivacyPolicyInformationUse");
 jest.mock("../PrivacyPolicyIntroduction");
 jest.mock("../PrivacyPolicyManageData");
+jest.mock("../PrivacyPolicyReadyToRally");
 jest.mock("../PrivacyPolicySharing");
 jest.mock("../PrivacyPolicyTitle");
+jest.mock("../PrivacyPolicyYourContributions");
 
 describe("PrivacyPolicyPageContent tests", () => {
   it("renders content correctly in read only mode", () => {
@@ -39,11 +45,14 @@ describe("PrivacyPolicyPageContent tests", () => {
       expect(PrivacyPolicyButtons).toHaveBeenCalled();
     }
 
+    expect(PrivacyPolicyTitle).toHaveBeenCalled();
+    expect(PrivacyPolicyIntroduction).toHaveBeenCalled();
+    expect(PrivacyPolicyHowDataIsUsed).toHaveBeenCalled();
+    expect(PrivacyPolicyYourContributions).toHaveBeenCalled();
     expect(PrivacyPolicyDataCollectionTypes).toHaveBeenCalled();
     expect(PrivacyPolicyInformationUse).toHaveBeenCalled();
-    expect(PrivacyPolicyIntroduction).toHaveBeenCalled();
-    expect(PrivacyPolicyManageData).toHaveBeenCalled();
     expect(PrivacyPolicySharing).toHaveBeenCalled();
-    expect(PrivacyPolicyTitle).toHaveBeenCalled();
+    expect(PrivacyPolicyManageData).toHaveBeenCalled();
+    expect(PrivacyPolicyReadyToRally).toHaveBeenCalled();
   }
 });

@@ -489,6 +489,29 @@ export const Strings = {
         dataCollectionTypes: {
           sections: [
             {
+              image: {
+                url: "/img/your-contact-data.png",
+                width: 84,
+                alt: "Your Contact Data.",
+              },
+              text: (
+                <>
+                  <b>Your Contact Data</b>
+                  <p>
+                    This includes your <b>email address</b>, which we use to
+                    authenticate and help you administer your login account. We
+                    also use your email address to send you notifications on the
+                    studies you have joined.
+                  </p>
+                </>
+              ),
+            },
+            {
+              image: {
+                url: "/img/your-demographic-data.png",
+                width: 84,
+                alt: "Your Demographic Data.",
+              },
               text: (
                 <>
                   <b>Your Demographic Data</b>
@@ -506,17 +529,11 @@ export const Strings = {
               ),
             },
             {
-              text: (
-                <>
-                  <b>Your Device's Technical Data</b>
-                  <p>
-                    This includes your device's <b>operating system</b> and{" "}
-                    <b>IP address</b> (which we'll only hang on to temporarily).
-                  </p>
-                </>
-              ),
-            },
-            {
+              image: {
+                url: "/img/your-interaction-data.png",
+                width: 84,
+                alt: "Your interaction data.",
+              },
               text: (
                 <>
                   <b>Your Interaction Data</b>
@@ -533,19 +550,27 @@ export const Strings = {
               ),
             },
             {
+              image: {
+                url: "/img/your-technical-data.png",
+                width: 84,
+                alt: "Your Device's Technical Data.",
+              },
               text: (
                 <>
-                  <b>Your Contact Data</b>
+                  <b>Your Device's Technical Data</b>
                   <p>
-                    This includes your <b>email address</b>, which we use to
-                    authenticate and help you administer your login account. We
-                    also use your email address to send you notifications on the
-                    studies you have joined.
+                    This includes your device's <b>operating system</b> and{" "}
+                    <b>IP address</b> (which we'll only hang on to temporarily).
                   </p>
                 </>
               ),
             },
             {
+              image: {
+                url: "/img/your-location-data.png",
+                width: 84,
+                alt: "Your Location Data.",
+              },
               text: (
                 <>
                   <b>Your Location Data</b>
@@ -556,24 +581,53 @@ export const Strings = {
                 </>
               ),
             },
+          ],
+          tagline: `When you click “Accept and Enroll” below, you are consenting to data collection, which could include:`,
+          title: "The Types of Information We Collect",
+        },
+        howDataIsUsed: {
+          sections: [
             {
               text: (
                 <>
-                  <b>Study-Specific Data</b>
                   <p>
-                    Studies may collect additional data, depending on the
-                    purpose of the study. Each study description will disclose
-                    the particular data collected for that study. This data may
-                    include the websites you visit, your search engine results,
-                    data cookies, pixels, ads, and other information set by
-                    particular websites.
+                    Your data contributions provide Rally and our research
+                    partners a cross-website view of the internet. These
+                    contributions shed light on how information spreads, where
+                    people spend their time, and how tech platforms interact and
+                    recommend content to the Rally community.
+                  </p>
+                </>
+              ),
+            },
+            {
+              text: (
+                <>
+                  <p>
+                    The results will help Rally and our research partners
+                    understand users’ experiences, build better products, and
+                    gather evidence on how the web is working for users. We will
+                    publicly share research findings and any discoveries that
+                    could enable more privacy and control in consumer products.
+                  </p>
+                </>
+              ),
+            },
+            {
+              text: (
+                <>
+                  <p>
+                    We will always inform you of which research partners have
+                    access to Rally data and whenever new partners join. Some
+                    research partners compensate Rally for access to our
+                    infrastructure and data. We will always disclose if research
+                    partners compensate Mozilla for access to Rally data.
                   </p>
                 </>
               ),
             },
           ],
-          tagline: `When you click “Accept and Enroll” below, you are consenting to data collection, which could include:`,
-          title: "The Types of Information We Collect",
+          title: "How Rally Uses Data",
         },
         informationUse: {
           sections: [
@@ -645,10 +699,7 @@ export const Strings = {
               },
               text: (
                 <p>
-                  <b>This notice only covers Rally itself</b>, as each study
-                  will have a unique privacy notice detailing how data is
-                  collected and handled in that particular study. We also adhere
-                  to the{" "}
+                  <b>This notice only covers Rally.</b>We also adhere to the{" "}
                   <a href="https://www.mozilla.org/en-US/privacy/">
                     Mozilla Privacy Policy
                   </a>{" "}
@@ -673,12 +724,10 @@ export const Strings = {
                 <>
                   <p>
                     Rally operates based on <b>your participation</b> – meaning
-                    you can choose to disclose the level of information you're
+                    you can choose to disclose the level of information you’re
                     comfortable with, either by finding a study that matches
                     your level of comfort or by declining to share demographic
-                    information in your profile.
-                  </p>
-                  <p className="mb-4">
+                    information in your profile.{" "}
                     <a
                       href="https://support.mozilla.org/en-US/kb/mozilla-rally-managing-account-data"
                       target="_blank"
@@ -701,6 +750,12 @@ export const Strings = {
           ],
           tagline: `Our "opt-in" approach to data collection means that you choose which data you share with us.`,
           title: "How You Can Manage Your Data",
+        },
+        readyToRally: {
+          sections: [],
+          tagline:
+            "The internet should be used to benefit all, not just some. With your help, we can create a safer, more transparent, and more equitable internet that protects people, not Big Tech.",
+          title: "Ready to Rally?",
         },
         sharing: {
           sections: [
@@ -749,6 +804,26 @@ export const Strings = {
                 </>
               ),
             },
+            {
+              image: {
+                url: "/img/people-like-you.png",
+                width: 84,
+                alt: "Our Research Partners and Customers.",
+              },
+              text: (
+                <>
+                  <p>
+                    Our mission is focused on{" "}
+                    <b>empowering everyday citizens</b>, not just a select few.
+                    To that end, we may release aggregated, de-identified data
+                    sets to help further public knowledge of certain issues.
+                    These data sets will be{" "}
+                    <b>stripped of any identifiable data</b>, and won’t reveal
+                    anything about individual users.
+                  </p>
+                </>
+              ),
+            },
           ],
           tagline:
             "We may share information with trusted entities that help us fulfill our mission, including:",
@@ -756,8 +831,44 @@ export const Strings = {
         },
         title: {
           tagline:
-            "Before you get started, please make sure you're comfortable with our privacy notice.",
-          title: "Our Privacy Notice",
+            "Before you get started, please make sure you‘re comfortable with our privacy notice.",
+          title: "Privacy Notice",
+        },
+        yourContributions: {
+          sections: [
+            {
+              text: (
+                <>
+                  <p>Time you spend engaging with web pages</p>
+                  <ul>
+                    <li>Visits to web page URLs</li>
+                    <li>Time spent on urls</li>
+                    <li>Time spent playing media on each webpage</li>
+                  </ul>
+                  <p>The content of some pages sent to your browser</p>
+                  <ul>
+                    <li>
+                      On certain news pages, the full text of the article and
+                      the ads on the article’s page
+                    </li>
+                    <li>
+                      On certain media platforms, metadata about the content you
+                      view and algorithmic content recommendations you receive
+                    </li>
+                    <li>
+                      The content and metadata of ads you are shown across the
+                      web
+                    </li>
+                    <li>
+                      The data sent through various tracking pixels from the
+                      websites you visit
+                    </li>
+                  </ul>
+                </>
+              ),
+            },
+          ],
+          title: "Your Rally Data Contributions",
         },
       },
 
