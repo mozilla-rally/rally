@@ -1086,6 +1086,24 @@ export const Strings = {
             icon: "/img/error.svg",
           },
         },
+
+        surveyCard: {
+          title: "Tell us about yourself",
+          text: (
+            <>
+              <p>
+                Take five minutes to fill out seven questions to help our
+                partners understand how big tech targets us.
+              </p>
+              <p>
+                You can update, add, or rescind your answers under Manage
+                Profile. This info helps us better understand the representivity
+                of our study participants.
+              </p>
+            </>
+          ),
+          button: "Create profile",
+        },
         studyCard: {
           description: {
             aboutThisStudy: "About your contribution",
