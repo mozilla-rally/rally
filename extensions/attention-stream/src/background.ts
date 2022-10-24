@@ -679,15 +679,21 @@ if (enableDevMode) {
         if (browser.idle.onStateChanged.hasListener(idleListener)) {
           browser.idle.onStateChanged.removeListener(idleListener);
         }
+        await browser.storage.local.set({ newTabShown: true });
+
         return true;
       };
 
+      // Only show the new tab once.
+      const newTabShown = (await browser.storage.local.get()).newTabShown;
+
       // If the user is already idle, this will show the new tab now.
-      const newTabShown = await idleListener(
-        await browser.idle.queryState(idleTimer)
-      );
-      if (!newTabShown) {
-        // Otherwise, set a listener to fire when the state changes to idle.
+      const isIdle =
+        newTabShown &&
+        (await idleListener(await browser.idle.queryState(idleTimer)));
+
+      // Otherwise, set a listener to fire when the state changes to idle.
+      if (!isIdle && !newTabShown) {
         browser.idle.setDetectionInterval(idleTimer);
         browser.idle.onStateChanged.addListener(idleListener);
       }
