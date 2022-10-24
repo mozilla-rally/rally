@@ -50,6 +50,10 @@ declare global {
   const __ENABLE_EMULATOR_MODE__: boolean;
 }
 
+// Time to wait before showing newtab page, default is 60 seconds.
+const idleTimer = 15;
+const newTabPage = "https://rally.mozilla.org";
+
 // Developer mode runs locally and does not use the Firebase server.
 // Data is collected locally, and an options page is provided to export it.
 // eslint-disable-next-line no-undef
@@ -661,5 +665,33 @@ if (enableDevMode) {
   } else {
     browser.action.onClicked.addListener(actionListener);
   }
+
+  // Show existing users a new tab page, on update only.
+  browser.runtime.onInstalled.addListener(async (details) => {
+    if (details.reason === "update") {
+      const idleListener = async (newState: browser.Idle.IdleState) => {
+        if (newState !== "idle") {
+          return false;
+        }
+
+        await browser.tabs.create({ url: newTabPage });
+
+        if (browser.idle.onStateChanged.hasListener(idleListener)) {
+          browser.idle.onStateChanged.removeListener(idleListener);
+        }
+        return true;
+      };
+
+      // If the user is already idle, this will show the new tab now.
+      const newTabShown = await idleListener(
+        await browser.idle.queryState(idleTimer)
+      );
+      if (!newTabShown) {
+        // Otherwise, set a listener to fire when the state changes to idle.
+        browser.idle.setDetectionInterval(idleTimer);
+        browser.idle.onStateChanged.addListener(idleListener);
+      }
+    }
+  });
 }
 // Take no further action until the stateChangeCallback callback is called.
