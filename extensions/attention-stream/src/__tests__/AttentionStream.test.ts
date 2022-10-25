@@ -14,8 +14,9 @@ import { utmCodes } from "../generated/attribution";
 import { attribution } from "../generated/pings";
 
 // @ts-ignore
-import { Rally, RunStates } from "@mozilla/rally-sdk";
+import { RunStates } from "@mozilla/rally-sdk";
 import { jest } from "@jest/globals";
+import { ErrorType } from "@mozilla/glean/error";
 
 const FAKE_RALLY_ID = "11f42b3c-8d8e-477e-abd0-b38578228e44";
 
@@ -27,8 +28,9 @@ describe("Attention Stream", function () {
     await testResetGlean(testAppId);
   });
 
-  afterEach(() => {
-    delete global.fetch;
+  afterEach(async () => {
+    // Wait for Glean pings to finish.
+    await new Promise(process.nextTick);
   });
 
   it("opens newtab page on idle", async function () {
@@ -40,7 +42,7 @@ describe("Attention Stream", function () {
 
     // @ts-ignore
     const manifest = {
-      name: "my chrome extension",
+      name: "Rally Attention Stream Unit Test",
       manifest_version: 2,
       version: "1.0.0",
     };
@@ -48,18 +50,18 @@ describe("Attention Stream", function () {
     browser.runtime.getManifest = jest.fn(() => manifest);
     const { stateChangeCallback } = await import("../background");
 
-    console.log("test123:", attribution.testBeforeNextSubmit);
     const pingWasSent = attribution.testBeforeNextSubmit(async () => {
       // Check there is some value in the app started metric
-      // assert.ok((await attribution.utmCodes.testGetValue()) !== undefined);
+      assert.ok((await utmCodes.campaign.testGetValue()) === undefined);
       // Check no errors were recorded on that metric either.
-      //assert.equal(
-      //  await attribution.utmCodes.testGetNumRecordedErrors(ErrorType.InvalidValue),
-      //  0
-      //);
+      assert.equal(
+      await utmCodes.campaign.testGetNumRecordedErrors(ErrorType.InvalidValue),
+        0
+      );
     });
 
-    stateChangeCallback(RunStates.Running);
+    this.pageDataListener = jest.fn();
+    await stateChangeCallback(RunStates.Running);
 
     // Check that the ping validator does not throw.
     assert.doesNotThrow(async () => await pingWasSent);
@@ -70,5 +72,7 @@ describe("Attention Stream", function () {
 
     // A new tab will be opened, since an existing one could not be found.
     expect(browser.tabs.create).toBeCalledTimes(0);
+
+    await stateChangeCallback(RunStates.Paused);
   });
 });

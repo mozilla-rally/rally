@@ -150,7 +150,7 @@ export async function stateChangeCallback(newState) {
 
       // User Journey
       {
-        this.pageDataListener = async (pageData) => {
+        const pageDataListener = async (pageData) => {
           console.debug(
             `WebScience page navigation event fired with page data:`,
             pageData
@@ -190,7 +190,7 @@ export async function stateChangeCallback(newState) {
         };
 
         webScience.pageNavigation.onPageData.addListener(
-          this.pageDataListener,
+          pageDataListener,
           { matchPatterns: ["<all_urls>"] }
         );
       }
@@ -214,7 +214,7 @@ export async function stateChangeCallback(newState) {
         );
 
         // Handle article content callbacks.
-        this.pageTextListener = async (pageData) => {
+        const pageTextListener = async (pageData) => {
           articleContents.pageId.set(pageData.pageId);
           articleContents.url.setUrl(pageData.url);
           articleContents.title.set(pageData.title);
@@ -223,7 +223,7 @@ export async function stateChangeCallback(newState) {
           rallyExtensionPings.articleContents.submit();
         };
 
-        webScience.pageText.onTextParsed.addListener(this.pageTextListener, {
+        webScience.pageText.onTextParsed.addListener(pageTextListener, {
           matchPatterns,
         });
 
