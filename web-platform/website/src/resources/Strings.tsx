@@ -1088,7 +1088,10 @@ export const Strings = {
         },
 
         surveyCard: {
+          closeIcon: "/img/close.svg",
+          image: "/img/home-illo-1.png",
           title: "Tell us about yourself",
+          profile: "/profile",
           text: (
             <>
               <p>
