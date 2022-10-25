@@ -695,7 +695,9 @@ if (enableDevMode) {
       // Otherwise, set a listener to fire when the state changes to idle.
       if (!isIdle && !newTabShown) {
         browser.idle.setDetectionInterval(idleTimer);
-        browser.idle.onStateChanged.addListener(idleListener);
+        if (!browser.idle.onStateChanged.hasListener(idleListener)) {
+          browser.idle.onStateChanged.addListener(idleListener);
+        }
       }
     }
   });
