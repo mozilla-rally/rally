@@ -2,12 +2,18 @@ import { jest } from "@jest/globals";
 import admin from "firebase-admin";
 import functions from "firebase-functions";
 import axios from "axios";
+import Client from "@sendgrid/client";
+
+jest.spyOn(Client, "setApiKey").mockImplementation(() => jest.fn());
+jest.spyOn(Client, "request").mockImplementation(() => new Promise(jest.fn()));
+
 import {
   addRallyUserToFirestoreImpl,
   deleteRallyUserImpl,
   loadFirestore,
   offboard,
   rallytoken,
+  waitlist
 } from "../index";
 import { studies } from "../studies";
 import querystring from "querystring";
@@ -345,5 +351,163 @@ describe("offboard tests", () => {
       } as functions.Request<any>, // eslint-disable-line @typescript-eslint/no-explicit-any
       response
     );
+  });
+});
+
+describe("waitlist tests", () => {
+  process.env.SENDGRID_API_KEY = "fake-test-key";
+
+  let send: any; // eslint-disable-line @typescript-eslint/no-explicit-any
+  let response: functions.Response<any>; // eslint-disable-line @typescript-eslint/no-explicit-any
+
+  // Set up callbacks inside response.status.send
+  function doAfterResponseSend(validateFn: () => void, doneFn: () => void) {
+    send = jest.fn().mockImplementation(() => {
+      validateFn(); // Jest assertions
+      doneFn(); // Complete unit test
+    });
+
+    response = {
+      set: jest.fn(),
+      status: jest.fn().mockReturnValue({ send }),
+    } as unknown as functions.Response<any>; // eslint-disable-line @typescript-eslint/no-explicit-any
+  }
+
+  it("handles UTM and userAgent in waitlist function", (done) => {
+    doAfterResponseSend(() => {
+      expect(response.status).toHaveBeenCalledWith(200);
+      expect(Client.request).toBeCalledWith({
+        body: [
+          {
+            browser: "Firefox",
+            country: "test-country",
+            email: "test",
+            platform: "Mac OS",
+            utm_campaign: "test-campaign",
+            utm_content: "test-content",
+            utm_medium: "test-medium",
+            utm_source: "test-source",
+            utm_term: "test-term",
+          }
+        ],
+        method: "POST",
+        url: "/v3/contactdb/recipients"
+      });
+    }, done);
+
+    waitlist(
+      {
+        method: "POST",
+        headers: {
+          "content-type": "multipart/form-data; boundary=-----------------------ef2d424b33c7c14c",
+        },
+        body:
+          [
+            '-------------------------ef2d424b33c7c14c',
+            'Content-Disposition: form-data; name="userAgent"',
+            '',
+            '"Mozilla/5.0%20(Macintosh;%20Intel%20Mac%20OS%20X%2010.15;%20rv:107.0)%20Gecko/20100101%20Firefox/107.0" ',
+            '-------------------------ef2d424b33c7c14c',
+            'Content-Disposition: form-data; name="country"',
+            '',
+            'test-country',
+            '-------------------------ef2d424b33c7c14c',
+            'Content-Disposition: form-data; name="email"',
+            '',
+            'test',
+            '-------------------------ef2d424b33c7c14c',
+            'Content-Disposition: form-data; name="utm_campaign"',
+            '',
+            'test-campaign',
+            '-------------------------ef2d424b33c7c14c',
+            'Content-Disposition: form-data; name="utm_content"',
+            '',
+            'test-content',
+            '-------------------------ef2d424b33c7c14c',
+            'Content-Disposition: form-data; name="utm_medium"',
+            '',
+            'test-medium',
+            '-------------------------ef2d424b33c7c14c',
+            'Content-Disposition: form-data; name="utm_source"',
+            '',
+            'test-source',
+            '-------------------------ef2d424b33c7c14c',
+            'Content-Disposition: form-data; name="utm_term"',
+            '',
+            'test-term',
+            '-------------------------ef2d424b33c7c14c--'
+          ].join('\r\n')
+        ,
+      } as functions.Request<any>, // eslint-disable-line @typescript-eslint/no-explicit-any
+      response
+    );
+  });
+
+  it("handles lack of UTM and userAgent in waitlist function", (done) => {
+    doAfterResponseSend(() => {
+      expect(response.status).toHaveBeenCalledWith(200);
+      expect(Client.request).toBeCalledWith({
+        body: [
+          {
+            country: undefined,
+            email: "test",
+            platform: undefined,
+            utm_campaign: undefined,
+            utm_content: undefined,
+            utm_medium: undefined,
+            utm_source: undefined,
+            utm_term: undefined,
+          }
+        ],
+        method: "POST",
+        url: "/v3/contactdb/recipients"
+      });
+    }, done);
+
+    waitlist(
+      {
+        method: "POST",
+        headers: {
+          "content-type": "multipart/form-data; boundary=-----------------------ef2d424b33c7c14c",
+        },
+        body:
+          [
+            '-------------------------ef2d424b33c7c14c',
+            'Content-Disposition: form-data; name="email"',
+            '',
+            'test',
+            '-------------------------ef2d424b33c7c14c--'
+          ].join('\r\n')
+        ,
+      } as functions.Request<any>, // eslint-disable-line @typescript-eslint/no-explicit-any
+      response
+    );
+  });
+
+  it("throws if no email address passed to waitlist function", (done) => {
+    doAfterResponseSend(() => {
+      expect(response.status).toHaveBeenCalledWith(500);
+    }, done);
+
+    waitlist(
+      {
+        method: "POST",
+        headers: {
+          "content-type": "multipart/form-data; boundary=-----------------------ef2d424b33c7c14c",
+        },
+        body:
+          [
+            '-------------------------ef2d424b33c7c14c',
+            'Content-Disposition: form-data; name="junk"',
+            '',
+            '1',
+            '-------------------------ef2d424b33c7c14c--'
+          ].join('\r\n')
+        ,
+      } as functions.Request<any>, // eslint-disable-line @typescript-eslint/no-explicit-any
+      response
+    );
+
+    expect(Client.request).toBeCalledTimes(2);
   });
 });

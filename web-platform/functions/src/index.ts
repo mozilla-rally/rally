@@ -8,12 +8,16 @@ import { studies } from "./studies";
 import { isDeepStrictEqual } from "util";
 import * as gleanPings from "./glean";
 import assert from "assert";
+import Client from "@sendgrid/client";
+import UAParser from "ua-parser-js";
+import Busboy from "busboy";
 
 admin.initializeApp({
   credential: admin.credential.applicationDefault(),
 });
 
 const OFFBOARD_URL = "https://rally.mozilla.org/offboarding/index.html";
+const UTM_KEYS = ["source", "medium", "campaign", "term", "content"]
 
 export const rallytoken = functions.https.onRequest(async (request, response) =>
   useCors(request, response, async () => {
@@ -390,13 +394,12 @@ const listAllUsers = async (nextPageToken: string | undefined, userCounts: Map<s
   }
 };
 
-
 /**
  * Offboarding support for extension uninstalls.
  */
 export const offboard = functions.https.onRequest(async (request, response) => {
   const attribution: { [key: string]: any; } = {};
-  ["source", "medium", "campaign", "term", "content"].forEach((key) => {
+  UTM_KEYS.forEach((key) => {
     const param = `utm_${key}`;
     if (request.query && param in request.query) {
       attribution[key] = request.query[param];
@@ -409,3 +412,106 @@ export const offboard = functions.https.onRequest(async (request, response) => {
 
   response.status(301).redirect(OFFBOARD_URL);
 });
+
+/**
+ * Waitlist function, to collect user info for Sendgrid.
+ */
+export const waitlist = functions
+  .runWith({ secrets: ["SENDGRID_API_KEY"] })
+  .https.onRequest(async (request, response) => {
+    useCors(request, response, async () => {
+
+      if (request.method !== "POST") {
+        response.status(500).send("Only POST and OPTIONS methods are allowed.");
+        return;
+      }
+
+      if (!(request.headers && request.headers["content-type"]?.startsWith("multipart/form-data"))) {
+        response.status(500).send("Only Content-type: multipart/form-data is allowed.");
+        return;
+      }
+
+      const busboy = Busboy({ headers: request.headers });
+      let formData = new Map();
+
+      busboy.on("field", (fieldname: string, value: string) => {
+        formData.set(fieldname, value);
+      });
+
+      // In production. GCP cloud function receive the raw body as a
+      // Buffer. Unit tests don't have a way to set this independently,
+      // so fall back to looking for the form in the request.body if rawBody is missing.
+
+      const rawForm = request.rawBody || (new TextEncoder()).encode(request.body)
+      busboy.end(rawForm);
+
+      busboy.on("finish", async () => {
+        functions.logger.debug(`Waitlist raw payload received`, {
+          payload: formData,
+        });
+
+        if (!formData.has("email")) {
+          response.status(500).send("Email address is required.");
+          return;
+        }
+
+        let browser;
+        let platform;
+
+        if (formData.has("userAgent")) {
+          const decodedUA = decodeURIComponent(formData.get("userAgent"));
+          let parser = new UAParser(decodedUA);
+
+          browser = (parser.getBrowser()).name ?? "";
+          platform = (parser.getOS()).name ?? "";
+        }
+
+        const contact = new Map();
+        contact.set("platform", platform);
+        contact.set("browser", browser);
+
+        ["country", "email", "utm_campaign", "utm_content", "utm_medium",
+          "utm_source", "utm_term"].forEach(key => {
+            if (formData.has(key)) {
+              contact.set(key, formData.get(key));
+            }
+          });
+
+        functions.logger.debug(`Waitlist parsed payload received`, {
+          payload: JSON.stringify(Object.fromEntries(contact)),
+        });
+
+        assert(
+          process.env.SENDGRID_API_KEY,
+          `Unable to obtain Sendgrid API key, aborting process.`
+        );
+
+        try {
+          Client.setApiKey(process.env.SENDGRID_API_KEY);
+          console.debug("contact:", contact);
+          await Client.request({
+            url: "/v3/contactdb/recipients",
+            method: "POST",
+            body: [Object.fromEntries(contact)]
+          });
+
+          response.status(200).send({
+            "category": "success",
+            "message": "Email contact received.",
+            "status": 200
+          });
+
+        } catch (ex) {
+          functions.logger.error("Sendgrid failed", {
+            payload: ex,
+          });
+
+          response.status(500).send({
+            "category": "failure",
+            "message": "Email contact not saved.",
+            "status": 500
+          });
+        }
+      });
+    });
+  });
