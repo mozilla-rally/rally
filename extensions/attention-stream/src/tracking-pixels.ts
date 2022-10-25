@@ -1,3 +1,4 @@
+// @ts-ignore
 import * as webScience from "@mozilla/web-science";
 
 interface TrackingPixel {

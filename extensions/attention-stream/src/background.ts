@@ -18,6 +18,7 @@ import Glean, {
   UploadResult,
   UploadResultStatus,
 } from "@mozilla/glean/webext";
+
 import semverGte from "semver/functions/gte";
 
 import { destinationDomains as newsDomains } from "./news-domains";
@@ -40,15 +41,11 @@ import browser from "webextension-polyfill";
 
 import { Dexie } from "dexie";
 
+// @ts-ignore
 import * as webScience from "@mozilla/web-science";
 
 import { getTrackingPixelInfo } from "./tracking-pixels";
 const { trackingPixels, trackingPixelUrls } = getTrackingPixelInfo();
-
-declare global {
-  const __ENABLE_DEVELOPER_MODE__: boolean;
-  const __ENABLE_EMULATOR_MODE__: boolean;
-}
 
 // Time to wait before showing newtab page, default is 60 seconds.
 const idleTimer = 15;
@@ -57,11 +54,11 @@ const newTabPage = "https://rally.mozilla.org";
 // Developer mode runs locally and does not use the Firebase server.
 // Data is collected locally, and an options page is provided to export it.
 // eslint-disable-next-line no-undef
-const enableDevMode = Boolean(__ENABLE_DEVELOPER_MODE__);
+const enableDevMode = Boolean(false);
 // Emulator mode connects to the Firebase emulators. Note that the Firebase
 // config below must match.
 // eslint-disable-next-line no-undef
-const enableEmulatorMode = Boolean(__ENABLE_EMULATOR_MODE__);
+const enableEmulatorMode = Boolean(false);
 
 // The Rally-assigned Study ID.
 let studyId = "attentionStream";
@@ -113,7 +110,7 @@ if (enableEmulatorMode) {
 //
 // The study state may change at any time (for example, the server may choose to pause a particular study).
 // Studies should stop data collection and try to unload as much as possible when in "paused" state.
-async function stateChangeCallback(newState) {
+export async function stateChangeCallback(newState) {
   switch (newState) {
     case RunStates.Running:
       // The all-0 Rally ID indicates developer mode, in case data is accidentally sent.
@@ -443,6 +440,7 @@ async function stateChangeCallback(newState) {
                 },
                 func: () => {
                   return {
+                    // @ts-ignore
                     pageId: window?.webScience?.pageManager?.pageId,
                     originUrl: window?.location?.href,
                   };

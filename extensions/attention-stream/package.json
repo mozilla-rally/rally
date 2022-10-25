@@ -47,6 +47,8 @@
     "globby": "^11.0.3",
     "http-server": "^14.1.1",
     "jest": "^28.1.0",
+    "jest-standard-reporter": "~2.0.0",
+    "jest-transform-stub": "^2.0.0",
     "minimist": "^1.2.6",
     "npm-run-all": "^4.1.5",
     "rollup": "^2.30.0",
@@ -57,15 +59,16 @@
     "web-ext": "^7.0.0"
   },
   "dependencies": {
-    "@mozilla/rally-sdk": "^1.1.8",
     "@mozilla/glean": "^1.2.0",
+    "@mozilla/rally-sdk": "^1.1.8",
     "@mozilla/web-science": "^0.5.3",
     "dexie": "^3.2.2",
+    "jest-webextension-mock": "file:../../external/lib/jest-webextension-mock",
     "pako": "^2.0.4",
     "semver": "~7.3.7",
     "tailwindcss": "^3.0.24",
-    "webextension-polyfill": "^0.8.0",
-    "ts-node": "~10.9.1"
+    "ts-node": "~10.9.1",
+    "webextension-polyfill": "^0.8.0"
   },
   "engines": {
     "node": ">=14.0.0"
@@ -82,5 +85,40 @@
   "bugs": {
     "url": "https://github.com/mozilla-rally/rally/issues"
   },
-  "homepage": "https://github.com/mozilla-rally/rally#readme"
+  "homepage": "https://github.com/mozilla-rally/rally#readme",
+  "jest": {
+    "preset": "ts-jest",
+    "verbose": true,
+    "moduleFileExtensions": [
+      "js",
+      "json",
+      "jsx",
+      "ts",
+      "tsx",
+      "node"
+    ],
+    "reporters": [
+      "jest-standard-reporter"
+    ],
+    "transform": {
+      ".+\\.(css|styl|less|sass|scss|png|jpg|ttf|woff|woff2)$": "jest-transform-stub",
+      "^.+\\.js$": "babel-jest",
+      "^.+\\.(ts|tsx)?$": "ts-jest"
+    },
+    "transformIgnorePatterns": [
+      "(node_modules/node_modules/@mozilla/web-science)"
+    ],
+    "setupFiles": [
+      "jest-webextension-mock",
+      "<rootDir>/setupTests.js"
+    ],
+    "extensionsToTreatAsEsm": [
+      ".ts"
+    ],
+    "globals": {
+      "ts-jest": {
+        "useESM": true
+      }
+    }
+  }
 }
