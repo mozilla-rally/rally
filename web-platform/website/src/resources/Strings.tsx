@@ -1086,6 +1086,27 @@ export const Strings = {
             icon: "/img/error.svg",
           },
         },
+
+        surveyCard: {
+          closeIcon: "/img/close.svg",
+          image: "/img/home-illo-1.png",
+          title: "Tell us about yourself",
+          profile: "/profile",
+          text: (
+            <>
+              <p>
+                Take five minutes to fill out seven questions to help our
+                partners understand how big tech targets us.
+              </p>
+              <p>
+                You can update, add, or rescind your answers under Manage
+                Profile. This info helps us better understand the representivity
+                of our study participants.
+              </p>
+            </>
+          ),
+          button: "Create profile",
+        },
         studyCard: {
           description: {
             aboutThisStudy: "About your contribution",

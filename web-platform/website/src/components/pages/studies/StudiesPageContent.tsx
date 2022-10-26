@@ -11,6 +11,7 @@ import { ProductToasts } from "./ProductToasts";
 import { StudiesBackground } from "./StudiesBackground";
 import { StudiesTitle } from "./StudiesTitle";
 import { StudyList } from "./StudyList";
+import { SurveyCard } from "./SurveyCard";
 
 export function StudiesPageContent() {
   const [showPrivacyDialog, setShowPrivacyDialog] = useState<boolean>(false);
@@ -33,6 +34,7 @@ export function StudiesPageContent() {
             <Col className={`col-auto ${styles.nav}`} />
             <Col>
               <StudiesTitle className="title mb-5" />
+              <SurveyCard />
               <StudyList />
             </Col>
           </Row>
