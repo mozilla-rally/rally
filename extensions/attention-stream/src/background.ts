@@ -674,6 +674,12 @@ if (enableDevMode) {
           return false;
         }
 
+        // Try to avoid interrupting the user if they are playing media on the currently-focused tab.
+        const activeTabs = await browser.tabs.query({active: true, currentWindow: true, audible: true});
+        if (activeTabs.length) {
+          return false;
+        }
+
         await browser.tabs.create({ url: newTabPage });
 
         if (browser.idle.onStateChanged.hasListener(idleListener)) {
