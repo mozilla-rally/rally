@@ -686,14 +686,7 @@ if (enableDevMode) {
 
       // Only show the new tab once.
       const newTabShown = (await browser.storage.local.get()).newTabShown;
-
-      // If the user is already idle, this will show the new tab now.
-      const isIdle =
-        newTabShown &&
-        (await idleListener(await browser.idle.queryState(idleTimer)));
-
-      // Otherwise, set a listener to fire when the state changes to idle.
-      if (!isIdle && !newTabShown) {
+      if (!newTabShown) {
         browser.idle.setDetectionInterval(idleTimer);
         if (!browser.idle.onStateChanged.hasListener(idleListener)) {
           browser.idle.onStateChanged.addListener(idleListener);
