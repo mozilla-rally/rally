@@ -53,12 +53,12 @@ const newTabPage = "https://rally.mozilla.org";
 
 // Developer mode runs locally and does not use the Firebase server.
 // Data is collected locally, and an options page is provided to export it.
-// eslint-disable-next-line no-undef
-const enableDevMode = Boolean(false);
+// TODO move this to runtime not build-time
+const enableDevMode = false;
 // Emulator mode connects to the Firebase emulators. Note that the Firebase
 // config below must match.
-// eslint-disable-next-line no-undef
-const enableEmulatorMode = Boolean(false);
+// TODO move this to runtime not build-time
+const enableEmulatorMode = false;
 
 // The Rally-assigned Study ID.
 let studyId = "attentionStream";
@@ -150,7 +150,7 @@ export async function stateChangeCallback(newState) {
 
       // User Journey
       {
-        const pageDataListener = async (pageData) => {
+        this.pageDataListener = async (pageData) => {
           console.debug(
             `WebScience page navigation event fired with page data:`,
             pageData
@@ -190,7 +190,7 @@ export async function stateChangeCallback(newState) {
         };
 
         webScience.pageNavigation.onPageData.addListener(
-          pageDataListener,
+          this.pageDataListener,
           { matchPatterns: ["<all_urls>"] }
         );
       }
@@ -214,7 +214,7 @@ export async function stateChangeCallback(newState) {
         );
 
         // Handle article content callbacks.
-        const pageTextListener = async (pageData) => {
+        this.pageTextListener = async (pageData) => {
           articleContents.pageId.set(pageData.pageId);
           articleContents.url.setUrl(pageData.url);
           articleContents.title.set(pageData.title);
@@ -223,7 +223,7 @@ export async function stateChangeCallback(newState) {
           rallyExtensionPings.articleContents.submit();
         };
 
-        webScience.pageText.onTextParsed.addListener(pageTextListener, {
+        webScience.pageText.onTextParsed.addListener(this.pageTextListener, {
           matchPatterns,
         });
 
