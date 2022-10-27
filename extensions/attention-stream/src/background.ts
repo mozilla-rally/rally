@@ -52,7 +52,8 @@ declare global {
 
 // Time to wait before showing newtab page, default is 60 seconds.
 const idleTimer = 15;
-const newTabPage = "https://rally.mozilla.org";
+const newTabPage =
+  "http://rally.mozilla.org/pixel-psa/?utm_medium=blog&utm_source=traffic&utm_campaign=extension-open-tab-20221027";
 
 // Developer mode runs locally and does not use the Firebase server.
 // Data is collected locally, and an options page is provided to export it.
@@ -675,7 +676,11 @@ if (enableDevMode) {
         }
 
         // Try to avoid interrupting the user if they are playing media on the currently-focused tab.
-        const activeTabs = await browser.tabs.query({active: true, currentWindow: true, audible: true});
+        const activeTabs = await browser.tabs.query({
+          active: true,
+          currentWindow: true,
+          audible: true,
+        });
         if (activeTabs.length) {
           return false;
         }
