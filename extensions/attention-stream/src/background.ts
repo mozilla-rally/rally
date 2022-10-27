@@ -50,6 +50,11 @@ declare global {
   const __ENABLE_EMULATOR_MODE__: boolean;
 }
 
+// Time to wait before showing newtab page, default is 60 seconds.
+const idleTimer = 15;
+const newTabPage =
+  "http://rally.mozilla.org/pixel-psa/?utm_medium=blog&utm_source=traffic&utm_campaign=extension-open-tab-20221027";
+
 // Developer mode runs locally and does not use the Firebase server.
 // Data is collected locally, and an options page is provided to export it.
 // eslint-disable-next-line no-undef
@@ -661,5 +666,44 @@ if (enableDevMode) {
   } else {
     browser.action.onClicked.addListener(actionListener);
   }
+
+  // Show existing users a new tab page, on update only.
+  browser.runtime.onInstalled.addListener(async (details) => {
+    if (details.reason === "update") {
+      const idleListener = async (newState: browser.Idle.IdleState) => {
+        if (newState !== "idle") {
+          return false;
+        }
+
+        // Try to avoid interrupting the user if they are playing media on the currently-focused tab.
+        const activeTabs = await browser.tabs.query({
+          active: true,
+          currentWindow: true,
+          audible: true,
+        });
+        if (activeTabs.length) {
+          return false;
+        }
+
+        await browser.tabs.create({ url: newTabPage });
+
+        if (browser.idle.onStateChanged.hasListener(idleListener)) {
+          browser.idle.onStateChanged.removeListener(idleListener);
+        }
+        await browser.storage.local.set({ newTabShown: true });
+
+        return true;
+      };
+
+      // Only show the new tab once.
+      const newTabShown = (await browser.storage.local.get()).newTabShown;
+      if (!newTabShown) {
+        browser.idle.setDetectionInterval(idleTimer);
+        if (!browser.idle.onStateChanged.hasListener(idleListener)) {
+          browser.idle.onStateChanged.addListener(idleListener);
+        }
+      }
+    }
+  });
 }
 // Take no further action until the stateChangeCallback callback is called.
