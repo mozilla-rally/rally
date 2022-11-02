@@ -5,7 +5,6 @@ import { style } from "typestyle";
 import { Strings } from "../../../../resources/Strings";
 import { Colors, Spacing } from "../../../../styles";
 import { ProductButton } from "../../../../styles/Buttons";
-import { LinkStyles } from "../../../../styles/LinkStyles";
 
 const closeIcon = Strings.components.pages.studies.alerts.closeIcon;
 
@@ -51,21 +50,11 @@ export function ToastComponent({
             <Button
               onClick={async () => {
                 onTakeAction && onTakeAction();
+                link && window.open(link, "_blank", "noreferrer");
               }}
               className={`${ProductButton} toast-btn`}
             >
-              {link ? (
-                <a
-                  className={LinkStyles.NoUnderline}
-                  href={link}
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  {button}
-                </a>
-              ) : (
-                button
-              )}
+              {button}
             </Button>
             {isDismissable && (
               <img
