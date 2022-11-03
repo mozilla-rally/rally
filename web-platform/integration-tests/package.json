@@ -1,0 +1,17 @@
+{
+  "name": "integration-tests",
+  "version": "1.1.8",
+  "type": "module",
+  "description": "Integration tests for Rally",
+  "scripts": {
+    "test": "set -a && . ./.testenv && firebase emulators:exec -c ../firebase/firebase.json --project demo-rally --only auth,functions,firestore 'jest --coverage --detectOpenHandles' 2>&1 && set +a"
+  },
+  "devDependencies": {
+    "@types/jest": "^27.5.0",
+    "@types/node": "^17.0.34",
+    "jest": "^28.1.0",
+    "ts-jest": "^28.0.2",
+    "ts-jest-resolver": "^2.0.0",
+    "typescript": "^4.6.4"
+  }
+}

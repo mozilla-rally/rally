@@ -1,45 +1,48 @@
 {
   "name": "@mozilla/rally-functions",
   "version": "1.1.8",
-  "type": "module",
-  "scripts": {
-    "lint": "npm run lint:glean && eslint --ext .js,.ts .",
-    "build": "npm run prepare && npm run build:glean && tsc",
-    "build:glean": "glean translate ../glean/metrics.yaml ../glean/pings.yaml -f typescript -o ./src/generated",
-    "serve": "npm run build && firebase emulators:start --only functions --project demo-rally",
-    "shell": "npm run build && firebase functions:shell",
-    "start": "npm run shell",
-    "deploy": "firebase deploy --only functions",
-    "docs:glean": "glean translate ../glean/metrics.yaml ../glean/pings.yaml -f markdown -o ../glean/docs",
-    "lint:glean": "glean glinter ../glean/metrics.yaml ../glean/pings.yaml",
-    "logs": "firebase functions:log",
-    "test": "set -a && . ./.testenv && firebase emulators:exec -c ../firebase/firebase.json --project demo-rally --only auth,functions,firestore 'jest --coverage --detectOpenHandles' 2>&1 && set +a",
-    "test:coverage": "set -a && . ./.testenv && jest --coverage --collectCoverage --coverageDirectory coverage --detectOpenHandles && set +a",
-    "test:watch": "set -a && . ./.testenv && jest --watch && set +a",
-    "prepare": "ts-patch install -s"
-  },
   "engines": {
     "node": "16"
   },
+  "type": "module",
   "main": "./dist/index.js",
   "files": [
     "dist"
   ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "build": "npm run prepare && npm run build:glean && tsc",
+    "build:glean": "glean translate ../glean/metrics.yaml ../glean/pings.yaml -f typescript -o ./src/generated",
+    "deploy": "firebase deploy --only functions",
+    "docs:glean": "glean translate ../glean/metrics.yaml ../glean/pings.yaml -f markdown -o ../glean/docs",
+    "lint": "npm run lint:glean && eslint --ext .js,.ts .",
+    "lint:glean": "glean glinter ../glean/metrics.yaml ../glean/pings.yaml",
+    "logs": "firebase functions:log",
+    "prepare": "ts-patch install -s",
+    "serve": "npm run build && firebase emulators:start --only functions --project demo-rally",
+    "shell": "npm run build && firebase functions:shell",
+    "start": "npm run shell",
+    "test": "set -a && . ./.testenv && firebase emulators:exec -c ../firebase/firebase.json --project demo-rally --only auth,functions,firestore 'jest --coverage --detectOpenHandles' 2>&1 && set +a",
+    "test:coverage": "set -a && . ./.testenv && jest --coverage --collectCoverage --coverageDirectory coverage --detectOpenHandles && set +a",
+    "test:watch": "set -a && . ./.testenv && jest --watch && set +a"
+  },
   "dependencies": {
     "@mozilla/glean": "^1.2.0",
     "@sendgrid/client": "~7.7.0",
     "@sendgrid/mail": "~7.7.0",
+    "@types/busboy": "~1.5.0",
     "async-mutex": "^0.3.2",
     "axios": "^0.27.2",
+    "busboy": "~1.6.0",
     "cors": "^2.8.5",
     "firebase-admin": "^9.12.0",
     "firebase-functions": "^3.21.0",
     "firebase-tools": "^10.9.0",
     "ts-patch": "^2.0.1",
     "ua-parser-js": "~1.0.2",
-    "uuid": "^8.3.2",
-    "busboy": "~1.6.0",
-    "@types/busboy": "~1.5.0"
+    "uuid": "^8.3.2"
   },
   "devDependencies": {
     "@types/jest": "^27.5.0",
@@ -57,8 +60,5 @@
     "ts-jest-resolver": "^2.0.0",
     "ts-transform-esm-import": "^0.9.0",
     "typescript": "^4.6.4"
-  },
-  "publishConfig": {
-    "access": "public"
   }
 }
