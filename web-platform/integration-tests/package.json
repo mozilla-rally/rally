@@ -4,7 +4,8 @@
   "type": "module",
   "description": "Integration tests for Rally",
   "scripts": {
-    "test": "set -a && . ./.testenv && firebase emulators:exec -c ../firebase/firebase.json --project demo-rally --only auth,functions,firestore 'jest --coverage --detectOpenHandles' 2>&1 && set +a"
+    "load:data": "curl -s http://localhost:5001/demo-rally/us-central1/loadFirestore",
+    "test": "set -a && . ./.testenv && ./scripts/integration-test.sh && set +a"
   },
   "devDependencies": {
     "@types/jest": "^27.5.0",
