@@ -8,6 +8,6 @@ export default {
   moduleFileExtensions: ["js", "ts", "tsx", "jsx", "json", "node"],
   testEnvironment: "node",
   globals: {
-    browser: create(),
+    ...create(),
   },
 };

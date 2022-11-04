@@ -1,8 +1,8 @@
+import { getWebdriver } from "./test-driver";
+
 describe("hello", () => {
-  it("world", () => {
-    const browser = (
-      global as unknown as Record<string, Record<string, string>>
-    ).browser;
-    console.log(JSON.stringify(browser));
+  it("world", async () => {
+    const driver = await getWebdriver();
+    console.log(driver);
   });
 });
