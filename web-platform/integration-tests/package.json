@@ -5,8 +5,8 @@
   "description": "Integration tests for Rally",
   "scripts": {
     "load:data": "curl -s http://localhost:5001/demo-rally/us-central1/loadFirestore",
-    "test": "set -a && . ./.testenv && ./scripts/integration-test.sh && killall node && set +a",
-    "jest": "jest ./src"
+    "test": "set -a && . ./.testenv && ./scripts/integration-test.sh && set +a",
+    "jest": "jest ./src --forceExit --detectOpenHandles"
   },
   "devDependencies": {
     "@types/jest": "^27.5.0",

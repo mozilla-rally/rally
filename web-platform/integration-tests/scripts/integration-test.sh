@@ -13,7 +13,4 @@ firebase emulators:exec \
   --project demo-rally \
   "npm run load:data && npm run jest -- --browser_type=firefox --headless_mode=true" 2>&1 | tee integration.log
 
-
 # echo "Testing Chrome"
-
-killall node

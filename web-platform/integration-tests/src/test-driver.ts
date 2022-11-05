@@ -1,15 +1,22 @@
 import * as minimist from "minimist";
 import { Builder, logging, WebDriver } from "selenium-webdriver";
-import chrome from "selenium-webdriver/chrome";
-import firefox from "selenium-webdriver/firefox";
+import { Options as ChromeOptions } from "selenium-webdriver/chrome";
+import {
+  Options as FirefoxOptions,
+  ServiceBuilder,
+} from "selenium-webdriver/firefox";
 
 interface GlobalDriver {
   type: "chrome" | "firefox";
   isHeadless: boolean;
-  driver: Promise<WebDriver>;
 }
 
-export function create() {
+let driverInfo: GlobalDriver;
+export function initializeEnvironment() {
+  if (driverInfo) {
+    throw new Error("Duplicate initialization.");
+  }
+
   const args = minimist(process.argv.slice(2), {
     boolean: ["headless_mode"],
     string: ["browser_type"],
@@ -32,20 +39,26 @@ export function create() {
     throw new Error("Invalid browser type.");
   }
 
-  return {
-    browser: {
-      type: args["browser_type"],
-      isHeadless: args["headless_mode"],
-      driver:
-        browserType === "chrome"
-          ? getChromeDriver(isHeadless)
-          : getFirefoxDriver(isHeadless),
-    },
+  driverInfo = {
+    type: args["browser_type"],
+    isHeadless: isHeadless,
   };
 }
 
+let driver: Promise<WebDriver> | undefined;
 export async function getWebdriver(): Promise<WebDriver> {
-  return (global as unknown as { browser: GlobalDriver }).browser.driver;
+  if (driver) {
+    return driver;
+  }
+
+  const { type, isHeadless } = driverInfo;
+
+  driver =
+    type === "chrome"
+      ? getChromeDriver(isHeadless)
+      : getFirefoxDriver(isHeadless);
+
+  return driver;
 }
 
 /**
@@ -56,7 +69,7 @@ export async function getWebdriver(): Promise<WebDriver> {
  * @returns {Promise<WebDriver>} a WebDriver instance to control Chrome.
  */
 async function getChromeDriver(headlessMode: boolean) {
-  const chromeOptions = new chrome.Options();
+  const chromeOptions = new ChromeOptions();
 
   if (headlessMode) {
     throw new Error("Chrome Headless does not support extensions");
@@ -85,7 +98,7 @@ async function getChromeDriver(headlessMode: boolean) {
  * @returns {Promise<WebDriver>} a WebDriver instance to control Firefox.
  */
 async function getFirefoxDriver(headlessMode: boolean): Promise<WebDriver> {
-  const firefoxOptions = new firefox.Options();
+  const firefoxOptions = new FirefoxOptions();
   firefoxOptions.setPreference("devtools.console.stdout.content", true);
 
   if (headlessMode) {
@@ -96,7 +109,7 @@ async function getFirefoxDriver(headlessMode: boolean): Promise<WebDriver> {
   const driver = await new Builder()
     .forBrowser("firefox")
     .setFirefoxOptions(firefoxOptions)
-    .setFirefoxService(new firefox.ServiceBuilder().setStdio("inherit"))
+    .setFirefoxService(new ServiceBuilder().setStdio("inherit"))
     .build();
 
   return driver;
