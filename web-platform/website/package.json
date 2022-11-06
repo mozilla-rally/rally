@@ -4,11 +4,13 @@
   "private": true,
   "scripts": {
     "dev": "npm run setup-firebase-staging && next dev",
+    "dev:emulator": "npm run setup-firebase-emulator && NEXT_PUBLIC_EMULATOR_MODE='true' next dev",
     "build": "npm run format && npm run lint && npm run setup-firebase-prod && next build",
     "build-staging": "npm run format && npm run lint && npm run setup-firebase-staging && next build",
     "start": "next start",
     "lint": "next lint -c ../../tools/typescript/.eslintrc.js",
     "format": "prettier --write '**/*.ts[x]' --config ../../tools/typescript/.prettierrc",
+    "setup-firebase-emulator": "ln -fs ../firebase/firebase.config.demo-rally.json ./firebase.config.json",
     "setup-firebase-staging": "ln -fs ../firebase/firebase.config.rally-web-stage.json ./firebase.config.json",
     "setup-firebase-prod": "ln -fs ../firebase/firebase.config.rally-web-prod.json ./firebase.config.json",
     "test": "jest --verbose 2>&1",
