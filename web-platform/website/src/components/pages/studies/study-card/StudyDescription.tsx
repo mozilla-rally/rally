@@ -66,9 +66,7 @@ export function StudyDescription() {
                 <a
                   className={`${FontSize.Small} p-1`}
                   href={
-                    browserType === BrowserType.Chrome
-                      ? study.downloadLink.chrome
-                      : study.downloadLink.firefox
+                    study.studyDetailsLink
                   }
                   target="_blank"
                   rel="noreferrer"
