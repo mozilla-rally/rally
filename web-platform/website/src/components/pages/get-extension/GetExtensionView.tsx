@@ -72,20 +72,19 @@ export function GetExtensionView() {
       </Row>
       <Row className="mb-3">
         <Col>
-          <LoginButton className={PrimaryButton}>
-            {allStudies && (
-              <a
-                className={LinkStyles.NoUnderline}
-                href={browserType === BrowserType.Chrome ? chromeLink : fxLink}
-                target="_blank"
-                rel="noreferrer"
-                onClick={() => {
-                  router.push("/");
-                }}
-              >
-                {strings.getExt}
-              </a>
-            )}
+          <LoginButton
+            onClick={() => {
+              allStudies &&
+                window.open(
+                  browserType === BrowserType.Chrome ? chromeLink : fxLink,
+                  "_blank",
+                  "noreferrer"
+                );
+              router.push("/");
+            }}
+            className={PrimaryButton}
+          >
+            {strings.getExt}
           </LoginButton>
         </Col>
       </Row>
