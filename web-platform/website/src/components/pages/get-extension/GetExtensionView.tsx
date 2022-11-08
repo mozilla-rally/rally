@@ -9,7 +9,6 @@ import { useUserDocument } from "../../../services/UserDocumentService";
 import { Colors, Spacing } from "../../../styles";
 import { LinkButton, PrimaryButton } from "../../../styles/Buttons";
 import { FontSizeRaw, Fonts } from "../../../styles/Fonts";
-import { LinkStyles } from "../../../styles/LinkStyles";
 import { detectBrowser } from "../../../utils/BrowserDetector";
 import { BrowserType } from "../../../utils/BrowserType";
 import { Highlighter } from "../../Highlighter";
@@ -72,21 +71,21 @@ export function GetExtensionView() {
       </Row>
       <Row className="mb-3">
         <Col>
-          <LoginButton className={PrimaryButton}>
-            {allStudies && (
-              <a
-                className={LinkStyles.NoUnderline}
-                href={browserType === BrowserType.Chrome ? chromeLink : fxLink}
-                target="_blank"
-                rel="noreferrer"
-                onClick={() => {
-                  router.push("/");
-                }}
-              >
-                {strings.getExt}
-              </a>
-            )}
-          </LoginButton>
+          {allStudies && (
+            <LoginButton
+              onClick={() => {
+                window.open(
+                  browserType === BrowserType.Chrome ? chromeLink : fxLink,
+                  "_blank",
+                  "noreferrer"
+                );
+                router.push("/");
+              }}
+              className={PrimaryButton}
+            >
+              {strings.getExt}
+            </LoginButton>
+          )}
         </Col>
       </Row>
       <Row className="mb-3">

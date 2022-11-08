@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { Button, Col, Container, Row } from "reactstrap";
+import { Col, Container, Row } from "reactstrap";
 import { style } from "typestyle";
 
 import { Strings } from "../../../resources/Strings";
@@ -56,9 +56,13 @@ export function SurveyCard() {
           >
             {strings.text}
           </div>
-          <Button className={`${ProductButton} w-100 mt-1 survey-card-btn`}>
-            <Link href={strings.profile}>{strings.button}</Link>
-          </Button>
+          <Link href={strings.profile}>
+            <div
+              className={`${ProductButton} w-100 mt-1 survey-card-btn btn btn-secondary`}
+            >
+              {strings.button}
+            </div>
+          </Link>
         </Col>
       </Row>
       <Row></Row>
