@@ -1,5 +1,13 @@
 import * as minimist from "minimist";
-import { Builder, logging, WebDriver } from "selenium-webdriver";
+import {
+  Builder,
+  logging,
+  Locator,
+  WebDriver,
+  until,
+  WebElement,
+  By,
+} from "selenium-webdriver";
 import { Options as ChromeOptions } from "selenium-webdriver/chrome";
 import {
   Options as FirefoxOptions,
@@ -113,4 +121,60 @@ async function getFirefoxDriver(headlessMode: boolean): Promise<WebDriver> {
     .build();
 
   return driver;
+}
+
+// The number of milliseconds to wait for some
+// property to change in tests. This should be
+// a long time to account for slow CI.
+export const WAIT_FOR_PROPERTY = 10000;
+
+export async function clickElementByText(text: string) {
+  await findAndAct(locateElementByText(text), async (e) => {
+    await e.click();
+  });
+}
+
+export async function clickElementById(id: string) {
+  await findAndAct(By.id(id), async (e) => {
+    await e.click();
+  });
+}
+
+export function locateElementByText(text: string): Locator {
+  return By.xpath('//div[contains(text(), "' + text + '")]');
+}
+
+/**
+ * Find the element and perform an action on it.
+ *
+ * @param {Locator} locator
+ *        The locator for an element to look for and execute actions on.
+ * @param {Function} action
+ *        A function in the form `e => {}` that will be called
+ *        and receive the element once ready.
+ */
+export async function findAndAct(
+  locator: Locator,
+  action: (element: WebElement) => Promise<void>
+) {
+  const driver = await getWebdriver();
+
+  await driver.wait(async () => {
+    try {
+      const element = await driver.findElement(locator);
+
+      await driver.wait(until.elementIsEnabled(element), WAIT_FOR_PROPERTY);
+      await driver.wait(until.elementIsVisible(element), WAIT_FOR_PROPERTY);
+
+      await action(element);
+      return true;
+    } catch (e) {
+      const ex = e as { name: string; message: string };
+
+      console.debug(
+        `Element at locator ${locator} not ready when expected, retrying: ${ex.name}, ${ex.message}`
+      );
+      return false;
+    }
+  }, WAIT_FOR_PROPERTY);
 }

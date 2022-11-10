@@ -36,7 +36,7 @@ export function useFirebase() {
     if (isEmulatorMode) {
       connectAuthEmulator(auth, "http://localhost:9099");
       connectFunctionsEmulator(getFunctions(app), "localhost", 5001);
-      connectFirestoreEmulator(db as Firestore, "localhost", 8080);
+      connectFirestoreEmulator(db, "localhost", 8080);
     }
 
     context = {
