@@ -9,6 +9,12 @@ export const Flags: Record<string, Flag> = {
   onboardingV2: {
     name: "onboardingV2",
     description: "Enables new onboarding experience.",
-    defaultValue: true,
+    defaultValue: false,
   },*/
+
+  HomepageV2: {
+    name: "HomepageV2",
+    description: "Enables new homepage experience.",
+    defaultValue: false,
+  },
 };
