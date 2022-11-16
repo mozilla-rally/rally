@@ -1,7 +1,7 @@
 import { HTMLAttributes, useEffect, useState } from "react";
 import { cssRaw, style } from "typestyle";
 
-export function StudiesBackground({
+export function HomePageBackground({
   children,
   className,
   style,

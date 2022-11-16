@@ -16,7 +16,7 @@ jest.mock("../../../../../services/UserDocumentService");
 jest.mock("../StudyDataContext");
 jest.mock("../StudyTitle");
 
-const strings = Strings.components.pages.studies.studyCard.topDetails;
+const strings = Strings.components.pages.home.studyCard.topDetails;
 
 describe("StudyTopDetails tests", () => {
   const updateUserDocument = jest.fn();

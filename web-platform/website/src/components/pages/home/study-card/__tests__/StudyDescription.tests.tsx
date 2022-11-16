@@ -12,7 +12,7 @@ jest.mock("../../../../../utils/BrowserDetector");
 jest.mock("../StudyDataContext");
 jest.mock("../StudyTag");
 
-const strings = Strings.components.pages.studies.studyCard.description;
+const strings = Strings.components.pages.home.studyCard.description;
 
 const study = {
   description: "Study description",

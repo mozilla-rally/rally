@@ -1,20 +1,20 @@
 import { render } from "@testing-library/react";
 
 import { Strings } from "../../../../resources/Strings";
-import { StudiesTitle } from "../StudiesTitle";
+import { HomePageTitle } from "../HomePageTitle";
 
-const strings = Strings.components.pages.studies.title;
+const strings = Strings.components.pages.home.title;
 
-describe("StudiesTitle tests", () => {
+describe("HomePageTitle tests", () => {
   it("renders correctly", () => {
-    const root = render(<StudiesTitle />);
+    const root = render(<HomePageTitle />);
 
     expect(root.getByText(strings.title)).toBeInTheDocument();
   });
 
   it("applies html properties to container", () => {
     const doc = render(
-      <StudiesTitle className="hello-world">Hello World</StudiesTitle>
+      <HomePageTitle className="hello-world">Hello World</HomePageTitle>
     );
 
     expect(document.querySelector(".hello-world")).toBeInTheDocument();

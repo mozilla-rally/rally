@@ -329,6 +329,87 @@ export const Strings = {
           ],
         },
       },
+      home: {
+        alerts: {
+          closeIcon: "/img/close.svg",
+          verifyEmail: {
+            type: "verify-email",
+            text: "Please check your email and verify your account.",
+            button: "Resend",
+            icon: "/img/warning.svg",
+            modal: {
+              title: "Check your email",
+              img: "/img/your-contact-data.png",
+              close: "/img/close.svg",
+              text: "To finish creating your account with Rally, please check your email inbox and verify your email address",
+              help: "Need help?",
+              link: {
+                text: "Contact us",
+                address: "mailto:contact@rally.mozilla.org",
+                external: true,
+              },
+            },
+          },
+          privacyPolicy: {
+            type: "privacy-policy",
+            text: "Please agree to our privacy policy. Required to start contributing.",
+            button: "Review privacy policy",
+            icon: "/img/error.svg",
+          },
+
+          addExtension: {
+            type: "add-extension",
+            text: "Please add the extension. Required to start contributing.",
+            button: "Add extension",
+            icon: "/img/error.svg",
+          },
+        },
+
+        surveyCard: {
+          closeIcon: "/img/close.svg",
+          image: "/img/home-illo-1.png",
+          title: "Tell us about yourself",
+          profile: "/profile",
+          text: (
+            <>
+              <p>
+                Take five minutes to fill out seven questions to help our
+                partners understand how big tech targets us.
+              </p>
+              <p>
+                You can update, add, or rescind your answers under Manage
+                Profile. This info helps us better understand the representivity
+                of our study participants.
+              </p>
+            </>
+          ),
+          button: "Create profile",
+        },
+        studyCard: {
+          description: {
+            aboutThisStudy: "About your contribution",
+            keyDataCollected: "Data collected",
+            viewFullStudyDetails: "View full study details",
+          },
+          header: {
+            participating: "You're contributing",
+            notParticipatingYet: "You're not contributing yet",
+            menus: {
+              leaveStudy: "Stop contributing",
+            },
+          },
+          title: {
+            ends: "Ends: {expiry}",
+            taglineFormat: "{expiry}",
+          },
+          topDetails: {
+            reactivateStudy: "Reactivate",
+          },
+        },
+        title: {
+          title: "Welcome to Rally",
+        },
+      },
       login: {
         emailSignupView: {
           continue: "Continue",
@@ -470,7 +551,6 @@ export const Strings = {
           },
         },
       },
-
       privacyPolicy: {
         buttons: {
           initial: {
@@ -871,7 +951,6 @@ export const Strings = {
           title: "Your Rally Data Contributions",
         },
       },
-
       profile: {
         age: {
           options: [
@@ -1049,87 +1128,6 @@ export const Strings = {
         zipCode: {
           invalidZipCode: "Zip code must be a five-digit number.",
           title: "7. What is your zip code?",
-        },
-      },
-      studies: {
-        alerts: {
-          closeIcon: "/img/close.svg",
-          verifyEmail: {
-            type: "verify-email",
-            text: "Please check your email and verify your account.",
-            button: "Resend",
-            icon: "/img/warning.svg",
-            modal: {
-              title: "Check your email",
-              img: "/img/your-contact-data.png",
-              close: "/img/close.svg",
-              text: "To finish creating your account with Rally, please check your email inbox and verify your email address",
-              help: "Need help?",
-              link: {
-                text: "Contact us",
-                address: "mailto:contact@rally.mozilla.org",
-                external: true,
-              },
-            },
-          },
-          privacyPolicy: {
-            type: "privacy-policy",
-            text: "Please agree to our privacy policy. Required to start contributing.",
-            button: "Review privacy policy",
-            icon: "/img/error.svg",
-          },
-
-          addExtension: {
-            type: "add-extension",
-            text: "Please add the extension. Required to start contributing.",
-            button: "Add extension",
-            icon: "/img/error.svg",
-          },
-        },
-
-        surveyCard: {
-          closeIcon: "/img/close.svg",
-          image: "/img/home-illo-1.png",
-          title: "Tell us about yourself",
-          profile: "/profile",
-          text: (
-            <>
-              <p>
-                Take five minutes to fill out seven questions to help our
-                partners understand how big tech targets us.
-              </p>
-              <p>
-                You can update, add, or rescind your answers under Manage
-                Profile. This info helps us better understand the representivity
-                of our study participants.
-              </p>
-            </>
-          ),
-          button: "Create profile",
-        },
-        studyCard: {
-          description: {
-            aboutThisStudy: "About your contribution",
-            keyDataCollected: "Data collected",
-            viewFullStudyDetails: "View full study details",
-          },
-          header: {
-            participating: "You're contributing",
-            notParticipatingYet: "You're not contributing yet",
-            menus: {
-              leaveStudy: "Stop contributing",
-            },
-          },
-          title: {
-            ends: "Ends: {expiry}",
-            taglineFormat: "{expiry}",
-          },
-          topDetails: {
-            reactivateStudy: "Reactivate",
-          },
-        },
-        title: {
-          title: "Welcome to Rally",
         },
       },
     },

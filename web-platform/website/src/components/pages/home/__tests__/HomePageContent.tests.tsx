@@ -3,27 +3,27 @@ import { render } from "@testing-library/react";
 import { useAuthentication } from "../../../../services/AuthenticationService";
 import { useStudies } from "../../../../services/StudiesService";
 import { Layout } from "../../../Layout";
-import { StudiesBackground } from "../StudiesBackground";
-import { StudiesPageContent } from "../StudiesPageContent";
-import { StudiesTitle } from "../StudiesTitle";
+import { HomePageBackground } from "../HomePageBackground";
+import { HomePageContent } from "../HomePageContent";
+import { HomePageTitle } from "../HomePageTitle";
 import { StudyList } from "../StudyList";
 
 jest.mock("../../../Layout");
-jest.mock("../StudiesBackground");
-jest.mock("../StudiesTitle");
+jest.mock("../HomePageBackground");
+jest.mock("../HomePageTitle");
 jest.mock("../StudyList");
 jest.mock("../../../../services/StudiesService");
 jest.mock("../../../../services/AuthenticationService");
 
-describe("StudiesPageContent tests", () => {
+describe("HomePageContent tests", () => {
   beforeEach(() => {
     jest.resetAllMocks();
 
     (Layout as jest.Mock).mockImplementation(({ children }) => children);
-    (StudiesBackground as jest.Mock).mockImplementation(
+    (HomePageBackground as jest.Mock).mockImplementation(
       ({ children }) => children
     );
-    (StudiesTitle as jest.Mock).mockImplementation(({ children }) => children);
+    (HomePageTitle as jest.Mock).mockImplementation(({ children }) => children);
     (StudyList as jest.Mock).mockImplementation(({ children }) => children);
     (useStudies as jest.Mock).mockReturnValue({
       installedStudyIds: [],
@@ -35,11 +35,11 @@ describe("StudiesPageContent tests", () => {
   });
 
   it("renders content correctly", () => {
-    render(<StudiesPageContent />);
+    render(<HomePageContent />);
 
     expect(Layout).toHaveBeenCalled();
-    expect(StudiesBackground).toHaveBeenCalled();
-    expect(StudiesTitle).toHaveBeenCalled();
+    expect(HomePageBackground).toHaveBeenCalled();
+    expect(HomePageTitle).toHaveBeenCalled();
     expect(StudyList).toHaveBeenCalled();
   });
 });
