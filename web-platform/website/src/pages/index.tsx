@@ -2,8 +2,8 @@ import type { NextPage } from "next";
 import Head from "next/head";
 
 import { AuthenticatedPage } from "../components/AuthenticatedPage";
-import { StudiesPageContent } from "../components/pages/studies/StudiesPageContent";
-import { StudiesPageContentV2 } from "../components/pages/studies/StudiesPageContentV2";
+import { HomePageContent } from "../components/pages/home/HomePageContent";
+import { HomePageContentV2 } from "../components/pages/home/HomePageContentV2";
 import { Flags } from "../resources/Flags";
 import { Strings } from "../resources/Strings";
 import { useFlagService } from "../services/FlagService";
@@ -19,9 +19,9 @@ const Home: NextPage = () => {
       </Head>
 
       {isFlagActive(Flags.HomepageV2) ? (
-        <StudiesPageContentV2 />
+        <HomePageContentV2 />
       ) : (
-        <StudiesPageContent />
+        <HomePageContent />
       )}
     </AuthenticatedPage>
   );

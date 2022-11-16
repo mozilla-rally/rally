@@ -18,7 +18,7 @@ import { Colors, Spacing } from "../../../../styles";
 import { FontSize } from "../../../../styles/Fonts";
 import { useStudy } from "./StudyDataContext";
 
-const strings = Strings.components.pages.studies.studyCard.header;
+const strings = Strings.components.pages.home.studyCard.header;
 
 export function StudyCardHeader() {
   const { isInstalledLocally, isUserEnrolled, study } = useStudy();

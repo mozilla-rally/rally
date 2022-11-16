@@ -12,7 +12,7 @@ import { ProductButton } from "../../../styles/Buttons";
 import { CardStyles } from "../../../styles/Cards";
 import { FontSize, Fonts } from "../../../styles/Fonts";
 
-const strings = Strings.components.pages.studies.surveyCard;
+const strings = Strings.components.pages.home.surveyCard;
 
 export function SurveyCard() {
   const [isVisible, setIsVisible] = useState<boolean>(true);

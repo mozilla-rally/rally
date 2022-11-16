@@ -7,13 +7,13 @@ import { ScreenSize, Spacing, createResponsiveStyle } from "../../../styles";
 import { ContainerSmallerStyles } from "../../../styles/ContainerStyles";
 import { Layout } from "../../Layout";
 import { PrivacyPolicyModal } from "../privacy-policy/PrivacyPolicyModal";
+import { HomePageBackground } from "./HomePageBackground";
+import { HomePageTitle } from "./HomePageTitle";
 import { ProductToasts } from "./ProductToasts";
-import { StudiesBackground } from "./StudiesBackground";
-import { StudiesTitle } from "./StudiesTitle";
 import { StudyList } from "./StudyList";
 import { SurveyCard } from "./SurveyCard";
 
-export function StudiesPageContent() {
+export function HomePageContent() {
   const [showPrivacyDialog, setShowPrivacyDialog] = useState<boolean>(false);
 
   const { userDocument } = useUserDocument();
@@ -25,7 +25,7 @@ export function StudiesPageContent() {
   }, [userDocument]);
   return (
     <Layout>
-      <StudiesBackground>
+      <HomePageBackground>
         <ProductToasts />
         <Container
           className={`${ContainerSmallerStyles.TopLevelContainer} ${styles.marginStyle} pt-md-5 pt-0 pb-5 g-0`}
@@ -33,14 +33,14 @@ export function StudiesPageContent() {
           <Row className={`g-0 ${styles.row}`}>
             <Col className={`col-auto ${styles.nav}`} />
             <Col>
-              <StudiesTitle className="title mb-5" />
+              <HomePageTitle className="title mb-5" />
               <SurveyCard />
               <StudyList />
             </Col>
           </Row>
           {showPrivacyDialog && <PrivacyPolicyModal />}
         </Container>
-      </StudiesBackground>
+      </HomePageBackground>
     </Layout>
   );
 }

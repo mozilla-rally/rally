@@ -3,7 +3,7 @@ import { Col, Container, Row } from "reactstrap";
 import { Strings } from "../../../../resources/Strings";
 import { useStudy } from "./StudyDataContext";
 
-const strings = Strings.components.pages.studies.studyCard.title;
+const strings = Strings.components.pages.home.studyCard.title;
 
 export function StudyTitle() {
   const { study } = useStudy();

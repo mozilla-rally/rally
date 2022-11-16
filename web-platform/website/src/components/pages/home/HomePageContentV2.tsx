@@ -7,10 +7,10 @@ import { ScreenSize, Spacing, createResponsiveStyle } from "../../../styles";
 import { ContainerSmallerStyles } from "../../../styles/ContainerStyles";
 import { Layout } from "../../Layout";
 import { PrivacyPolicyModal } from "../privacy-policy/PrivacyPolicyModal";
+import { HomePageBackground } from "./HomePageBackground";
 import { ProductToasts } from "./ProductToasts";
-import { StudiesBackground } from "./StudiesBackground";
 
-export function StudiesPageContentV2() {
+export function HomePageContentV2() {
   const [showPrivacyDialog, setShowPrivacyDialog] = useState<boolean>(false);
 
   const { userDocument } = useUserDocument();
@@ -22,7 +22,7 @@ export function StudiesPageContentV2() {
   }, [userDocument]);
   return (
     <Layout>
-      <StudiesBackground>
+      <HomePageBackground>
         <ProductToasts />
         <Container
           className={`${ContainerSmallerStyles.TopLevelContainer} ${styles.marginStyle} pt-md-5 pt-0 pb-5 g-0`}
@@ -32,7 +32,7 @@ export function StudiesPageContentV2() {
           </Row>
           {showPrivacyDialog && <PrivacyPolicyModal />}
         </Container>
-      </StudiesBackground>
+      </HomePageBackground>
     </Layout>
   );
 }

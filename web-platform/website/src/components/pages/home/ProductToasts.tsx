@@ -13,9 +13,9 @@ import { PrivacyPolicyModal } from "../privacy-policy/PrivacyPolicyModal";
 import { ProductCheckEmailDialog } from "./ProductCheckEmailDialog";
 import { ToastComponent } from "./study-card/ToastComponent";
 
-const emailStrings = Strings.components.pages.studies.alerts.verifyEmail;
-const privacyStrings = Strings.components.pages.studies.alerts.privacyPolicy;
-const extensionStrings = Strings.components.pages.studies.alerts.addExtension;
+const emailStrings = Strings.components.pages.home.alerts.verifyEmail;
+const privacyStrings = Strings.components.pages.home.alerts.privacyPolicy;
+const extensionStrings = Strings.components.pages.home.alerts.addExtension;
 
 export function ProductToasts() {
   const [showEmailNotVerifiedToast, setShowEmailNotVerifiedToast] =

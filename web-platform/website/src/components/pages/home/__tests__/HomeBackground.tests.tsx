@@ -1,13 +1,13 @@
 import { render } from "@testing-library/react";
 import { act } from "react-dom/test-utils";
 
-import { StudiesBackground } from "../StudiesBackground";
+import { HomePageBackground } from "../HomePageBackground";
 
-describe("StudiesBackground tests", () => {
+describe("HomeBackground tests", () => {
   it("renders content and handles scroll event", async () => {
     jest.spyOn(window, "addEventListener");
 
-    const doc = render(<StudiesBackground>Hello World</StudiesBackground>);
+    const doc = render(<HomePageBackground>Hello World</HomePageBackground>);
 
     expect(doc.getByText("Hello World")).toBeInTheDocument();
 
@@ -33,7 +33,9 @@ describe("StudiesBackground tests", () => {
 
   it("applies html properties to container", () => {
     render(
-      <StudiesBackground className="hello-world">Hello World</StudiesBackground>
+      <HomePageBackground className="hello-world">
+        Hello World
+      </HomePageBackground>
     );
 
     expect(document.querySelector(".hello-world")).toBeInTheDocument();

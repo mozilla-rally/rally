@@ -14,7 +14,7 @@ jest.mock("../../../../../services/FirebaseService");
 jest.mock("../../../../../services/UserDocumentService");
 jest.mock("../StudyDataContext");
 
-const strings = Strings.components.pages.studies.studyCard.header;
+const strings = Strings.components.pages.home.studyCard.header;
 
 describe("StudyCardHeader tests", () => {
   const updateUserDocument = jest.fn();

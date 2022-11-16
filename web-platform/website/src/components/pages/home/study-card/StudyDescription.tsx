@@ -17,7 +17,7 @@ import { BrowserType } from "../../../../utils/BrowserType";
 import { useStudy } from "./StudyDataContext";
 import { StudyTag } from "./StudyTag";
 
-const strings = Strings.components.pages.studies.studyCard.description;
+const strings = Strings.components.pages.home.studyCard.description;
 
 export function StudyDescription() {
   const { study } = useStudy();
@@ -65,9 +65,7 @@ export function StudyDescription() {
               <Col className="d-flex justify-content-sm-left justify-content-md-end col-sm-12 col-md-auto flex-grow-1">
                 <a
                   className={`${FontSize.Small} p-1`}
-                  href={
-                    study.studyDetailsLink
-                  }
+                  href={study.studyDetailsLink}
                   target="_blank"
                   rel="noreferrer"
                 >

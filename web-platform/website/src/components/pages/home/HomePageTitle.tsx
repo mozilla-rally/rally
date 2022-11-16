@@ -4,9 +4,9 @@ import { Col, Container, Row } from "reactstrap";
 import { Strings } from "../../../resources/Strings";
 import { Fonts } from "../../../styles/Fonts";
 
-const strings = Strings.components.pages.studies.title;
+const strings = Strings.components.pages.home.title;
 
-export function StudiesTitle({
+export function HomePageTitle({
   children, // eslint-disable-line @typescript-eslint/no-unused-vars
   className,
   ...rest

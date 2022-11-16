@@ -13,7 +13,7 @@ import { FontSize } from "../../../../styles/Fonts";
 import { useStudy } from "./StudyDataContext";
 import { StudyTitle } from "./StudyTitle";
 
-const strings = Strings.components.pages.studies.studyCard.topDetails;
+const strings = Strings.components.pages.home.studyCard.topDetails;
 
 export function StudyTopDetails() {
   const { study, isUserEnrolled } = useStudy();

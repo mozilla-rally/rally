@@ -6,7 +6,7 @@ import { Strings } from "../../../../resources/Strings";
 import { Colors, Spacing } from "../../../../styles";
 import { ProductButton } from "../../../../styles/Buttons";
 
-const closeIcon = Strings.components.pages.studies.alerts.closeIcon;
+const closeIcon = Strings.components.pages.home.alerts.closeIcon;
 
 interface ToastProps {
   icon: string;
