@@ -103,3 +103,20 @@ export const LinkButton = style({
     },
   },
 });
+
+export const ToastButton = style({
+  ...FontsRaw.MediumBodySM,
+  ...FontSizeRaw.Normal,
+  color: Colors.ColorWhite,
+  border: "none",
+  textDecoration: "underline",
+  backgroundColor: Colors.ColorTransparent,
+  padding: "0",
+  $nest: {
+    "&:hover": {
+      backgroundColor: Colors.ColorTransparent,
+      textDecoration: "none",
+      color: "#000000",
+    },
+  },
+});

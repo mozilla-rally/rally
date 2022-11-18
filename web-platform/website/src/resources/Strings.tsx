@@ -331,7 +331,7 @@ export const Strings = {
       },
       home: {
         alerts: {
-          closeIcon: "/img/close.svg",
+          closeIcon: "/img/close-white.svg",
           verifyEmail: {
             type: "verify-email",
             text: "Please check your email and verify your account.",
