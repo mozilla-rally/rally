@@ -364,7 +364,64 @@ export const Strings = {
             icon: "/img/error.svg",
           },
         },
-
+        news: {
+          items: [
+            {
+              imageUrl: " ",
+            },
+            {
+              date: "07.01.2022",
+              content: (
+                <>
+                  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec
+                  tempor vestibulum vestibulum. Phasellus vulputate nec erat
+                  eget sagittis. Cras hendrerit vitae felis convallis mollis.
+                  Proin auctor leo ut ullamcorper sodales. Nam semper ut tellus
+                  posuere accumsan. Donec ut condimentum nulla
+                </>
+              ),
+              source: "The Markup",
+              title:
+                "Online Abortion Pill Provider Hey Jane Used Tracking Tools That Sent Visitor Data to Meta, Google, and Others",
+              type: "News",
+              url: "",
+            },
+            {
+              date: "07.01.2022",
+              content: (
+                <>
+                  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec
+                  tempor vestibulum vestibulum. Phasellus vulputate nec erat
+                  eget sagittis. Cras hendrerit vitae felis convallis mollis.
+                  Proin auctor leo ut ullamcorper sodales. Nam semper ut tellus
+                  posuere accumsan. Donec ut condimentum nulla
+                </>
+              ),
+              source: "The Markup",
+              title:
+                "Facebook Is Receiving Sensitive Medical Information from Hospital Websites",
+              type: "News",
+              url: "",
+            },
+            {
+              date: "07.01.2022",
+              content: (
+                <>
+                  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec
+                  tempor vestibulum vestibulum. Phasellus vulputate nec erat
+                  eget sagittis. Cras hendrerit vitae felis convallis mollis.
+                  Proin auctor leo ut ullamcorper sodales. Nam semper ut tellus
+                  posuere accumsan. Donec ut condimentum nulla
+                </>
+              ),
+              source: "The Markup",
+              title:
+                "Lawsuit claims Facebook wrongly collects patient data through health system",
+              type: "News",
+              url: "",
+            },
+          ],
+        },
         surveyCard: {
           closeIcon: "/img/close.svg",
           image: "/img/home-illo-1.png",
