@@ -27,8 +27,8 @@ export function News() {
           <NewsHeadline />
         </Col>
         <Col className="col-12 col-lg-6 bg-white ps-lg-3 pe-lg-3 ps-md-5 pe-md-5 ps-sm-3 pe-sm-3">
-          {strings.items.map((item) => (
-            <NewsItem {...item} />
+          {strings.items.map((item, i) => (
+            <NewsItem {...item} key={i} />
           ))}
         </Col>
       </Row>

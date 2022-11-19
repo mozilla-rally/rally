@@ -65,7 +65,7 @@ function NewsReport(item: NewsReportItem) {
       <Row className={`${FontSize.xSmall} text-muted mt-3 d-flex`}>
         <Col>{item.type}</Col>
         <Col className="d-flex justify-content-end">
-          <a href={item.url} target="_blank">
+          <a href={item.url} target="_blank" rel="noreferrer">
             <img src="img/open-external.svg" className="ms-1 mb-1" alt="" />
           </a>
         </Col>
