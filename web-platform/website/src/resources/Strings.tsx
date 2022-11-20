@@ -364,7 +364,97 @@ export const Strings = {
             icon: "/img/error.svg",
           },
         },
+        news: {
+          headline: {
+            content: (
+              <>
+                <p>
+                  Issues of bodily autonomy in gender reproduction are becoming
+                  more and more fraught, with anti-trans legislation and the
+                  overturn of Roe v Wade. Medicine , traditional and startups
+                  are using the internet to provide care, including medication.
+                  One startup , Hey Jane has risen as a way to provide safe
+                  medication options for reproductive care. Unfortunately with
+                  the rise of telehealth, comes new ways for data surveillance..
+                  W Most of the time, no one knows exactly what is being sent,
+                  including the platforms receiving the data. As part of the
+                  Markup’s work with PIxel Hunt, Hey Jane was found to be
+                  sending data to Meta, Google and others. As soon as they were
+                  made aware , they turned them off.
+                </p>
 
+                <p>
+                  The best part of Rally’s work is not fighting the platforms
+                  but providing safety and consent to users. Giving critical
+                  care providers and patients the ability to make informed
+                  choices not just about their medical health, but their data
+                  health as well.
+                </p>
+              </>
+            ),
+            link: {
+              text: "Meta Pixel Hunt",
+            },
+            tagline: "ISSUES",
+            title: "Health and Bodily Autonomy",
+          },
+          items: [
+            {
+              imageUrl: " ",
+            },
+            {
+              date: "07.01.2022",
+              content: (
+                <>
+                  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec
+                  tempor vestibulum vestibulum. Phasellus vulputate nec erat
+                  eget sagittis. Cras hendrerit vitae felis convallis mollis.
+                  Proin auctor leo ut ullamcorper sodales. Nam semper ut tellus
+                  posuere accumsan. Donec ut condimentum nulla
+                </>
+              ),
+              source: "The Markup",
+              title:
+                "Online Abortion Pill Provider Hey Jane Used Tracking Tools That Sent Visitor Data to Meta, Google, and Others",
+              type: "News",
+              url: "",
+            },
+            {
+              date: "07.01.2022",
+              content: (
+                <>
+                  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec
+                  tempor vestibulum vestibulum. Phasellus vulputate nec erat
+                  eget sagittis. Cras hendrerit vitae felis convallis mollis.
+                  Proin auctor leo ut ullamcorper sodales. Nam semper ut tellus
+                  posuere accumsan. Donec ut condimentum nulla
+                </>
+              ),
+              source: "The Markup",
+              title:
+                "Facebook Is Receiving Sensitive Medical Information from Hospital Websites",
+              type: "News",
+              url: "",
+            },
+            {
+              date: "07.01.2022",
+              content: (
+                <>
+                  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec
+                  tempor vestibulum vestibulum. Phasellus vulputate nec erat
+                  eget sagittis. Cras hendrerit vitae felis convallis mollis.
+                  Proin auctor leo ut ullamcorper sodales. Nam semper ut tellus
+                  posuere accumsan. Donec ut condimentum nulla
+                </>
+              ),
+              source: "The Markup",
+              title:
+                "Lawsuit claims Facebook wrongly collects patient data through health system",
+              type: "News",
+              url: "",
+            },
+          ],
+        },
         surveyCard: {
           closeIcon: "/img/close.svg",
           image: "/img/home-illo-1.png",

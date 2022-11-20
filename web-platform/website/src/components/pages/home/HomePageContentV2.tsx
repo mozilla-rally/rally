@@ -1,14 +1,15 @@
 import { useEffect, useState } from "react";
-import { Container, Row } from "reactstrap";
+import { Col, Container, Row } from "reactstrap";
 import { style } from "typestyle";
 
 import { useUserDocument } from "../../../services/UserDocumentService";
-import { ScreenSize, Spacing, createResponsiveStyle } from "../../../styles";
+import { ScreenSize, createResponsiveStyle } from "../../../styles";
 import { ContainerSmallerStyles } from "../../../styles/ContainerStyles";
 import { Layout } from "../../Layout";
 import { PrivacyPolicyModal } from "../privacy-policy/PrivacyPolicyModal";
 import { HomePageBackground } from "./HomePageBackground";
 import { ProductToasts } from "./ProductToasts";
+import { News } from "./news";
 
 export function HomePageContentV2() {
   const [showPrivacyDialog, setShowPrivacyDialog] = useState<boolean>(false);
@@ -25,10 +26,12 @@ export function HomePageContentV2() {
       <HomePageBackground>
         <ProductToasts />
         <Container
-          className={`${ContainerSmallerStyles.TopLevelContainer} ${styles.marginStyle} pt-md-5 pt-0 pb-5 g-0`}
+          className={`${ContainerSmallerStyles.TopLevelContainer} ${styles.marginStyle} mw-100 pt-md-5 pt-0 pb-5 g-0`}
         >
-          <Row className={`g-0 ${styles.row}`}>
-            <div>New content goes here...</div>
+          <Row className={`g-0 m-0 ${styles.row}`}>
+            <Col>
+              <News />
+            </Col>
           </Row>
           {showPrivacyDialog && <PrivacyPolicyModal />}
         </Container>
@@ -58,21 +61,6 @@ const styles = {
       ScreenSize.Medium,
       {
         display: "flex !important",
-      },
-      true
-    )
-  ),
-  nav: style(
-    {
-      marginRight: 0,
-      display: "none",
-      width: "232px",
-    },
-    createResponsiveStyle(
-      ScreenSize.Large,
-      {
-        marginRight: Spacing.xxxLarge,
-        display: "block",
       },
       true
     )
