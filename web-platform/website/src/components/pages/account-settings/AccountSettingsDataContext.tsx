@@ -5,6 +5,7 @@ export enum AccountSettingsState {
   EditEmail = "EditEmail",
   EditPassword = "EditPassword",
   DeleteAccount = "DeleteAccount",
+  ManageContributions = "ManageContributions",
   ResetPassword = "ResetPassword",
 }
 

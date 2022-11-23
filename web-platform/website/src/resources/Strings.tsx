@@ -297,6 +297,10 @@ export const Strings = {
           manageAccount: "Manage Account",
           title: "Sign In",
         },
+        manageContributions: {
+          tagline: "Manage your contributions",
+          title: "Your Data Contributions",
+        },
         navigationBar: {
           sections: [
             {
@@ -304,6 +308,11 @@ export const Strings = {
               icon: "/img/icon-profile.svg",
               link: "/profile",
               external: false,
+            },
+            {
+              text: "Manage Your Contributions",
+              icon: "/favicon.svg",
+              command: "ManageContributions",
             },
             {
               text: "Account Settings",
