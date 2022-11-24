@@ -138,6 +138,8 @@ export async function deleteRallyUserImpl(
     batch.delete(userStudyDoc.ref);
 
     // Collect the UIDs for the study-specific auth accounts associated with this user
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore error TS2345: Argument of type 'string' is not assignable to parameter of type 'never'
     studyExtensionUIDs.push(`${userStudyDoc.data().studyId}:${user.uid}`);
 
     // Count is 0-based, so commit on multiples of 4.

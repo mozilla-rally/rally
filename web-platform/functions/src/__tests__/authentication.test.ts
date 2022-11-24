@@ -2,7 +2,7 @@ import { jest } from "@jest/globals";
 
 import admin from "firebase-admin";
 import functions from "firebase-functions";
-import { AuthenticatedFunction, useAuthentication } from "../authentication";
+import { AuthenticatedFunction, useAuthentication } from "../authentication.js";
 
 describe("useAuthentication", () => {
 
