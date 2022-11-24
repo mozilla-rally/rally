@@ -34,7 +34,7 @@
     "@sendgrid/mail": "~7.7.0",
     "@types/busboy": "~1.5.0",
     "async-mutex": "^0.3.2",
-    "axios": "^0.27.2",
+    "axios": "^1.2.0",
     "busboy": "~1.6.0",
     "cors": "^2.8.5",
     "firebase-admin": "^9.12.0",

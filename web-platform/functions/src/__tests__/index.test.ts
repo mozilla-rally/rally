@@ -22,8 +22,6 @@ import querystring from "querystring";
 jest.setTimeout(10000);
 
 async function disableFunctionTriggers() {
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  // @ts-ignore TS2339: Property 'put' does not exist on type
   await axios.put(
     "http://" +
     process.env.FIREBASE_EMULATOR_HUB +
@@ -32,8 +30,6 @@ async function disableFunctionTriggers() {
 }
 
 async function enableFunctionTriggers() {
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  // @ts-ignore TS2339: Property 'put' does not exist on type
   await axios.put(
     "http://" +
     process.env.FIREBASE_EMULATOR_HUB +

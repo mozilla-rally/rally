@@ -207,7 +207,6 @@ function initializeGlean(): void {
  * from demographic data (mapping)
  */
 function setUserMetrics(data: any): void {
-  // eslint-disable-line @typescript-eslint/no-explicit-any
   if (!data) return;
 
   if ("age" in data) {
@@ -238,7 +237,6 @@ function setUserMetrics(data: any): void {
 
   if ("school" in data) {
     const KEY_FIXUP: any = {
-      // eslint-disable-line @typescript-eslint/no-explicit-any
       high_school_graduate_or_equivalent: "high_school_grad_or_eq",
       some_college_but_no_degree_or_in_progress: "college_degree_in_progress",
     };
@@ -269,8 +267,6 @@ class CustomPingUploader extends Uploader {
     headers: Record<string, string>
   ): Promise<UploadResult> {
     const result = await axios
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore TS2339: Property 'post' does not exist on type
       .post(url, body, { headers: headers })
       .then(function (response) {
         return {
