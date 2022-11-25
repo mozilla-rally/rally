@@ -16,6 +16,7 @@ import { AccountSettingsView } from "./AccountSettingsView";
 import { DeleteAccountView } from "./DeleteAccountView";
 import { EditAccountEmailView } from "./EditAccountEmailView";
 import { EditAccountPasswordView } from "./EditAccountPasswordView";
+import { ManageContributions } from "./ManageContributions";
 
 export function AccountSettingsPageContent() {
   return (
@@ -54,6 +55,9 @@ export function AccountSettingsContentFactory() {
 
     case AccountSettingsState.EditPassword:
       return <EditAccountPasswordView />;
+
+    case AccountSettingsState.ManageContributions:
+      return <ManageContributions />;
 
     case AccountSettingsState.ResetPassword:
       return <AcccountResetPasswordView />;
