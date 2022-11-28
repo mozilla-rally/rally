@@ -19,6 +19,5 @@ export const ToastStyle = {
   productToast: style({
     maxWidth: "unset",
     padding: "0",
-    height: "38px",
   }),
 };

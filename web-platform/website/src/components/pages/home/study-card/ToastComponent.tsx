@@ -36,12 +36,10 @@ export function ToastComponent({
 }: ToastProps) {
   const [isDismissed, setIsDismissed] = useState<boolean>(false);
 
+  isShown;
+
   return (
-    <Container
-      className={`${styles.alert} ${ToastStyle.productToast} ${
-        isShown ? "" : styles.hide
-      }`}
-    >
+    <Container className={`${styles.alert} ${ToastStyle.productToast}`}>
       <Alert
         className={`${type} ${styles.toast} `}
         isOpen={isShown && !isDismissed}
@@ -80,11 +78,9 @@ const styles = {
       height: "auto",
     }),
     {
-      color: "#ffffff",
-
       $nest: {
         ".alert-success": {
-          height: "100%",
+          height: "38px",
           margin: "0",
           color: Colors.ColorWhite,
           borderColor: Colors.ColorTransparent,
@@ -100,7 +96,7 @@ const styles = {
         ".add-extension": {
           backgroundColor: Colors.ColorBlueToast1,
         },
-        ".warning-icon, .toast-btn": {
+        ".toast-btn": {
           marginLeft: Spacing.Micro,
         },
         ".close-icon": {
@@ -113,9 +109,6 @@ const styles = {
       },
     }
   ),
-  hide: style({
-    display: "none",
-  }),
   toast: style(
     {
       padding: "0",
