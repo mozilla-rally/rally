@@ -40,7 +40,7 @@ export interface UserDataContext {
   loginWithEmail: (email: string, password: string) => Promise<UserCredential>;
   loginWithGoogle: () => Promise<void>;
   logout: () => Promise<void>;
-  reloadUser: () => Promise<void>;
+  reloadUserVerification: () => Promise<void>;
   sendEmailVerification: () => Promise<void>;
   signupWithEmail(email: string, password: string): Promise<UserCredential>;
   sendPasswordResetEmail(email: string): Promise<void>;
@@ -113,7 +113,7 @@ export function AuthenticationProvider(props: { children: React.ReactNode }) {
         isLoaded,
         isLoggingIn,
         isUserVerified,
-        reloadUser: async () => {
+        reloadUserVerification: async () => {
           if (!user || !user.firebaseUser) {
             return;
           }

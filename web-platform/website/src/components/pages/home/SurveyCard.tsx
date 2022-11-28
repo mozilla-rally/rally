@@ -4,7 +4,6 @@ import { Col, Container, Row } from "reactstrap";
 import { style } from "typestyle";
 
 import { Strings } from "../../../resources/Strings";
-import { useAuthentication } from "../../../services/AuthenticationService";
 import { useUserDocument } from "../../../services/UserDocumentService";
 import { Colors } from "../../../styles";
 import { Spacing } from "../../../styles";
@@ -16,12 +15,7 @@ const strings = Strings.components.pages.home.surveyCard;
 
 export function SurveyCard() {
   const [isVisible, setIsVisible] = useState<boolean>(true);
-  const { reloadUser } = useAuthentication();
   const { userDocument } = useUserDocument();
-
-  useEffect(() => {
-    reloadUser();
-  }, []);
 
   useEffect(() => {
     setIsVisible((userDocument && !userDocument.onboared) ?? false);

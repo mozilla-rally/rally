@@ -28,13 +28,13 @@ export function ProductToasts() {
   const [showPrivacyDialog, setShowPrivacyDialog] = useState<boolean>(false);
   const [browserType] = useState(detectBrowser());
 
-  const { isUserVerified, reloadUser, sendEmailVerification } =
+  const { isUserVerified, reloadUserVerification, sendEmailVerification } =
     useAuthentication();
   const { installedStudyIds, rallyExtensionStudy } = useStudies();
   const { userDocument } = useUserDocument();
 
   useEffect(() => {
-    reloadUser();
+    reloadUserVerification();
   }, []);
 
   useEffect(() => {
