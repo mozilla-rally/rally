@@ -16,12 +16,7 @@ const strings = Strings.components.pages.home.surveyCard;
 
 export function SurveyCard() {
   const [isVisible, setIsVisible] = useState<boolean>(true);
-  const { reloadUser } = useAuthentication();
   const { userDocument } = useUserDocument();
-
-  useEffect(() => {
-    reloadUser();
-  }, []);
 
   useEffect(() => {
     setIsVisible((userDocument && !userDocument.onboared) ?? false);
