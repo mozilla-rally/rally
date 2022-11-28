@@ -41,13 +41,17 @@ export function SurveyCard() {
             alt="x icon"
             height="24px"
             width="24px"
-            className="survey-close-icon"
+            className="survey-card-close-icon"
           />
         </Col>
       </Row>
       <Row className="d-flex">
         <Col>
-          <img src={strings.image} alt="people talking" />
+          <img
+            src={strings.image}
+            alt="people talking"
+            className="survey-card-img"
+          />
         </Col>
         <Col>
           <h4 className="survey-card-title">{strings.title}</h4>
@@ -57,15 +61,12 @@ export function SurveyCard() {
             {strings.text}
           </div>
           <Link href={strings.profile}>
-            <div
-              className={`${ProductButton} w-100 mt-1 survey-card-btn btn btn-secondary`}
-            >
+            <div className={`${ProductButton} py-1 px-3 btn btn-secondary`}>
               {strings.button}
             </div>
           </Link>
         </Col>
       </Row>
-      <Row></Row>
     </Container>
   );
 }
@@ -75,7 +76,12 @@ const styles = {
     padding: "16px 20px 20px",
     margin: `${Spacing.Large + 4}px 0px`,
     $nest: {
-      ".survey-close-icon": {
+      ".survey-card-img": {
+        height: 200,
+        width: 275,
+        objectFit: "cover",
+      },
+      ".survey-card-close-icon": {
         cursor: "pointer",
       },
       ".survey-card-title": {

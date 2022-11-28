@@ -9,6 +9,7 @@ import { Layout } from "../../Layout";
 import { PrivacyPolicyModal } from "../privacy-policy/PrivacyPolicyModal";
 import { HomePageBackground } from "./HomePageBackground";
 import { ProductToasts } from "./ProductToasts";
+import { SurveyCard } from "./SurveyCard";
 import { News } from "./news";
 
 export function HomePageContentV2() {
@@ -30,6 +31,7 @@ export function HomePageContentV2() {
         >
           <Row className={`g-0 m-0 ${styles.row}`}>
             <Col>
+              <SurveyCard />
               <News />
             </Col>
           </Row>
