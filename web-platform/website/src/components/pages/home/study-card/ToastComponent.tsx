@@ -3,8 +3,14 @@ import { Alert, Button, Container } from "reactstrap";
 import { style } from "typestyle";
 
 import { Strings } from "../../../../resources/Strings";
-import { Colors, Spacing } from "../../../../styles";
-import { ProductButton } from "../../../../styles/Buttons";
+import {
+  Colors,
+  ScreenSize,
+  Spacing,
+  createResponsiveStyle,
+} from "../../../../styles";
+import { ToastButton } from "../../../../styles/Buttons";
+import { ToastStyle } from "../../../../styles/Toasts";
 
 const closeIcon = Strings.components.pages.home.alerts.closeIcon;
 
@@ -20,7 +26,6 @@ interface ToastProps {
 }
 
 export function ToastComponent({
-  icon,
   text,
   button,
   type,
@@ -31,40 +36,36 @@ export function ToastComponent({
 }: ToastProps) {
   const [isDismissed, setIsDismissed] = useState<boolean>(false);
 
-  return (
-    <Container className={styles.alert}>
-      <Alert className={`${type} `} isOpen={isShown && !isDismissed}>
-        <div className={`d-flex align-items-center justify-content-between `}>
-          <div className="left d-flex">
-            <img
-              width="24px"
-              height="24px"
-              className="warning-icon"
-              src={icon}
-              alt="warning icon"
-            />
-            <div>{text}</div>
-          </div>
+  isShown;
 
-          <div className="right d-flex align-items-center">
+  return (
+    <Container className={`${styles.alert} ${ToastStyle.productToast}`}>
+      <Alert
+        className={`${type} ${styles.toast} `}
+        isOpen={isShown && !isDismissed}
+      >
+        <div className={`d-flex justify-content-end align-items-center h-100`}>
+          <div className="d-flex flex-grow-1 justify-content-center">
+            <div>{text}</div>
             <Button
               onClick={async () => {
                 onTakeAction && onTakeAction();
                 link && window.open(link, "_blank", "noreferrer");
               }}
-              className={`${ProductButton} toast-btn`}
+              className={`${ToastButton} toast-btn`}
             >
               {button}
             </Button>
-            {isDismissable && (
-              <img
-                onClick={() => setIsDismissed(true)}
-                className="close-icon"
-                src={closeIcon}
-                alt="x icon"
-              />
-            )}
           </div>
+
+          {isDismissable && (
+            <img
+              onClick={() => setIsDismissed(true)}
+              className="close-icon"
+              src={closeIcon}
+              alt="x icon"
+            />
+          )}
         </div>
       </Alert>
     </Container>
@@ -72,27 +73,48 @@ export function ToastComponent({
 }
 
 const styles = {
-  alert: style({
-    color: "#000000",
-    $nest: {
-      "alert-success": {
-        backgroundColor: "none",
-      },
+  alert: style(
+    createResponsiveStyle(ScreenSize.ExtraSmall, {
+      height: "auto",
+    }),
+    {
+      $nest: {
+        ".alert-success": {
+          height: "38px",
+          margin: "0",
+          color: Colors.ColorWhite,
+          borderColor: Colors.ColorTransparent,
+          borderRadius: "0",
+        },
 
-      ".verify-email": {
-        backgroundColor: Colors.ColorYellow100,
+        ".verify-email": {
+          backgroundColor: Colors.ColorBlueToast3,
+        },
+        ".privacy-policy": {
+          backgroundColor: Colors.ColorBlueToast2,
+        },
+        ".add-extension": {
+          backgroundColor: Colors.ColorBlueToast1,
+        },
+        ".toast-btn": {
+          marginLeft: Spacing.Micro,
+        },
+        ".close-icon": {
+          width: Spacing.xLarge,
+          height: Spacing.xLarge,
+          cursor: "pointer",
+          margin: "7px 16px 7px 0",
+          color: Colors.ColorWhite,
+        },
       },
-      ".privacy-policy, .add-extension": {
-        backgroundColor: Colors.ColorRed100,
-      },
-      ".warning-icon, .toast-btn": {
-        marginRight: Spacing.xSmall,
-      },
-      ".close-icon": {
-        width: Spacing.xLarge,
-        height: Spacing.xLarge,
-        cursor: "pointer",
-      },
+    }
+  ),
+  toast: style(
+    {
+      padding: "0",
     },
-  }),
+    createResponsiveStyle(ScreenSize.ExtraSmall, {
+      padding: "10px",
+    })
+  ),
 };
