@@ -4,7 +4,6 @@ import { Col, Container, Row } from "reactstrap";
 import { style } from "typestyle";
 
 import { Strings } from "../../../resources/Strings";
-import { useAuthentication } from "../../../services/AuthenticationService";
 import { useUserDocument } from "../../../services/UserDocumentService";
 import { Colors } from "../../../styles";
 import { Spacing } from "../../../styles";
