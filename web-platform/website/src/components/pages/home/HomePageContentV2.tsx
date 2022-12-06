@@ -10,8 +10,8 @@ import { PrivacyPolicyModal } from "../privacy-policy/PrivacyPolicyModal";
 import { HomePageBackground } from "./HomePageBackground";
 import { ProductToasts } from "./ProductToasts";
 import { SurveyCard } from "./SurveyCard";
-import { PervasivePixels } from "./pervasive-pixels";
 import { News } from "./news";
+import { PervasivePixels } from "./pervasive-pixels";
 
 export function HomePageContentV2() {
   const [showPrivacyDialog, setShowPrivacyDialog] = useState<boolean>(false);

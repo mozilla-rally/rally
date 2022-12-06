@@ -16,19 +16,25 @@ export function PervasivePixels() {
     >
       <Row className="d-flex">
         <Col className="col-12 col-lg-4 px-4">
-          <h2 className={`${Fonts.Headline} mt-4 pervasive-pixels-title`}>{strings.title}</h2>
-          <h4 className={`${FontSize.Large} pervasive-pixels-subtitle`}>{strings.subtitle}</h4>
-          <div
-            className={`${Fonts.MediumBodySM} ${FontSize.Small} pb-4`}
-          >
+          <h2 className={`${Fonts.Headline} mt-4 pervasive-pixels-title`}>
+            {strings.title}
+          </h2>
+          <h4 className={`${FontSize.Large} pervasive-pixels-subtitle`}>
+            {strings.subtitle}
+          </h4>
+          <div className={`${Fonts.MediumBodySM} ${FontSize.Small} pb-4`}>
             {strings.text}
           </div>
         </Col>
         <Col className="col-12 col-lg-8">
-          <div
-            className={`pervasive-pixels-datawrapper`}
-          >
-            <iframe title="Pervasive Pixels" aria-label="Scatter Plot" width="600" height="600" src={`${strings.datawrapperSource}`} />
+          <div className={`pervasive-pixels-datawrapper`}>
+            <iframe
+              title="Pervasive Pixels"
+              aria-label="Scatter Plot"
+              width="600"
+              height="600"
+              src={`${strings.datawrapperSource}`}
+            />
           </div>
         </Col>
       </Row>
@@ -52,8 +58,7 @@ const styles = {
         lineHeight: `${Spacing.Large + 4}px`,
         color: "#333333",
       },
-      ".pervasive-pixels-datawrapper": {
-      },
+      ".pervasive-pixels-datawrapper": {},
     },
   }),
 };
