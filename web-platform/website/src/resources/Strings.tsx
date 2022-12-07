@@ -380,6 +380,22 @@ export const Strings = {
           text: "A tracking pixel is a tiny bit of code in the background of a website that allows the installer to gather information about visitors to a website. It's important to note that not all tracking pixels are created equal. Some trackers collect browsing data, including sites you visit and ads you click, but others capture much more personal and sensitive information. Through our research study with The Markup, the “Facebook Pixel Hunt”, we were able to identify the top 1,000 sites visited by the Rally community and reveal which sites are tracking more than just those bunny slippers you've had in your cart for the last month.",
           datawrapperSource: "https://datawrapper.dwcdn.net/UtaYJ/1/",
         },
+        statsBox: {
+          content: [
+            {
+              number: "8",
+              text: "research projects",
+            },
+            {
+              number: "12,000,000",
+              text: "discovered data pings",
+            },
+            {
+              number: "65mil",
+              text: "sites uncovered taking your data",
+            },
+          ],
+        },
         news: {
           headline: {
             content: (

@@ -15,7 +15,9 @@ export function HomePageTitle({
     <Container className={`p-0 ${className || ""}`} {...rest}>
       <Row>
         <Col>
-          <h1 className={`${Fonts.Headline} mb-2`}>{strings.title}</h1>
+          <h1 className={`${Fonts.Headline} mt-5 mb-2 text-center`}>
+            {strings.title}
+          </h1>
         </Col>
       </Row>
     </Container>

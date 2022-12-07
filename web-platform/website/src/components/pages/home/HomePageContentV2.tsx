@@ -8,7 +8,9 @@ import { ContainerSmallerStyles } from "../../../styles/ContainerStyles";
 import { Layout } from "../../Layout";
 import { PrivacyPolicyModal } from "../privacy-policy/PrivacyPolicyModal";
 import { HomePageBackground } from "./HomePageBackground";
+import { HomePageTitle } from "./HomePageTitle";
 import { ProductToasts } from "./ProductToasts";
+import { StatsBox } from "./StatsBox";
 import { SurveyCard } from "./SurveyCard";
 import { News } from "./news";
 import { PervasivePixels } from "./pervasive-pixels";
@@ -27,6 +29,10 @@ export function HomePageContentV2() {
     <Layout>
       <HomePageBackground>
         <ProductToasts />
+        <HomePageTitle />
+        <StatsBox />
+        <SurveyCard />
+
         <Container
           className={`${ContainerSmallerStyles.TopLevelContainer} ${styles.marginStyle} mw-100 pt-md-5 pt-0 pb-5 g-0`}
         >
