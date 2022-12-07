@@ -387,12 +387,12 @@ export const Strings = {
               text: "research projects",
             },
             {
-              number: "12,000,000",
+              number: "185,984,07",
               text: "discovered data pings",
             },
             {
-              number: "65mil",
-              text: "sites uncovered taking your data",
+              number: "6,294,163",
+              text: "total tracking pixels found",
             },
           ],
         },
