@@ -2,8 +2,7 @@ import { Col, Container, Row } from "reactstrap";
 import { style } from "typestyle";
 
 import { Strings } from "../../../../resources/Strings";
-import { Colors } from "../../../../styles";
-import { Spacing } from "../../../../styles";
+import { Colors, Spacing } from "../../../../styles";
 import { CardStyles } from "../../../../styles/Cards";
 import { FontSize, Fonts } from "../../../../styles/Fonts";
 
@@ -26,13 +25,13 @@ export function PervasivePixels() {
             {strings.text}
           </div>
         </Col>
-        <Col className="col-12 col-lg-8">
+        <Col className={`col-12 col-lg-8`}>
           <div className={`pervasive-pixels-datawrapper`}>
             <iframe
               title="Pervasive Pixels"
               aria-label="Scatter Plot"
-              width="600"
-              height="600"
+              width="100%"
+              height="600px"
               src={`${strings.datawrapperSource}`}
             />
           </div>

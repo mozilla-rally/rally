@@ -10,6 +10,7 @@ import {
   createResponsiveStyle,
 } from "../../../../styles";
 import { ToastButton } from "../../../../styles/Buttons";
+import { FontSizeRaw } from "../../../../styles/Fonts";
 import { ToastStyle } from "../../../../styles/Toasts";
 
 const closeIcon = Strings.components.pages.home.alerts.closeIcon;
@@ -41,32 +42,30 @@ export function ToastComponent({
   return (
     <Container className={`${styles.alert} ${ToastStyle.productToast}`}>
       <Alert
-        className={`${type} ${styles.toast} `}
+        className={`${type} ${styles.toast} d-flex justify-content-end align-items-center`}
         isOpen={isShown && !isDismissed}
       >
-        <div className={`d-flex justify-content-end align-items-center h-100`}>
-          <div className="d-flex flex-grow-1 justify-content-center">
-            <div>{text}</div>
-            <Button
-              onClick={async () => {
-                onTakeAction && onTakeAction();
-                link && window.open(link, "_blank", "noreferrer");
-              }}
-              className={`${ToastButton} toast-btn`}
-            >
-              {button}
-            </Button>
-          </div>
-
-          {isDismissable && (
-            <img
-              onClick={() => setIsDismissed(true)}
-              className="close-icon"
-              src={closeIcon}
-              alt="x icon"
-            />
-          )}
+        <div className="d-flex flex-grow-1 justify-content-center">
+          <div>{text}</div>
+          <Button
+            onClick={async () => {
+              onTakeAction && onTakeAction();
+              link && window.open(link, "_blank", "noreferrer");
+            }}
+            className={`${ToastButton} toast-btn`}
+          >
+            {button}
+          </Button>
         </div>
+
+        {isDismissable && (
+          <img
+            onClick={() => setIsDismissed(true)}
+            className="close-icon"
+            src={closeIcon}
+            alt="x icon"
+          />
+        )}
       </Alert>
     </Container>
   );
@@ -79,14 +78,6 @@ const styles = {
     }),
     {
       $nest: {
-        ".alert-success": {
-          height: "38px",
-          margin: "0",
-          color: Colors.ColorWhite,
-          borderColor: Colors.ColorTransparent,
-          borderRadius: "0",
-        },
-
         ".verify-email": {
           backgroundColor: Colors.ColorBlueToast3,
         },
@@ -97,6 +88,7 @@ const styles = {
           backgroundColor: Colors.ColorBlueToast1,
         },
         ".toast-btn": {
+          ...FontSizeRaw.Small,
           marginLeft: Spacing.Micro,
         },
         ".close-icon": {
@@ -111,10 +103,18 @@ const styles = {
   ),
   toast: style(
     {
+      ...FontSizeRaw.Small,
       padding: "0",
+      height: "38px",
+      margin: "0",
+      color: Colors.ColorWhite,
+      borderColor: Colors.ColorTransparent,
+      borderRadius: "0",
+      lineHeight: `${Spacing.Large + 4}px`,
     },
     createResponsiveStyle(ScreenSize.ExtraSmall, {
       padding: "10px",
+      lineHeight: `${Spacing.Large + 2}px`,
     })
   ),
 };

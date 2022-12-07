@@ -19,7 +19,7 @@ export function News() {
     <Container className={`${ContainerStyles.NoSpacing}`}>
       <Row className={styles.divider}>
         <Col className={`${Fonts.Headline} ${FontSize.xxLarge}`}>
-          Our impact across the web
+          Made possible by contributions like yours
         </Col>
       </Row>
       <Row>

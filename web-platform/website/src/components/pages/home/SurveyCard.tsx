@@ -15,6 +15,7 @@ const strings = Strings.components.pages.home.surveyCard;
 
 export function SurveyCard() {
   const [isVisible, setIsVisible] = useState<boolean>(true);
+
   const { userDocument } = useUserDocument();
 
   useEffect(() => {
@@ -25,7 +26,7 @@ export function SurveyCard() {
     <Container
       className={`${isVisible ? "d-block" : "d-none"} ${
         CardStyles.product.container
-      } ${styles.container} `}
+      } ${styles.container} mt-5 `}
     >
       <Row className="mb-1">
         <Col className="d-flex flex-row-reverse">
@@ -39,12 +40,12 @@ export function SurveyCard() {
           />
         </Col>
       </Row>
-      <Row className="d-flex">
-        <Col>
+      <Row className="d-flex flex-wrap">
+        <Col className="d-flex justify-content-center">
           <img
+            className="survey-card-img"
             src={strings.image}
             alt="people talking"
-            className="survey-card-img"
           />
         </Col>
         <Col>
@@ -68,11 +69,11 @@ export function SurveyCard() {
 const styles = {
   container: style({
     padding: "16px 20px 20px",
-    margin: `${Spacing.Large + 4}px 0px`,
+    margin: "auto",
+    boxShadow: "none",
     $nest: {
       ".survey-card-img": {
         height: 200,
-        width: 275,
         objectFit: "cover",
       },
       ".survey-card-close-icon": {
