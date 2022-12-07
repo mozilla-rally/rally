@@ -11,11 +11,11 @@ export function EmailNotVerifiedToast() {
   const [showEmailDialog, setShowEmailDialog] = useState<boolean>(false);
   const [showEmailNotVerifiedToast, setShowEmailNotVerifiedToast] =
     useState<boolean>(false);
-  const { isUserVerified, reloadUser, sendEmailVerification } =
+  const { isUserVerified, reloadUserVerification, sendEmailVerification } =
     useAuthentication();
 
   useEffect(() => {
-    reloadUser();
+    reloadUserVerification();
   }, []);
 
   useEffect(() => {

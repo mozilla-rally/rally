@@ -9,7 +9,9 @@ import { Layout } from "../../Layout";
 import { PrivacyPolicyModal } from "../privacy-policy/PrivacyPolicyModal";
 import { HomePageBackground } from "./HomePageBackground";
 import { ProductToasts } from "./ProductToasts";
+import { SurveyCard } from "./SurveyCard";
 import { News } from "./news";
+import { PervasivePixels } from "./pervasive-pixels";
 
 export function HomePageContentV2() {
   const [showPrivacyDialog, setShowPrivacyDialog] = useState<boolean>(false);
@@ -30,6 +32,8 @@ export function HomePageContentV2() {
         >
           <Row className={`g-0 m-0 ${styles.row}`}>
             <Col>
+              <SurveyCard />
+              <PervasivePixels />
               <News />
             </Col>
           </Row>

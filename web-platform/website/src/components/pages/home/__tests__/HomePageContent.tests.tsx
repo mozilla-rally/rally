@@ -30,7 +30,7 @@ describe("HomePageContent tests", () => {
       allStudies: [],
     });
     (useAuthentication as jest.Mock).mockReturnValue({
-      reloadUser: jest.fn(),
+      reloadUserVerification: jest.fn(),
     });
   });
 
