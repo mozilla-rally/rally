@@ -374,6 +374,7 @@ export const Strings = {
           },
         },
         pervasivePixels: {
+          headline: "Across the Rally community",
           title: "Pervasive Pixels",
           subtitle:
             "The network graph represents the top 1000 domains by attention",
@@ -528,8 +529,12 @@ export const Strings = {
             reactivateStudy: "Reactivate",
           },
         },
+
         title: {
           title: "Welcome to Rally",
+        },
+        headline: {
+          headline: "Across the Rally community",
         },
       },
       login: {

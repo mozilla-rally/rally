@@ -15,9 +15,9 @@ const strings = Strings.components.pages.home.statsBox;
 export function StatsBox() {
   return (
     <Container
-      className={`${CardStyles.product.container} ${styles.container}`}
+      className={`${CardStyles.product.container} ${styles.container} p-0`}
     >
-      <Row className="d-flex box-row">
+      <Row className="d-flex box-row g-0">
         {strings.content.map((item, i) => (
           <Col
             key={i}
@@ -37,7 +37,6 @@ const styles = {
     marginTop: `${Spacing.xLarge + 4}px`,
     boxShadow: "none",
     borderRight: "none",
-    maxWidth: "1116px",
     width: "100%",
     $nest: {
       ".box-row": {
@@ -56,14 +55,8 @@ const styles = {
       },
     },
   }),
-  statBoxItem: style(
-    {
-      maxWidth: "372px",
-      padding: `${Spacing.Large + 4}px`,
-      borderRight: "solid 1px #cdcdd4 ",
-    },
-    createResponsiveStyle(ScreenSize.ExtraSmall, {
-      maxWidth: "unset",
-    })
-  ),
+  statBoxItem: style({
+    padding: `${Spacing.Large + 4}px`,
+    borderRight: "solid 1px #cdcdd4 ",
+  }),
 };

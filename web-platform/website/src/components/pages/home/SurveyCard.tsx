@@ -40,9 +40,13 @@ export function SurveyCard() {
           />
         </Col>
       </Row>
-      <Row className="d-flex">
+      <Row className="d-flex flex-wrap">
         <Col className="d-flex justify-content-center">
-          <img src={strings.image} alt="people talking" />
+          <img
+            className="survey-card-img"
+            src={strings.image}
+            alt="people talking"
+          />
         </Col>
         <Col>
           <h4 className="survey-card-title">{strings.title}</h4>
@@ -66,12 +70,10 @@ const styles = {
   container: style({
     padding: "16px 20px 20px",
     margin: "auto",
-    maxWidth: "1116px",
     boxShadow: "none",
     $nest: {
       ".survey-card-img": {
         height: 200,
-        width: 275,
         objectFit: "cover",
       },
       ".survey-card-close-icon": {
