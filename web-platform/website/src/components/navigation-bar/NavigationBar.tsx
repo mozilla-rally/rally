@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { useRouter } from "next/router";
 import { HTMLAttributes } from "react";
 import { Col, Container, Row } from "reactstrap";
 import { style } from "typestyle";
@@ -59,6 +60,12 @@ export function NavigationBar(props: NavigationBarProps) {
 }
 
 function TopLinks() {
+  const router = useRouter();
+
+  function isLinkActive(url: string) {
+    return router.isReady && router.asPath === url;
+  }
+
   return (
     <>
       {strings.topLinks.map((topLink, i) => (
@@ -69,7 +76,11 @@ function TopLinks() {
           <Link href={topLink.href}>
             <a
               target={topLink.external ? "_blank" : "_self"}
-              className={`${LinkStyles.NoUnderline} top-link`}
+              className={`top-link ${
+                isLinkActive(topLink.href)
+                  ? "text-decoration-underline"
+                  : LinkStyles.NoUnderline
+              }`}
             >
               {topLink.title}
             </a>

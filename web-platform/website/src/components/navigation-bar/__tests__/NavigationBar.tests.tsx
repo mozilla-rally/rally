@@ -1,4 +1,5 @@
 import { RenderResult, render } from "@testing-library/react";
+import { useRouter } from "next/router";
 import React from "react";
 
 import { Strings } from "../../../resources/Strings";
@@ -7,6 +8,7 @@ import { DesktopMenu } from "../DesktopMenu";
 import { MobileMenu } from "../MobileMenu";
 import { NavigationBar } from "../NavigationBar";
 
+jest.mock("next/router");
 jest.mock("../../../services/AuthenticationService");
 jest.mock("../DesktopMenu");
 jest.mock("../MobileMenu");
@@ -14,6 +16,10 @@ jest.mock("../MobileMenu");
 const strings = Strings.components.navigationBar;
 
 describe("NavigationBar tests", () => {
+  beforeEach(() => {
+    (useRouter as jest.Mock).mockReturnValue({ isReady: true, asPath: "/" });
+  });
+
   it("Renders correctly for unauthenticated user", () => {
     (useAuthentication as jest.Mock).mockImplementation(() => ({
       user: null,
