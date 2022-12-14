@@ -1,3 +1,4 @@
+import { logEvent } from "firebase/analytics";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { HTMLAttributes } from "react";
@@ -6,6 +7,7 @@ import { style } from "typestyle";
 
 import { Strings } from "../../resources/Strings";
 import { useAuthentication } from "../../services/AuthenticationService";
+import { useFirebase } from "../../services/FirebaseService";
 import {
   Colors,
   ScreenSize,
@@ -61,6 +63,7 @@ export function NavigationBar(props: NavigationBarProps) {
 
 function TopLinks() {
   const router = useRouter();
+  const { analytics } = useFirebase();
 
   function isLinkActive(url: string) {
     return router.isReady && router.asPath === url;
@@ -81,6 +84,14 @@ function TopLinks() {
                   ? "text-decoration-underline"
                   : LinkStyles.NoUnderline
               }`}
+              onClick={() => {
+                if (topLink.external) {
+                  logEvent(analytics, "external_link", {
+                    title: topLink.title,
+                    link_url: topLink.href,
+                  });
+                }
+              }}
             >
               {topLink.title}
             </a>
