@@ -1,7 +1,9 @@
+import { logEvent } from "firebase/analytics";
 import { Col, Container, Row } from "reactstrap";
 import { style } from "typestyle";
 
 import { Strings } from "../resources/Strings";
+import { useFirebase } from "../services/FirebaseService";
 import { Colors } from "../styles/Colors";
 import { ContainerSmallerStyles } from "../styles/ContainerStyles";
 import { FontSize } from "../styles/Fonts";
@@ -11,6 +13,8 @@ import { Spacing } from "../styles/Spacing";
 const strings = Strings.components.footer;
 
 export function Footer(props: { className?: string }) {
+  const { analytics } = useFirebase();
+
   return (
     <Container
       className={`${ContainerSmallerStyles.TopLevelContainer} ${
@@ -45,6 +49,14 @@ export function Footer(props: { className?: string }) {
                     target={l.external ? "_blank" : "_self"}
                     className={`${FontSize.Small} ${LinkStyles.NoUnderline}`}
                     rel="noreferrer"
+                    onClick={() => {
+                      if (l.external) {
+                        logEvent(analytics, "external_link", {
+                          title: l.text,
+                          link_url: l.link,
+                        });
+                      }
+                    }}
                   >
                     {l.text}
                   </a>
