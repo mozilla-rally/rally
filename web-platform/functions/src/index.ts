@@ -2,11 +2,11 @@ import admin from "firebase-admin";
 import functions, { Change, EventContext } from "firebase-functions";
 import { DocumentSnapshot } from "firebase-functions/v1/firestore";
 import { v4 as uuidv4 } from "uuid";
-import { useAuthentication } from "./authentication";
-import { useCors } from "./cors";
-import { studies } from "./studies";
+import { useAuthentication } from "./authentication.js";
+import { useCors } from "./cors.js";
+import { studies } from "./studies.js";
 import { isDeepStrictEqual } from "util";
-import * as gleanPings from "./glean";
+import * as gleanPings from "./glean.js";
 import assert from "assert";
 import Client from "@sendgrid/client";
 import UAParser from "ua-parser-js";
@@ -133,7 +133,7 @@ export async function deleteRallyUserImpl(
   // Work in batches of 5: https://firebase.google.com/docs/firestore/manage-data/transactions#security_rules_limits
   let batch = admin.firestore().batch();
   const userStudyDocs = await collectionRef.get();
-  const studyExtensionUIDs = [];
+  const studyExtensionUIDs: string[] = [];
   for (const [count, userStudyDoc] of userStudyDocs.docs.entries()) {
     batch.delete(userStudyDoc.ref);
 

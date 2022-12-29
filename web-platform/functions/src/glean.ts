@@ -206,7 +206,7 @@ function initializeGlean(): void {
  * Helper function for setting user metrics
  * from demographic data (mapping)
  */
-function setUserMetrics(data: any): void { // eslint-disable-line @typescript-eslint/no-explicit-any
+function setUserMetrics(data: any): void {
   if (!data) return;
 
   if ("age" in data) {
@@ -236,7 +236,7 @@ function setUserMetrics(data: any): void { // eslint-disable-line @typescript-es
   }
 
   if ("school" in data) {
-    const KEY_FIXUP: any = { // eslint-disable-line @typescript-eslint/no-explicit-any
+    const KEY_FIXUP: any = {
       high_school_graduate_or_equivalent: "high_school_grad_or_eq",
       some_college_but_no_degree_or_in_progress: "college_degree_in_progress",
     };

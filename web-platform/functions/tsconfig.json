@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
-    "module": "esnext",
-    "moduleResolution": "node",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
     "allowSyntheticDefaultImports": true,
     "esModuleInterop": false,
     "noImplicitReturns": true,
@@ -10,8 +10,9 @@
     "outDir": "dist",
     "sourceMap": true,
     "strict": true,
-    "target": "es2017",
+    "target": "ES2017",
     "typeRoots": ["node_modules/@types"],
+    "noImplicitAny": false,
     "plugins": [
       {
         "transform": "ts-transform-esm-import",
