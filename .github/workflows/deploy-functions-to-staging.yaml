@@ -24,7 +24,7 @@ jobs:
       - run: rush update
       - run: rush install -t @mozilla/rally-functions
       - run: rush build -t @mozilla/rally-functions
-      - run: rush test -t @mozilla/rally-functions
+      - run: rush test -v -t @mozilla/rally-functions
 
       - name: Deploy firebase functions to staging
         run: |
