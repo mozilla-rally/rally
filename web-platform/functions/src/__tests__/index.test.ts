@@ -117,7 +117,11 @@ describe("addRallyUserToFirestore and deleteRallyUserImpl", () => {
 
   it("empty provider data does not register extension users", async () => {
     await expect(
-      addRallyUserToFirestoreImpl({ ...user, providerData: [] })
+      addRallyUserToFirestoreImpl({
+        ...user,
+        providerData: [],
+        toJSON: () => ({}),
+      })
     ).resolves.toBeFalsy();
 
     const userRecords = await getUserRecords();
@@ -131,6 +135,7 @@ describe("addRallyUserToFirestore and deleteRallyUserImpl", () => {
       addRallyUserToFirestoreImpl({
         ...user,
         providerData: [{ uid: user.uid } as admin.auth.UserInfo],
+        toJSON: () => ({}),
       })
     ).resolves.toBeTruthy();
 
@@ -170,6 +175,7 @@ describe("addRallyUserToFirestore and deleteRallyUserImpl", () => {
     await deleteRallyUserImpl({
       ...user,
       providerData: [{ uid: user.uid } as admin.auth.UserInfo],
+      toJSON: () => ({}),
     });
 
     const userRecords = await getUserRecords();
