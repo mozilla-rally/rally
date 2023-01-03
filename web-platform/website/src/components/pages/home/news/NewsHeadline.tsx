@@ -20,13 +20,12 @@ export function NewsHeadline() {
         </Col>
       </Row>
       <Row className="mb-2">
-        <Col>
-          <div
+        <Col className="d-flex justify-content-center">
+          <img
+            src={strings.image.url}
             style={{
-              width: 350,
-              height: 300,
-              backgroundColor: "gray",
-              margin: "auto",
+              maxWidth: 350,
+              maxHeight: 300,
             }}
           />
         </Col>

@@ -425,6 +425,9 @@ export const Strings = {
                 </p>
               </>
             ),
+            image: {
+              url: "/img/image-illustratiion-how-secure.png",
+            },
             link: {
               text: "Meta Pixel Hunt",
             },
@@ -432,9 +435,6 @@ export const Strings = {
             title: "Health and Bodily Autonomy",
           },
           items: [
-            {
-              imageUrl: " ",
-            },
             {
               date: "07.01.2022",
               content: (
