@@ -47,7 +47,7 @@ function ImageNews(item: ImageItem) {
 function NewsReport(item: NewsReportItem) {
   return (
     <Container
-      className={`${ContainerStyles.NoSpacing} border-top pt-4 pb-2 ps-lg-2 pe-lg-5`}
+      className={`${ContainerStyles.NoSpacing} border-bottom pb-4 pt-2 ps-lg-2 pe-lg-5`}
     >
       <Row>
         <Col className={`${FontSize.xSmall} text-muted`}>
