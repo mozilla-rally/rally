@@ -1,5 +1,6 @@
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
+import { isChrome } from "react-device-detect";
 import { Col, Container, Row } from "reactstrap";
 import { style } from "typestyle";
 
@@ -9,8 +10,6 @@ import { useUserDocument } from "../../../services/UserDocumentService";
 import { Colors, Spacing } from "../../../styles";
 import { LinkButton, PrimaryButton } from "../../../styles/Buttons";
 import { FontSizeRaw, Fonts } from "../../../styles/Fonts";
-import { detectBrowser } from "../../../utils/BrowserDetector";
-import { BrowserType } from "../../../utils/BrowserType";
 import { Highlighter } from "../../Highlighter";
 import { LoginButton } from "../login/LoginButton";
 import { PrivacyPolicyModal } from "../privacy-policy/PrivacyPolicyModal";
@@ -23,7 +22,6 @@ export function GetExtensionView() {
   const [chromeLink, setChromelink] = useState("");
   const [fxLink, setFxlink] = useState("");
   const { userDocument } = useUserDocument();
-  const browserType = detectBrowser();
   const { allStudies } = useStudies();
 
   useEffect(() => {
@@ -75,7 +73,7 @@ export function GetExtensionView() {
             <LoginButton
               onClick={() => {
                 window.open(
-                  browserType === BrowserType.Chrome ? chromeLink : fxLink,
+                  isChrome ? chromeLink : fxLink,
                   "_blank",
                   "noreferrer"
                 );
