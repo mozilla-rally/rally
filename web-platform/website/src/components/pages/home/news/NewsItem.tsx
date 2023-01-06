@@ -61,7 +61,12 @@ function NewsReport(item: NewsReportItem) {
       </Row>
       <Row>
         <Col className={`${Fonts.Headline} ${FontSize.xLarge}`}>
-          <a href={item.url} target="_blank" className={LinkStyles.NoUnderline}>
+          <a
+            href={item.url}
+            target="_blank"
+            className={LinkStyles.NoUnderline}
+            rel="noreferrer"
+          >
             {item.title}
           </a>
         </Col>
