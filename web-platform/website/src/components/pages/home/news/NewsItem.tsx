@@ -1,6 +1,11 @@
 import { Col, Container, Row } from "reactstrap";
 
-import { ContainerStyles, FontSize, Fonts } from "../../../../styles";
+import {
+  ContainerStyles,
+  FontSize,
+  Fonts,
+  LinkStyles,
+} from "../../../../styles";
 
 export interface NewsReportItem {
   date: string;
@@ -30,11 +35,11 @@ function ImageNews(item: ImageItem) {
     <Container className={`${ContainerStyles.NoSpacing} pt-4 pb-4`}>
       <Row>
         <Col className={`${FontSize.xSmall} text-muted`}>
-          <div
+          <img
+            src={item.imageUrl}
             style={{
               width: 450,
               height: 200,
-              backgroundColor: "gray",
               margin: "auto",
             }}
           />
@@ -56,7 +61,14 @@ function NewsReport(item: NewsReportItem) {
       </Row>
       <Row>
         <Col className={`${Fonts.Headline} ${FontSize.xLarge}`}>
-          {item.title}
+          <a
+            href={item.url}
+            target="_blank"
+            className={LinkStyles.NoUnderline}
+            rel="noreferrer"
+          >
+            {item.title}
+          </a>
         </Col>
       </Row>
       <Row>

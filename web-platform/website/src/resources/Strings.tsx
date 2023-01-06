@@ -436,55 +436,58 @@ export const Strings = {
           },
           items: [
             {
-              date: "07.01.2022",
+              date: "06.16.2022",
               content: (
                 <>
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec
-                  tempor vestibulum vestibulum. Phasellus vulputate nec erat
-                  eget sagittis. Cras hendrerit vitae felis convallis mollis.
-                  Proin auctor leo ut ullamcorper sodales. Nam semper ut tellus
-                  posuere accumsan. Donec ut condimentum nulla
-                </>
-              ),
-              source: "The Markup",
-              title:
-                "Online Abortion Pill Provider Hey Jane Used Tracking Tools That Sent Visitor Data to Meta, Google, and Others",
-              type: "News",
-              url: "",
-            },
-            {
-              date: "07.01.2022",
-              content: (
-                <>
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec
-                  tempor vestibulum vestibulum. Phasellus vulputate nec erat
-                  eget sagittis. Cras hendrerit vitae felis convallis mollis.
-                  Proin auctor leo ut ullamcorper sodales. Nam semper ut tellus
-                  posuere accumsan. Donec ut condimentum nulla
+                  The Markup found 33 of Newsweek's top 100 U.S. hospitals sent
+                  sensitive personal data to Meta via the Facebook tracking
+                  pixel. Former regulators, health data security experts, and
+                  privacy advocates reviewing The Markup's findings say some
+                  hospitals' use of Meta's ad tracking tool may violate HIPAA
+                  laws protecting health information. These findings are
+                  currently in litigation.
                 </>
               ),
               source: "The Markup",
               title:
                 "Facebook Is Receiving Sensitive Medical Information from Hospital Websites",
               type: "News",
-              url: "",
+              url: "https://themarkup.org/pixel-hunt/2022/06/16/facebook-is-receiving-sensitive-medical-information-from-hospital-websites",
             },
             {
               date: "07.01.2022",
               content: (
                 <>
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec
-                  tempor vestibulum vestibulum. Phasellus vulputate nec erat
-                  eget sagittis. Cras hendrerit vitae felis convallis mollis.
-                  Proin auctor leo ut ullamcorper sodales. Nam semper ut tellus
-                  posuere accumsan. Donec ut condimentum nulla
+                  Not all data leaks are malicious in intent. Data contributions
+                  by the Rally community led to the discovery that online
+                  healthcare provider Hey Jane was unknowingly sending sensitive
+                  data to Meta. As a result of this story by The Markup, Hey
+                  Jane has removed the Meta pixel and other trackers from its
+                  website.
                 </>
               ),
               source: "The Markup",
               title:
-                "Lawsuit claims Facebook wrongly collects patient data through health system",
+                "Online Abortion Pill Provider Hey Jane Used Tracking Tools That Sent Visitor Data to Meta, Google, and Others",
               type: "News",
-              url: "",
+              url: "https://themarkup.org/pixel-hunt/2022/07/01/online-abortion-pill-provider-hey-jane-used-tracking-tools-that-sent-visitor-data-to-meta-google-and-others",
+            },
+            {
+              date: "09.19.2022",
+              content: (
+                <>
+                  U.S. senators pressed Facebook/Meta about its access to
+                  sensitive medical data after learning from The Markup and
+                  Mozilla Rally’s data that Meta’s pixel tracking tool collects
+                  details about patients’ medical appointments, prescriptions,
+                  and health conditions from hospital websites.
+                </>
+              ),
+              source: "Stat News",
+              title:
+                "Meta faces mounting questions from Congress on health data privacy as hospitals remove Facebook tracker",
+              type: "News",
+              url: "https://www.statnews.com/2022/09/19/facebook-meta-pixel-congress-health-data/",
             },
           ],
         },
