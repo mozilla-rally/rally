@@ -12,8 +12,6 @@ import {
 import { Strings } from "../../../../resources/Strings";
 import { StandardAccordion } from "../../../../styles/Accordions";
 import { FontSize } from "../../../../styles/Fonts";
-import { detectBrowser } from "../../../../utils/BrowserDetector";
-import { BrowserType } from "../../../../utils/BrowserType";
 import { useStudy } from "./StudyDataContext";
 import { StudyTag } from "./StudyTag";
 
@@ -22,8 +20,6 @@ const strings = Strings.components.pages.home.studyCard.description;
 export function StudyDescription() {
   const { study } = useStudy();
   const [isExpanded, setIsExpanded] = useState(true);
-
-  const [browserType] = useState(detectBrowser());
 
   return (
     <Accordion // eslint-disable-next-line @typescript-eslint/ban-ts-comment

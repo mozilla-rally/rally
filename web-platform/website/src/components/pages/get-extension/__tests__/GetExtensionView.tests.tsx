@@ -3,13 +3,10 @@ import { useRouter } from "next/router";
 
 import { Strings } from "../../../../resources/Strings";
 import { useStudies } from "../../../../services/StudiesService";
-import { detectBrowser } from "../../../../utils/BrowserDetector";
-import { BrowserType } from "../../../../utils/BrowserType";
 import { Highlighter } from "../../../Highlighter";
 import { GetExtensionView } from "../GetExtensionView";
 
 jest.mock("next/router");
-jest.mock("../../../../utils/BrowserDetector");
 jest.mock("../../../../services/StudiesService");
 jest.mock("../../../Highlighter");
 jest.mock("../../../../services/FlagService");
@@ -23,8 +20,6 @@ describe("GetExtensionView tests", () => {
     (useStudies as jest.Mock).mockReturnValue({
       allStudies: [],
     });
-
-    (detectBrowser as jest.Mock).mockReturnValue(BrowserType.Chrome);
   });
 
   it("renders the view", () => {

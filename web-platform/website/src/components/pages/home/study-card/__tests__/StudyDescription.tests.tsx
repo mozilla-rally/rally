@@ -2,13 +2,10 @@ import { render } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
 import { Strings } from "../../../../../resources/Strings";
-import { detectBrowser } from "../../../../../utils/BrowserDetector";
-import { BrowserType } from "../../../../../utils/BrowserType";
 import { useStudy } from "../StudyDataContext";
 import { StudyDescription } from "../StudyDescription";
 import { StudyTag } from "../StudyTag";
 
-jest.mock("../../../../../utils/BrowserDetector");
 jest.mock("../StudyDataContext");
 jest.mock("../StudyTag");
 
@@ -29,7 +26,6 @@ describe("StudyDescription tests", () => {
   it("renders study correctly", async () => {
     (useStudy as jest.Mock).mockReturnValue({ study });
     (StudyTag as jest.Mock).mockImplementation(({ children }) => children);
-    (detectBrowser as jest.Mock).mockReturnValue(BrowserType.FireFox);
 
     userEvent.setup();
 
