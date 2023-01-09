@@ -388,7 +388,7 @@ export const Strings = {
               text: "research projects",
             },
             {
-              number: "185,984,07",
+              number: "185,984,070",
               text: "discovered data pings",
             },
             {
