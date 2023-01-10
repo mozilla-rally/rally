@@ -15,6 +15,6 @@ export const Flags: Record<string, Flag> = {
   HomepageV2: {
     name: "HomepageV2",
     description: "Enables new homepage experience.",
-    defaultValue: false,
+    defaultValue: true,
   },
 };
