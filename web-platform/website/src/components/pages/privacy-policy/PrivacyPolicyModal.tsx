@@ -132,34 +132,35 @@ const styles = {
       },
     }
   ),
-  modalContainer: style({
-    backgroundColor: "#f0f0f4",
-    width: 860,
-    padding: Spacing.xLarge,
-    maxHeight: 495,
-    overflow: "auto",
-    marginBottom: Spacing.xLarge,
-    $nest: {
-      h2: {
-        color: Colors.ColorMarketingGray70,
+  modalContainer: style(
+    createResponsiveStyle(ScreenSize.ExtraSmall, { padding: Spacing.Small }),
+    {
+      backgroundColor: "#f0f0f4",
+      maxWidth: 860,
+      padding: Spacing.xLarge,
+      maxHeight: 495,
+      overflow: "auto",
+      marginBottom: Spacing.xLarge,
+      $nest: {
+        h2: {
+          color: Colors.ColorMarketingGray70,
+        },
+        p: {
+          color: Colors.ColorMarketingGray70,
+        },
+        ".image-section": {
+          display: "none", // hide images within modal content
+        },
       },
-      p: {
-        color: Colors.ColorMarketingGray70,
-      },
-      ".image-section": {
-        display: "none", // hide images within modal content
-      },
-    },
-  }),
+    }
+  ),
   modalContent: style(
     createResponsiveStyle(ScreenSize.Small, {
       width: "unset",
     }),
     {
-      width: 852,
+      maxWidth: 852,
       maxHeight: 635,
-      boxSizing: "content-box",
-      maxWidth: "unset",
       padding: "20px 20px 48px",
       marginLeft: "auto",
       marginRight: "auto",
