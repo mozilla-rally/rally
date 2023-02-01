@@ -24,7 +24,7 @@
     "serve": "npm run build && firebase emulators:start --only functions --project demo-rally",
     "shell": "npm run build && firebase functions:shell",
     "start": "npm run shell",
-    "test": "set -a && . ./.testenv && firebase emulators:exec -c ../firebase/firebase.json --project demo-rally --only auth,functions,firestore 'jest --coverage --forceExit --detectOpenHandles' && set +a",
+    "test": "set -a && . ./.testenv && firebase emulators:exec -c ../firebase/firebase.json --project demo-rally --only auth,functions,firestore 'jest --coverage --forceExit --detectOpenHandles 2>&1' && set +a",
     "test:coverage": "set -a && . ./.testenv && jest --coverage --collectCoverage --coverageDirectory coverage --detectOpenHandles && set +a",
     "test:watch": "set -a && . ./.testenv && jest --watch && set +a"
   },
