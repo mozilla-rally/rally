@@ -6,12 +6,10 @@ import { Layout } from "../../../Layout";
 import { HomePageBackground } from "../HomePageBackground";
 import { HomePageContent } from "../HomePageContent";
 import { HomePageTitle } from "../HomePageTitle";
-import { StudyList } from "../StudyList";
 
 jest.mock("../../../Layout");
 jest.mock("../HomePageBackground");
 jest.mock("../HomePageTitle");
-jest.mock("../StudyList");
 jest.mock("../../../../services/StudiesService");
 jest.mock("../../../../services/AuthenticationService");
 
@@ -24,7 +22,6 @@ describe("HomePageContent tests", () => {
       ({ children }) => children
     );
     (HomePageTitle as jest.Mock).mockImplementation(({ children }) => children);
-    (StudyList as jest.Mock).mockImplementation(({ children }) => children);
     (useStudies as jest.Mock).mockReturnValue({
       installedStudyIds: [],
       allStudies: [],
@@ -40,6 +37,5 @@ describe("HomePageContent tests", () => {
     expect(Layout).toHaveBeenCalled();
     expect(HomePageBackground).toHaveBeenCalled();
     expect(HomePageTitle).toHaveBeenCalled();
-    expect(StudyList).toHaveBeenCalled();
   });
 });
