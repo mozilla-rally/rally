@@ -33,4 +33,4 @@ jobs:
           cp web-platform/firebase/firebase.json web-platform/firebase.json
           sed -i 's/\.\.\/functions/functions/g' web-platform/firebase.json
           echo ${{ secrets.GCLOUD_SERVICE_KEY }} | base64 --decode --ignore-garbage > "$HOME"/gcloud.json
-          GOOGLE_APPLICATION_CREDENTIALS="$HOME"/gcloud.json web-platform/functions/node_modules/.bin/firebase deploy --only functions,firestore --project ${{secrets.PROJECT_ID_STAGE}} -c web-platform/firebase.json
+          GOOGLE_APPLICATION_CREDENTIALS="$HOME"/gcloud.json web-platform/functions/node_modules/.bin/firebase deploy --debug --only functions,firestore --project ${{secrets.PROJECT_ID_STAGE}} -c web-platform/firebase.json
