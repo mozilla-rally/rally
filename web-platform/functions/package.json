@@ -24,7 +24,7 @@
     "serve": "npm run build && firebase emulators:start --only functions --project demo-rally",
     "shell": "npm run build && firebase functions:shell",
     "start": "npm run shell",
-    "test": "set -a && . ./.testenv && firebase emulators:exec -c ../firebase/firebase.json --project demo-rally --only auth,functions,firestore 'jest --coverage --detectOpenHandles' 2>&1 && set +a",
+    "test": "set -a && . ./.testenv && firebase emulators:exec -c ../firebase/firebase.json --project demo-rally --only auth,functions,firestore 'jest --coverage --forceExit --detectOpenHandles' && set +a",
     "test:coverage": "set -a && . ./.testenv && jest --coverage --collectCoverage --coverageDirectory coverage --detectOpenHandles && set +a",
     "test:watch": "set -a && . ./.testenv && jest --watch && set +a"
   },
@@ -37,13 +37,12 @@
     "axios": "^1.2.0",
     "busboy": "~1.6.0",
     "cors": "^2.8.5",
-    "firebase-admin": "^9.12.0",
-    "firebase-functions": "^3.21.0",
-    "firebase-tools": "^10.9.0",
+    "firebase-admin": "^11.5.0",
+    "firebase-functions": "^4.2.1",
+    "firebase-tools": "^11.22.0",
     "ts-patch": "^2.0.1",
     "ua-parser-js": "~1.0.2",
-    "uuid": "^8.3.2",
-    "@types/firebase": "~3.2.1"
+    "uuid": "^8.3.2"
   },
   "devDependencies": {
     "@types/jest": "^27.5.0",
