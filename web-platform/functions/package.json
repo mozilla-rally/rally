@@ -42,8 +42,7 @@
     "firebase-tools": "^11.22.0",
     "ts-patch": "^2.0.1",
     "ua-parser-js": "~1.0.2",
-    "uuid": "^8.3.2",
-    "@types/firebase": "~3.2.1"
+    "uuid": "^8.3.2"
   },
   "devDependencies": {
     "@types/jest": "^27.5.0",
