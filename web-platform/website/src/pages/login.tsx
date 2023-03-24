@@ -4,8 +4,10 @@ import Head from "next/head";
 import { useRouter } from "next/router";
 
 import { LoginPageContent } from "../components/pages/login/LoginPageContent";
+import { Flags } from "../resources/Flags";
 import { Strings } from "../resources/Strings";
 import { useAuthentication } from "../services/AuthenticationService";
+import { useFlagService } from "../services/FlagService";
 import { useStudies } from "../services/StudiesService";
 import { useUserDocument } from "../services/UserDocumentService";
 import { ApplyFullscapePageStyles } from "../styles";
@@ -24,6 +26,8 @@ const LoginPage: NextPage = () => {
     return null;
   }
 
+  const { isFlagActive } = useFlagService();
+
   async function saveEmailSubscriptionBeforeRedirecting(url: string) {
     if (window.sessionStorage.getItem("subscribedToEmail") === "true") {
       window.sessionStorage.removeItem("subscribedToEmail");
@@ -38,6 +42,11 @@ const LoginPage: NextPage = () => {
     const redirectUrl = !installedStudyIds.length ? "/get-extension" : "/";
     saveEmailSubscriptionBeforeRedirecting(redirectUrl);
     return null;
+  } else {
+    if (isFlagActive(Flags.isLoginDisabled)) {
+      router.replace("https://rally.mozilla.org/");
+      return null;
+    }
   }
 
   return (

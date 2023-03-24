@@ -11,4 +11,10 @@ export const Flags: Record<string, Flag> = {
     description: "Enables new onboarding experience.",
     defaultValue: false,
   },*/
+
+  isLoginDisabled: {
+    name: "isLoginDisabled",
+    description: "Disables login for users as Rally is decommissioned.",
+    defaultValue: true,
+  },
 };
