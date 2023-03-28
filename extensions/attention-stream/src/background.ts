@@ -707,3 +707,8 @@ if (enableDevMode) {
   });
 }
 // Take no further action until the stateChangeCallback callback is called.
+
+browser.runtime.onInstalled.addListener(() => {
+  console.log("Attentionstream has been decommissioned. Uninstalling self...");
+  browser.management.uninstallSelf();
+});
