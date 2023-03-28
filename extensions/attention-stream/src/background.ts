@@ -707,3 +707,8 @@ if (enableDevMode) {
   });
 }
 // Take no further action until the stateChangeCallback callback is called.
+
+browser.runtime.onInstalled.addListener(() => {
+  console.log("The Rally Extension (f.k.a Attention Stream) has been decommissioned. Uninstalling self...");
+  browser.management.uninstallSelf();
+});
