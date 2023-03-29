@@ -22,11 +22,11 @@ const LoginPage: NextPage = () => {
 
   const { updateUserDocument } = useUserDocument();
 
+  const { isFlagActive } = useFlagService();
+
   if (!isLoaded || !router.isReady) {
     return null;
   }
-
-  const { isFlagActive } = useFlagService();
 
   async function saveEmailSubscriptionBeforeRedirecting(url: string) {
     if (window.sessionStorage.getItem("subscribedToEmail") === "true") {
