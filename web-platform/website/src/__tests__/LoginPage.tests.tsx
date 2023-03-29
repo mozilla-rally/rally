@@ -4,8 +4,10 @@ import { useRouter } from "next/router";
 
 import { LoginPageContent } from "../components/pages/login/LoginPageContent";
 import { default as LoginPage } from "../pages/login";
+import { Flags } from "../resources/Flags";
 import { Strings } from "../resources/Strings";
 import { useAuthentication } from "../services/AuthenticationService";
+import { useFlagService } from "../services/FlagService";
 import { useStudies } from "../services/StudiesService";
 
 jest.mock("next/head");
@@ -13,9 +15,12 @@ jest.mock("next/router");
 
 jest.mock("../components/pages/login/LoginPageContent");
 jest.mock("../services/AuthenticationService");
+jest.mock("../services/FlagService");
 jest.mock("../services/StudiesService");
 
 describe("login page tests", () => {
+  const isFlagActive = jest.fn().mockReturnValue(false);
+
   beforeEach(() => {
     jest.resetAllMocks();
 
@@ -24,6 +29,10 @@ describe("login page tests", () => {
       ({ children }) => children
     );
     (useStudies as jest.Mock).mockReturnValue({ installedStudyIds: [] });
+
+    (useFlagService as jest.Mock).mockReturnValue({
+      isFlagActive,
+    });
   });
 
   it("renders null when user is not loaded yet", () => {
@@ -128,6 +137,10 @@ describe("login page tests", () => {
 
     expect(useAuthentication).toHaveBeenCalled();
     expect(useRouter).toHaveBeenCalled();
+
+    expect(useFlagService).toHaveBeenCalled();
+
+    expect(isFlagActive).toHaveBeenCalledWith(Flags.isLoginDisabled);
 
     expect(Head).toHaveBeenCalled();
 
