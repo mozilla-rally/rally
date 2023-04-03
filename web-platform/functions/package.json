@@ -41,7 +41,7 @@
     "firebase-functions": "^3.21.0",
     "firebase-tools": "^10.9.0",
     "ts-patch": "^2.0.1",
-    "ua-parser-js": "~1.0.2",
+    "ua-parser-js": "~1.0.33",
     "uuid": "^8.3.2",
     "@types/firebase": "~3.2.1"
   },
