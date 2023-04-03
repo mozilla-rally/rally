@@ -1,4 +1,4 @@
-# Mozilla Rally extension (f.k.a. Attention Stream)
+# Mozilla Rally extension (f.k.a. Attention Stream) [DECOMMISSIONED]
 This is the Mozilla Rally extension, originally based on the [Rally Study Template](https://github.com/mozilla-rally/study-template/).
 
 ## Getting Started
