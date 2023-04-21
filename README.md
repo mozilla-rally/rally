@@ -1,4 +1,4 @@
-# Mozilla Rally
+# Mozilla Rally [DEPRECATED]
 
 This mono-repository contains [Rally](https://rally.mozilla.org/) and its related codebase. Rally enables people to contribute, gain insight and earn value from their own data through transparency, ethical and consensual practices.  We are working towards building independent insights about connected life and countering the power imbalance that results from the same organizations controlling access to data while they are also collecting and benefiting most from it. 
 
